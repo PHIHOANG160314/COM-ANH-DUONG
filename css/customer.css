@@ -928,6 +928,356 @@ body {
 }
 
 /* ========================================
+   SEARCH BAR
+   ======================================== */
+.search-container {
+    margin-bottom: 16px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* ========================================
+   PROMO CODE
+   ======================================== */
+.promo-code-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.promo-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.promo-input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    font-size: 14px;
+    margin: 0;
+}
+
+.btn-apply-promo {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--warning);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-apply-promo:active {
+    transform: scale(0.95);
+}
+
+.promo-status {
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+.promo-status.success {
+    color: var(--secondary);
+}
+
+.promo-status.error {
+    color: var(--danger);
+}
+
+/* ========================================
+   ORDER TRACKING
+   ======================================== */
+.tracking-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tracking-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+}
+
+.tracking-search {
+    display: flex;
+    gap: 8px;
+}
+
+.tracking-search input {
+    flex: 1;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.btn-track {
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-track:active {
+    transform: scale(0.95);
+}
+
+.current-order {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+.no-order,
+.no-orders {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 20px 0;
+}
+
+/* Order Status Card */
+.order-status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-id {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.order-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.order-status-badge.pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.order-status-badge.preparing {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-light);
+}
+
+.order-status-badge.ready {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--secondary);
+}
+
+.order-status-badge.delivered {
+    background: rgba(16, 185, 129, 0.3);
+    color: var(--secondary);
+}
+
+/* Timeline */
+.order-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 16px 0;
+}
+
+.timeline-step {
+    display: flex;
+    gap: 16px;
+    position: relative;
+}
+
+.timeline-step::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 32px;
+    bottom: -24px;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-step:last-child::before {
+    display: none;
+}
+
+.timeline-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.timeline-step.completed .timeline-icon {
+    background: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.timeline-step.active .timeline-icon {
+    background: var(--primary);
+    border-color: var(--primary);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+    }
+}
+
+.timeline-content {
+    flex: 1;
+    padding-bottom: 24px;
+}
+
+.timeline-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.timeline-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Order History */
+.order-history {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+}
+
+.order-history h3 {
+    margin-bottom: 16px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.history-card:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.history-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.history-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.history-amount {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+/* ========================================
+   SKELETON LOADING
+   ======================================== */
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--bg-card) 25%,
+            rgba(255, 255, 255, 0.1) 50%,
+            var(--bg-card) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-menu-card {
+    height: 180px;
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 @media (min-width: 768px) {
@@ -941,6 +1291,10 @@ body {
     }
 
     .order-type-selector {
+        max-width: 500px;
+    }
+
+    .tracking-search {
         max-width: 500px;
     }
 }

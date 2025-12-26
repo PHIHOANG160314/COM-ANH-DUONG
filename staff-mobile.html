@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ánh Dương - Staff Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/staff-mobile.css">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="staff-header">
+        <div class="header-content">
+            <div class="header-left">
+                <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
+                <div class="header-title">
+                    <h1>Staff Portal</h1>
+                    <p id="currentDate">---</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="staff-info" id="staffInfo">
+                    <span class="staff-avatar">👤</span>
+                    <span class="staff-name" id="staffName">Đăng nhập</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="staff-main">
+        <!-- Login Section -->
+        <section class="section active" id="section-login">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-icon">👨‍🍳</div>
+                    <h2>Xin chào!</h2>
+                    <p>Nhập mã PIN để đăng nhập</p>
+                    <div class="pin-input-group">
+                        <input type="tel" id="pinInput" maxlength="4" placeholder="••••" class="pin-input"
+                            inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                    <button class="btn-login" onclick="StaffApp.login()">Đăng nhập</button>
+                    <div class="login-help">
+                        <p>Quên mã PIN? Liên hệ quản lý</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="section" id="section-dashboard">
+            <div class="dashboard-container">
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-card checkin" id="checkinBtn" onclick="StaffApp.toggleCheckin()">
+                        <span class="action-icon">🟢</span>
+                        <span class="action-label">Check-in</span>
+                        <span class="action-time" id="checkinTime">--:--</span>
+                    </button>
+                    <button class="action-card kitchen" onclick="StaffApp.showSection('kitchen')">
+                        <span class="action-icon">👨‍🍳</span>
+                        <span class="action-label">Bếp</span>
+                        <span class="action-badge" id="kitchenOrderCount">0</span>
+                    </button>
+                    <button class="action-card pos" onclick="window.location='index.html#pos'">
+                        <span class="action-icon">💳</span>
+                        <span class="action-label">POS</span>
+                    </button>
+                    <button class="action-card orders" onclick="StaffApp.showSection('orders')">
+                        <span class="action-icon">📋</span>
+                        <span class="action-label">Đơn hàng</span>
+                        <span class="action-badge" id="orderCount">0</span>
+                    </button>
+                </div>
+
+                <!-- Today's Summary -->
+                <div class="summary-card">
+                    <h3>📊 Hôm nay</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-value" id="todayOrders">0</span>
+                            <span class="summary-label">Đơn hàng</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-value" id="todayRevenue">0đ</span>
+                            <span class="summary-label">Doanh thu</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-value" id="todayServed">0</span>
+                            <span class="summary-label">Đã phục vụ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="recent-orders">
+                    <h3>🕐 Đơn gần đây</h3>
+                    <div class="orders-list" id="recentOrdersList">
+                        <p class="no-orders">Chưa có đơn hàng</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kitchen Section -->
+        <section class="section" id="section-kitchen">
+            <div class="kitchen-container">
+                <div class="section-header">
+                    <button class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay lại</button>
+                    <h2>👨‍🍳 Màn hình bếp</h2>
+                </div>
+                <div class="kitchen-orders" id="kitchenOrders">
+                    <p class="no-orders">Không có đơn đang chờ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section class="section" id="section-orders">
+            <div class="orders-container">
+                <div class="section-header">
+                    <button class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay lại</button>
+                    <h2>📋 Quản lý đơn</h2>
+                </div>
+                <div class="order-filters">
+                    <button class="filter-btn active" onclick="StaffApp.filterOrders('all')">Tất cả</button>
+                    <button class="filter-btn" onclick="StaffApp.filterOrders('pending')">Chờ</button>
+                    <button class="filter-btn" onclick="StaffApp.filterOrders('preparing')">Đang làm</button>
+                    <button class="filter-btn" onclick="StaffApp.filterOrders('completed')">Xong</button>
+                </div>
+                <div class="orders-list" id="allOrdersList">
+                    <p class="no-orders">Chưa có đơn hàng</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-item active" data-section="dashboard" onclick="StaffApp.showSection('dashboard')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Trang chủ</span>
+        </button>
+        <button class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')">
+            <span class="nav-icon">👨‍🍳</span>
+            <span class="nav-label">Bếp</span>
+        </button>
+        <button class="nav-item" data-section="orders" onclick="StaffApp.showSection('orders')">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">Đơn hàng</span>
+        </button>
+        <button class="nav-item" onclick="StaffApp.logout()">
+            <span class="nav-icon">🚪</span>
+            <span class="nav-label">Đăng xuất</span>
+        </button>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/staff-mobile.js"></script>
+</body>
+
+</html>

@@ -2,7 +2,7 @@
   "name": "Ánh Dương - F&B Master",
   "short_name": "Ánh Dương",
   "description": "Hệ thống quản lý nhà hàng - Restaurant Management System",
-  "start_url": "/",
+  "start_url": "/customer.html",
   "display": "standalone",
   "background_color": "#0a0a12",
   "theme_color": "#6366f1",
@@ -57,7 +57,49 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["food", "business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Đặt hàng",
+      "short_name": "Đặt hàng",
+      "description": "Xem menu và đặt hàng online",
+      "url": "/customer.html?section=menu",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Tích điểm",
+      "short_name": "Tích điểm",
+      "description": "Xem điểm thành viên",
+      "url": "/customer.html?section=loyalty",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Nhân viên",
+      "short_name": "Staff",
+      "description": "Cổng nhân viên",
+      "url": "/staff-mobile.html",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "categories": [
+    "food",
+    "business",
+    "productivity"
+  ],
   "lang": "vi",
   "screenshots": [
     {

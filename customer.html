@@ -36,9 +36,11 @@
             <button class="nav-btn active" data-section="menu" onclick="CustomerApp.showSection('menu')">📜
                 Menu</button>
             <button class="nav-btn" data-section="order" onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
+            <button class="nav-btn" data-section="tracking" onclick="CustomerApp.showSection('tracking')">📍 Theo
+                dõi</button>
             <button class="nav-btn" data-section="loyalty" onclick="CustomerApp.showSection('loyalty')">🎁 Tích
                 điểm</button>
-            <button class="nav-btn" data-section="contact" onclick="CustomerApp.showSection('contact')">📍 Liên
+            <button class="nav-btn" data-section="contact" onclick="CustomerApp.showSection('contact')">📞 Liên
                 hệ</button>
         </nav>
     </header>
@@ -47,6 +49,11 @@
     <main class="customer-main">
         <!-- Menu Section -->
         <section class="section active" id="section-menu">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="menuSearchInput" class="search-input" placeholder="🔍 Tìm kiếm món ăn..."
+                    oninput="CustomerApp.searchMenu(this.value)">
+            </div>
             <div class="category-filter">
                 <button class="filter-btn active" data-cat="all" onclick="CustomerApp.filterMenu('all')">Tất cả</button>
                 <button class="filter-btn" data-cat="food" onclick="CustomerApp.filterMenu('food')">🍜 Món
@@ -56,7 +63,9 @@
                 <button class="filter-btn" data-cat="dessert" onclick="CustomerApp.filterMenu('dessert')">🍰 Tráng
                     miệng</button>
             </div>
-            <div class="menu-grid" id="customerMenuGrid"></div>
+            <div class="menu-grid" id="customerMenuGrid">
+                <!-- Menu items will be rendered here -->
+            </div>
         </section>
 
         <!-- Order Section -->
@@ -101,9 +110,43 @@
                             <span id="orderTotal">0đ</span>
                         </div>
                     </div>
+                    <!-- Promo Code -->
+                    <div class="promo-code-section">
+                        <div class="promo-input-group">
+                            <input type="text" id="promoCode" placeholder="Nhập mã giảm giá">
+                            <button class="btn-apply-promo" onclick="CustomerApp.applyPromo()">Áp dụng</button>
+                        </div>
+                        <div id="promoStatus" class="promo-status"></div>
+                    </div>
                     <button class="btn-checkout" id="checkoutBtn" onclick="CustomerApp.checkout()">
                         Xác nhận đặt hàng
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Tracking Section -->
+        <section class="section" id="section-tracking">
+            <div class="tracking-container">
+                <div class="tracking-header">
+                    <h2>📍 Theo dõi đơn hàng</h2>
+                    <div class="tracking-search">
+                        <input type="text" id="trackingOrderId" placeholder="Nhập mã đơn hàng (VD: ORD...)">
+                        <button class="btn-track" onclick="CustomerApp.trackOrder()">Tra cứu</button>
+                    </div>
+                </div>
+
+                <!-- Current Order Status -->
+                <div class="current-order" id="currentOrderTracking">
+                    <p class="no-order">Nhập mã đơn hàng để theo dõi trạng thái</p>
+                </div>
+
+                <!-- Order History -->
+                <div class="order-history">
+                    <h3>📋 Lịch sử đơn hàng</h3>
+                    <div class="history-list" id="orderHistoryList">
+                        <p class="no-orders">Chưa có đơn hàng nào</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -265,6 +308,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/customer-app.js"></script>
+    <script src="js/pwa-utils.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 // ========================================
 // F&B MASTER - CUSTOMER APP
+// Enhanced Mobile Customer Portal
 // ========================================
 
 const CustomerApp = {
@@ -7,6 +8,17 @@ const CustomerApp = {
     orderType: 'dinein',
     currentMember: null,
     menuData: [],
+    searchQuery: '',
+    currentCategory: 'all',
+    appliedPromo: null,
+
+    // Available promo codes
+    promoCodes: {
+        'WELCOME10': { discount: 10, type: 'percent', minOrder: 50000, description: 'Giảm 10%' },
+        'FREESHIP': { discount: 15000, type: 'fixed', minOrder: 100000, description: 'Miễn phí giao hàng' },
+        'NEWYEAR': { discount: 20, type: 'percent', minOrder: 100000, description: 'Giảm 20%' },
+        'VIP50K': { discount: 50000, type: 'fixed', minOrder: 200000, description: 'Giảm 50K' }
+    },
 
     init() {
         console.log('🍽️ Customer Portal initializing...');
@@ -26,49 +38,80 @@ const CustomerApp = {
         this.loadCart();
         this.renderMenu();
         this.updateCartUI();
+        this.renderOrderHistory();
         console.log('🍽️ Customer Portal ready!');
     },
 
     // ========================================
-    // MENU
+    // MENU & SEARCH
     // ========================================
     getMenuItems() {
         return this.menuData.length > 0 ? this.menuData : this.getSampleMenu();
     },
 
+    searchMenu(query) {
+        this.searchQuery = query.toLowerCase().trim();
+        this.renderMenu(this.currentCategory);
+    },
+
     renderMenu(category = 'all') {
+        this.currentCategory = category;
         const grid = document.getElementById('customerMenuGrid');
         if (!grid) {
             console.error('Menu grid not found!');
             return;
         }
 
-        const items = this.getMenuItems();
-        console.log('📜 Rendering', items.length, 'items, category:', category);
+        let items = this.getMenuItems();
+        console.log('📜 Rendering, category:', category, 'search:', this.searchQuery);
 
-        const filtered = category === 'all'
-            ? items
-            : items.filter(item => item.category === category);
+        // Filter by category
+        if (category !== 'all') {
+            items = items.filter(item => item.category === category);
+        }
 
-        if (filtered.length === 0) {
-            grid.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Không có món trong danh mục này</p>';
+        // Filter by search query
+        if (this.searchQuery) {
+            items = items.filter(item =>
+                item.name.toLowerCase().includes(this.searchQuery) ||
+                (item.description && item.description.toLowerCase().includes(this.searchQuery))
+            );
+        }
+
+        if (items.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#888;">
+                    <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
+                    <p>Không tìm thấy món "${this.searchQuery || category}"</p>
+                </div>`;
             return;
         }
 
-        grid.innerHTML = filtered.map(item => `
-            <div class="menu-card" data-id="${item.id}">
+        grid.innerHTML = items.map(item => `
+            <div class="menu-card" data-id="${item.id}" onclick="CustomerApp.showItemDetail(${item.id})">
                 <div class="menu-card-image">${item.icon || '🍽️'}</div>
                 <div class="menu-card-body">
                     <div class="menu-card-name">${item.name}</div>
                     <div class="menu-card-price">${this.formatPrice(item.price)}</div>
-                    <button class="menu-card-add" onclick="CustomerApp.addToCart(${item.id})">
+                    <button class="menu-card-add" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
                         + Thêm vào giỏ
                     </button>
                 </div>
             </div>
         `).join('');
 
-        console.log('✅ Rendered', filtered.length, 'menu cards');
+        console.log('✅ Rendered', items.length, 'menu cards');
+    },
+
+    showItemDetail(itemId) {
+        const item = this.getMenuItems().find(i => i.id === itemId || String(i.id) === String(itemId));
+        if (!item) return;
+
+        // Simple detail - can be enhanced with modal later
+        const confirmed = confirm(`${item.icon} ${item.name}\n\nGiá: ${this.formatPrice(item.price)}\n\nThêm vào giỏ hàng?`);
+        if (confirmed) {
+            this.addToCart(itemId);
+        }
     },
 
     getSampleMenu() {
@@ -89,7 +132,6 @@ const CustomerApp = {
     },
 
     filterMenu(category) {
-        // Update active filter button
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.cat === category);
         });
@@ -213,6 +255,51 @@ const CustomerApp = {
     },
 
     // ========================================
+    // PROMO CODES
+    // ========================================
+    applyPromo() {
+        const codeInput = document.getElementById('promoCode');
+        const statusDiv = document.getElementById('promoStatus');
+        if (!codeInput || !statusDiv) return;
+
+        const code = codeInput.value.toUpperCase().trim();
+        if (!code) {
+            statusDiv.innerHTML = '<span class="error">Vui lòng nhập mã giảm giá</span>';
+            statusDiv.className = 'promo-status error';
+            return;
+        }
+
+        const promo = this.promoCodes[code];
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+        if (!promo) {
+            statusDiv.innerHTML = '❌ Mã giảm giá không hợp lệ';
+            statusDiv.className = 'promo-status error';
+            this.appliedPromo = null;
+            this.updateOrderSummary();
+            return;
+        }
+
+        if (subtotal < promo.minOrder) {
+            statusDiv.innerHTML = `❌ Đơn tối thiểu ${this.formatPrice(promo.minOrder)}`;
+            statusDiv.className = 'promo-status error';
+            this.appliedPromo = null;
+            this.updateOrderSummary();
+            return;
+        }
+
+        this.appliedPromo = { code, ...promo };
+        const discountAmount = promo.type === 'percent'
+            ? Math.round(subtotal * promo.discount / 100)
+            : promo.discount;
+
+        statusDiv.innerHTML = `✅ ${promo.description} (-${this.formatPrice(discountAmount)})`;
+        statusDiv.className = 'promo-status success';
+        this.showToast(`🎉 Áp dụng mã ${code} thành công!`);
+        this.updateOrderSummary();
+    },
+
+    // ========================================
     // ORDER
     // ========================================
     setOrderType(type) {
@@ -233,7 +320,16 @@ const CustomerApp = {
     updateOrderSummary() {
         const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         const deliveryFee = this.orderType === 'delivery' ? 15000 : 0;
-        const total = subtotal + deliveryFee;
+
+        // Calculate discount
+        let discount = 0;
+        if (this.appliedPromo && subtotal >= this.appliedPromo.minOrder) {
+            discount = this.appliedPromo.type === 'percent'
+                ? Math.round(subtotal * this.appliedPromo.discount / 100)
+                : this.appliedPromo.discount;
+        }
+
+        const total = Math.max(0, subtotal - discount + deliveryFee);
 
         const subtotalEl = document.getElementById('orderSubtotal');
         const feeEl = document.getElementById('deliveryFee');
@@ -261,29 +357,194 @@ const CustomerApp = {
             }
         }
 
-        // Create order
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const deliveryFee = this.orderType === 'delivery' ? 15000 : 0;
+        let discount = 0;
+        if (this.appliedPromo && subtotal >= this.appliedPromo.minOrder) {
+            discount = this.appliedPromo.type === 'percent'
+                ? Math.round(subtotal * this.appliedPromo.discount / 100)
+                : this.appliedPromo.discount;
+        }
+        const total = Math.max(0, subtotal - discount + deliveryFee);
+
+        // Create order with tracking
         const order = {
             id: 'ORD' + Date.now(),
-            items: this.cart,
+            items: [...this.cart],
             orderType: this.orderType,
-            total: this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
-            createdAt: new Date().toISOString()
+            subtotal,
+            discount,
+            deliveryFee,
+            total,
+            promoCode: this.appliedPromo?.code || null,
+            status: 'pending',
+            statusHistory: [
+                { status: 'pending', time: new Date().toISOString(), label: 'Đã đặt hàng' }
+            ],
+            createdAt: new Date().toISOString(),
+            estimatedTime: this.orderType === 'delivery' ? '30-45 phút' : '15-20 phút'
         };
+
+        // Add delivery info if applicable
+        if (this.orderType === 'delivery') {
+            order.delivery = {
+                name: document.getElementById('deliveryName')?.value,
+                phone: document.getElementById('deliveryPhone')?.value,
+                address: document.getElementById('deliveryAddress')?.value,
+                note: document.getElementById('deliveryNote')?.value
+            };
+        }
 
         // Save order
         const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
-        orders.push(order);
+        orders.unshift(order);
         localStorage.setItem('customer_orders', JSON.stringify(orders));
 
-        // Clear cart
+        // Clear cart and promo
         this.cart = [];
+        this.appliedPromo = null;
         this.saveCart();
         this.updateCartUI();
 
+        // Clear promo input
+        const promoInput = document.getElementById('promoCode');
+        const promoStatus = document.getElementById('promoStatus');
+        if (promoInput) promoInput.value = '';
+        if (promoStatus) promoStatus.innerHTML = '';
+
         this.showToast('🎉 Đặt hàng thành công!');
+        this.renderOrderHistory();
 
         // Show confirmation
-        alert(`✅ Đặt hàng thành công!\n\nMã đơn: ${order.id}\nTổng tiền: ${this.formatPrice(order.total)}\n\nNhà hàng sẽ liên hệ xác nhận ngay!`);
+        alert(`✅ Đặt hàng thành công!\n\nMã đơn: ${order.id}\nTổng tiền: ${this.formatPrice(order.total)}\nThời gian dự kiến: ${order.estimatedTime}\n\nNhà hàng sẽ liên hệ xác nhận ngay!`);
+
+        // Navigate to tracking
+        this.showSection('tracking');
+        document.getElementById('trackingOrderId').value = order.id;
+        this.trackOrder();
+    },
+
+    // ========================================
+    // ORDER TRACKING
+    // ========================================
+    trackOrder() {
+        const orderId = document.getElementById('trackingOrderId')?.value.trim();
+        const container = document.getElementById('currentOrderTracking');
+        if (!container) return;
+
+        if (!orderId) {
+            container.innerHTML = '<p class="no-order">Nhập mã đơn hàng để theo dõi trạng thái</p>';
+            return;
+        }
+
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const order = orders.find(o => o.id === orderId);
+
+        if (!order) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 3rem; margin-bottom: 12px;">❌</div>
+                    <p>Không tìm thấy đơn hàng "${orderId}"</p>
+                </div>`;
+            return;
+        }
+
+        this.renderOrderStatus(order, container);
+    },
+
+    renderOrderStatus(order, container) {
+        const statusLabels = {
+            'pending': '⏳ Chờ xác nhận',
+            'confirmed': '✅ Đã xác nhận',
+            'preparing': '👨‍🍳 Đang chuẩn bị',
+            'ready': '✨ Sẵn sàng',
+            'delivering': '🛵 Đang giao',
+            'completed': '🎉 Hoàn thành'
+        };
+
+        const steps = [
+            { status: 'pending', icon: '📝', label: 'Đặt hàng' },
+            { status: 'confirmed', icon: '✅', label: 'Xác nhận' },
+            { status: 'preparing', icon: '👨‍🍳', label: 'Chuẩn bị' },
+            {
+                status: order.orderType === 'delivery' ? 'delivering' : 'ready',
+                icon: order.orderType === 'delivery' ? '🛵' : '✨',
+                label: order.orderType === 'delivery' ? 'Giao hàng' : 'Sẵn sàng'
+            },
+            { status: 'completed', icon: '🎉', label: 'Hoàn thành' }
+        ];
+
+        const currentIndex = steps.findIndex(s => s.status === order.status);
+
+        container.innerHTML = `
+            <div class="order-status-card">
+                <div class="order-status-header">
+                    <span class="order-id">${order.id}</span>
+                    <span class="order-status-badge ${order.status}">${statusLabels[order.status] || order.status}</span>
+                </div>
+                
+                <div class="order-timeline">
+                    ${steps.map((step, index) => {
+            const historyItem = order.statusHistory?.find(h => h.status === step.status);
+            const isCompleted = index < currentIndex;
+            const isActive = index === currentIndex;
+
+            return `
+                            <div class="timeline-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}">
+                                <div class="timeline-icon">${step.icon}</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">${step.label}</div>
+                                    <div class="timeline-time">${historyItem ? this.formatDateTime(historyItem.time) : (isActive ? 'Đang xử lý...' : '---')}</div>
+                                </div>
+                            </div>
+                        `;
+        }).join('')}
+                </div>
+
+                <div style="padding: 12px; background: rgba(99,102,241,0.1); border-radius: 10px; text-align: center;">
+                    <strong>⏱️ Thời gian dự kiến:</strong> ${order.estimatedTime || '15-20 phút'}
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <strong>📦 Chi tiết đơn hàng:</strong>
+                    <div style="margin-top: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+                        ${order.items.map(item => `${item.icon} ${item.name} x${item.qty}`).join('<br>')}
+                    </div>
+                    <div style="margin-top: 12px; font-weight: 600; color: var(--secondary);">
+                        Tổng: ${this.formatPrice(order.total)}
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    renderOrderHistory() {
+        const container = document.getElementById('orderHistoryList');
+        if (!container) return;
+
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+
+        if (orders.length === 0) {
+            container.innerHTML = '<p class="no-orders">Chưa có đơn hàng nào</p>';
+            return;
+        }
+
+        container.innerHTML = orders.slice(0, 10).map(order => `
+            <div class="history-card" onclick="CustomerApp.viewHistoryOrder('${order.id}')">
+                <div class="history-info">
+                    <h4>${order.id}</h4>
+                    <p>${this.formatDateTime(order.createdAt)} • ${order.items.length} món</p>
+                </div>
+                <div class="history-amount">${this.formatPrice(order.total)}</div>
+            </div>
+        `).join('');
+    },
+
+    viewHistoryOrder(orderId) {
+        document.getElementById('trackingOrderId').value = orderId;
+        this.trackOrder();
+        // Scroll to top of tracking section
+        document.getElementById('currentOrderTracking')?.scrollIntoView({ behavior: 'smooth' });
     },
 
     // ========================================
@@ -419,6 +680,11 @@ const CustomerApp = {
 
         document.getElementById(`section-${sectionId}`)?.classList.add('active');
         document.querySelector(`[data-section="${sectionId}"]`)?.classList.add('active');
+
+        // Load order history when visiting tracking section
+        if (sectionId === 'tracking') {
+            this.renderOrderHistory();
+        }
     },
 
     // ========================================
@@ -426,6 +692,16 @@ const CustomerApp = {
     // ========================================
     formatPrice(amount) {
         return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+    },
+
+    formatDateTime(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     },
 
     showToast(message, type = 'success') {
@@ -445,3 +721,4 @@ const CustomerApp = {
 document.addEventListener('DOMContentLoaded', () => CustomerApp.init());
 
 window.CustomerApp = CustomerApp;
+

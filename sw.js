@@ -1,21 +1,24 @@
 // ========================================
 // F&B MASTER - SERVICE WORKER
-// PWA Offline Support
+// PWA Offline Support (v2.0)
 // ========================================
 
-const CACHE_NAME = 'fb-master-v1';
-const STATIC_CACHE = 'fb-static-v1';
-const DYNAMIC_CACHE = 'fb-dynamic-v1';
+const CACHE_VERSION = 'v2.0';
+const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
+const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
+const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
 
 // Files to cache for offline
 const STATIC_FILES = [
     '/',
     '/index.html',
     '/customer.html',
+    '/staff-mobile.html',
     '/css/main.css',
     '/css/components.css',
     '/css/mobile.css',
     '/css/customer.css',
+    '/css/staff-mobile.css',
     '/js/app.js',
     '/js/data.js',
     '/js/utils.js',
@@ -34,6 +37,8 @@ const STATIC_FILES = [
     '/js/sops.js',
     '/js/i18n.js',
     '/js/customer-app.js',
+    '/js/staff-mobile.js',
+    '/js/pwa-utils.js',
     '/logo.jpg',
     '/manifest.json'
 ];
