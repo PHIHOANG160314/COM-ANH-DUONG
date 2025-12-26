@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&B Master - Hệ Thống Quản Lý Nhà Hàng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
+                    <span class="logo-text text-gradient">Ánh Dương</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text" data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="pos">
+                    <span class="nav-icon">🛒</span>
+                    <span class="nav-text" data-i18n="nav_pos">POS - Đơn hàng</span>
+                </a>
+                <a href="#" class="nav-item" data-page="foodcost">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-text" data-i18n="nav_foodcost">Food Cost</span>
+                </a>
+                <a href="#" class="nav-item" data-page="inventory">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text" data-i18n="nav_inventory">Kho hàng</span>
+                </a>
+                <a href="#" class="nav-item" data-page="recipes">
+                    <span class="nav-icon">📖</span>
+                    <span class="nav-text" data-i18n="nav_recipes">Công thức</span>
+                </a>
+                <a href="#" class="nav-item" data-page="menu">
+                    <span class="nav-icon">📜</span>
+                    <span class="nav-text" data-i18n="nav_menu">Menu</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text" data-i18n="nav_orders">Quản lý đơn</span>
+                </a>
+                <a href="#" class="nav-item" data-page="tables">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text" data-i18n="nav_tables">Quản lý bàn</span>
+                </a>
+                <a href="#" class="nav-item" data-page="kitchen">
+                    <span class="nav-icon">👨‍🍳</span>
+                    <span class="nav-text" data-i18n="nav_kitchen">Màn hình bếp</span>
+                </a>
+                <a href="#" class="nav-item" data-page="staff">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text" data-i18n="nav_staff">Nhân viên</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <span class="nav-icon">💎</span>
+                    <span class="nav-text" data-i18n="nav_customers">Khách hàng</span>
+                </a>
+                <a href="#" class="nav-item" data-page="sops">
+                    <span class="nav-icon">✅</span>
+                    <span class="nav-text" data-i18n="nav_sops">SOPs</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-details">
+                        <span class="user-name">Admin</span>
+                        <span class="user-role">F&B Manager</span>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <p>📞 0917 076 061</p>
+                    <p>📍 91 Hùng Vương, Sa Đéc</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p class="header-date" id="currentDate"></p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Tìm kiếm..." id="globalSearch">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <button class="btn-icon" id="themeToggleBtn" title="Chuyển đổi sáng/tối">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                    <button class="btn-icon" id="langToggleBtn" onclick="i18n.toggleLanguage()" title="Change Language">
+                        🌐 EN
+                    </button>
+                    <button class="btn-icon" id="notificationBtn" onclick="KitchenDisplay.showReadyOrders()"
+                        title="Đơn sẵn sàng phục vụ">
+                        <span>🔔</span>
+                        <span class="badge">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Dashboard Page -->
+                <section class="page active" id="page-dashboard">
+                    <div class="kpi-grid">
+                        <div class="kpi-card revenue shimmer">
+                            <div class="kpi-icon icon-bounce">💵</div>
+                            <div class="kpi-content">
+                                <h3 id="totalRevenue">0</h3>
+                                <p>Doanh thu hôm nay</p>
+                                <span class="kpi-trend up">↑ 12%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card orders shimmer">
+                            <div class="kpi-icon icon-bounce">🧾</div>
+                            <div class="kpi-content">
+                                <h3 id="totalOrders">0</h3>
+                                <p>Đơn hàng</p>
+                                <span class="kpi-trend up">↑ 8%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card foodcost shimmer">
+                            <div class="kpi-icon icon-bounce">📉</div>
+                            <div class="kpi-content">
+                                <h3 id="foodCostPercent">0%</h3>
+                                <p>Food Cost</p>
+                                <span class="kpi-trend down">↓ 2%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card inventory shimmer">
+                            <div class="kpi-icon icon-bounce">⚠️</div>
+                            <div class="kpi-content">
+                                <h3 id="lowStockItems">0</h3>
+                                <p>Nguyên liệu sắp hết</p>
+                                <span class="kpi-trend warning">Cần bổ sung</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-section">
+                        <div class="card-header">
+                            <h3>Đơn hàng gần đây</h3>
+                            <a href="#" class="view-all" data-page="pos">Xem tất cả →</a>
+                        </div>
+                        <div class="orders-table-container">
+                            <table class="data-table" id="recentOrdersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Bàn</th>
+                                        <th>Món</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thời gian</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Section -->
+                    <div class="analytics-section">
+                        <div class="analytics-header">
+                            <h2>📊 Thống Kê Doanh Thu</h2>
+                            <div class="analytics-filters">
+                                <div class="quick-filters">
+                                    <button class="quick-filter-btn active" data-filter="today">Hôm nay</button>
+                                    <button class="quick-filter-btn" data-filter="week">Tuần</button>
+                                    <button class="quick-filter-btn" data-filter="month">Tháng</button>
+                                    <button class="quick-filter-btn" data-filter="year">Năm</button>
+                                </div>
+                                <div class="date-picker-group">
+                                    <input type="date" id="analyticsDateFrom">
+                                    <span>→</span>
+                                    <input type="date" id="analyticsDateTo">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary Cards -->
+                        <div class="analytics-summary">
+                            <div class="summary-card">
+                                <div class="summary-icon">💰</div>
+                                <div class="summary-content">
+                                    <span class="summary-label">Tổng doanh thu</span>
+                                    <span class="summary-value" id="analyticsTotalRevenue">0đ</span>
+                                </div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-icon">🧾</div>
+                                <div class="summary-content">
+                                    <span class="summary-label">Số đơn hàng</span>
+                                    <span class="summary-value" id="analyticsOrderCount">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-icon">📈</div>
+                                <div class="summary-content">
+                                    <span class="summary-label">Giá trị TB/đơn</span>
+                                    <span class="summary-value" id="analyticsAvgOrder">0đ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="analytics-charts">
+                            <div class="chart-card">
+                                <div class="card-header">
+                                    <h3>📦 Theo Nhóm Hàng</h3>
+                                </div>
+                                <div id="categoryChartContainer" class="bar-chart-container"></div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="card-header">
+                                    <h3>🏪 Theo Kênh Bán</h3>
+                                </div>
+                                <div id="channelChartContainer" class="pie-chart-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- Top Items Table -->
+                        <div class="analytics-table-section">
+                            <div class="card-header">
+                                <h3>🏆 Top Món Bán Chạy</h3>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Hạng</th>
+                                        <th>Tên món</th>
+                                        <th>SL bán</th>
+                                        <th>Doanh thu</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analyticsItemsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- POS Page -->
+                <section class="page" id="page-pos">
+                    <div class="pos-container">
+                        <div class="pos-menu">
+                            <div class="category-tabs" id="categoryTabs">
+                                <button class="category-tab active" data-category="all">Tất cả</button>
+                                <button class="category-tab" data-category="food">Món chính</button>
+                                <button class="category-tab" data-category="drinks">Đồ uống</button>
+                                <button class="category-tab" data-category="dessert">Tráng miệng</button>
+                            </div>
+                            <div class="menu-grid" id="menuGrid"></div>
+                        </div>
+                        <div class="pos-cart">
+                            <div class="cart-header">
+                                <h3>🛒 Đơn hàng</h3>
+                                <select id="tableSelect">
+                                    <option value="">Chọn bàn</option>
+                                    <option value="1">Bàn 1</option>
+                                    <option value="2">Bàn 2</option>
+                                    <option value="3">Bàn 3</option>
+                                    <option value="4">Bàn 4</option>
+                                    <option value="5">Bàn 5</option>
+                                    <option value="takeaway">Mang đi</option>
+                                </select>
+                            </div>
+                            <div class="cart-items" id="cartItems">
+                                <div class="cart-empty">Chưa có món nào</div>
+                            </div>
+                            <div class="cart-summary">
+                                <div class="cart-row">
+                                    <span>Tạm tính</span>
+                                    <span id="subtotal">0đ</span>
+                                </div>
+                                <div class="cart-row">
+                                    <span>VAT (10%)</span>
+                                    <span id="vat">0đ</span>
+                                </div>
+                                <div class="cart-row total">
+                                    <span>Tổng cộng</span>
+                                    <span id="total">0đ</span>
+                                </div>
+                            </div>
+                            <div class="cart-actions">
+                                <button class="btn-secondary" id="clearCartBtn">Xóa đơn</button>
+                                <button class="btn-primary" id="checkoutBtn">Thanh toán</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Food Cost Page -->
+                <section class="page" id="page-foodcost">
+                    <div class="foodcost-container">
+                        <div class="foodcost-form card">
+                            <h3>Tính giá thành món ăn</h3>
+                            <div class="form-group">
+                                <label>Tên món</label>
+                                <input type="text" id="dishName" placeholder="VD: Bún bò Huế">
+                            </div>
+                            <div class="ingredients-section">
+                                <div class="section-header">
+                                    <h4>Nguyên liệu</h4>
+                                    <button class="btn-icon-sm" id="addIngredientBtn">+ Thêm</button>
+                                </div>
+                                <div id="ingredientsList"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Target Food Cost %</label>
+                                <input type="number" id="targetFoodCost" value="30" min="1" max="100">
+                            </div>
+                            <button class="btn-primary full-width" id="calculateBtn">Tính toán</button>
+                        </div>
+                        <div class="foodcost-result card">
+                            <h3>Kết quả</h3>
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <span class="result-label">Tổng chi phí NVL</span>
+                                    <span class="result-value" id="totalCost">0đ</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Giá bán đề xuất</span>
+                                    <span class="result-value highlight" id="suggestedPrice">0đ</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Food Cost %</span>
+                                    <span class="result-value" id="actualFoodCost">0%</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Lợi nhuận gộp</span>
+                                    <span class="result-value" id="grossProfit">0đ</span>
+                                </div>
+                            </div>
+                            <button class="btn-secondary full-width" id="saveRecipeBtn">Lưu công thức</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Inventory Page -->
+                <section class="page" id="page-inventory">
+                    <div class="inventory-header">
+                        <div class="inventory-actions">
+                            <button class="btn-primary" id="addInventoryBtn">+ Nhập kho</button>
+                            <button class="btn-secondary" id="exportInventoryBtn">Xuất kho</button>
+                        </div>
+                        <div class="inventory-filters">
+                            <select id="inventoryCategory">
+                                <option value="">Tất cả nhóm</option>
+                                <option value="meat">Thịt</option>
+                                <option value="seafood">Hải sản</option>
+                                <option value="vegetables">Rau củ</option>
+                                <option value="spices">Gia vị</option>
+                                <option value="drinks">Đồ uống</option>
+                            </select>
+                            <select id="inventoryStatus">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="low">Sắp hết</option>
+                                <option value="ok">Đủ dùng</option>
+                                <option value="excess">Dư thừa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="inventory-table-container">
+                        <table class="data-table" id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Mã NVL</th>
+                                    <th>Tên nguyên liệu</th>
+                                    <th>Nhóm</th>
+                                    <th>Tồn kho</th>
+                                    <th>Đơn vị</th>
+                                    <th>Định mức tối thiểu</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Recipes Page -->
+                <section class="page" id="page-recipes">
+                    <div class="recipes-header">
+                        <button class="btn-primary" id="addRecipeBtn">+ Thêm công thức</button>
+                        <input type="text" class="search-input" id="recipeSearch" placeholder="Tìm công thức...">
+                    </div>
+                    <div class="recipes-grid" id="recipesGrid"></div>
+                </section>
+
+                <!-- Menu Management Page -->
+                <section class="page" id="page-menu">
+                    <div class="menu-management">
+                        <div class="menu-tabs">
+                            <button class="menu-tab active" data-menu-type="master">📋 Menu Tổng</button>
+                            <button class="menu-tab" data-menu-type="daily">📅 Menu Hôm Nay</button>
+                        </div>
+
+                        <!-- Master Menu -->
+                        <div class="menu-section active" id="masterMenuSection">
+                            <div class="menu-header">
+                                <h3>Menu Tổng - Tất cả món</h3>
+                                <div class="menu-header-actions">
+                                    <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv"
+                                        style="display:none">
+                                    <button class="btn-info" id="importExcelBtn" title="Import từ file Excel">📥
+                                        Import</button>
+                                    <button class="btn-warning" id="exportExcelBtn" title="Xuất menu ra Excel">📤
+                                        Export</button>
+                                    <button class="btn-success" id="addToDailyBtn">➕ Menu Ngày</button>
+                                    <button class="btn-secondary" id="resetMenuBtn"
+                                        title="Khôi phục lại menu mẫu đầy đủ">🔄 Nạp Mẫu</button>
+                                    <button class="btn-primary" id="addMenuItemBtn">+ Thêm món</button>
+                                </div>
+                            </div>
+                            <div class="menu-table-container">
+                                <table class="data-table" id="masterMenuTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Chọn</th>
+                                            <th>Mã</th>
+                                            <th>Tên món</th>
+                                            <th>Loại</th>
+                                            <th>Giá bán</th>
+                                            <th>Giá vốn</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="masterMenuBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Daily Menu -->
+                        <div class="menu-section" id="dailyMenuSection">
+                            <div class="menu-header">
+                                <h3>📅 Menu Hôm Nay - <span id="todayDate"></span></h3>
+                                <div class="menu-header-actions">
+                                    <button class="btn-secondary" id="clearDailyBtn">Xóa tất cả</button>
+                                    <button class="btn-primary" id="copyYesterdayBtn">📋 Copy từ hôm qua</button>
+                                </div>
+                            </div>
+                            <div class="daily-menu-grid" id="dailyMenuGrid"></div>
+                            <div class="daily-menu-summary">
+                                <span>Tổng: <strong id="dailyMenuCount">0</strong> món</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SOPs Page -->
+                <section class="page" id="page-sops">
+                    <div class="sops-container">
+                        <div class="sops-sidebar">
+                            <h3>Danh mục SOP</h3>
+                            <div class="sop-categories">
+                                <button class="sop-cat-btn active" data-sop="opening">🌅 Opening</button>
+                                <button class="sop-cat-btn" data-sop="closing">🌙 Closing</button>
+                                <button class="sop-cat-btn" data-sop="service">🍽️ Service</button>
+                                <button class="sop-cat-btn" data-sop="kitchen">🧑‍🍳 Kitchen</button>
+                                <button class="sop-cat-btn" data-sop="cleaning">🧹 Cleaning</button>
+                                <button class="sop-cat-btn" data-sop="safety">🛡️ Food Safety</button>
+                            </div>
+                        </div>
+                        <div class="sops-content">
+                            <div class="sop-header">
+                                <h2 id="sopTitle">Opening Checklist</h2>
+                                <div class="sop-progress">
+                                    <span id="sopProgress">0/0</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="sopProgressBar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sop-checklist" id="sopChecklist"></div>
+                            <div class="sop-actions">
+                                <button class="btn-secondary" id="resetSopBtn">Reset</button>
+                                <button class="btn-primary" id="completeSopBtn">Hoàn thành</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Order Management Page -->
+                <section class="page" id="page-orders">
+                    <div class="orders-header">
+                        <div class="orders-stats">
+                            <div class="order-stat-card new">
+                                <span class="stat-number" id="ordersNew">0</span>
+                                <span class="stat-label">Đặt hàng</span>
+                            </div>
+                            <div class="order-stat-card received">
+                                <span class="stat-number" id="ordersReceived">0</span>
+                                <span class="stat-label">Nhận đơn</span>
+                            </div>
+                            <div class="order-stat-card delivering">
+                                <span class="stat-number" id="ordersDelivering">0</span>
+                                <span class="stat-label">Đang giao</span>
+                            </div>
+                            <div class="order-stat-card delivered">
+                                <span class="stat-number" id="ordersDelivered">0</span>
+                                <span class="stat-label">Đã giao</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="addOrderBtn">+ Tạo đơn mới</button>
+                    </div>
+                    <div class="orders-kanban">
+                        <div class="kanban-column" data-status="new">
+                            <div class="kanban-header new">
+                                <span class="kanban-icon">📝</span>
+                                <h3>Đặt hàng</h3>
+                                <span class="kanban-count" id="kanbanNew">0</span>
+                            </div>
+                            <div class="kanban-cards" id="kanbanCardsNew"></div>
+                        </div>
+                        <div class="kanban-column" data-status="received">
+                            <div class="kanban-header received">
+                                <span class="kanban-icon">✅</span>
+                                <h3>Nhận đơn</h3>
+                                <span class="kanban-count" id="kanbanReceived">0</span>
+                            </div>
+                            <div class="kanban-cards" id="kanbanCardsReceived"></div>
+                        </div>
+                        <div class="kanban-column" data-status="delivering">
+                            <div class="kanban-header delivering">
+                                <span class="kanban-icon">🚚</span>
+                                <h3>Đang giao</h3>
+                                <span class="kanban-count" id="kanbanDelivering">0</span>
+                            </div>
+                            <div class="kanban-cards" id="kanbanCardsDelivering"></div>
+                        </div>
+                        <div class="kanban-column" data-status="delivered">
+                            <div class="kanban-header delivered">
+                                <span class="kanban-icon">🎉</span>
+                                <h3>Đã giao</h3>
+                                <span class="kanban-count" id="kanbanDelivered">0</span>
+                            </div>
+                            <div class="kanban-cards" id="kanbanCardsDelivered"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Table Management Page -->
+                <section class="page" id="page-tables">
+                    <div class="tables-container">
+                        <div class="tables-header">
+                            <h2>🍽️ Sơ Đồ Bàn</h2>
+                            <div id="tableStats" class="table-stats"></div>
+                            <button class="btn-primary" id="addTableBtn">+ Thêm bàn</button>
+                        </div>
+                        <div class="tables-grid" id="tablesGrid"></div>
+                    </div>
+                </section>
+
+                <!-- Kitchen Display Page -->
+                <section class="page" id="page-kitchen">
+                    <div class="kitchen-container">
+                        <div class="kitchen-header">
+                            <h2>👨‍🍳 Màn Hình Bếp</h2>
+                            <div class="kitchen-stats">
+                                <span>Đơn đang chờ: <strong id="kitchenOrderCount">0</strong></span>
+                            </div>
+                        </div>
+                        <div class="kitchen-orders-grid" id="kitchenOrdersGrid"></div>
+                    </div>
+                </section>
+
+                <!-- Staff Management Page -->
+                <section class="page" id="page-staff">
+                    <div class="staff-container">
+                        <div class="staff-header">
+                            <h2>👥 Quản Lý Nhân Viên</h2>
+                            <div id="staffStats" class="staff-stats"></div>
+                            <div class="staff-actions">
+                                <button class="btn-info" id="payrollBtn" onclick="StaffManagement.showPayrollModal()">💰
+                                    Bảng lương</button>
+                                <button class="btn-primary" id="addStaffBtn">+ Thêm nhân viên</button>
+                            </div>
+                        </div>
+                        <div class="staff-table-container">
+                            <table class="data-table" id="staffTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Họ tên</th>
+                                        <th>Chức vụ</th>
+                                        <th>SĐT</th>
+                                        <th>Ca làm việc</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Attendance Section -->
+                        <div class="attendance-section" style="margin-top: 2rem;">
+                            <h3>📅 Chấm Công Hôm Nay</h3>
+                            <div class="staff-table-container">
+                                <table class="data-table" id="attendanceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nhân viên</th>
+                                            <th>Check-in</th>
+                                            <th>Check-out</th>
+                                            <th>Giờ làm</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customer Loyalty Page -->
+                <section class="page" id="page-customers">
+                    <div class="customers-container">
+                        <div class="customers-header">
+                            <h2>💎 Khách Hàng Thân Thiết</h2>
+                            <div id="customerStats" class="customer-stats"></div>
+                            <div class="customer-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                <button class="btn-success" onclick="CustomerLoyalty.showStoreScanModal()">📲 Quét QR
+                                    tích điểm</button>
+                                <button class="btn-warning" onclick="CustomerLoyalty.showBulkPromotionModal()">📢 Gửi
+                                    khuyến mãi</button>
+                                <button class="btn-primary" id="addCustomerBtn">+ Thêm khách hàng</button>
+                            </div>
+                        </div>
+                        <div class="customers-table-container">
+                            <table class="data-table" id="customersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Họ tên</th>
+                                        <th>SĐT</th>
+                                        <th>Hạng</th>
+                                        <th>Điểm</th>
+                                        <th>Tổng chi tiêu</th>
+                                        <th>Số lần ghé</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/pos.js"></script>
+    <script src="js/foodcost.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/recipes.js"></script>
+    <script src="js/sops.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/orders.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/tables.js"></script>
+    <script src="js/kitchen.js"></script>
+    <script src="js/staff.js"></script>
+    <script src="js/customers.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
