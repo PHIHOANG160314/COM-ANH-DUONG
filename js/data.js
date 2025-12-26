@@ -351,8 +351,129 @@ const contactInfo = {
     address: "91 Hùng Vương, Phường Sa Đéc, Đồng Tháp"
 };
 
+// ========================================
+// 100 SAMPLE CUSTOMERS FOR PROMOTIONS
+// ========================================
+const sampleCustomers = [
+    // VIP DIAMOND (10 customers)
+    { id: "C001", name: "Nguyễn Văn An", phone: "0901234001", email: "an.nguyen@email.com", tier: "Diamond", points: 5200, totalSpent: 12500000, visits: 85, qrCode: "MEMBER-0901234001", createdAt: "2024-01-15" },
+    { id: "C002", name: "Trần Thị Bích", phone: "0901234002", email: "bich.tran@email.com", tier: "Diamond", points: 4800, totalSpent: 11200000, visits: 78, qrCode: "MEMBER-0901234002", createdAt: "2024-01-20" },
+    { id: "C003", name: "Lê Hoàng Cường", phone: "0901234003", email: "cuong.le@email.com", tier: "Diamond", points: 4500, totalSpent: 10800000, visits: 72, qrCode: "MEMBER-0901234003", createdAt: "2024-02-01" },
+    { id: "C004", name: "Phạm Thị Dung", phone: "0901234004", email: "dung.pham@email.com", tier: "Diamond", points: 4200, totalSpent: 9500000, visits: 68, qrCode: "MEMBER-0901234004", createdAt: "2024-02-10" },
+    { id: "C005", name: "Hoàng Văn Em", phone: "0901234005", email: "em.hoang@email.com", tier: "Diamond", points: 3900, totalSpent: 8700000, visits: 65, qrCode: "MEMBER-0901234005", createdAt: "2024-02-15" },
+    { id: "C006", name: "Võ Thị Phượng", phone: "0901234006", email: "phuong.vo@email.com", tier: "Diamond", points: 3800, totalSpent: 8200000, visits: 62, qrCode: "MEMBER-0901234006", createdAt: "2024-02-20" },
+    { id: "C007", name: "Đặng Văn Giang", phone: "0901234007", email: "giang.dang@email.com", tier: "Diamond", points: 3600, totalSpent: 7800000, visits: 58, qrCode: "MEMBER-0901234007", createdAt: "2024-03-01" },
+    { id: "C008", name: "Bùi Thị Hạnh", phone: "0901234008", email: "hanh.bui@email.com", tier: "Diamond", points: 3500, totalSpent: 7500000, visits: 55, qrCode: "MEMBER-0901234008", createdAt: "2024-03-05" },
+    { id: "C009", name: "Ngô Văn Hùng", phone: "0901234009", email: "hung.ngo@email.com", tier: "Diamond", points: 3400, totalSpent: 7200000, visits: 52, qrCode: "MEMBER-0901234009", createdAt: "2024-03-10" },
+    { id: "C010", name: "Lý Thị Kiều", phone: "0901234010", email: "kieu.ly@email.com", tier: "Diamond", points: 3200, totalSpent: 6800000, visits: 50, qrCode: "MEMBER-0901234010", createdAt: "2024-03-15" },
+
+    // VIP GOLD (20 customers)
+    { id: "C011", name: "Trương Văn Long", phone: "0912345011", email: "long.truong@email.com", tier: "Gold", points: 1800, totalSpent: 3200000, visits: 35, qrCode: "MEMBER-0912345011", createdAt: "2024-03-20" },
+    { id: "C012", name: "Mai Thị Ngọc", phone: "0912345012", email: "ngoc.mai@email.com", tier: "Gold", points: 1650, totalSpent: 2900000, visits: 32, qrCode: "MEMBER-0912345012", createdAt: "2024-03-25" },
+    { id: "C013", name: "Phan Văn Phú", phone: "0912345013", email: "phu.phan@email.com", tier: "Gold", points: 1500, totalSpent: 2600000, visits: 30, qrCode: "MEMBER-0912345013", createdAt: "2024-04-01" },
+    { id: "C014", name: "Huỳnh Thị Quỳnh", phone: "0912345014", email: "quynh.huynh@email.com", tier: "Gold", points: 1420, totalSpent: 2450000, visits: 28, qrCode: "MEMBER-0912345014", createdAt: "2024-04-05" },
+    { id: "C015", name: "Vũ Văn Sang", phone: "0912345015", email: "sang.vu@email.com", tier: "Gold", points: 1350, totalSpent: 2300000, visits: 26, qrCode: "MEMBER-0912345015", createdAt: "2024-04-10" },
+    { id: "C016", name: "Đỗ Thị Tâm", phone: "0912345016", email: "tam.do@email.com", tier: "Gold", points: 1280, totalSpent: 2150000, visits: 25, qrCode: "MEMBER-0912345016", createdAt: "2024-04-15" },
+    { id: "C017", name: "Lương Văn Uy", phone: "0912345017", email: "uy.luong@email.com", tier: "Gold", points: 1200, totalSpent: 2000000, visits: 24, qrCode: "MEMBER-0912345017", createdAt: "2024-04-20" },
+    { id: "C018", name: "Đinh Thị Vân", phone: "0912345018", email: "van.dinh@email.com", tier: "Gold", points: 1150, totalSpent: 1900000, visits: 23, qrCode: "MEMBER-0912345018", createdAt: "2024-04-25" },
+    { id: "C019", name: "Cao Văn Xuân", phone: "0912345019", email: "xuan.cao@email.com", tier: "Gold", points: 1100, totalSpent: 1800000, visits: 22, qrCode: "MEMBER-0912345019", createdAt: "2024-05-01" },
+    { id: "C020", name: "Tô Thị Yến", phone: "0912345020", email: "yen.to@email.com", tier: "Gold", points: 1050, totalSpent: 1700000, visits: 21, qrCode: "MEMBER-0912345020", createdAt: "2024-05-05" },
+    { id: "C021", name: "Châu Văn Bảo", phone: "0912345021", email: "bao.chau@email.com", tier: "Gold", points: 1020, totalSpent: 1650000, visits: 20, qrCode: "MEMBER-0912345021", createdAt: "2024-05-10" },
+    { id: "C022", name: "Hồ Thị Chi", phone: "0912345022", email: "chi.ho@email.com", tier: "Gold", points: 980, totalSpent: 1580000, visits: 19, qrCode: "MEMBER-0912345022", createdAt: "2024-05-15" },
+    { id: "C023", name: "Kiều Văn Đạt", phone: "0912345023", email: "dat.kieu@email.com", tier: "Gold", points: 950, totalSpent: 1520000, visits: 18, qrCode: "MEMBER-0912345023", createdAt: "2024-05-20" },
+    { id: "C024", name: "Nguyễn Thị Gấm", phone: "0912345024", email: "gam.nguyen@email.com", tier: "Gold", points: 920, totalSpent: 1480000, visits: 17, qrCode: "MEMBER-0912345024", createdAt: "2024-05-25" },
+    { id: "C025", name: "Trần Văn Hiếu", phone: "0912345025", email: "hieu.tran@email.com", tier: "Gold", points: 890, totalSpent: 1420000, visits: 16, qrCode: "MEMBER-0912345025", createdAt: "2024-06-01" },
+    { id: "C026", name: "Lê Thị Khoa", phone: "0912345026", email: "khoa.le@email.com", tier: "Gold", points: 860, totalSpent: 1380000, visits: 16, qrCode: "MEMBER-0912345026", createdAt: "2024-06-05" },
+    { id: "C027", name: "Phạm Văn Lộc", phone: "0912345027", email: "loc.pham@email.com", tier: "Gold", points: 830, totalSpent: 1340000, visits: 15, qrCode: "MEMBER-0912345027", createdAt: "2024-06-10" },
+    { id: "C028", name: "Hoàng Thị Minh", phone: "0912345028", email: "minh.hoang@email.com", tier: "Gold", points: 810, totalSpent: 1300000, visits: 15, qrCode: "MEMBER-0912345028", createdAt: "2024-06-15" },
+    { id: "C029", name: "Võ Văn Nam", phone: "0912345029", email: "nam.vo@email.com", tier: "Gold", points: 780, totalSpent: 1250000, visits: 14, qrCode: "MEMBER-0912345029", createdAt: "2024-06-20" },
+    { id: "C030", name: "Đặng Thị Oanh", phone: "0912345030", email: "oanh.dang@email.com", tier: "Gold", points: 750, totalSpent: 1200000, visits: 14, qrCode: "MEMBER-0912345030", createdAt: "2024-06-25" },
+
+    // SILVER (30 customers)
+    { id: "C031", name: "Bùi Văn Phong", phone: "0923456031", email: "phong.bui@email.com", tier: "Silver", points: 420, totalSpent: 680000, visits: 10, qrCode: "MEMBER-0923456031", createdAt: "2024-07-01" },
+    { id: "C032", name: "Ngô Thị Quế", phone: "0923456032", email: "que.ngo@email.com", tier: "Silver", points: 400, totalSpent: 650000, visits: 9, qrCode: "MEMBER-0923456032", createdAt: "2024-07-05" },
+    { id: "C033", name: "Lý Văn Rạng", phone: "0923456033", email: "rang.ly@email.com", tier: "Silver", points: 380, totalSpent: 620000, visits: 9, qrCode: "MEMBER-0923456033", createdAt: "2024-07-10" },
+    { id: "C034", name: "Trương Thị Sen", phone: "0923456034", email: "sen.truong@email.com", tier: "Silver", points: 360, totalSpent: 590000, visits: 8, qrCode: "MEMBER-0923456034", createdAt: "2024-07-15" },
+    { id: "C035", name: "Mai Văn Tài", phone: "0923456035", email: "tai.mai@email.com", tier: "Silver", points: 340, totalSpent: 560000, visits: 8, qrCode: "MEMBER-0923456035", createdAt: "2024-07-20" },
+    { id: "C036", name: "Phan Thị Uyên", phone: "0923456036", email: "uyen.phan@email.com", tier: "Silver", points: 320, totalSpent: 530000, visits: 7, qrCode: "MEMBER-0923456036", createdAt: "2024-07-25" },
+    { id: "C037", name: "Huỳnh Văn Vinh", phone: "0923456037", email: "vinh.huynh@email.com", tier: "Silver", points: 300, totalSpent: 500000, visits: 7, qrCode: "MEMBER-0923456037", createdAt: "2024-08-01" },
+    { id: "C038", name: "Vũ Thị Xuyến", phone: "0923456038", email: "xuyen.vu@email.com", tier: "Silver", points: 280, totalSpent: 470000, visits: 6, qrCode: "MEMBER-0923456038", createdAt: "2024-08-05" },
+    { id: "C039", name: "Đỗ Văn Yên", phone: "0923456039", email: "yen.do@email.com", tier: "Silver", points: 265, totalSpent: 445000, visits: 6, qrCode: "MEMBER-0923456039", createdAt: "2024-08-10" },
+    { id: "C040", name: "Lương Thị An", phone: "0923456040", email: "an.luong@email.com", tier: "Silver", points: 250, totalSpent: 420000, visits: 6, qrCode: "MEMBER-0923456040", createdAt: "2024-08-15" },
+    { id: "C041", name: "Đinh Văn Bình", phone: "0923456041", email: "binh.dinh@email.com", tier: "Silver", points: 240, totalSpent: 400000, visits: 5, qrCode: "MEMBER-0923456041", createdAt: "2024-08-20" },
+    { id: "C042", name: "Cao Thị Châu", phone: "0923456042", email: "chau.cao@email.com", tier: "Silver", points: 230, totalSpent: 385000, visits: 5, qrCode: "MEMBER-0923456042", createdAt: "2024-08-25" },
+    { id: "C043", name: "Tô Văn Dũng", phone: "0923456043", email: "dung.to@email.com", tier: "Silver", points: 220, totalSpent: 370000, visits: 5, qrCode: "MEMBER-0923456043", createdAt: "2024-09-01" },
+    { id: "C044", name: "Châu Thị Em", phone: "0923456044", email: "em.chau@email.com", tier: "Silver", points: 210, totalSpent: 355000, visits: 5, qrCode: "MEMBER-0923456044", createdAt: "2024-09-05" },
+    { id: "C045", name: "Hồ Văn Phúc", phone: "0923456045", email: "phuc.ho@email.com", tier: "Silver", points: 200, totalSpent: 340000, visits: 4, qrCode: "MEMBER-0923456045", createdAt: "2024-09-10" },
+    { id: "C046", name: "Kiều Thị Giang", phone: "0923456046", email: "giang.kieu@email.com", tier: "Silver", points: 190, totalSpent: 325000, visits: 4, qrCode: "MEMBER-0923456046", createdAt: "2024-09-15" },
+    { id: "C047", name: "Nguyễn Văn Hải", phone: "0923456047", email: "hai.nguyen@email.com", tier: "Silver", points: 180, totalSpent: 310000, visits: 4, qrCode: "MEMBER-0923456047", createdAt: "2024-09-20" },
+    { id: "C048", name: "Trần Thị Ivy", phone: "0923456048", email: "ivy.tran@email.com", tier: "Silver", points: 170, totalSpent: 295000, visits: 4, qrCode: "MEMBER-0923456048", createdAt: "2024-09-25" },
+    { id: "C049", name: "Lê Văn Khang", phone: "0923456049", email: "khang.le@email.com", tier: "Silver", points: 165, totalSpent: 280000, visits: 4, qrCode: "MEMBER-0923456049", createdAt: "2024-10-01" },
+    { id: "C050", name: "Phạm Thị Lan", phone: "0923456050", email: "lan.pham@email.com", tier: "Silver", points: 155, totalSpent: 265000, visits: 3, qrCode: "MEMBER-0923456050", createdAt: "2024-10-05" },
+    { id: "C051", name: "Hoàng Văn Mạnh", phone: "0923456051", email: "manh.hoang@email.com", tier: "Silver", points: 150, totalSpent: 255000, visits: 3, qrCode: "MEMBER-0923456051", createdAt: "2024-10-10" },
+    { id: "C052", name: "Võ Thị Như", phone: "0923456052", email: "nhu.vo@email.com", tier: "Silver", points: 145, totalSpent: 245000, visits: 3, qrCode: "MEMBER-0923456052", createdAt: "2024-10-15" },
+    { id: "C053", name: "Đặng Văn Phát", phone: "0923456053", email: "phat.dang@email.com", tier: "Silver", points: 140, totalSpent: 235000, visits: 3, qrCode: "MEMBER-0923456053", createdAt: "2024-10-20" },
+    { id: "C054", name: "Bùi Thị Quyên", phone: "0923456054", email: "quyen.bui@email.com", tier: "Silver", points: 135, totalSpent: 225000, visits: 3, qrCode: "MEMBER-0923456054", createdAt: "2024-10-25" },
+    { id: "C055", name: "Ngô Văn Sơn", phone: "0923456055", email: "son.ngo@email.com", tier: "Silver", points: 130, totalSpent: 220000, visits: 3, qrCode: "MEMBER-0923456055", createdAt: "2024-11-01" },
+    { id: "C056", name: "Lý Thị Thảo", phone: "0923456056", email: "thao.ly@email.com", tier: "Silver", points: 125, totalSpent: 210000, visits: 3, qrCode: "MEMBER-0923456056", createdAt: "2024-11-05" },
+    { id: "C057", name: "Trương Văn Út", phone: "0923456057", email: "ut.truong@email.com", tier: "Silver", points: 120, totalSpent: 200000, visits: 3, qrCode: "MEMBER-0923456057", createdAt: "2024-11-10" },
+    { id: "C058", name: "Mai Thị Vĩnh", phone: "0923456058", email: "vinh.mai@email.com", tier: "Silver", points: 115, totalSpent: 195000, visits: 2, qrCode: "MEMBER-0923456058", createdAt: "2024-11-15" },
+    { id: "C059", name: "Phan Văn Xanh", phone: "0923456059", email: "xanh.phan@email.com", tier: "Silver", points: 110, totalSpent: 185000, visits: 2, qrCode: "MEMBER-0923456059", createdAt: "2024-11-20" },
+    { id: "C060", name: "Huỳnh Thị Yến", phone: "0923456060", email: "yen.huynh@email.com", tier: "Silver", points: 105, totalSpent: 175000, visits: 2, qrCode: "MEMBER-0923456060", createdAt: "2024-11-25" },
+
+    // BRONZE (40 customers - new members)
+    { id: "C061", name: "Vũ Văn Anh", phone: "0934567061", email: "anh.vu@email.com", tier: "Bronze", points: 95, totalSpent: 160000, visits: 2, qrCode: "MEMBER-0934567061", createdAt: "2024-12-01" },
+    { id: "C062", name: "Đỗ Thị Bé", phone: "0934567062", email: "be.do@email.com", tier: "Bronze", points: 88, totalSpent: 148000, visits: 2, qrCode: "MEMBER-0934567062", createdAt: "2024-12-02" },
+    { id: "C063", name: "Lương Văn Cảnh", phone: "0934567063", email: "canh.luong@email.com", tier: "Bronze", points: 82, totalSpent: 138000, visits: 2, qrCode: "MEMBER-0934567063", createdAt: "2024-12-03" },
+    { id: "C064", name: "Đinh Thị Diệu", phone: "0934567064", email: "dieu.dinh@email.com", tier: "Bronze", points: 75, totalSpent: 126000, visits: 2, qrCode: "MEMBER-0934567064", createdAt: "2024-12-04" },
+    { id: "C065", name: "Cao Văn Được", phone: "0934567065", email: "duoc.cao@email.com", tier: "Bronze", points: 70, totalSpent: 118000, visits: 1, qrCode: "MEMBER-0934567065", createdAt: "2024-12-05" },
+    { id: "C066", name: "Tô Thị Hà", phone: "0934567066", email: "ha.to@email.com", tier: "Bronze", points: 65, totalSpent: 110000, visits: 1, qrCode: "MEMBER-0934567066", createdAt: "2024-12-06" },
+    { id: "C067", name: "Châu Văn Hòa", phone: "0934567067", email: "hoa.chau@email.com", tier: "Bronze", points: 60, totalSpent: 100000, visits: 1, qrCode: "MEMBER-0934567067", createdAt: "2024-12-07" },
+    { id: "C068", name: "Hồ Thị Hương", phone: "0934567068", email: "huong.ho@email.com", tier: "Bronze", points: 55, totalSpent: 92000, visits: 1, qrCode: "MEMBER-0934567068", createdAt: "2024-12-08" },
+    { id: "C069", name: "Kiều Văn Khánh", phone: "0934567069", email: "khanh.kieu@email.com", tier: "Bronze", points: 50, totalSpent: 85000, visits: 1, qrCode: "MEMBER-0934567069", createdAt: "2024-12-09" },
+    { id: "C070", name: "Nguyễn Thị Liên", phone: "0934567070", email: "lien.nguyen@email.com", tier: "Bronze", points: 48, totalSpent: 80000, visits: 1, qrCode: "MEMBER-0934567070", createdAt: "2024-12-10" },
+    { id: "C071", name: "Trần Văn Minh", phone: "0934567071", email: "minh.tran@email.com", tier: "Bronze", points: 45, totalSpent: 75000, visits: 1, qrCode: "MEMBER-0934567071", createdAt: "2024-12-11" },
+    { id: "C072", name: "Lê Thị Na", phone: "0934567072", email: "na.le@email.com", tier: "Bronze", points: 42, totalSpent: 70000, visits: 1, qrCode: "MEMBER-0934567072", createdAt: "2024-12-12" },
+    { id: "C073", name: "Phạm Văn Ơn", phone: "0934567073", email: "on.pham@email.com", tier: "Bronze", points: 40, totalSpent: 67000, visits: 1, qrCode: "MEMBER-0934567073", createdAt: "2024-12-13" },
+    { id: "C074", name: "Hoàng Thị Phương", phone: "0934567074", email: "phuong.hoang@email.com", tier: "Bronze", points: 38, totalSpent: 64000, visits: 1, qrCode: "MEMBER-0934567074", createdAt: "2024-12-14" },
+    { id: "C075", name: "Võ Văn Quang", phone: "0934567075", email: "quang.vo@email.com", tier: "Bronze", points: 35, totalSpent: 59000, visits: 1, qrCode: "MEMBER-0934567075", createdAt: "2024-12-15" },
+    { id: "C076", name: "Đặng Thị Rồng", phone: "0934567076", email: "rong.dang@email.com", tier: "Bronze", points: 32, totalSpent: 54000, visits: 1, qrCode: "MEMBER-0934567076", createdAt: "2024-12-16" },
+    { id: "C077", name: "Bùi Văn Sáng", phone: "0934567077", email: "sang.bui@email.com", tier: "Bronze", points: 30, totalSpent: 50000, visits: 1, qrCode: "MEMBER-0934567077", createdAt: "2024-12-17" },
+    { id: "C078", name: "Ngô Thị Tú", phone: "0934567078", email: "tu.ngo@email.com", tier: "Bronze", points: 28, totalSpent: 47000, visits: 1, qrCode: "MEMBER-0934567078", createdAt: "2024-12-18" },
+    { id: "C079", name: "Lý Văn Uy", phone: "0934567079", email: "uy2.ly@email.com", tier: "Bronze", points: 25, totalSpent: 42000, visits: 1, qrCode: "MEMBER-0934567079", createdAt: "2024-12-19" },
+    { id: "C080", name: "Trương Thị Vui", phone: "0934567080", email: "vui.truong@email.com", tier: "Bronze", points: 22, totalSpent: 37000, visits: 1, qrCode: "MEMBER-0934567080", createdAt: "2024-12-20" },
+    { id: "C081", name: "Mai Văn Xuân", phone: "0934567081", email: "xuan.mai@email.com", tier: "Bronze", points: 20, totalSpent: 34000, visits: 1, qrCode: "MEMBER-0934567081", createdAt: "2024-12-21" },
+    { id: "C082", name: "Phan Thị Ý", phone: "0934567082", email: "y.phan@email.com", tier: "Bronze", points: 18, totalSpent: 30000, visits: 1, qrCode: "MEMBER-0934567082", createdAt: "2024-12-22" },
+    { id: "C083", name: "Huỳnh Văn Bằng", phone: "0934567083", email: "bang.huynh@email.com", tier: "Bronze", points: 15, totalSpent: 25000, visits: 1, qrCode: "MEMBER-0934567083", createdAt: "2024-12-23" },
+    { id: "C084", name: "Vũ Thị Cẩm", phone: "0934567084", email: "cam.vu@email.com", tier: "Bronze", points: 12, totalSpent: 20000, visits: 1, qrCode: "MEMBER-0934567084", createdAt: "2024-12-24" },
+    { id: "C085", name: "Đỗ Văn Đức", phone: "0934567085", email: "duc.do@email.com", tier: "Bronze", points: 10, totalSpent: 17000, visits: 1, qrCode: "MEMBER-0934567085", createdAt: "2024-12-25" },
+    { id: "C086", name: "Lương Thị Én", phone: "0934567086", email: "en.luong@email.com", tier: "Bronze", points: 8, totalSpent: 13000, visits: 1, qrCode: "MEMBER-0934567086", createdAt: "2024-12-25" },
+    { id: "C087", name: "Đinh Văn Gấu", phone: "0934567087", email: "gau.dinh@email.com", tier: "Bronze", points: 5, totalSpent: 8500, visits: 1, qrCode: "MEMBER-0934567087", createdAt: "2024-12-26" },
+    { id: "C088", name: "Cao Thị Hiền", phone: "0934567088", email: "hien.cao@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567088", createdAt: "2024-12-26" },
+    { id: "C089", name: "Tô Văn Khải", phone: "0934567089", email: "khai.to@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567089", createdAt: "2024-12-26" },
+    { id: "C090", name: "Châu Thị Lài", phone: "0934567090", email: "lai.chau@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567090", createdAt: "2024-12-26" },
+    { id: "C091", name: "Hồ Văn Mây", phone: "0934567091", email: "may.ho@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567091", createdAt: "2024-12-26" },
+    { id: "C092", name: "Kiều Thị Nở", phone: "0934567092", email: "no.kieu@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567092", createdAt: "2024-12-26" },
+    { id: "C093", name: "Nguyễn Văn Phúc", phone: "0934567093", email: "phuc.nguyen@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567093", createdAt: "2024-12-26" },
+    { id: "C094", name: "Trần Thị Qua", phone: "0934567094", email: "qua.tran@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567094", createdAt: "2024-12-26" },
+    { id: "C095", name: "Lê Văn Rất", phone: "0934567095", email: "rat.le@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567095", createdAt: "2024-12-26" },
+    { id: "C096", name: "Phạm Thị Sương", phone: "0934567096", email: "suong.pham@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567096", createdAt: "2024-12-26" },
+    { id: "C097", name: "Hoàng Văn Tiến", phone: "0934567097", email: "tien.hoang@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567097", createdAt: "2024-12-26" },
+    { id: "C098", name: "Võ Thị Út", phone: "0934567098", email: "ut.vo@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567098", createdAt: "2024-12-26" },
+    { id: "C099", name: "Đặng Văn Vĩ", phone: "0934567099", email: "vi.dang@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567099", createdAt: "2024-12-26" },
+    { id: "C100", name: "Bùi Thị Xuân", phone: "0934567100", email: "xuan.bui@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567100", createdAt: "2024-12-26" }
+];
+
+// Load sample customers to localStorage if not exists
+if (!localStorage.getItem('fb_customers') || JSON.parse(localStorage.getItem('fb_customers')).length < 100) {
+    localStorage.setItem('fb_customers', JSON.stringify(sampleCustomers));
+    console.log('✅ Loaded 100 sample customers for promotions!');
+}
+
 // Ensure global access
 window.menuItems = menuItems;
 window.inventoryData = inventoryData;
 window.recipesData = recipesData;
 window.sopsData = sopsData;
+window.sampleCustomers = sampleCustomers;
+
