@@ -87,20 +87,22 @@ const CustomerApp = {
             return;
         }
 
-        grid.innerHTML = items.map(item => `
-            <div class="menu-card" data-id="${item.id}" onclick="CustomerApp.showItemDetail(${item.id})">
+        grid.innerHTML = items.map((item, index) => `
+            <div class="menu-card animate-fadeInUp hover-lift" data-id="${item.id}" 
+                 style="animation-delay: ${index * 0.05}s; opacity: 0;"
+                 onclick="CustomerApp.showItemDetail(${item.id})">
                 <div class="menu-card-image">${item.icon || '🍽️'}</div>
                 <div class="menu-card-body">
                     <div class="menu-card-name">${item.name}</div>
                     <div class="menu-card-price">${this.formatPrice(item.price)}</div>
-                    <button class="menu-card-add" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
+                    <button class="menu-card-add btn-press hover-glow" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
                         + Thêm vào giỏ
                     </button>
                 </div>
             </div>
         `).join('');
 
-        console.log('✅ Rendered', items.length, 'menu cards');
+        console.log('✅ Rendered', items.length, 'menu cards with animations');
     },
 
     showItemDetail(itemId) {
@@ -294,9 +296,14 @@ const CustomerApp = {
             : promo.discount;
 
         statusDiv.innerHTML = `✅ ${promo.description} (-${this.formatPrice(discountAmount)})`;
-        statusDiv.className = 'promo-status success';
+        statusDiv.className = 'promo-status success animate-bounce';
         this.showToast(`🎉 Áp dụng mã ${code} thành công!`);
         this.updateOrderSummary();
+
+        // Celebration effect!
+        if (typeof Confetti !== 'undefined') {
+            Confetti.promoSuccess(statusDiv);
+        }
     },
 
     // ========================================
@@ -415,8 +422,15 @@ const CustomerApp = {
         this.showToast('🎉 Đặt hàng thành công!');
         this.renderOrderHistory();
 
-        // Show confirmation
-        alert(`✅ Đặt hàng thành công!\n\nMã đơn: ${order.id}\nTổng tiền: ${this.formatPrice(order.total)}\nThời gian dự kiến: ${order.estimatedTime}\n\nNhà hàng sẽ liên hệ xác nhận ngay!`);
+        // Celebration confetti!
+        if (typeof Confetti !== 'undefined') {
+            Confetti.orderSuccess();
+        }
+
+        // Show confirmation with animation
+        setTimeout(() => {
+            alert(`✅ Đặt hàng thành công!\n\nMã đơn: ${order.id}\nTổng tiền: ${this.formatPrice(order.total)}\nThời gian dự kiến: ${order.estimatedTime}\n\nNhà hàng sẽ liên hệ xác nhận ngay!`);
+        }, 500);
 
         // Navigate to tracking
         this.showSection('tracking');

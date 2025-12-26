@@ -1,9 +1,9 @@
 // ========================================
 // F&B MASTER - SERVICE WORKER
-// PWA Offline Support (v2.0)
+// PWA Offline Support (v2.1 - WOW Effects)
 // ========================================
 
-const CACHE_VERSION = 'v2.0';
+const CACHE_VERSION = 'v2.1';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
@@ -19,6 +19,7 @@ const STATIC_FILES = [
     '/css/mobile.css',
     '/css/customer.css',
     '/css/staff-mobile.css',
+    '/css/animations.css',
     '/js/app.js',
     '/js/data.js',
     '/js/utils.js',
@@ -39,6 +40,7 @@ const STATIC_FILES = [
     '/js/customer-app.js',
     '/js/staff-mobile.js',
     '/js/pwa-utils.js',
+    '/js/confetti.js',
     '/logo.jpg',
     '/manifest.json'
 ];
