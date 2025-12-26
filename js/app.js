@@ -30,18 +30,63 @@ const App = {
             });
         });
 
+        // Mobile bottom navigation
+        document.querySelectorAll('.mobile-nav-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = e.currentTarget.dataset.page;
+                if (page) this.navigateTo(page);
+            });
+        });
+
         // Sidebar toggle for mobile
         const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', () => {
-                document.getElementById('sidebar').classList.toggle('active');
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+        }
+
+        // Close sidebar when clicking overlay
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+
+        // Mobile POS cart expand/collapse
+        this.setupMobileCart();
+    },
+
+    setupMobileCart() {
+        const cartHeader = document.querySelector('.cart-header');
+        const posCart = document.querySelector('.pos-cart');
+
+        if (cartHeader && posCart) {
+            cartHeader.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    posCart.classList.toggle('expanded');
+                }
             });
         }
     },
 
     navigateTo(page) {
-        // Update nav items
+        // Update sidebar nav items
         document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.page === page) {
+                item.classList.add('active');
+            }
+        });
+
+        // Update mobile nav items
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
             item.classList.remove('active');
             if (item.dataset.page === page) {
                 item.classList.add('active');

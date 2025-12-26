@@ -9,6 +9,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/mobile.css">
 </head>
 
 <body>
@@ -685,6 +686,35 @@
 
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-items">
+            <a href="#" class="mobile-nav-item active" data-page="dashboard">
+                <span class="mobile-nav-icon">📊</span>
+                <span class="mobile-nav-label">Dashboard</span>
+            </a>
+            <a href="#" class="mobile-nav-item" data-page="pos">
+                <span class="mobile-nav-icon">🛒</span>
+                <span class="mobile-nav-label">POS</span>
+            </a>
+            <a href="#" class="mobile-nav-item" data-page="orders">
+                <span class="mobile-nav-icon">📋</span>
+                <span class="mobile-nav-label">Orders</span>
+            </a>
+            <a href="#" class="mobile-nav-item" data-page="kitchen">
+                <span class="mobile-nav-icon">👨‍🍳</span>
+                <span class="mobile-nav-label">Kitchen</span>
+            </a>
+            <a href="#" class="mobile-nav-item" data-page="menu">
+                <span class="mobile-nav-icon">📜</span>
+                <span class="mobile-nav-label">Menu</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
