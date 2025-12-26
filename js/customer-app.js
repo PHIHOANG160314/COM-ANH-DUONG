@@ -72,10 +72,14 @@ const CustomerApp = {
     // ========================================
     addToCart(itemId) {
         const items = typeof menuItems !== 'undefined' ? menuItems : this.getSampleMenu();
-        const item = items.find(i => i.id === itemId);
-        if (!item) return;
+        // Handle both string and numeric IDs
+        const item = items.find(i => String(i.id) === String(itemId));
+        if (!item) {
+            console.warn('Item not found:', itemId);
+            return;
+        }
 
-        const existing = this.cart.find(c => c.id === itemId);
+        const existing = this.cart.find(c => String(c.id) === String(itemId));
         if (existing) {
             existing.qty++;
         } else {
@@ -88,13 +92,13 @@ const CustomerApp = {
     },
 
     removeFromCart(itemId) {
-        this.cart = this.cart.filter(c => c.id !== itemId);
+        this.cart = this.cart.filter(c => String(c.id) !== String(itemId));
         this.saveCart();
         this.updateCartUI();
     },
 
     updateQty(itemId, delta) {
-        const item = this.cart.find(c => c.id === itemId);
+        const item = this.cart.find(c => String(c.id) === String(itemId));
         if (!item) return;
 
         item.qty += delta;
