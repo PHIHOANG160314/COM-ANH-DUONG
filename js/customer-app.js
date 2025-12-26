@@ -6,27 +6,54 @@ const CustomerApp = {
     cart: [],
     orderType: 'dinein',
     currentMember: null,
+    menuData: [],
 
     init() {
+        console.log('🍽️ Customer Portal initializing...');
+
+        // Load menu data from window.menuItems (from data.js)
+        if (typeof window.menuItems !== 'undefined' && window.menuItems.length > 0) {
+            this.menuData = window.menuItems;
+            console.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
+        } else if (typeof menuItems !== 'undefined' && menuItems.length > 0) {
+            this.menuData = menuItems;
+            console.log('✅ Loaded', this.menuData.length, 'menu items');
+        } else {
+            this.menuData = this.getSampleMenu();
+            console.log('⚠️ Using sample menu data');
+        }
+
         this.loadCart();
         this.renderMenu();
         this.updateCartUI();
-        console.log('🍽️ Customer Portal initialized!');
+        console.log('🍽️ Customer Portal ready!');
     },
 
     // ========================================
     // MENU
     // ========================================
+    getMenuItems() {
+        return this.menuData.length > 0 ? this.menuData : this.getSampleMenu();
+    },
+
     renderMenu(category = 'all') {
         const grid = document.getElementById('customerMenuGrid');
-        if (!grid) return;
+        if (!grid) {
+            console.error('Menu grid not found!');
+            return;
+        }
 
-        // Get menu items from data.js
-        const items = typeof menuItems !== 'undefined' ? menuItems : this.getSampleMenu();
+        const items = this.getMenuItems();
+        console.log('📜 Rendering', items.length, 'items, category:', category);
 
         const filtered = category === 'all'
             ? items
             : items.filter(item => item.category === category);
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Không có món trong danh mục này</p>';
+            return;
+        }
 
         grid.innerHTML = filtered.map(item => `
             <div class="menu-card" data-id="${item.id}">
@@ -34,28 +61,30 @@ const CustomerApp = {
                 <div class="menu-card-body">
                     <div class="menu-card-name">${item.name}</div>
                     <div class="menu-card-price">${this.formatPrice(item.price)}</div>
-                    <button class="menu-card-add" onclick="CustomerApp.addToCart('${item.id}')">
+                    <button class="menu-card-add" onclick="CustomerApp.addToCart(${item.id})">
                         + Thêm vào giỏ
                     </button>
                 </div>
             </div>
         `).join('');
+
+        console.log('✅ Rendered', filtered.length, 'menu cards');
     },
 
     getSampleMenu() {
         return [
-            { id: 'M001', name: 'Cà Phê Đen Đá', icon: '☕', price: 20000, category: 'drinks' },
-            { id: 'M002', name: 'Cà Phê Sữa Đá', icon: '☕', price: 25000, category: 'drinks' },
-            { id: 'M003', name: 'Bạc Xỉu', icon: '🥛', price: 28000, category: 'drinks' },
-            { id: 'M004', name: 'Trà Đào', icon: '🍑', price: 35000, category: 'drinks' },
-            { id: 'M005', name: 'Sinh Tố Bơ', icon: '🥑', price: 40000, category: 'drinks' },
-            { id: 'M006', name: 'Phở Bò', icon: '🍜', price: 55000, category: 'food' },
-            { id: 'M007', name: 'Bún Bò Huế', icon: '🍜', price: 50000, category: 'food' },
-            { id: 'M008', name: 'Cơm Tấm Sườn', icon: '🍚', price: 45000, category: 'food' },
-            { id: 'M009', name: 'Mì Quảng', icon: '🍝', price: 48000, category: 'food' },
-            { id: 'M010', name: 'Bánh Flan', icon: '🍮', price: 20000, category: 'dessert' },
-            { id: 'M011', name: 'Chè Thái', icon: '🍧', price: 25000, category: 'dessert' },
-            { id: 'M012', name: 'Kem Dừa', icon: '🍦', price: 30000, category: 'dessert' }
+            { id: 1, name: 'Cà Phê Đen Đá', icon: '☕', price: 20000, category: 'drinks' },
+            { id: 2, name: 'Cà Phê Sữa Đá', icon: '☕', price: 25000, category: 'drinks' },
+            { id: 3, name: 'Bạc Xỉu', icon: '🥛', price: 28000, category: 'drinks' },
+            { id: 4, name: 'Trà Đào', icon: '🍑', price: 35000, category: 'drinks' },
+            { id: 5, name: 'Sinh Tố Bơ', icon: '🥑', price: 40000, category: 'drinks' },
+            { id: 6, name: 'Phở Bò', icon: '🍜', price: 55000, category: 'food' },
+            { id: 7, name: 'Bún Bò Huế', icon: '🍜', price: 50000, category: 'food' },
+            { id: 8, name: 'Cơm Tấm Sườn', icon: '🍚', price: 45000, category: 'food' },
+            { id: 9, name: 'Mì Quảng', icon: '🍝', price: 48000, category: 'food' },
+            { id: 10, name: 'Bánh Flan', icon: '🍮', price: 20000, category: 'dessert' },
+            { id: 11, name: 'Chè Thái', icon: '🍧', price: 25000, category: 'dessert' },
+            { id: 12, name: 'Kem Dừa', icon: '🍦', price: 30000, category: 'dessert' }
         ];
     },
 
@@ -71,34 +100,38 @@ const CustomerApp = {
     // CART
     // ========================================
     addToCart(itemId) {
-        const items = typeof menuItems !== 'undefined' ? menuItems : this.getSampleMenu();
-        // Handle both string and numeric IDs
-        const item = items.find(i => String(i.id) === String(itemId));
+        console.log('📦 Adding item:', itemId);
+        const items = this.getMenuItems();
+        const item = items.find(i => i.id === itemId || String(i.id) === String(itemId));
+
         if (!item) {
-            console.warn('Item not found:', itemId);
+            console.error('❌ Item not found:', itemId);
+            this.showToast('Không tìm thấy món này', 'error');
             return;
         }
 
-        const existing = this.cart.find(c => String(c.id) === String(itemId));
+        const existing = this.cart.find(c => c.id === item.id || String(c.id) === String(item.id));
         if (existing) {
             existing.qty++;
+            console.log('📦 Updated qty:', existing.qty);
         } else {
             this.cart.push({ ...item, qty: 1 });
+            console.log('📦 Added new item to cart');
         }
 
         this.saveCart();
         this.updateCartUI();
-        this.showToast(`Đã thêm ${item.name}`);
+        this.showToast(`✅ Đã thêm ${item.name}`);
     },
 
     removeFromCart(itemId) {
-        this.cart = this.cart.filter(c => String(c.id) !== String(itemId));
+        this.cart = this.cart.filter(c => c.id !== itemId && String(c.id) !== String(itemId));
         this.saveCart();
         this.updateCartUI();
     },
 
     updateQty(itemId, delta) {
-        const item = this.cart.find(c => String(c.id) === String(itemId));
+        const item = this.cart.find(c => c.id === itemId || String(c.id) === String(itemId));
         if (!item) return;
 
         item.qty += delta;
