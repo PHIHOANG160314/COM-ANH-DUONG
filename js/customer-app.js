@@ -109,10 +109,15 @@ const CustomerApp = {
         const item = this.getMenuItems().find(i => i.id === itemId || String(i.id) === String(itemId));
         if (!item) return;
 
-        // Simple detail - can be enhanced with modal later
-        const confirmed = confirm(`${item.icon} ${item.name}\n\nGiá: ${this.formatPrice(item.price)}\n\nThêm vào giỏ hàng?`);
-        if (confirmed) {
-            this.addToCart(itemId);
+        // Use MobileUX bottom sheet if available
+        if (typeof MobileUX !== 'undefined') {
+            MobileUX.showItemDetail(item);
+        } else {
+            // Fallback to confirm dialog
+            const confirmed = confirm(`${item.icon} ${item.name}\n\nGiá: ${this.formatPrice(item.price)}\n\nThêm vào giỏ hàng?`);
+            if (confirmed) {
+                this.addToCart(itemId);
+            }
         }
     },
 
