@@ -3,8 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>F&B Master - Hệ Thống Quản Lý Nhà Hàng</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ánh Dương">
+    <meta name="description" content="Hệ thống quản lý nhà hàng - F&B Restaurant Management">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.jpg">
+
+    <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
@@ -721,6 +734,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/pagination.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/pos.js"></script>
     <script src="js/foodcost.js"></script>
@@ -736,6 +750,39 @@
     <script src="js/customers.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ SW registered:', reg.scope))
+                    .catch(err => console.log('❌ SW failed:', err));
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show install button
+            const installBtn = document.createElement('button');
+            installBtn.id = 'installBtn';
+            installBtn.className = 'btn-install';
+            installBtn.innerHTML = '📲 Cài App';
+            installBtn.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log('Install:', outcome);
+                    deferredPrompt = null;
+                    installBtn.remove();
+                }
+            };
+            document.querySelector('.header-actions')?.appendChild(installBtn);
+        });
+    </script>
 </body>
 
 </html>
