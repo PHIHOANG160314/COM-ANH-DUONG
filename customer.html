@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ánh Dương - Menu & Đặt Hàng Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/customer.css">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Nhà hàng Ánh Dương - Xem menu, đặt hàng online, tích điểm thành viên">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="customer-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
+                <div class="logo-text">
+                    <h1>Ánh Dương</h1>
+                    <p>Nhà hàng & Quán ăn</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cart" id="cartBtn" onclick="CustomerApp.toggleCart()">
+                    🛒 <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="btn-member" id="memberBtn" onclick="CustomerApp.showMemberModal()">
+                    👤
+                </button>
+            </div>
+        </div>
+        <nav class="customer-nav">
+            <button class="nav-btn active" data-section="menu" onclick="CustomerApp.showSection('menu')">📜
+                Menu</button>
+            <button class="nav-btn" data-section="order" onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
+            <button class="nav-btn" data-section="loyalty" onclick="CustomerApp.showSection('loyalty')">🎁 Tích
+                điểm</button>
+            <button class="nav-btn" data-section="contact" onclick="CustomerApp.showSection('contact')">📍 Liên
+                hệ</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="customer-main">
+        <!-- Menu Section -->
+        <section class="section active" id="section-menu">
+            <div class="category-filter">
+                <button class="filter-btn active" data-cat="all" onclick="CustomerApp.filterMenu('all')">Tất cả</button>
+                <button class="filter-btn" data-cat="food" onclick="CustomerApp.filterMenu('food')">🍜 Món
+                    chính</button>
+                <button class="filter-btn" data-cat="drinks" onclick="CustomerApp.filterMenu('drinks')">🥤 Đồ
+                    uống</button>
+                <button class="filter-btn" data-cat="dessert" onclick="CustomerApp.filterMenu('dessert')">🍰 Tráng
+                    miệng</button>
+            </div>
+            <div class="menu-grid" id="customerMenuGrid"></div>
+        </section>
+
+        <!-- Order Section -->
+        <section class="section" id="section-order">
+            <div class="order-container">
+                <div class="order-type-selector">
+                    <button class="order-type active" data-type="dinein" onclick="CustomerApp.setOrderType('dinein')">
+                        🪑 Ăn tại quán
+                    </button>
+                    <button class="order-type" data-type="takeaway" onclick="CustomerApp.setOrderType('takeaway')">
+                        🥡 Mang đi
+                    </button>
+                    <button class="order-type" data-type="delivery" onclick="CustomerApp.setOrderType('delivery')">
+                        🛵 Giao hàng
+                    </button>
+                </div>
+
+                <div class="delivery-info" id="deliveryInfo" style="display: none;">
+                    <h3>📍 Thông tin giao hàng</h3>
+                    <input type="text" id="deliveryName" placeholder="Họ tên người nhận">
+                    <input type="tel" id="deliveryPhone" placeholder="Số điện thoại">
+                    <textarea id="deliveryAddress" placeholder="Địa chỉ giao hàng"></textarea>
+                    <input type="text" id="deliveryNote" placeholder="Ghi chú (tùy chọn)">
+                </div>
+
+                <div class="order-summary" id="orderSummary">
+                    <h3>🛒 Đơn hàng của bạn</h3>
+                    <div class="order-items" id="orderItems">
+                        <p class="empty-cart">Chưa có món nào trong giỏ hàng</p>
+                    </div>
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span>Tạm tính</span>
+                            <span id="orderSubtotal">0đ</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Phí giao hàng</span>
+                            <span id="deliveryFee">0đ</span>
+                        </div>
+                        <div class="total-row final">
+                            <span>Tổng cộng</span>
+                            <span id="orderTotal">0đ</span>
+                        </div>
+                    </div>
+                    <button class="btn-checkout" id="checkoutBtn" onclick="CustomerApp.checkout()">
+                        Xác nhận đặt hàng
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loyalty Section -->
+        <section class="section" id="section-loyalty">
+            <div class="loyalty-container">
+                <div class="member-card" id="memberCard">
+                    <div class="card-header">
+                        <span class="tier-badge" id="memberTier">🥉 Thành viên</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 id="memberName">Đăng nhập để xem</h2>
+                        <p id="memberPhone">---</p>
+                    </div>
+                    <div class="card-points">
+                        <div class="points-circle">
+                            <span class="points-value" id="memberPoints">0</span>
+                            <span class="points-label">Điểm</span>
+                        </div>
+                    </div>
+                    <div class="card-qr" id="memberQR"></div>
+                </div>
+
+                <div class="loyalty-info">
+                    <h3>🎁 Chương trình tích điểm</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-icon">💰</span>
+                            <div>
+                                <strong>500đ = 1 điểm</strong>
+                                <p>Mỗi 500đ chi tiêu được 1 điểm</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🎁</span>
+                            <div>
+                                <strong>100 điểm = 10.000đ</strong>
+                                <p>Đổi điểm lấy voucher giảm giá</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">⭐</span>
+                            <div>
+                                <strong>Nâng hạng thành viên</strong>
+                                <p>Gold (500k), Diamond (2M)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-register" id="registerBtn" onclick="CustomerApp.showRegisterModal()">
+                    ✨ Đăng ký thành viên
+                </button>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section" id="section-contact">
+            <div class="contact-container">
+                <div class="contact-card">
+                    <h2>📍 Nhà hàng Ánh Dương</h2>
+                    <div class="contact-info-list">
+                        <div class="contact-item">
+                            <span class="icon">📍</span>
+                            <div>
+                                <strong>Địa chỉ</strong>
+                                <p>91 Hùng Vương, Sa Đéc, Đồng Tháp</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="icon">📞</span>
+                            <div>
+                                <strong>Điện thoại</strong>
+                                <p><a href="tel:0917076061">0917 076 061</a></p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="icon">⏰</span>
+                            <div>
+                                <strong>Giờ mở cửa</strong>
+                                <p>6:00 - 22:00 (Tất cả các ngày)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="#" class="social-btn facebook">📘 Facebook</a>
+                    <a href="#" class="social-btn zalo">💬 Zalo</a>
+                </div>
+
+                <div class="map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8897!2d105.7667!3d10.2897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDE3JzIzLjAiTiAxMDXCsDQ2JzAwLjAiRQ!5e0!3m2!1sen!2s!4v1635000000000!5m2!1sen!2s"
+                        width="100%" height="200" style="border:0; border-radius: 12px;" allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Cart -->
+    <div class="floating-cart" id="floatingCart">
+        <div class="cart-header" onclick="CustomerApp.toggleCart()">
+            <h3>🛒 Giỏ hàng (<span id="floatingCartCount">0</span>)</h3>
+            <span class="close-btn">×</span>
+        </div>
+        <div class="cart-items" id="floatingCartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Tổng cộng:</span>
+                <strong id="floatingCartTotal">0đ</strong>
+            </div>
+            <button class="btn-order" onclick="CustomerApp.goToOrder()">Đặt hàng ngay</button>
+        </div>
+    </div>
+
+    <!-- Member Modal -->
+    <div class="modal-overlay" id="memberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>👤 Thành viên</h3>
+                <button class="modal-close" onclick="CustomerApp.closeMemberModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="member-lookup">
+                    <input type="tel" id="lookupPhone" placeholder="Nhập số điện thoại">
+                    <button class="btn-lookup" onclick="CustomerApp.lookupMember()">Tra cứu</button>
+                </div>
+                <div class="member-result" id="memberResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>✨ Đăng ký thành viên</h3>
+                <button class="modal-close" onclick="CustomerApp.closeRegisterModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="regName" placeholder="Họ và tên">
+                <input type="tel" id="regPhone" placeholder="Số điện thoại">
+                <input type="email" id="regEmail" placeholder="Email (tùy chọn)">
+                <button class="btn-register-submit" onclick="CustomerApp.registerMember()">
+                    Đăng ký ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/customer-app.js"></script>
+</body>
+
+</html>
