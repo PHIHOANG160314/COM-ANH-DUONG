@@ -1,9 +1,9 @@
 // ========================================
 // F&B MASTER - SERVICE WORKER
-// PWA Offline Support (v4.0 - Full Advanced)
+// PWA Offline Support (v5.0 - Complete)
 // ========================================
 
-const CACHE_VERSION = 'v4.0';
+const CACHE_VERSION = 'v5.0';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
@@ -49,6 +49,9 @@ const STATIC_FILES = [
     '/js/push-notifications.js',
     '/js/theme-manager.js',
     '/js/payment-integration.js',
+    '/js/kitchen-realtime.js',
+    '/js/admin-dashboard.js',
+    '/js/performance-optimizer.js',
     '/logo.jpg',
     '/manifest.json'
 ];
