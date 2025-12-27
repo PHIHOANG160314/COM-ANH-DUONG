@@ -1,9 +1,9 @@
 // ========================================
 // F&B MASTER - SERVICE WORKER
-// PWA Offline Support (v3.0 - Premium F&B)
+// PWA Offline Support (v3.1 - Full Premium)
 // ========================================
 
-const CACHE_VERSION = 'v3.0';
+const CACHE_VERSION = 'v3.1';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
@@ -44,6 +44,8 @@ const STATIC_FILES = [
     '/js/confetti.js',
     '/js/mobile-ux.js',
     '/js/loyalty-game.js',
+    '/js/social-share.js',
+    '/js/table-reservation.js',
     '/logo.jpg',
     '/manifest.json'
 ];
