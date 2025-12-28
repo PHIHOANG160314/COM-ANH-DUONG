@@ -47,6 +47,7 @@ const MenuHierarchy = {
     // LEVEL 3: SUBCATEGORIES (per Category)
     // ========================================
     subcategories: {
+        // Beverages subcategories
         coffee: [
             { id: 'coffee-black', name: 'Đen', icon: '☕' },
             { id: 'coffee-milk', name: 'Sữa', icon: '🥛' },
@@ -57,6 +58,22 @@ const MenuHierarchy = {
             { id: 'tea-thai', name: 'Thái', icon: '🇹🇭' },
             { id: 'tea-premium', name: 'Premium', icon: '⭐' }
         ],
+        'fruit-tea': [
+            { id: 'tea-peach', name: 'Đào', icon: '🍑' },
+            { id: 'tea-lychee', name: 'Vải', icon: '🌸' },
+            { id: 'tea-lemon', name: 'Chanh', icon: '🍋' }
+        ],
+        smoothie: [
+            { id: 'smoothie-avocado', name: 'Bơ', icon: '🥑' },
+            { id: 'smoothie-fruit', name: 'Trái cây', icon: '🍓' },
+            { id: 'smoothie-blend', name: 'Đá xay', icon: '🧊' }
+        ],
+        refresh: [
+            { id: 'refresh-juice', name: 'Nước ép', icon: '🍊' },
+            { id: 'refresh-soda', name: 'Soda', icon: '🥤' },
+            { id: 'refresh-traditional', name: 'Truyền thống', icon: '🌿' }
+        ],
+        // Food subcategories
         noodle: [
             { id: 'pho', name: 'Phở', icon: '🍲' },
             { id: 'bun', name: 'Bún', icon: '🍜' },
@@ -66,7 +83,32 @@ const MenuHierarchy = {
         rice: [
             { id: 'rice-grilled', name: 'Nướng', icon: '🔥' },
             { id: 'rice-fried', name: 'Chiên', icon: '🍳' },
-            { id: 'rice-steamed', name: 'Hấp', icon: '💨' }
+            { id: 'rice-broken', name: 'Tấm', icon: '🍚' }
+        ],
+        bread: [
+            { id: 'bread-meat', name: 'Thịt', icon: '🥖' },
+            { id: 'bread-egg', name: 'Trứng', icon: '🍳' },
+            { id: 'bread-special', name: 'Đặc biệt', icon: '🥘' }
+        ],
+        snack: [
+            { id: 'snack-fried', name: 'Chiên', icon: '🍟' },
+            { id: 'snack-grilled', name: 'Nướng', icon: '🔥' },
+            { id: 'snack-mixed', name: 'Trộn', icon: '🥗' }
+        ],
+        homemade: [
+            { id: 'home-meat', name: 'Thịt', icon: '🥩' },
+            { id: 'home-fish', name: 'Cá', icon: '🐟' },
+            { id: 'home-soup', name: 'Canh', icon: '🥣' }
+        ],
+        // Dessert subcategories
+        che: [
+            { id: 'che-traditional', name: 'Truyền thống', icon: '🍧' },
+            { id: 'che-modern', name: 'Hiện đại', icon: '🥤' }
+        ],
+        sweet: [
+            { id: 'sweet-ice', name: 'Kem', icon: '🍨' },
+            { id: 'sweet-cake', name: 'Bánh', icon: '🍰' },
+            { id: 'sweet-fruit', name: 'Trái cây', icon: '🍉' }
         ]
     },
 
@@ -78,18 +120,26 @@ const MenuHierarchy = {
             { id: 'S', name: 'Nhỏ (S)', priceModifier: 0 },
             { id: 'M', name: 'Vừa (M)', priceModifier: 5000 },
             { id: 'L', name: 'Lớn (L)', priceModifier: 10000 }
+        ],
+        food: [
+            { id: 'regular', name: 'Thường', priceModifier: 0 },
+            { id: 'large', name: 'Đặc biệt', priceModifier: 15000 }
         ]
     },
 
     options: {
         beverages: [
-            { id: 'ice', name: 'Đá', values: ['Bình thường', 'Ít đá', 'Không đá'] },
-            { id: 'sugar', name: 'Đường', values: ['100%', '70%', '50%', '30%', '0%'] },
-            { id: 'temp', name: 'Nhiệt độ', values: ['Đá', 'Nóng'] }
+            { id: 'ice', name: 'Đá', values: ['Bình thường', 'Ít đá', 'Không đá'], default: 'Bình thường' },
+            { id: 'sugar', name: 'Đường', values: ['100%', '70%', '50%', '30%', '0%'], default: '100%' },
+            { id: 'temp', name: 'Nhiệt độ', values: ['Đá', 'Nóng'], default: 'Đá' },
+            { id: 'topping', name: 'Topping', values: ['Không', 'Trân châu', 'Thạch', 'Pudding'], default: 'Không', priceModifier: 5000 }
         ],
         food: [
-            { id: 'spicy', name: 'Cay', values: ['Không cay', 'Ít cay', 'Cay vừa', 'Cay nhiều'] },
-            { id: 'extra', name: 'Thêm', values: ['Thêm thịt', 'Thêm rau', 'Thêm trứng'] }
+            { id: 'spicy', name: 'Cay', values: ['Không cay', 'Ít cay', 'Cay vừa', 'Cay nhiều'], default: 'Không cay' },
+            { id: 'extra', name: 'Thêm', values: ['Không', 'Thêm thịt (+15k)', 'Thêm trứng (+5k)', 'Thêm rau (+3k)'], default: 'Không' }
+        ],
+        dessert: [
+            { id: 'topping', name: 'Topping', values: ['Không', 'Thêm đá', 'Thêm sữa'], default: 'Không' }
         ]
     },
 
@@ -101,12 +151,13 @@ const MenuHierarchy = {
             id: 'combo-1',
             name: 'Combo Sáng Vui Vẻ',
             description: 'Phở + Cà Phê Sữa',
-            items: [51, 2], // item IDs
+            items: [51, 2],
             originalPrice: 75000,
             comboPrice: 65000,
             savings: 10000,
             category: 'combo-lunch',
-            icon: '🌅'
+            icon: '🌅',
+            popular: true
         },
         {
             id: 'combo-2',
@@ -117,7 +168,8 @@ const MenuHierarchy = {
             comboPrice: 70000,
             savings: 10000,
             category: 'combo-lunch',
-            icon: '☀️'
+            icon: '☀️',
+            popular: true
         },
         {
             id: 'combo-3',
@@ -139,7 +191,52 @@ const MenuHierarchy = {
             comboPrice: 199000,
             savings: 31000,
             category: 'combo-family',
-            icon: '👨‍👩‍👧‍👦'
+            icon: '👨‍👩‍👧‍👦',
+            popular: true
+        },
+        {
+            id: 'combo-5',
+            name: 'Combo Cà Phê Sáng',
+            description: 'Bánh mì + Cà phê sữa',
+            items: [73, 2],
+            originalPrice: 50000,
+            comboPrice: 42000,
+            savings: 8000,
+            category: 'combo-lunch',
+            icon: '☕'
+        },
+        {
+            id: 'combo-6',
+            name: 'Combo Sinh Tố Khỏe',
+            description: '2 Sinh tố bơ',
+            items: [36, 36],
+            originalPrice: 80000,
+            comboPrice: 70000,
+            savings: 10000,
+            category: 'combo-drink',
+            icon: '🥑'
+        },
+        {
+            id: 'combo-7',
+            name: 'Combo Bún Bò Party',
+            description: '4 Bún bò + 4 Nước',
+            items: [55, 55, 55, 55, 9, 9, 9, 9],
+            originalPrice: 300000,
+            comboPrice: 250000,
+            savings: 50000,
+            category: 'combo-family',
+            icon: '🎉'
+        },
+        {
+            id: 'combo-8',
+            name: 'Combo Tráng Miệng',
+            description: 'Chè Thái + Bánh Flan',
+            items: [90, 95],
+            originalPrice: 40000,
+            comboPrice: 35000,
+            savings: 5000,
+            category: 'combo-drink',
+            icon: '🍮'
         }
     ],
 
