@@ -8,6 +8,55 @@ const StaffApp = {
     isCheckedIn: false,
     checkinTime: null,
     currentFilter: 'all',
+    paginationInitialized: false,
+
+    // Role permissions configuration
+    rolePermissions: {
+        'Quản lý': {
+            dashboard: true,
+            dashboardRevenue: true,
+            kitchen: true,
+            orders: true,
+            pos: true,
+            reports: true,
+            staff: true,
+            checkin: true,
+            updateOrder: true
+        },
+        'Thu ngân': {
+            dashboard: true,
+            dashboardRevenue: true,
+            kitchen: false,
+            orders: true,
+            pos: true,
+            reports: false,
+            staff: false,
+            checkin: true,
+            updateOrder: true
+        },
+        'Phục vụ': {
+            dashboard: true,
+            dashboardRevenue: false,
+            kitchen: false,
+            orders: true,
+            pos: false,
+            reports: false,
+            staff: false,
+            checkin: true,
+            updateOrder: true
+        },
+        'Bếp': {
+            dashboard: true,
+            dashboardRevenue: false,
+            kitchen: true,
+            orders: false,
+            pos: false,
+            reports: false,
+            staff: false,
+            checkin: true,
+            updateOrder: true
+        }
+    },
 
     // Demo staff data (in production, this would come from backend)
     staffList: [
@@ -16,6 +65,13 @@ const StaffApp = {
         { id: 'S003', name: 'Lê Văn C', pin: '3456', role: 'Bếp' },
         { id: 'S004', name: 'Admin', pin: '0000', role: 'Quản lý' }
     ],
+
+    // Check if current user has permission for a feature
+    hasPermission(feature) {
+        if (!this.currentStaff) return false;
+        const role = this.currentStaff.role;
+        return this.rolePermissions[role]?.[feature] ?? false;
+    },
 
     init() {
         console.log('👨‍🍳 Staff Portal initializing...');
@@ -76,9 +132,68 @@ const StaffApp = {
     onLoginSuccess() {
         document.getElementById('staffName').textContent = this.currentStaff.name;
         document.getElementById('bottomNav').classList.add('show');
+
+        // Apply role-based permissions to UI
+        this.applyRolePermissions();
+
         this.showSection('dashboard');
         this.updateDashboard();
         this.updateCheckinUI();
+    },
+
+    // Apply role-based UI visibility
+    applyRolePermissions() {
+        const role = this.currentStaff.role;
+        const roleIcons = {
+            'Quản lý': '👔',
+            'Thu ngân': '💵',
+            'Phục vụ': '🍽️',
+            'Bếp': '👨\u200d🍳'
+        };
+
+        // Update staff name with role badge
+        const staffNameEl = document.getElementById('staffName');
+        if (staffNameEl) {
+            staffNameEl.innerHTML = `${roleIcons[role] || '👤'} ${this.currentStaff.name}`;
+        }
+
+        // Kitchen button - only for Bếp and Quản lý
+        const kitchenCard = document.querySelector('.action-card.kitchen');
+        if (kitchenCard) {
+            kitchenCard.style.display = this.hasPermission('kitchen') ? 'flex' : 'none';
+        }
+
+        // POS button - only for Thu ngân and Quản lý
+        const posCard = document.querySelector('.action-card.pos');
+        if (posCard) {
+            posCard.style.display = this.hasPermission('pos') ? 'flex' : 'none';
+        }
+
+        // Orders button - hide for Bếp
+        const ordersCard = document.querySelector('.action-card.orders');
+        if (ordersCard) {
+            ordersCard.style.display = this.hasPermission('orders') ? 'flex' : 'none';
+        }
+
+        // Revenue display - hide for Phục vụ and Bếp
+        const revenueItem = document.getElementById('todayRevenue')?.closest('.summary-item');
+        if (revenueItem) {
+            revenueItem.style.display = this.hasPermission('dashboardRevenue') ? 'flex' : 'none';
+        }
+
+        // Kitchen nav button
+        const kitchenNav = document.querySelector('[data-section="kitchen"]');
+        if (kitchenNav) {
+            kitchenNav.style.display = this.hasPermission('kitchen') ? 'flex' : 'none';
+        }
+
+        // Orders nav button
+        const ordersNav = document.querySelector('[data-section="orders"]');
+        if (ordersNav) {
+            ordersNav.style.display = this.hasPermission('orders') ? 'flex' : 'none';
+        }
+
+        console.log(`🔐 Applied permissions for role: ${role}`);
     },
 
     logout() {
@@ -264,8 +379,7 @@ const StaffApp = {
     // ORDERS
     // ========================================
     loadOrders() {
-        const orders = this.getOrders();
-        this.renderAllOrders(orders);
+        this.initOrdersPagination();
     },
 
     getOrders() {
@@ -273,30 +387,32 @@ const StaffApp = {
         return JSON.parse(localStorage.getItem('customer_orders') || '[]');
     },
 
-    filterOrders(status) {
-        this.currentFilter = status;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.textContent.toLowerCase().includes(status === 'all' ? 'tất' :
-                status === 'pending' ? 'chờ' : status === 'preparing' ? 'đang' : 'xong'));
-        });
-
-        let orders = this.getOrders();
-        if (status !== 'all') {
-            orders = orders.filter(o => o.status === status);
+    initOrdersPagination() {
+        const self = this;
+        if (typeof Pagination !== 'undefined') {
+            Pagination.init({
+                containerId: 'allOrdersList',
+                itemsPerPage: 10,
+                infiniteScroll: true,
+                emptyMessage: 'Không có đơn hàng',
+                loadMoreText: 'Xem thêm đơn hàng',
+                getData: () => {
+                    let orders = self.getOrders();
+                    if (self.currentFilter !== 'all') {
+                        orders = orders.filter(o => o.status === self.currentFilter);
+                    }
+                    return orders;
+                },
+                renderItem: (order) => self.renderOrderCard(order)
+            });
+        } else {
+            // Fallback without pagination
+            this.renderAllOrdersFallback();
         }
-        this.renderAllOrders(orders);
     },
 
-    renderAllOrders(orders) {
-        const container = document.getElementById('allOrdersList');
-        if (!container) return;
-
-        if (orders.length === 0) {
-            container.innerHTML = '<p class="no-orders">Không có đơn hàng</p>';
-            return;
-        }
-
-        container.innerHTML = orders.map(order => `
+    renderOrderCard(order) {
+        return `
             <div class="order-card">
                 <div class="order-card-header">
                     <span class="order-card-id">${order.id}</span>
@@ -307,7 +423,35 @@ const StaffApp = {
                 </div>
                 <div class="order-card-total">${this.formatPrice(order.total)}</div>
             </div>
-        `).join('');
+        `;
+    },
+
+    renderAllOrdersFallback() {
+        const orders = this.getOrders();
+        const container = document.getElementById('allOrdersList');
+        if (!container) return;
+
+        if (orders.length === 0) {
+            container.innerHTML = '<p class="no-orders">Không có đơn hàng</p>';
+            return;
+        }
+
+        container.innerHTML = orders.map(order => this.renderOrderCard(order)).join('');
+    },
+
+    filterOrders(status) {
+        this.currentFilter = status;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.toLowerCase().includes(status === 'all' ? 'tất' :
+                status === 'pending' ? 'chờ' : status === 'preparing' ? 'đang' : 'xong'));
+        });
+
+        // Refresh pagination with new filter
+        if (typeof Pagination !== 'undefined') {
+            Pagination.refresh('allOrdersList');
+        } else {
+            this.renderAllOrdersFallback();
+        }
     },
 
     updateOrderStatus(orderId, newStatus) {
@@ -341,6 +485,16 @@ const StaffApp = {
     // NAVIGATION
     // ========================================
     showSection(sectionId) {
+        // Check permissions before allowing section access
+        if (sectionId === 'kitchen' && !this.hasPermission('kitchen')) {
+            this.showToast('⛔ Bạn không có quyền truy cập màn hình Bếp', 'error');
+            return;
+        }
+        if (sectionId === 'orders' && !this.hasPermission('orders')) {
+            this.showToast('⛔ Bạn không có quyền truy cập Đơn hàng', 'error');
+            return;
+        }
+
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 

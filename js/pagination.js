@@ -1,284 +1,250 @@
 // ========================================
-// F&B MASTER - PAGINATION UTILITY
-// Reusable pagination component
+// F&B MASTER - PAGINATION MODULE
+// Reusable pagination with WOW effects
 // ========================================
 
 const Pagination = {
-    defaultPageSize: 10,
-    pageSizes: [10, 20, 50, 100],
+    instances: {},
 
     /**
-     * Create pagination data
-     * @param {Array} items - All items to paginate
-     * @param {number} currentPage - Current page (1-indexed)
-     * @param {number} pageSize - Items per page
-     * @returns {Object} Pagination data
+     * Initialize pagination for a container
+     * @param {Object} config Configuration object
+     * @param {string} config.containerId - Container element ID
+     * @param {number} config.itemsPerPage - Items per page (default: 10)
+     * @param {Function} config.renderItem - Function to render single item
+     * @param {Function} config.getData - Function to get all data
+     * @param {string} config.emptyMessage - Message when no items
+     * @param {boolean} config.infiniteScroll - Enable infinite scroll (default: true)
      */
-    paginate(items, currentPage = 1, pageSize = this.defaultPageSize) {
-        const totalItems = items.length;
-        const totalPages = Math.ceil(totalItems / pageSize);
-        const page = Math.max(1, Math.min(currentPage, totalPages));
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = Math.min(startIndex + pageSize, totalItems);
-        const paginatedItems = items.slice(startIndex, endIndex);
+    init(config) {
+        const defaults = {
+            itemsPerPage: 10,
+            emptyMessage: 'Không có dữ liệu',
+            infiniteScroll: true,
+            loadMoreText: 'Xem thêm',
+            currentPage: 1
+        };
+
+        const settings = { ...defaults, ...config };
+        this.instances[config.containerId] = {
+            ...settings,
+            isLoading: false,
+            hasMore: true
+        };
+
+        this.render(config.containerId);
+
+        if (settings.infiniteScroll) {
+            this.setupInfiniteScroll(config.containerId);
+        }
+
+        return this;
+    },
+
+    /**
+     * Render items with pagination
+     */
+    render(containerId, append = false) {
+        const instance = this.instances[containerId];
+        if (!instance) return;
+
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const allData = instance.getData();
+        const startIndex = 0;
+        const endIndex = instance.currentPage * instance.itemsPerPage;
+        const items = allData.slice(startIndex, endIndex);
+
+        instance.hasMore = endIndex < allData.length;
+
+        if (items.length === 0) {
+            container.innerHTML = `<p class="pagination-empty">${instance.emptyMessage}</p>`;
+            return;
+        }
+
+        if (!append) {
+            container.innerHTML = '';
+        }
+
+        // Render items with staggered animation
+        const fragment = document.createDocumentFragment();
+        const existingCount = append ? container.children.length : 0;
+
+        items.slice(append ? (instance.currentPage - 1) * instance.itemsPerPage : 0).forEach((item, index) => {
+            const element = document.createElement('div');
+            element.className = 'pagination-item';
+            element.innerHTML = instance.renderItem(item);
+            element.style.animationDelay = `${index * 50}ms`;
+            fragment.appendChild(element);
+        });
+
+        container.appendChild(fragment);
+
+        // Add or update load more button
+        this.updateLoadMore(containerId);
+    },
+
+    /**
+     * Setup infinite scroll observer
+     */
+    setupInfiniteScroll(containerId) {
+        const instance = this.instances[containerId];
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Create sentinel element
+        let sentinel = document.getElementById(`${containerId}-sentinel`);
+        if (!sentinel) {
+            sentinel = document.createElement('div');
+            sentinel.id = `${containerId}-sentinel`;
+            sentinel.className = 'pagination-sentinel';
+            container.parentNode.insertBefore(sentinel, container.nextSibling);
+        }
+
+        // Setup Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && instance.hasMore && !instance.isLoading) {
+                    this.loadMore(containerId);
+                }
+            });
+        }, {
+            rootMargin: '100px'
+        });
+
+        observer.observe(sentinel);
+        instance.observer = observer;
+    },
+
+    /**
+     * Load more items
+     */
+    loadMore(containerId) {
+        const instance = this.instances[containerId];
+        if (!instance || instance.isLoading || !instance.hasMore) return;
+
+        instance.isLoading = true;
+        this.showLoading(containerId);
+
+        // Simulate network delay for smooth UX
+        setTimeout(() => {
+            instance.currentPage++;
+            this.render(containerId, true);
+            instance.isLoading = false;
+            this.hideLoading(containerId);
+        }, 300);
+    },
+
+    /**
+     * Update load more button
+     */
+    updateLoadMore(containerId) {
+        const instance = this.instances[containerId];
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Remove existing button
+        const existingBtn = document.getElementById(`${containerId}-loadmore`);
+        if (existingBtn) existingBtn.remove();
+
+        if (instance.hasMore && !instance.infiniteScroll) {
+            const btn = document.createElement('button');
+            btn.id = `${containerId}-loadmore`;
+            btn.className = 'pagination-loadmore';
+            btn.innerHTML = `
+                <span class="loadmore-text">${instance.loadMoreText}</span>
+                <span class="loadmore-icon">↓</span>
+            `;
+            btn.onclick = () => this.loadMore(containerId);
+            container.parentNode.insertBefore(btn, container.nextSibling);
+        }
+    },
+
+    /**
+     * Show skeleton loading
+     */
+    showLoading(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const skeleton = document.createElement('div');
+        skeleton.className = 'pagination-skeleton';
+        skeleton.id = `${containerId}-skeleton`;
+        skeleton.innerHTML = `
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+        `;
+        container.appendChild(skeleton);
+    },
+
+    /**
+     * Hide skeleton loading
+     */
+    hideLoading(containerId) {
+        const skeleton = document.getElementById(`${containerId}-skeleton`);
+        if (skeleton) {
+            skeleton.classList.add('fade-out');
+            setTimeout(() => skeleton.remove(), 200);
+        }
+    },
+
+    /**
+     * Refresh pagination (reset to page 1)
+     */
+    refresh(containerId) {
+        const instance = this.instances[containerId];
+        if (!instance) return;
+
+        instance.currentPage = 1;
+        instance.hasMore = true;
+        this.render(containerId, false);
+    },
+
+    /**
+     * Get current stats
+     */
+    getStats(containerId) {
+        const instance = this.instances[containerId];
+        if (!instance) return null;
+
+        const allData = instance.getData();
+        const showing = Math.min(instance.currentPage * instance.itemsPerPage, allData.length);
 
         return {
-            items: paginatedItems,
-            currentPage: page,
-            pageSize,
-            totalItems,
-            totalPages,
-            startIndex: startIndex + 1,
-            endIndex,
-            hasPrev: page > 1,
-            hasNext: page < totalPages
+            total: allData.length,
+            showing: showing,
+            currentPage: instance.currentPage,
+            totalPages: Math.ceil(allData.length / instance.itemsPerPage),
+            hasMore: instance.hasMore
         };
     },
 
     /**
-     * Render pagination controls
-     * @param {Object} data - Pagination data from paginate()
-     * @param {string} targetId - Target container ID
-     * @param {Function} onPageChange - Callback when page changes
+     * Destroy pagination instance
      */
-    render(data, targetId, onPageChange) {
-        const container = document.getElementById(targetId);
-        if (!container) return;
+    destroy(containerId) {
+        const instance = this.instances[containerId];
+        if (!instance) return;
 
-        const { currentPage, totalPages, totalItems, startIndex, endIndex, hasPrev, hasNext } = data;
-
-        container.innerHTML = `
-            <div class="pagination">
-                <div class="pagination-info">
-                    Hiển thị ${startIndex} - ${endIndex} / ${totalItems} mục
-                </div>
-                <div class="pagination-controls">
-                    <button class="page-btn" ${!hasPrev ? 'disabled' : ''} data-page="1" title="Trang đầu">
-                        ⏮
-                    </button>
-                    <button class="page-btn" ${!hasPrev ? 'disabled' : ''} data-page="${currentPage - 1}" title="Trang trước">
-                        ◀
-                    </button>
-                    <div class="page-numbers">
-                        ${this.renderPageNumbers(currentPage, totalPages)}
-                    </div>
-                    <button class="page-btn" ${!hasNext ? 'disabled' : ''} data-page="${currentPage + 1}" title="Trang sau">
-                        ▶
-                    </button>
-                    <button class="page-btn" ${!hasNext ? 'disabled' : ''} data-page="${totalPages}" title="Trang cuối">
-                        ⏭
-                    </button>
-                </div>
-                <div class="pagination-size">
-                    <select class="page-size-select">
-                        ${this.pageSizes.map(size =>
-            `<option value="${size}" ${size === data.pageSize ? 'selected' : ''}>${size}/trang</option>`
-        ).join('')}
-                    </select>
-                </div>
-            </div>
-        `;
-
-        // Add event listeners
-        container.querySelectorAll('.page-btn:not([disabled])').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const page = parseInt(btn.dataset.page);
-                if (onPageChange) onPageChange(page, data.pageSize);
-            });
-        });
-
-        container.querySelectorAll('.page-num:not(.active)').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const page = parseInt(btn.dataset.page);
-                if (onPageChange) onPageChange(page, data.pageSize);
-            });
-        });
-
-        container.querySelector('.page-size-select')?.addEventListener('change', (e) => {
-            const newSize = parseInt(e.target.value);
-            if (onPageChange) onPageChange(1, newSize);
-        });
-    },
-
-    /**
-     * Render page number buttons
-     */
-    renderPageNumbers(current, total) {
-        const pages = [];
-        const maxVisible = 5;
-
-        let start = Math.max(1, current - Math.floor(maxVisible / 2));
-        let end = Math.min(total, start + maxVisible - 1);
-
-        if (end - start < maxVisible - 1) {
-            start = Math.max(1, end - maxVisible + 1);
+        if (instance.observer) {
+            instance.observer.disconnect();
         }
 
-        if (start > 1) {
-            pages.push(`<button class="page-num" data-page="1">1</button>`);
-            if (start > 2) {
-                pages.push(`<span class="page-dots">...</span>`);
-            }
-        }
+        const sentinel = document.getElementById(`${containerId}-sentinel`);
+        if (sentinel) sentinel.remove();
 
-        for (let i = start; i <= end; i++) {
-            pages.push(`
-                <button class="page-num ${i === current ? 'active' : ''}" data-page="${i}">
-                    ${i}
-                </button>
-            `);
-        }
+        const loadmore = document.getElementById(`${containerId}-loadmore`);
+        if (loadmore) loadmore.remove();
 
-        if (end < total) {
-            if (end < total - 1) {
-                pages.push(`<span class="page-dots">...</span>`);
-            }
-            pages.push(`<button class="page-num" data-page="${total}">${total}</button>`);
-        }
-
-        return pages.join('');
-    },
-
-    /**
-     * Get pagination CSS styles
-     */
-    getStyles() {
-        return `
-            .pagination {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 12px;
-                padding: 16px;
-                background: var(--bg-card);
-                border: 1px solid var(--border-color);
-                border-radius: 12px;
-                margin-top: 16px;
-            }
-
-            .pagination-info {
-                font-size: 0.85rem;
-                color: var(--text-secondary);
-            }
-
-            .pagination-controls {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-
-            .page-btn {
-                width: 36px;
-                height: 36px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                background: var(--bg-card);
-                color: var(--text-primary);
-                cursor: pointer;
-                transition: all 0.2s;
-                font-size: 0.9rem;
-            }
-
-            .page-btn:hover:not([disabled]) {
-                background: var(--primary);
-                border-color: var(--primary);
-            }
-
-            .page-btn[disabled] {
-                opacity: 0.4;
-                cursor: not-allowed;
-            }
-
-            .page-numbers {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-                margin: 0 8px;
-            }
-
-            .page-num {
-                min-width: 36px;
-                height: 36px;
-                padding: 0 8px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                background: var(--bg-card);
-                color: var(--text-primary);
-                cursor: pointer;
-                transition: all 0.2s;
-                font-size: 0.85rem;
-            }
-
-            .page-num:hover:not(.active) {
-                background: var(--bg-hover);
-            }
-
-            .page-num.active {
-                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-                border-color: transparent;
-                color: white;
-                font-weight: 600;
-            }
-
-            .page-dots {
-                color: var(--text-muted);
-                padding: 0 4px;
-            }
-
-            .page-size-select {
-                padding: 8px 12px;
-                border: 1px solid var(--border-color);
-                border-radius: 8px;
-                background: var(--bg-card);
-                color: var(--text-primary);
-                font-size: 0.85rem;
-                cursor: pointer;
-            }
-
-            .pagination-size {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-            @media (max-width: 768px) {
-                .pagination {
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .pagination-info {
-                    order: 2;
-                    text-align: center;
-                }
-
-                .pagination-controls {
-                    order: 1;
-                }
-
-                .pagination-size {
-                    order: 3;
-                }
-
-                .page-numbers {
-                    display: none;
-                }
-
-                .page-btn {
-                    width: 44px;
-                    height: 44px;
-                }
-            }
-        `;
+        delete this.instances[containerId];
     }
 };
 
-// Inject pagination styles
-(function injectPaginationStyles() {
-    const style = document.createElement('style');
-    style.textContent = Pagination.getStyles();
-    document.head.appendChild(style);
-})();
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Pagination;
+}
 
 window.Pagination = Pagination;

@@ -11,6 +11,7 @@ const CustomerApp = {
     searchQuery: '',
     currentCategory: 'all',
     appliedPromo: null,
+    menuPaginationInit: false,
 
     // Available promo codes
     promoCodes: {
@@ -87,9 +88,37 @@ const CustomerApp = {
             return;
         }
 
-        grid.innerHTML = items.map((item, index) => `
+        // Use pagination for large menus
+        const self = this;
+        if (typeof Pagination !== 'undefined' && items.length > 12) {
+            if (!this.menuPaginationInit || Pagination.instances['customerMenuGrid']) {
+                Pagination.destroy('customerMenuGrid');
+            }
+            Pagination.init({
+                containerId: 'customerMenuGrid',
+                itemsPerPage: 12,
+                infiniteScroll: true,
+                emptyMessage: 'Không tìm thấy món',
+                loadMoreText: 'Xem thêm món',
+                getData: () => items,
+                renderItem: (item) => self.renderMenuCard(item)
+            });
+            this.menuPaginationInit = true;
+        } else {
+            // Render all items directly (small menu)
+            grid.innerHTML = items.map((item, index) => `
+                <div class="pagination-item" style="animation-delay: ${index * 50}ms">
+                    ${this.renderMenuCard(item)}
+                </div>
+            `).join('');
+        }
+
+        console.log('✅ Rendered', items.length, 'menu cards with animations');
+    },
+
+    renderMenuCard(item) {
+        return `
             <div class="menu-card animate-fadeInUp hover-lift" data-id="${item.id}" 
-                 style="animation-delay: ${index * 0.05}s; opacity: 0;"
                  onclick="CustomerApp.showItemDetail(${item.id})">
                 <div class="menu-card-image">${item.icon || '🍽️'}</div>
                 <div class="menu-card-body">
@@ -100,9 +129,7 @@ const CustomerApp = {
                     </button>
                 </div>
             </div>
-        `).join('');
-
-        console.log('✅ Rendered', items.length, 'menu cards with animations');
+        `;
     },
 
     showItemDetail(itemId) {
@@ -548,7 +575,28 @@ const CustomerApp = {
             return;
         }
 
-        container.innerHTML = orders.slice(0, 10).map(order => `
+        // Use pagination for order history
+        const self = this;
+        if (typeof Pagination !== 'undefined' && orders.length > 5) {
+            Pagination.destroy('orderHistoryList');
+            Pagination.init({
+                containerId: 'orderHistoryList',
+                itemsPerPage: 5,
+                infiniteScroll: false, // Use load more button
+                emptyMessage: 'Chưa có đơn hàng nào',
+                loadMoreText: 'Xem thêm lịch sử',
+                getData: () => orders,
+                renderItem: (order) => self.renderHistoryCard(order)
+            });
+        } else {
+            container.innerHTML = orders.map(order => `
+                <div class="pagination-item">${this.renderHistoryCard(order)}</div>
+            `).join('');
+        }
+    },
+
+    renderHistoryCard(order) {
+        return `
             <div class="history-card" onclick="CustomerApp.viewHistoryOrder('${order.id}')">
                 <div class="history-info">
                     <h4>${order.id}</h4>
@@ -556,7 +604,7 @@ const CustomerApp = {
                 </div>
                 <div class="history-amount">${this.formatPrice(order.total)}</div>
             </div>
-        `).join('');
+        `;
     },
 
     viewHistoryOrder(orderId) {

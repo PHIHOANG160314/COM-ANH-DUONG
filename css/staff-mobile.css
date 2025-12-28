@@ -97,6 +97,32 @@ body {
     font-weight: 500;
 }
 
+/* Role Badge */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    margin-left: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+/* Disabled/Hidden action cards */
+.action-card.disabled,
+.action-card[style*="display: none"]+.action-card {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.nav-item.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 /* ========================================
    MAIN CONTENT
    ======================================== */

@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="css/customer.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/customer-premium.css">
+    <link rel="stylesheet" href="css/pagination.css">
+    <link rel="stylesheet" href="css/mobile-bottom-nav.css">
 
     <!-- PWA & Theme -->
     <meta name="theme-color" content="#6366f1">
@@ -329,16 +331,58 @@
         </div>
     </div>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <button class="bottom-nav-item active" data-section="menu" onclick="CustomerApp.showSection('menu')">
+            <span class="bottom-nav-icon">📜</span>
+            <span class="bottom-nav-label">Menu</span>
+        </button>
+        <button class="bottom-nav-item" data-section="tracking" onclick="CustomerApp.showSection('tracking')">
+            <span class="bottom-nav-icon">📍</span>
+            <span class="bottom-nav-label">Đơn hàng</span>
+        </button>
+        <button class="bottom-nav-fab" onclick="CustomerApp.goToOrder()">
+            <span class="bottom-nav-icon">🛒</span>
+            <span class="bottom-nav-badge" id="navCartBadge"></span>
+        </button>
+        <button class="bottom-nav-item" data-section="loyalty" onclick="CustomerApp.showSection('loyalty')">
+            <span class="bottom-nav-icon">🎁</span>
+            <span class="bottom-nav-label">Tích điểm</span>
+        </button>
+        <button class="bottom-nav-item" data-section="contact" onclick="CustomerApp.showSection('contact')">
+            <span class="bottom-nav-icon">📞</span>
+            <span class="bottom-nav-label">Liên hệ</span>
+        </button>
+    </nav>
+
+    <!-- Pull to Refresh Indicator -->
+    <div class="pull-to-refresh" id="pullToRefresh">
+        <div class="pull-spinner"></div>
+    </div>
+
+    <!-- Install App Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <button class="install-prompt-close" onclick="MobileNav.hideInstallPrompt()">×</button>
+        <span class="install-prompt-icon">📱</span>
+        <div class="install-prompt-content">
+            <div class="install-prompt-title">Cài đặt ứng dụng</div>
+            <div class="install-prompt-desc">Thêm vào màn hình chính để truy cập nhanh hơn!</div>
+        </div>
+        <button class="install-prompt-btn" onclick="MobileNav.installApp()">Cài đặt</button>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/pagination.js"></script>
     <script src="js/customer-app.js"></script>
     <script src="js/pwa-utils.js"></script>
     <script src="js/confetti.js"></script>
     <script src="js/mobile-ux.js"></script>
+    <script src="js/mobile-nav.js"></script>
     <script src="js/loyalty-game.js"></script>
     <script src="js/social-share.js"></script>
     <script src="js/table-reservation.js"></script>

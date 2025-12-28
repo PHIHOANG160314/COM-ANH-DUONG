@@ -1,0 +1,447 @@
+/* ========================================
+   F&B MASTER - MOBILE BOTTOM NAVIGATION
+   Native App-like Bottom Tab Bar
+   ======================================== */
+
+/* Bottom Navigation Container */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(10, 10, 18, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* Hide on scroll down, show on scroll up */
+.mobile-bottom-nav.hidden {
+    transform: translateY(100%);
+}
+
+/* Navigation Item */
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    padding: 8px 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #8888a0);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Nav Item Icon */
+.bottom-nav-icon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+    transition: transform 0.2s ease;
+}
+
+/* Nav Item Label */
+.bottom-nav-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+/* Active State */
+.bottom-nav-item.active {
+    color: var(--primary-light, #818cf8);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+    transform: scale(1.1);
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+    font-weight: 600;
+}
+
+/* Active Indicator Pill */
+.bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary, #6366f1), var(--secondary, #10b981));
+    border-radius: 2px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: 40px;
+        opacity: 1;
+    }
+}
+
+/* Badge for notifications/cart count */
+.bottom-nav-badge {
+    position: absolute;
+    top: 4px;
+    right: 50%;
+    transform: translateX(80%);
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--danger, #ef4444);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.3s ease;
+}
+
+.bottom-nav-badge:empty {
+    display: none;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translateX(80%) scale(0);
+    }
+
+    50% {
+        transform: translateX(80%) scale(1.2);
+    }
+
+    100% {
+        transform: translateX(80%) scale(1);
+    }
+}
+
+/* Ripple Effect */
+.bottom-nav-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+}
+
+.bottom-nav-item:active::after {
+    width: 60px;
+    height: 60px;
+    opacity: 1;
+    transition: 0s;
+}
+
+/* Floating Action Button (Order) */
+.bottom-nav-fab {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    margin-top: -20px;
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--secondary, #10b981));
+    border-radius: 50%;
+    border: 4px solid var(--bg-dark, #0a0a12);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bottom-nav-fab:active {
+    transform: scale(0.95);
+}
+
+.bottom-nav-fab .bottom-nav-icon {
+    margin-bottom: 0;
+}
+
+/* Hide header nav on mobile when bottom nav is active */
+@media (max-width: 768px) {
+    .customer-nav {
+        display: none !important;
+    }
+
+    .customer-main {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
+    }
+}
+
+/* Larger screens - hide bottom nav, show header nav */
+@media (min-width: 769px) {
+    .mobile-bottom-nav {
+        display: none;
+    }
+
+    .customer-nav {
+        display: flex !important;
+    }
+}
+
+/* ========================================
+   PULL TO REFRESH INDICATOR
+   ======================================== */
+.pull-to-refresh {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.1), transparent);
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+}
+
+.pull-to-refresh.visible {
+    transform: translateY(0);
+}
+
+.pull-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(99, 102, 241, 0.3);
+    border-top-color: var(--primary, #6366f1);
+    border-radius: 50%;
+}
+
+.pull-to-refresh.refreshing .pull-spinner {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   SWIPE INDICATOR
+   ======================================== */
+.swipe-indicator {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+/* ========================================
+   LOADING OVERLAY
+   ======================================== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 18, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 9999;
+}
+
+.loading-overlay.show {
+    display: flex;
+}
+
+.loading-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.loading-text {
+    color: var(--text-secondary, #b4b4bc);
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   ENHANCED TOUCH TARGETS
+   ======================================== */
+.touch-target {
+    min-height: 48px;
+    min-width: 48px;
+}
+
+/* Better button feedback */
+.btn-feedback {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.btn-feedback:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+}
+
+/* ========================================
+   SKELETON LOADING FOR CARDS
+   ======================================== */
+.skeleton-card {
+    background: var(--bg-card, rgba(26, 26, 46, 0.95));
+    border-radius: var(--radius, 16px);
+    overflow: hidden;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.03) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.03) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text {
+    height: 16px;
+    margin: 12px;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.03) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.03) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+/* ========================================
+   INSTALL APP PROMPT
+   ======================================== */
+.install-prompt {
+    position: fixed;
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--primary-dark, #4f46e5));
+    border-radius: 16px;
+    padding: 16px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    z-index: 500;
+    animation: slideUp 0.4s ease;
+    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+}
+
+.install-prompt.show {
+    display: flex;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.install-prompt-icon {
+    font-size: 2rem;
+}
+
+.install-prompt-content {
+    flex: 1;
+}
+
+.install-prompt-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.install-prompt-desc {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.install-prompt-btn {
+    padding: 10px 20px;
+    background: white;
+    color: var(--primary, #6366f1);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.install-prompt-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
