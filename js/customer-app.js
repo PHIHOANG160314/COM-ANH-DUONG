@@ -10,6 +10,7 @@ const CustomerApp = {
     menuData: [],
     searchQuery: '',
     currentCategory: 'all',
+    currentSubcategory: 'all',
     appliedPromo: null,
     menuPaginationInit: false,
 
@@ -37,10 +38,85 @@ const CustomerApp = {
         }
 
         this.loadCart();
+        this.renderFeaturedSection();
+        this.renderSubcategoryTabs();
         this.renderMenu();
         this.updateCartUI();
         this.renderOrderHistory();
         console.log('🍽️ Customer Portal ready!');
+    },
+
+    // ========================================
+    // FEATURED SECTION
+    // ========================================
+    renderFeaturedSection() {
+        const container = document.getElementById('featuredCards');
+        if (!container) return;
+
+        // Get featured items (top 5 sellers)
+        const featuredIds = typeof window.featuredItems !== 'undefined' ? window.featuredItems : [1, 2, 16, 51, 66];
+        const featured = this.menuData.filter(item => featuredIds.includes(item.id));
+
+        container.innerHTML = featured.map(item => `
+            <div class="featured-card" onclick="CustomerApp.addToCart(${item.id})">
+                <div class="featured-card-image">${item.icon || '🍽️'}</div>
+                <div class="featured-card-body">
+                    <div class="featured-card-name">${item.name}</div>
+                    <div class="featured-card-price">${this.formatPrice(item.price)}</div>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    // ========================================
+    // SUBCATEGORY TABS
+    // ========================================
+    renderSubcategoryTabs(category = 'all') {
+        const container = document.getElementById('subcategoryTabs');
+        if (!container) return;
+
+        // Hide subcategory tabs if 'all' category
+        if (category === 'all') {
+            container.innerHTML = '';
+            return;
+        }
+
+        // Get subcategories for current category
+        const subcats = typeof window.menuSubcategories !== 'undefined'
+            ? window.menuSubcategories[category] || []
+            : [];
+
+        if (subcats.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        // Count items in each subcategory
+        const items = this.menuData.filter(item => item.category === category);
+
+        container.innerHTML = `
+            <button class="subcategory-tab ${this.currentSubcategory === 'all' ? 'active' : ''}" 
+                    onclick="CustomerApp.filterBySubcategory('all')">
+                <span class="tab-icon">🔤</span> Tất cả
+                <span class="tab-count">${items.length}</span>
+            </button>
+            ${subcats.map(sub => {
+            const count = items.filter(item => item.subcategory === sub.id).length;
+            return `
+                    <button class="subcategory-tab ${this.currentSubcategory === sub.id ? 'active' : ''}" 
+                            onclick="CustomerApp.filterBySubcategory('${sub.id}')">
+                        <span class="tab-icon">${sub.icon}</span> ${sub.name}
+                        <span class="tab-count">${count}</span>
+                    </button>
+                `;
+        }).join('')}
+        `;
+    },
+
+    filterBySubcategory(subcategory) {
+        this.currentSubcategory = subcategory;
+        this.renderSubcategoryTabs(this.currentCategory);
+        this.renderMenu(this.currentCategory);
     },
 
     // ========================================
@@ -56,7 +132,15 @@ const CustomerApp = {
     },
 
     renderMenu(category = 'all') {
+        // Reset subcategory if category changed
+        if (this.currentCategory !== category) {
+            this.currentSubcategory = 'all';
+        }
         this.currentCategory = category;
+
+        // Update subcategory tabs
+        this.renderSubcategoryTabs(category);
+
         const grid = document.getElementById('customerMenuGrid');
         if (!grid) {
             console.error('Menu grid not found!');
@@ -64,11 +148,16 @@ const CustomerApp = {
         }
 
         let items = this.getMenuItems();
-        console.log('📜 Rendering, category:', category, 'search:', this.searchQuery);
+        console.log('📜 Rendering, category:', category, 'subcategory:', this.currentSubcategory, 'search:', this.searchQuery);
 
         // Filter by category
         if (category !== 'all') {
             items = items.filter(item => item.category === category);
+        }
+
+        // Filter by subcategory
+        if (this.currentSubcategory !== 'all') {
+            items = items.filter(item => item.subcategory === this.currentSubcategory);
         }
 
         // Filter by search query
@@ -80,10 +169,24 @@ const CustomerApp = {
         }
 
         if (items.length === 0) {
+            const suggestions = ['drinks', 'food', 'dessert'].filter(c => c !== category);
+            const categoryLabels = { drinks: '🥤 Đồ uống', food: '🍜 Món ăn', dessert: '🍰 Tráng miệng' };
+
             grid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#888;">
-                    <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
-                    <p>Không tìm thấy món "${this.searchQuery || category}"</p>
+                <div class="empty-state-enhanced" style="grid-column: 1/-1;">
+                    <div class="empty-icon" style="font-size: 4rem; margin-bottom: 16px; animation: float 3s ease-in-out infinite;">🔍</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Không tìm thấy "${this.searchQuery || category}"</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Thử tìm kiếm khác hoặc chọn danh mục:</p>
+                    <div class="empty-suggestions" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                        ${suggestions.map(cat => `
+                            <button onclick="CustomerApp.filterMenu('${cat}')" 
+                                style="padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border-color); 
+                                       border-radius: 20px; color: var(--text-secondary); font-size: 0.85rem; cursor: pointer;
+                                       transition: all 0.2s ease;">
+                                ${categoryLabels[cat]}
+                            </button>
+                        `).join('')}
+                    </div>
                 </div>`;
             return;
         }

@@ -1,0 +1,215 @@
+/* ========================================
+   F&B MASTER - MENU CATEGORIES CSS
+   Swipeable Subcategory Tabs
+   ======================================== */
+
+/* Subcategory Tabs Container */
+.subcategory-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 0;
+    margin: 8px 0 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.subcategory-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+/* Subcategory Tab Button */
+.subcategory-tab {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 25px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--bg-card, rgba(26, 26, 46, 0.95));
+    color: var(--text-secondary, #b4b4bc);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.subcategory-tab .tab-icon {
+    font-size: 1rem;
+}
+
+.subcategory-tab .tab-count {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+}
+
+/* Active State */
+.subcategory-tab.active {
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--secondary, #10b981));
+    border-color: transparent;
+    color: white;
+}
+
+.subcategory-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Hover Effect */
+.subcategory-tab:hover:not(.active) {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary, #6366f1);
+}
+
+/* ========================================
+   FEATURED SECTION
+   ======================================== */
+.featured-section {
+    margin-bottom: 24px;
+}
+
+.featured-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.featured-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.featured-title .fire-icon {
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Featured Cards - Horizontal Scroll */
+.featured-cards {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.featured-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.featured-card {
+    flex-shrink: 0;
+    width: 160px;
+    background: linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.15));
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+}
+
+.featured-card-image {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+}
+
+.featured-card-body {
+    padding: 12px;
+}
+
+.featured-card-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.featured-card-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--secondary, #10b981);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+}
+
+/* ========================================
+   MENU SECTION HEADER
+   ======================================== */
+.menu-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.menu-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary, #f8f8fa);
+}
+
+.menu-item-count {
+    font-size: 0.8rem;
+    color: var(--text-muted, #8888a0);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+@media (max-width: 375px) {
+    .subcategory-tab {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .featured-card {
+        width: 140px;
+    }
+
+    .featured-card-image {
+        height: 80px;
+        font-size: 2.5rem;
+    }
+}

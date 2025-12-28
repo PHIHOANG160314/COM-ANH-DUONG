@@ -188,6 +188,43 @@
 }
 
 /* ========================================
+   ENHANCED COUNTER
+   ======================================== */
+.pagination-counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-top: 12px;
+    background: linear-gradient(135deg,
+            rgba(99, 102, 241, 0.1) 0%,
+            rgba(16, 185, 129, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.pagination-counter.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.counter-text {
+    color: var(--text-secondary, #b4b4bc);
+}
+
+.counter-progress {
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-light, #818cf8), var(--secondary, #10b981));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ========================================
    PULL TO REFRESH
    ======================================== */
 .pull-indicator {

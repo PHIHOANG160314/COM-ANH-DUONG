@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/customer-premium.css">
     <link rel="stylesheet" href="css/pagination.css">
     <link rel="stylesheet" href="css/mobile-bottom-nav.css">
+    <link rel="stylesheet" href="css/menu-categories.css">
 
     <!-- PWA & Theme -->
     <meta name="theme-color" content="#6366f1">
@@ -79,20 +80,38 @@
     <main class="customer-main">
         <!-- Menu Section -->
         <section class="section active" id="section-menu">
+            <!-- Featured Section -->
+            <div class="featured-section" id="featuredSection">
+                <div class="featured-header">
+                    <h3 class="featured-title"><span class="fire-icon">🔥</span> Món bán chạy</h3>
+                </div>
+                <div class="featured-cards" id="featuredCards">
+                    <!-- Featured items rendered by JS -->
+                </div>
+            </div>
+
             <!-- Search Bar -->
             <div class="search-container">
                 <input type="text" id="menuSearchInput" class="search-input" placeholder="🔍 Tìm kiếm món ăn..."
                     oninput="CustomerApp.searchMenu(this.value)">
             </div>
+
+            <!-- Main Category Filter -->
             <div class="category-filter">
                 <button class="filter-btn active" data-cat="all" onclick="CustomerApp.filterMenu('all')">Tất cả</button>
-                <button class="filter-btn" data-cat="food" onclick="CustomerApp.filterMenu('food')">🍜 Món
-                    chính</button>
                 <button class="filter-btn" data-cat="drinks" onclick="CustomerApp.filterMenu('drinks')">🥤 Đồ
                     uống</button>
+                <button class="filter-btn" data-cat="food" onclick="CustomerApp.filterMenu('food')">🍜 Món ăn</button>
                 <button class="filter-btn" data-cat="dessert" onclick="CustomerApp.filterMenu('dessert')">🍰 Tráng
                     miệng</button>
             </div>
+
+            <!-- Subcategory Tabs (Dynamic) -->
+            <div class="subcategory-tabs" id="subcategoryTabs">
+                <!-- Subcategory tabs rendered by JS based on selected category -->
+            </div>
+
+            <!-- Menu Grid -->
             <div class="menu-grid" id="customerMenuGrid">
                 <!-- Menu items will be rendered here -->
             </div>
@@ -391,6 +410,7 @@
     <script src="js/payment-integration.js"></script>
     <script src="js/kitchen-realtime.js"></script>
     <script src="js/admin-dashboard.js"></script>
+    <script src="js/mobile-pagination-enhanced.js"></script>
     <script src="js/performance-optimizer.js"></script>
 </body>
 
