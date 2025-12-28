@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/pagination.css">
     <link rel="stylesheet" href="css/mobile-bottom-nav.css">
     <link rel="stylesheet" href="css/menu-categories.css">
+    <link rel="stylesheet" href="css/menu-hierarchy.css">
 
     <!-- PWA & Theme -->
     <meta name="theme-color" content="#6366f1">
@@ -96,19 +97,38 @@
                     oninput="CustomerApp.searchMenu(this.value)">
             </div>
 
-            <!-- Main Category Filter -->
-            <div class="category-filter">
-                <button class="filter-btn active" data-cat="all" onclick="CustomerApp.filterMenu('all')">Tất cả</button>
-                <button class="filter-btn" data-cat="drinks" onclick="CustomerApp.filterMenu('drinks')">🥤 Đồ
-                    uống</button>
-                <button class="filter-btn" data-cat="food" onclick="CustomerApp.filterMenu('food')">🍜 Món ăn</button>
-                <button class="filter-btn" data-cat="dessert" onclick="CustomerApp.filterMenu('dessert')">🍰 Tráng
-                    miệng</button>
+            <!-- LEVEL 1: Menu Groups -->
+            <div class="menu-groups" id="menuGroups">
+                <button class="menu-group-btn active" data-group="all" onclick="CustomerApp.filterByGroup('all')">
+                    <span class="group-icon">📋</span>
+                    <span>Tất cả</span>
+                </button>
+                <button class="menu-group-btn" data-group="beverages" onclick="CustomerApp.filterByGroup('beverages')">
+                    <span class="group-icon">🥤</span>
+                    <span>Đồ Uống</span>
+                </button>
+                <button class="menu-group-btn" data-group="food" onclick="CustomerApp.filterByGroup('food')">
+                    <span class="group-icon">🍜</span>
+                    <span>Thức Ăn</span>
+                </button>
+                <button class="menu-group-btn" data-group="dessert" onclick="CustomerApp.filterByGroup('dessert')">
+                    <span class="group-icon">🍰</span>
+                    <span>Tráng Miệng</span>
+                </button>
+                <button class="menu-group-btn" data-group="combo" onclick="CustomerApp.filterByGroup('combo')">
+                    <span class="group-icon">🎁</span>
+                    <span>Combo</span>
+                </button>
             </div>
 
-            <!-- Subcategory Tabs (Dynamic) -->
-            <div class="subcategory-tabs" id="subcategoryTabs">
-                <!-- Subcategory tabs rendered by JS based on selected category -->
+            <!-- LEVEL 2: Categories (Dynamic) -->
+            <div class="menu-categories" id="menuCategories">
+                <!-- Categories rendered by JS based on selected group -->
+            </div>
+
+            <!-- LEVEL 3: Subcategories (Dynamic) -->
+            <div class="menu-subcategories" id="menuSubcategories">
+                <!-- Subcategories rendered by JS based on selected category -->
             </div>
 
             <!-- Menu Grid -->
@@ -397,6 +417,7 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/pagination.js"></script>
+    <script src="js/menu-hierarchy.js"></script>
     <script src="js/customer-app.js"></script>
     <script src="js/pwa-utils.js"></script>
     <script src="js/confetti.js"></script>

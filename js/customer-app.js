@@ -9,8 +9,9 @@ const CustomerApp = {
     currentMember: null,
     menuData: [],
     searchQuery: '',
-    currentCategory: 'all',
-    currentSubcategory: 'all',
+    currentGroup: 'all',      // Level 1: Menu Group
+    currentCategory: 'all',   // Level 2: Category  
+    currentSubcategory: 'all', // Level 3: Subcategory
     appliedPromo: null,
     menuPaginationInit: false,
 
@@ -39,11 +40,232 @@ const CustomerApp = {
 
         this.loadCart();
         this.renderFeaturedSection();
+        this.renderCategories(this.currentGroup);
         this.renderSubcategoryTabs();
         this.renderMenu();
         this.updateCartUI();
         this.renderOrderHistory();
         console.log('🍽️ Customer Portal ready!');
+    },
+
+    // ========================================
+    // LEVEL 1: FILTER BY GROUP
+    // ========================================
+    filterByGroup(group) {
+        this.currentGroup = group;
+        this.currentCategory = 'all';
+        this.currentSubcategory = 'all';
+
+        // Update active state
+        document.querySelectorAll('.menu-group-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.group === group);
+        });
+
+        // Render Level 2 categories
+        this.renderCategories(group);
+
+        // Clear Level 3
+        const subcatContainer = document.getElementById('menuSubcategories');
+        if (subcatContainer) subcatContainer.innerHTML = '';
+
+        // Render menu based on group
+        if (group === 'combo') {
+            this.renderCombos();
+        } else {
+            this.renderMenu(group === 'all' ? 'all' : this.mapGroupToCategory(group));
+        }
+
+        // Haptic feedback
+        if (typeof MobilePagination !== 'undefined') {
+            MobilePagination.triggerHaptic('light');
+        }
+    },
+
+    // Map new groups to legacy categories
+    mapGroupToCategory(group) {
+        const mapping = {
+            'beverages': 'drinks',
+            'food': 'food',
+            'dessert': 'dessert'
+        };
+        return mapping[group] || group;
+    },
+
+    // ========================================
+    // LEVEL 2: RENDER CATEGORIES
+    // ========================================
+    renderCategories(group) {
+        const container = document.getElementById('menuCategories');
+        if (!container) return;
+
+        // Hide if 'all' or 'combo' group
+        if (group === 'all' || group === 'combo') {
+            container.innerHTML = '';
+            return;
+        }
+
+        // Get categories from MenuHierarchy
+        let categories = [];
+        if (typeof MenuHierarchy !== 'undefined') {
+            categories = MenuHierarchy.getCategories(group);
+        } else if (typeof menuSubcategories !== 'undefined') {
+            // Fallback to legacy subcategories
+            const legacyCat = this.mapGroupToCategory(group);
+            categories = menuSubcategories[legacyCat] || [];
+        }
+
+        if (categories.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="category-pill active" data-cat="all" onclick="CustomerApp.filterCategory('all')">
+                <span class="cat-icon">📋</span> Tất cả
+            </div>
+            ${categories.map(cat => `
+                <div class="category-pill" data-cat="${cat.id}" onclick="CustomerApp.filterCategory('${cat.id}')">
+                    <span class="cat-icon">${cat.icon}</span> ${cat.name}
+                </div>
+            `).join('')}
+        `;
+    },
+
+    // ========================================
+    // LEVEL 2: FILTER BY CATEGORY
+    // ========================================
+    filterCategory(category) {
+        this.currentCategory = category;
+        this.currentSubcategory = 'all';
+
+        // Update active state
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.dataset.cat === category);
+        });
+
+        // Render Level 3 subcategories
+        this.renderSubcategoriesLevel3(category);
+
+        // Render menu
+        this.renderMenu(this.mapGroupToCategory(this.currentGroup));
+
+        // Haptic feedback
+        if (typeof MobilePagination !== 'undefined') {
+            MobilePagination.triggerHaptic('light');
+        }
+    },
+
+    // ========================================
+    // LEVEL 3: RENDER SUBCATEGORIES
+    // ========================================
+    renderSubcategoriesLevel3(category) {
+        const container = document.getElementById('menuSubcategories');
+        if (!container) return;
+
+        if (category === 'all') {
+            container.innerHTML = '';
+            return;
+        }
+
+        // Get subcategories from MenuHierarchy
+        let subcategories = [];
+        if (typeof MenuHierarchy !== 'undefined') {
+            subcategories = MenuHierarchy.getSubcategories(category);
+        }
+
+        if (subcategories.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="subcategory-chip active" data-sub="all" onclick="CustomerApp.filterSubcategory('all')">
+                Tất cả
+            </div>
+            ${subcategories.map(sub => `
+                <div class="subcategory-chip" data-sub="${sub.id}" onclick="CustomerApp.filterSubcategory('${sub.id}')">
+                    ${sub.icon} ${sub.name}
+                </div>
+            `).join('')}
+        `;
+    },
+
+    // ========================================
+    // LEVEL 3: FILTER BY SUBCATEGORY
+    // ========================================
+    filterSubcategory(subcategory) {
+        this.currentSubcategory = subcategory;
+
+        // Update active state
+        document.querySelectorAll('.subcategory-chip').forEach(chip => {
+            chip.classList.toggle('active', chip.dataset.sub === subcategory);
+        });
+
+        // Render menu
+        this.renderMenu(this.mapGroupToCategory(this.currentGroup));
+    },
+
+    // ========================================
+    // RENDER COMBOS
+    // ========================================
+    renderCombos() {
+        const grid = document.getElementById('customerMenuGrid');
+        if (!grid) return;
+
+        let combos = [];
+        if (typeof MenuHierarchy !== 'undefined') {
+            combos = MenuHierarchy.combos;
+        }
+
+        if (combos.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                    <div style="font-size: 3rem; margin-bottom: 16px;">🎁</div>
+                    <p>Chưa có combo nào</p>
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = combos.map(combo => `
+            <div class="combo-card" onclick="CustomerApp.addComboToCart('${combo.id}')">
+                <div class="combo-badge">-${this.formatPrice(combo.savings)}</div>
+                <div class="combo-name">${combo.icon} ${combo.name}</div>
+                <div class="combo-desc">${combo.description}</div>
+                <div class="combo-pricing">
+                    <span class="combo-original">${this.formatPrice(combo.originalPrice)}</span>
+                    <span class="combo-price">${this.formatPrice(combo.comboPrice)}</span>
+                    <span class="combo-savings">Tiết kiệm ${this.formatPrice(combo.savings)}</span>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    // Add combo to cart
+    addComboToCart(comboId) {
+        if (typeof MenuHierarchy === 'undefined') return;
+
+        const combo = MenuHierarchy.combos.find(c => c.id === comboId);
+        if (!combo) return;
+
+        // Add combo as special cart item
+        const comboCartItem = {
+            id: comboId,
+            name: combo.name,
+            price: combo.comboPrice,
+            icon: combo.icon,
+            isCombo: true,
+            items: combo.items
+        };
+
+        this.cart.push(comboCartItem);
+        this.saveCart();
+        this.updateCartUI();
+        this.showToast(`🎁 Đã thêm ${combo.name} vào giỏ!`);
+
+        // Haptic feedback
+        if (typeof MobilePagination !== 'undefined') {
+            MobilePagination.triggerHaptic('success');
+        }
     },
 
     // ========================================
