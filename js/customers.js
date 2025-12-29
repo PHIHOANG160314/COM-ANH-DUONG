@@ -99,11 +99,18 @@ const CustomerLoyalty = {
         const stats = document.getElementById('customerStats');
         if (stats) {
             const totalPoints = this.customers.reduce((sum, c) => sum + c.points, 0);
-            const goldCount = this.customers.filter(c => c.tier === 'gold').length;
+            const tierCounts = {
+                diamond: this.customers.filter(c => c.tier === 'diamond').length,
+                gold: this.customers.filter(c => c.tier === 'gold').length,
+                silver: this.customers.filter(c => c.tier === 'silver').length,
+                bronze: this.customers.filter(c => c.tier === 'bronze').length
+            };
             stats.innerHTML = `
-                Tổng khách: <strong>${this.customers.length}</strong> | 
-                Điểm tích lũy: <strong>${totalPoints.toLocaleString()}</strong> |
-                Gold: <strong>${goldCount}</strong>
+                Tổng: <strong>${this.customers.length}</strong> | 
+                💎 <strong>${tierCounts.diamond}</strong> |
+                🥇 <strong>${tierCounts.gold}</strong> |
+                🥈 <strong>${tierCounts.silver}</strong> |
+                🥉 <strong>${tierCounts.bronze}</strong>
             `;
         }
     },
