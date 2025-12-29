@@ -49,7 +49,7 @@ const StaffApp = {
             dashboard: true,
             dashboardRevenue: false,
             kitchen: true,
-            orders: false,
+            orders: true,  // Changed: All roles can view orders
             pos: false,
             reports: false,
             staff: false,
