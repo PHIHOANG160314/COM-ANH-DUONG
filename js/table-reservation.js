@@ -1,6 +1,6 @@
 // ========================================
 // F&B MASTER - TABLE RESERVATION
-// Book tables with floor plan view
+// Supabase Persistence + Local Fallback
 // ========================================
 
 const TableReservation = {
@@ -25,8 +25,26 @@ const TableReservation = {
         specialRequest: ''
     },
 
+    // Saved reservations
+    reservations: [],
+
     init() {
-        console.log('🪑 Table Reservation initialized');
+        this.loadReservations();
+        if (window.Debug) Debug.info('Table Reservation ready', `(${this.reservations.length} existing)`);
+    },
+
+    loadReservations() {
+        this.reservations = JSON.parse(localStorage.getItem('table_reservations') || '[]');
+    },
+
+    saveReservation(reservation) {
+        this.reservations.push(reservation);
+        localStorage.setItem('table_reservations', JSON.stringify(this.reservations));
+
+        // TODO: Sync to Supabase when configured
+        // if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+        //     SupabaseService.upsertReservation(reservation);
+        // }
     },
 
     // ========================================
@@ -222,9 +240,15 @@ const TableReservation = {
     },
 
     isTableOccupied(tableId) {
-        // Simulate some tables being occupied
-        const occupiedTables = [3, 6];
-        return occupiedTables.includes(tableId);
+        // Check actual reservations for the selected date/time
+        if (!this.state.selectedDate || !this.state.selectedTime) return false;
+
+        return this.reservations.some(r =>
+            r.selectedTable === tableId &&
+            r.selectedDate === this.state.selectedDate &&
+            r.selectedTime === this.state.selectedTime &&
+            r.status !== 'cancelled'
+        );
     },
 
     goToStep(step) {
@@ -260,8 +284,7 @@ const TableReservation = {
 
         this.state.specialRequest = document.getElementById('specialRequest')?.value || '';
 
-        // Save reservation
-        const reservations = JSON.parse(localStorage.getItem('table_reservations') || '[]');
+        // Create and save reservation
         const reservation = {
             id: 'RES' + Date.now(),
             ...this.state,
@@ -269,8 +292,7 @@ const TableReservation = {
             createdAt: new Date().toISOString(),
             status: 'confirmed'
         };
-        reservations.push(reservation);
-        localStorage.setItem('table_reservations', JSON.stringify(reservations));
+        this.saveReservation(reservation);
 
         // Show success
         this.showSuccessModal(reservation);

@@ -1,20 +1,22 @@
 // ========================================
 // F&B MASTER - REAL-TIME KITCHEN
-// WebSocket Simulation for Live Updates
+// Supabase Realtime + Fallback Simulation
 // ========================================
 
 const KitchenRealtime = {
-    // Simulated WebSocket states
+    // Connection states
     connectionState: 'disconnected',
     reconnectAttempts: 0,
     maxReconnectAttempts: 5,
     reconnectDelay: 3000,
+    useSupabase: false,
+    supabaseChannel: null,
 
     // Order queue
     orders: [],
     listeners: [],
 
-    // Simulated kitchen times (in seconds)
+    // Preparation times (in seconds)
     prepTimes: {
         drink: { min: 60, max: 180 },      // 1-3 min
         appetizer: { min: 180, max: 300 }, // 3-5 min
@@ -22,12 +24,71 @@ const KitchenRealtime = {
         dessert: { min: 180, max: 300 }    // 3-5 min
     },
 
-    init() {
-        console.log('👨‍🍳 Kitchen Realtime initialized');
+    async init() {
+        if (window.Debug) Debug.info('Kitchen Realtime initializing...');
         this.loadOrders();
-        this.connect();
+
+        // Try Supabase real-time first
+        if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+            await this.connectSupabase();
+        } else {
+            this.connect(); // Fallback to simulation
+        }
+
         this.startSimulation();
+        if (window.Debug) Debug.info('Kitchen Realtime ready', this.useSupabase ? '(Supabase)' : '(Local)');
     },
+
+    // ========================================
+    // SUPABASE REAL-TIME CONNECTION
+    // ========================================
+
+    async connectSupabase() {
+        try {
+            const supabase = await window.getSupabase?.();
+            if (!supabase) {
+                this.connect();
+                return;
+            }
+
+            // Subscribe to orders changes
+            this.supabaseChannel = supabase.channel('kitchen-orders')
+                .on('postgres_changes',
+                    { event: '*', schema: 'public', table: 'orders' },
+                    (payload) => {
+                        this.handleRealtimeEvent(payload);
+                    }
+                )
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        this.connectionState = 'connected';
+                        this.useSupabase = true;
+                        this.updateConnectionUI();
+                        this.emit('connected');
+                        if (window.Debug) Debug.info('Kitchen connected to Supabase Realtime');
+                    }
+                });
+
+        } catch (e) {
+            if (window.Debug) Debug.warn('Supabase realtime failed, using simulation:', e.message);
+            this.connect();
+        }
+    },
+
+    handleRealtimeEvent(payload) {
+        const { eventType, new: newRecord, old: oldRecord } = payload;
+
+        if (eventType === 'INSERT') {
+            this.emit('orderAdded', newRecord);
+        } else if (eventType === 'UPDATE') {
+            this.emit('orderUpdated', newRecord);
+        } else if (eventType === 'DELETE') {
+            this.emit('orderCompleted', oldRecord);
+        }
+
+        this.refreshDisplay();
+    },
+
 
     // ========================================
     // CONNECTION MANAGEMENT
