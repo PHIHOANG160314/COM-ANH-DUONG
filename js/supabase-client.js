@@ -197,4 +197,5 @@ const SupabaseService = {
 window.SupabaseService = SupabaseService;
 window.isSupabaseConfigured = isSupabaseConfigured;
 
-console.log('✅ Supabase Service loaded', isSupabaseConfigured() ? '(Configured)' : '(Using local data)');
+if (window.Debug) Debug.info('Supabase Service loaded', isSupabaseConfigured() ? '(Configured)' : '(Using local data)');
+

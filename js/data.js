@@ -476,7 +476,7 @@ const sampleCustomers = [
 // Load sample customers to localStorage if not exists
 if (!localStorage.getItem('fb_customers') || JSON.parse(localStorage.getItem('fb_customers')).length < 100) {
     localStorage.setItem('fb_customers', JSON.stringify(sampleCustomers));
-    console.log('✅ Loaded 100 sample customers for promotions!');
+    if (window.Debug) Debug.info('Loaded 100 sample customers for promotions');
 }
 
 // Ensure global access

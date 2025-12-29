@@ -1,22 +1,54 @@
 // ========================================
 // F&B MASTER - CUSTOMER LOYALTY MODULE
+// With Supabase Integration + LocalStorage Fallback
 // ========================================
 
 const CustomerLoyalty = {
     customers: [],
+    useSupabase: false,
 
-    init() {
-        this.loadCustomers();
+    async init() {
+        await this.loadCustomers();
         this.render();
         this.setupEventListeners();
+        if (window.Debug) Debug.info('CustomerLoyalty initialized', this.useSupabase ? '(Supabase)' : '(localStorage)');
     },
 
-    loadCustomers() {
+    async loadCustomers() {
+        // Try Supabase first if configured
+        if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+            try {
+                const supabase = await window.getSupabase?.();
+                if (supabase) {
+                    const { data, error } = await supabase.from('customers').select('*').order('id');
+                    if (!error && data && data.length > 0) {
+                        this.customers = data.map(c => ({
+                            id: c.id,
+                            name: c.name,
+                            phone: c.phone,
+                            email: c.email,
+                            tier: c.tier?.toLowerCase() || 'bronze',
+                            points: c.points || 0,
+                            totalSpent: c.total_spent || 0,
+                            visits: c.visits || 0,
+                            createdAt: c.created_at?.split('T')[0] || new Date().toISOString().split('T')[0]
+                        }));
+                        this.useSupabase = true;
+                        return;
+                    }
+                }
+            } catch (e) {
+                if (window.Debug) Debug.warn('Supabase load failed, using localStorage:', e.message);
+            }
+        }
+
+        // Fallback to localStorage
         const saved = localStorage.getItem('fb_customers');
         if (saved) {
             this.customers = JSON.parse(saved);
         } else {
-            this.customers = [
+            // Use sample customers from data.js if available
+            this.customers = window.sampleCustomers || [
                 { id: 1, name: 'Nguyễn Văn Khách', phone: '0901111111', points: 500, totalSpent: 2500000, visits: 12, tier: 'gold', createdAt: '2025-01-15' },
                 { id: 2, name: 'Trần Thị Lan', phone: '0902222222', points: 150, totalSpent: 750000, visits: 5, tier: 'silver', createdAt: '2025-06-20' },
                 { id: 3, name: 'Lê Hoàng Nam', phone: '0903333333', points: 50, totalSpent: 250000, visits: 2, tier: 'bronze', createdAt: '2025-11-10' }
@@ -27,7 +59,9 @@ const CustomerLoyalty = {
 
     saveCustomers() {
         localStorage.setItem('fb_customers', JSON.stringify(this.customers));
+        // TODO: Sync to Supabase when online
     },
+
 
     render() {
         const container = document.getElementById('customersTable');
