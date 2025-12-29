@@ -74,12 +74,12 @@ const StaffApp = {
     },
 
     init() {
-        console.log('👨‍🍳 Staff Portal initializing...');
+        if (window.Debug) Debug.info('Staff Portal initializing...');
         this.updateDate();
         this.checkSession();
         this.loadOrders();
         setInterval(() => this.updateDate(), 60000);
-        console.log('👨‍🍳 Staff Portal ready!');
+        if (window.Debug) Debug.info('Staff Portal ready!');
     },
 
     updateDate() {
@@ -193,7 +193,18 @@ const StaffApp = {
             ordersNav.style.display = this.hasPermission('orders') ? 'flex' : 'none';
         }
 
-        console.log(`🔐 Applied permissions for role: ${role}`);
+        // Sync with central AccessControl if available
+        if (window.AccessControl) {
+            AccessControl.login({
+                id: this.currentStaff.id,
+                name: this.currentStaff.name,
+                role: this.currentStaff.role === 'Quản lý' ? 'admin'
+                    : this.currentStaff.role === 'Thu ngân' ? 'manager'
+                        : 'staff'
+            });
+        }
+
+        if (window.Debug) Debug.info('Applied permissions for role:', role);
     },
 
     logout() {
