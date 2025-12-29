@@ -39,7 +39,7 @@ const StaffApp = {
             dashboardRevenue: false,
             kitchen: false,
             orders: true,
-            pos: false,
+            pos: true,  // Phục vụ có thể truy cập POS
             reports: false,
             staff: false,
             checkin: true,
