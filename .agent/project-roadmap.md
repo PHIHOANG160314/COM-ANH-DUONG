@@ -11,7 +11,7 @@
 |----------|------|--------|--------------|
 | P0 | 4-Level Menu Structure | ✅ Done | 5 |
 | P0 | CI/CD Vercel + GitHub | ✅ Done | 3 |
-| P1 | Supabase Integration | 📋 Planned | 8 |
+| P1 | Supabase Integration | ✅ Done | 8 |
 | P2 | PWA Offline Mode | 📋 Planned | 5 |
 
 ---
