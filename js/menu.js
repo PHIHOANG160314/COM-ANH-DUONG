@@ -11,7 +11,7 @@ const MenuManagement = {
     selectedItems: [],
 
     init() {
-        console.log('MenuManagement.init() called');
+        if (window.Debug) Debug.log('MenuManagement.init() called');
         this.loadData();
         this.render();
         this.setupEventListeners();
@@ -19,7 +19,7 @@ const MenuManagement = {
     },
 
     loadData() {
-        console.log('Loading Menu Data...', 'Original items:', ORIGINAL_MENU_DATA.length);
+        if (window.Debug) Debug.log('Loading Menu Data...', 'Original items:', ORIGINAL_MENU_DATA.length);
 
         if (ORIGINAL_MENU_DATA.length === 0) {
             console.error('CRITICAL: No menu data found!');
@@ -34,11 +34,11 @@ const MenuManagement = {
 
         // Decide whether to reset
         if (!savedMaster || !isValid(savedMaster) || savedMaster.length < ORIGINAL_MENU_DATA.length) {
-            console.log('Resetting menu data...');
+            if (window.Debug) Debug.log('Resetting menu data...');
             this.forceResetMenu();
         } else {
             this.masterMenu = savedMaster;
-            console.log('Loaded', this.masterMenu.length, 'items from storage');
+            if (window.Debug) Debug.info('Loaded', this.masterMenu.length, 'items from storage');
         }
 
         // Load daily menu
@@ -67,7 +67,7 @@ const MenuManagement = {
             active: true
         }));
         this.saveMasterMenu();
-        console.log('Force reset complete:', this.masterMenu.length, 'items');
+        if (window.Debug) Debug.info('Force reset complete:', this.masterMenu.length, 'items');
     },
 
     getTodayKey() {

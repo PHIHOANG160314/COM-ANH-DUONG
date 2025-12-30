@@ -11,7 +11,7 @@ const MobileNav = {
     isPulling: false,
 
     init() {
-        console.log('📱 Mobile Navigation initializing...');
+        if (window.Debug) Debug.info('Mobile Navigation initializing...');
 
         this.setupScrollBehavior();
         this.setupPullToRefresh();
@@ -20,7 +20,7 @@ const MobileNav = {
         this.setupBottomNavSync();
         this.setupHapticFeedback();
 
-        console.log('📱 Mobile Navigation ready!');
+        if (window.Debug) Debug.info('Mobile Navigation ready!');
     },
 
     // ========================================
@@ -129,7 +129,7 @@ const MobileNav = {
 
         // Track successful installation
         window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA installed successfully');
+            if (window.Debug) Debug.info('PWA installed successfully');
             this.hideInstallPrompt();
             this.deferredPrompt = null;
 
@@ -166,7 +166,7 @@ const MobileNav = {
         this.deferredPrompt.prompt();
         const { outcome } = await this.deferredPrompt.userChoice;
 
-        console.log(`Install prompt outcome: ${outcome}`);
+        if (window.Debug) Debug.log(`Install prompt outcome: ${outcome}`);
         this.hideInstallPrompt();
         this.deferredPrompt = null;
     },

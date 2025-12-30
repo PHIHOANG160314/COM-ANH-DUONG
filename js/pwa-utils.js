@@ -8,21 +8,21 @@ const PWAUtils = {
     isOnline: navigator.onLine,
 
     init() {
-        console.log('📱 PWA Utils initializing...');
+        if (window.Debug) Debug.info('PWA Utils initializing...');
 
         // Listen for install prompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             this.deferredPrompt = e;
             this.showInstallButton();
-            console.log('📲 Install prompt ready');
+            if (window.Debug) Debug.info('Install prompt ready');
         });
 
         // Listen for successful install
         window.addEventListener('appinstalled', () => {
             this.deferredPrompt = null;
             this.hideInstallButton();
-            console.log('✅ App installed!');
+            if (window.Debug) Debug.info('App installed!');
         });
 
         // Online/Offline detection
@@ -51,7 +51,7 @@ const PWAUtils = {
         }
 
         this.createInstallUI();
-        console.log('📱 PWA Utils ready!');
+        if (window.Debug) Debug.info('PWA Utils ready!');
     },
 
     // ========================================
@@ -197,7 +197,7 @@ const PWAUtils = {
         this.deferredPrompt.prompt();
         const result = await this.deferredPrompt.userChoice;
 
-        console.log('Install choice:', result.outcome);
+        if (window.Debug) Debug.log('Install choice:', result.outcome);
         this.deferredPrompt = null;
         this.hideInstallButton();
     },
@@ -211,7 +211,7 @@ const PWAUtils = {
     // OFFLINE HANDLING
     // ========================================
     onOnline() {
-        console.log('🌐 Back online!');
+        if (window.Debug) Debug.info('Back online!');
         const indicator = document.getElementById('offlineIndicator');
         if (indicator) indicator.style.display = 'none';
 
@@ -220,7 +220,7 @@ const PWAUtils = {
     },
 
     onOffline() {
-        console.log('📴 Gone offline');
+        if (window.Debug) Debug.info('Gone offline');
         const indicator = document.getElementById('offlineIndicator');
         if (indicator) indicator.style.display = 'block';
 
@@ -236,7 +236,7 @@ const PWAUtils = {
         order.queuedAt = new Date().toISOString();
         queue.push(order);
         localStorage.setItem('offline_orders', JSON.stringify(queue));
-        console.log('📦 Order queued for sync:', order.id);
+        if (window.Debug) Debug.log('Order queued for sync:', order.id);
         return order;
     },
 
@@ -244,7 +244,7 @@ const PWAUtils = {
         const queue = JSON.parse(localStorage.getItem('offline_orders') || '[]');
         if (queue.length === 0) return;
 
-        console.log('🔄 Syncing', queue.length, 'offline orders...');
+        if (window.Debug) Debug.log('Syncing', queue.length, 'offline orders...');
 
         // In production, this would send to server
         // For now, just move from offline queue to regular orders
@@ -264,7 +264,7 @@ const PWAUtils = {
         localStorage.setItem('customer_orders', JSON.stringify(orders));
         localStorage.setItem('offline_orders', '[]');
 
-        console.log('✅ Synced all offline orders');
+        if (window.Debug) Debug.info('Synced all offline orders');
         this.showToast(`✅ Đã đồng bộ ${queue.length} đơn hàng`);
     },
 
@@ -296,9 +296,9 @@ const PWAUtils = {
                     text: data.text || '',
                     url: data.url || window.location.href
                 });
-                console.log('Shared successfully');
+                if (window.Debug) Debug.log('Shared successfully');
             } catch (err) {
-                console.log('Share cancelled or failed:', err);
+                if (window.Debug) Debug.log('Share cancelled or failed:', err);
             }
         } else {
             // Fallback: copy to clipboard
