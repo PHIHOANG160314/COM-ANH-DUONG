@@ -78,7 +78,7 @@ const ThemeManager = {
     currentTheme: 'dark',
 
     init() {
-        console.log('🎨 Theme Manager initialized');
+        if (window.Debug) Debug.info('Theme Manager initialized');
 
         // Load saved theme
         const saved = localStorage.getItem('app_theme') || 'dark';

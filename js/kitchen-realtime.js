@@ -104,7 +104,7 @@ const KitchenRealtime = {
             this.reconnectAttempts = 0;
             this.updateConnectionUI();
             this.emit('connected');
-            console.log('✅ Kitchen WebSocket connected (simulated)');
+            if (window.Debug) Debug.info('Kitchen WebSocket connected (simulated)');
         }, 1000);
     },
 
@@ -116,7 +116,7 @@ const KitchenRealtime = {
 
     reconnect() {
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            console.log('❌ Max reconnect attempts reached');
+            if (window.Debug) Debug.error('Max reconnect attempts reached');
             return;
         }
 

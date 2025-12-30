@@ -19,7 +19,7 @@ const PerformanceOptimizer = {
     },
 
     init() {
-        console.log('⚡ Performance Optimizer initialized');
+        if (window.Debug) Debug.info('Performance Optimizer initialized');
 
         this.setupLazyLoading();
         this.setupPrefetching();
@@ -257,7 +257,7 @@ const PerformanceOptimizer = {
     clearCache() {
         const keys = Object.keys(localStorage).filter(k => k.startsWith('cache_'));
         keys.forEach(k => localStorage.removeItem(k));
-        console.log(`🗑️ Cleared ${keys.length} cached items`);
+        if (window.Debug) Debug.info(`Cleared ${keys.length} cached items`);
     },
 
     // ========================================
@@ -312,7 +312,7 @@ const PerformanceOptimizer = {
                     cacheHits: this.stats.cacheHits
                 };
 
-                console.log('📊 Performance Metrics:', metrics);
+                if (window.Debug) Debug.log('Performance Metrics:', metrics);
 
                 // Store for debugging
                 window.__perfMetrics = metrics;

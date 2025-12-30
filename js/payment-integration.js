@@ -52,7 +52,7 @@ const PaymentIntegration = {
     selectedMethod: null,
 
     init() {
-        console.log('💳 Payment Integration initialized');
+        if (window.Debug) Debug.info('Payment Integration initialized');
     },
 
     // ========================================

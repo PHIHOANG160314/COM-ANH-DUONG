@@ -8,11 +8,11 @@ const PushNotifications = {
     vapidPublicKey: null, // Set this for real push notifications
 
     async init() {
-        console.log('🔔 Push Notifications initializing...');
+        if (window.Debug) Debug.info('Push Notifications initializing...');
 
         // Check browser support
         if (!('Notification' in window)) {
-            console.log('This browser does not support notifications');
+            if (window.Debug) Debug.log('This browser does not support notifications');
             return;
         }
 
@@ -40,16 +40,16 @@ const PushNotifications = {
                 this.showToast('🔔 Đã bật thông báo!');
             }
         } catch (err) {
-            console.log('Notification permission error:', err);
+            if (window.Debug) Debug.log('Notification permission error:', err);
         }
     },
 
     async setupPushManager() {
         try {
             const registration = await navigator.serviceWorker.ready;
-            console.log('Service Worker ready for push');
+            if (window.Debug) Debug.info('Service Worker ready for push');
         } catch (err) {
-            console.log('Push setup error:', err);
+            if (window.Debug) Debug.log('Push setup error:', err);
         }
     },
 
@@ -59,7 +59,7 @@ const PushNotifications = {
 
     send(title, options = {}) {
         if (this.permission !== 'granted') {
-            console.log('Notifications not permitted');
+            if (window.Debug) Debug.log('Notifications not permitted');
             return;
         }
 

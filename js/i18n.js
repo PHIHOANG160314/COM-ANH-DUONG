@@ -245,7 +245,7 @@ const i18n = {
 
     init() {
         const savedLang = localStorage.getItem('fb_language') || 'vi';
-        console.log('🌐 i18n initialized, language:', savedLang);
+        if (window.Debug) Debug.info('i18n initialized, language:', savedLang);
         this.setLanguage(savedLang);
     },
 

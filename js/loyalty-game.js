@@ -42,7 +42,7 @@ const LoyaltyGame = {
 
     init() {
         this.loadState();
-        console.log('🎮 Loyalty Game initialized');
+        if (window.Debug) Debug.info('Loyalty Game initialized');
     },
 
     loadState() {

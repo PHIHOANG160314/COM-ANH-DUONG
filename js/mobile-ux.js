@@ -24,13 +24,13 @@ const MobileUX = {
     },
 
     init() {
-        console.log('📱 Mobile UX initializing...');
+        if (window.Debug) Debug.info('Mobile UX initializing...');
         this.setupInfiniteScroll();
         this.setupPullToRefresh();
         this.setupSwipeGestures();
         this.setupDebouncedSearch();
         this.injectStyles();
-        console.log('📱 Mobile UX ready!');
+        if (window.Debug) Debug.info('Mobile UX ready!');
     },
 
     // ========================================

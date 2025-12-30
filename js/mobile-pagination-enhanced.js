@@ -18,12 +18,12 @@ const MobilePagination = {
     },
 
     init() {
-        console.log('📱 Mobile Pagination Enhanced initializing...');
+        if (window.Debug) Debug.info('Mobile Pagination Enhanced initializing...');
         this.setupScrollMemory();
         this.enhanceLoadingStates();
         this.setupStickyTabs();
         this.injectEnhancedStyles();
-        console.log('📱 Mobile Pagination Enhanced ready!');
+        if (window.Debug) Debug.info('Mobile Pagination Enhanced ready!');
     },
 
     // ========================================

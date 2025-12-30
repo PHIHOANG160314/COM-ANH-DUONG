@@ -134,7 +134,7 @@ const KitchenDisplay = {
                 osc2.stop(audioContext.currentTime + 0.3);
             }, 200);
         } catch (e) {
-            console.log('Audio not supported');
+            if (window.Debug) Debug.log('Audio not supported');
         }
     },
 

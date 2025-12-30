@@ -5,7 +5,7 @@
 
 const SocialShare = {
     init() {
-        console.log('📱 Social Share initialized');
+        if (window.Debug) Debug.info('Social Share initialized');
     },
 
     // ========================================
@@ -51,7 +51,7 @@ const SocialShare = {
                 return true;
             } catch (err) {
                 if (err.name !== 'AbortError') {
-                    console.log('Share cancelled');
+                    if (window.Debug) Debug.log('Share cancelled');
                 }
             }
         }
