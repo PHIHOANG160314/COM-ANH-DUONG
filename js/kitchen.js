@@ -5,20 +5,86 @@
 const KitchenDisplay = {
     orders: [],
 
-    init() {
-        this.loadOrders();
+    async init() {
+        await this.loadOrders();
         this.render();
         // Auto-refresh every 30 seconds
         setInterval(() => this.loadOrders(), 30000);
+
+        // Subscribe to realtime if available
+        this.subscribeToRealtime();
     },
 
-    loadOrders() {
-        // Get pending orders from OrderManagement or localStorage
+    async loadOrders() {
+        // Try Supabase first
+        if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
+            try {
+                const result = await SupabaseService.getOrders();
+                if (!result.error && result.data) {
+                    this.orders = result.data
+                        .filter(o => o.status === 'pending' || o.status === 'preparing')
+                        .map(o => this._convertOrder(o))
+                        .sort((a, b) => new Date(a.time) - new Date(b.time));
+                    this.render();
+                    return;
+                }
+            } catch (err) {
+                if (window.Debug) Debug.warn('Kitchen: Failed to load from Supabase, using localStorage');
+            }
+        }
+
+        // Fallback to localStorage
         const allOrders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
         this.orders = allOrders.filter(o =>
             o.status === 'pending' || o.status === 'preparing'
         ).sort((a, b) => new Date(a.time) - new Date(b.time));
         this.render();
+    },
+
+    // Convert Supabase order format to display format
+    _convertOrder(supabaseOrder) {
+        let items = [];
+        try {
+            items = typeof supabaseOrder.items === 'string'
+                ? JSON.parse(supabaseOrder.items)
+                : supabaseOrder.items || [];
+        } catch (e) {
+            items = [];
+        }
+
+        return {
+            id: supabaseOrder.order_number || supabaseOrder.id,
+            supabaseId: supabaseOrder.id,
+            table: supabaseOrder.table_number || (supabaseOrder.order_type === 'delivery' ? 'Giao hàng' : 'Mang đi'),
+            time: new Date(supabaseOrder.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+            status: supabaseOrder.status,
+            items: items.map(i => `${i.icon || ''} ${i.name} x${i.qty || 1}`).join(', '),
+            itemsDetail: items,
+            customer: supabaseOrder.customer_name,
+            total: supabaseOrder.total
+        };
+    },
+
+    // Subscribe to realtime order updates
+    subscribeToRealtime() {
+        if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
+            SupabaseService.subscribeToOrders((payload) => {
+                if (payload.eventType === 'INSERT') {
+                    // New order! Reload and notify
+                    this.loadOrders();
+                    this.playNotificationSound();
+
+                    // Show notification
+                    const order = payload.new;
+                    if (typeof Toast !== 'undefined') {
+                        Toast.show(`🔔 Đơn mới: ${order.order_number || order.id}`, 'warning');
+                    }
+                } else if (payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
+                    this.loadOrders();
+                }
+            });
+            if (window.Debug) Debug.info('KitchenDisplay subscribed to realtime orders');
+        }
     },
 
     render() {

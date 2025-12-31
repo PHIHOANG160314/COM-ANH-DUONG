@@ -26,17 +26,67 @@ const KitchenRealtime = {
 
     async init() {
         if (window.Debug) Debug.info('Kitchen Realtime initializing...');
-        this.loadOrders();
 
-        // Try Supabase real-time first
+        // Try to load from Supabase first, fallback to localStorage
         if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+            await this.loadOrdersFromSupabase();
             await this.connectSupabase();
         } else {
+            this.loadOrders(); // Load from localStorage
             this.connect(); // Fallback to simulation
         }
 
         this.startSimulation();
         if (window.Debug) Debug.info('Kitchen Realtime ready', this.useSupabase ? '(Supabase)' : '(Local)');
+    },
+
+    // Load orders from Supabase
+    async loadOrdersFromSupabase() {
+        if (typeof SupabaseService === 'undefined') return;
+
+        try {
+            const result = await SupabaseService.getOrders();
+            if (!result.error && result.data) {
+                // Filter for active orders and convert to kitchen format
+                this.orders = result.data
+                    .filter(o => o.status === 'pending' || o.status === 'preparing' || o.status === 'confirmed')
+                    .map(o => this._convertSupabaseOrder(o));
+                this.saveOrders();
+                this.refreshDisplay();
+                if (window.Debug) Debug.info('Loaded', this.orders.length, 'orders from Supabase');
+            }
+        } catch (err) {
+            if (window.Debug) Debug.error('Failed to load orders from Supabase:', err);
+            this.loadOrders(); // Fallback to localStorage
+        }
+    },
+
+    // Convert Supabase order to kitchen format
+    _convertSupabaseOrder(supabaseOrder) {
+        let items = [];
+        try {
+            items = typeof supabaseOrder.items === 'string'
+                ? JSON.parse(supabaseOrder.items)
+                : supabaseOrder.items || [];
+        } catch (e) {
+            items = [];
+        }
+
+        return {
+            id: supabaseOrder.order_number || supabaseOrder.id,
+            supabaseId: supabaseOrder.id,
+            items: items,
+            customer: supabaseOrder.customer_name || 'Khách hàng',
+            phone: supabaseOrder.customer_phone || '',
+            table: supabaseOrder.table_number || null,
+            status: supabaseOrder.status || 'pending',
+            createdAt: supabaseOrder.created_at,
+            estimatedTime: this.calculateEstimatedTime(items),
+            progress: supabaseOrder.status === 'preparing' ? 50 : 0,
+            notes: supabaseOrder.notes || '',
+            orderType: supabaseOrder.order_type || 'dinein',
+            total: supabaseOrder.total || 0
+        };
     },
 
     // ========================================
@@ -77,16 +127,101 @@ const KitchenRealtime = {
 
     handleRealtimeEvent(payload) {
         const { eventType, new: newRecord, old: oldRecord } = payload;
+        if (window.Debug) Debug.info('🔔 Kitchen realtime event:', eventType, newRecord?.order_number || newRecord?.id);
 
         if (eventType === 'INSERT') {
-            this.emit('orderAdded', newRecord);
+            // NEW ORDER - Add to list and notify!
+            const kitchenOrder = this._convertSupabaseOrder(newRecord);
+
+            // Check if order already exists
+            const exists = this.orders.find(o => o.id === kitchenOrder.id || o.supabaseId === newRecord.id);
+            if (!exists) {
+                this.orders.unshift(kitchenOrder);
+                this.saveOrders();
+
+                // Show notification and play sound!
+                this._showNewOrderNotification(kitchenOrder);
+                this._playNotificationSound();
+            }
+
+            this.emit('orderAdded', kitchenOrder);
         } else if (eventType === 'UPDATE') {
+            // Update existing order
+            const orderIndex = this.orders.findIndex(o => o.supabaseId === newRecord.id);
+            if (orderIndex !== -1) {
+                this.orders[orderIndex] = this._convertSupabaseOrder(newRecord);
+                this.saveOrders();
+            }
             this.emit('orderUpdated', newRecord);
         } else if (eventType === 'DELETE') {
+            this.orders = this.orders.filter(o => o.supabaseId !== oldRecord?.id);
+            this.saveOrders();
             this.emit('orderCompleted', oldRecord);
         }
 
         this.refreshDisplay();
+    },
+
+    // Show big notification for new order
+    _showNewOrderNotification(order) {
+        // Remove existing notification
+        document.getElementById('newOrderNotification')?.remove();
+
+        const notification = document.createElement('div');
+        notification.id = 'newOrderNotification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            z-index: 10000;
+            text-align: center;
+            animation: pulse 0.5s ease;
+            min-width: 300px;
+        `;
+
+        const itemsList = (order.items || []).slice(0, 5).map(i =>
+            `${i.icon || '🍽️'} ${i.name} x${i.qty || 1}`
+        ).join('<br>');
+
+        notification.innerHTML = `
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🔔</div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">ĐƠN HÀNG MỚI!</h2>
+            <p style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">${order.id}</p>
+            <p style="font-size: 1.2rem; opacity: 0.9;">${order.customer} ${order.phone ? '• ' + order.phone : ''}</p>
+            <div style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.9; max-height: 100px; overflow-y: auto;">
+                ${itemsList}
+            </div>
+            <p style="font-size: 1.2rem; font-weight: bold; margin-top: 1rem; color: #fff;">
+                💰 ${new Intl.NumberFormat('vi-VN').format(order.total || 0)}đ
+            </p>
+            <button onclick="this.parentElement.remove()" style="
+                margin-top: 1.5rem;
+                padding: 0.75rem 2rem;
+                background: white;
+                color: #d97706;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: bold;
+                cursor: pointer;
+            ">✅ Đã nhận</button>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto dismiss after 30 seconds
+        setTimeout(() => notification.remove(), 30000);
+
+        // Also show toast
+        if (typeof Toast !== 'undefined') {
+            Toast.show(`🔔 Đơn mới: ${order.id} - ${order.customer}`, 'warning');
+        }
     },
 
 

@@ -158,6 +158,9 @@ const StaffApp = {
         this.showSection('dashboard');
         this.updateDashboard();
         this.updateCheckinUI();
+
+        // Subscribe to realtime orders
+        this.subscribeToOrders();
     },
 
     // Apply role-based UI visibility
@@ -411,6 +414,59 @@ const StaffApp = {
     // ========================================
     loadOrders() {
         this.initOrdersPagination();
+    },
+
+    // Subscribe to realtime order updates
+    subscribeToOrders() {
+        if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
+            SupabaseService.subscribeToOrders((payload) => {
+                if (payload.eventType === 'INSERT') {
+                    // New order!
+                    this.showNewOrderNotification(payload.new);
+                    this.loadOrders(); // Refresh list
+                    this.loadKitchenOrders(); // Refresh kitchen
+                    this.updateDashboard(); // Refresh dashboard
+                } else if (payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
+                    this.loadOrders();
+                    this.loadKitchenOrders();
+                    this.updateDashboard();
+                }
+            });
+            if (window.Debug) Debug.info('StaffApp subscribed to realtime orders');
+        }
+    },
+
+    showNewOrderNotification(order) {
+        // Play notification sound
+        this.playNotificationSound();
+
+        // Show toast
+        this.showToast(`🔥 Đơn mới: ${order.order_number || order.id}`, 'warning');
+
+        // Vibrate if on mobile
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]);
+        }
+    },
+
+    playNotificationSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.3;
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            if (window.Debug) Debug.log('Audio not supported');
+        }
     },
 
     getOrders() {
