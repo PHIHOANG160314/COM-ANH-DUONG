@@ -7,6 +7,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 jobs:
   # Job 1: Validate and Check Files
   validate:
@@ -54,24 +58,33 @@ jobs:
           path: dist/
           retention-days: 7
 
-  # Job 3: Deploy
+  # Job 3: Deploy to Vercel
   deploy:
-    name: 🚀 Deploy
+    name: 🚀 Deploy to Vercel
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
     
     steps:
-      - name: 📥 Download Build Artifacts
-        uses: actions/download-artifact@v4
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: build-artifacts
-          path: ./deploy
+          node-version: '20'
           
-      - name: 🌐 Deploy to Production
-        run: |
-          echo "🚀 Deploying to production..."
-          echo "Deployment completed at $(date)"
+      - name: 📥 Install Vercel CLI
+        run: npm install -g vercel@latest
+        
+      - name: 🔗 Pull Vercel Environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🏗️ Build with Vercel
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🚀 Deploy to Vercel Production
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
           
       - name: 📧 Notify Success
         run: |
@@ -80,3 +93,4 @@ jobs:
           echo "  - Branch: ${{ github.ref_name }}"
           echo "  - Commit: ${{ github.sha }}"
           echo "  - Actor: ${{ github.actor }}"
+          echo "  - Deployed to: https://comanhduong.com"
