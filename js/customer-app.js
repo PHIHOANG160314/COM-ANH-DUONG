@@ -760,9 +760,9 @@ const CustomerApp = {
         }
 
         // Save order
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
         orders.unshift(order);
-        localStorage.setItem('customer_orders', JSON.stringify(orders));
+        localStorage.setItem('fb_orders', JSON.stringify(orders));
 
         // Clear cart and promo
         this.cart = [];
@@ -808,7 +808,7 @@ const CustomerApp = {
             return;
         }
 
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
         const order = orders.find(o => o.id === orderId);
 
         if (!order) {
@@ -893,7 +893,7 @@ const CustomerApp = {
         const container = document.getElementById('orderHistoryList');
         if (!container) return;
 
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
 
         if (orders.length === 0) {
             container.innerHTML = '<p class="no-orders">Chưa có đơn hàng nào</p>';

@@ -415,7 +415,7 @@ const StaffApp = {
 
     getOrders() {
         // Get orders from customer portal
-        return JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        return JSON.parse(localStorage.getItem('fb_orders') || '[]');
     },
 
     initOrdersPagination() {
@@ -498,7 +498,7 @@ const StaffApp = {
                 by: this.currentStaff?.name || 'Staff'
             });
 
-            localStorage.setItem('customer_orders', JSON.stringify(orders));
+            localStorage.setItem('fb_orders', JSON.stringify(orders));
             this.showToast(`Đã cập nhật: ${this.getStatusLabel(newStatus)}`);
 
             // Refresh views

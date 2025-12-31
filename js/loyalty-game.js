@@ -269,7 +269,7 @@ const LoyaltyGame = {
     // ========================================
 
     getRecentOrders(limit = 5) {
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
         return orders.slice(0, limit).map(order => ({
             id: order.id,
             date: order.createdAt,
@@ -280,7 +280,7 @@ const LoyaltyGame = {
     },
 
     reorder(orderId) {
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
         const order = orders.find(o => o.id === orderId);
 
         if (!order || !window.CustomerApp) return false;

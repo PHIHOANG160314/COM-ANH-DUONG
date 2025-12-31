@@ -248,7 +248,7 @@ const PWAUtils = {
 
         // In production, this would send to server
         // For now, just move from offline queue to regular orders
-        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
 
         for (const order of queue) {
             order.offlineQueued = false;
@@ -261,7 +261,7 @@ const PWAUtils = {
             }
         }
 
-        localStorage.setItem('customer_orders', JSON.stringify(orders));
+        localStorage.setItem('fb_orders', JSON.stringify(orders));
         localStorage.setItem('offline_orders', '[]');
 
         if (window.Debug) Debug.info('Synced all offline orders');
