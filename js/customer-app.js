@@ -760,9 +760,9 @@ const CustomerApp = {
         }
 
         // Save order
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
         orders.unshift(order);
-        localStorage.setItem('fb_orders', JSON.stringify(orders));
+        localStorage.setItem('customer_orders', JSON.stringify(orders));
 
         // Clear cart and promo
         this.cart = [];
@@ -784,6 +784,12 @@ const CustomerApp = {
             Confetti.orderSuccess();
         }
 
+        // Sync to Supabase if available
+        this.syncOrderToSupabase(order);
+
+        // Subscribe to realtime updates for this order
+        this.subscribeToOrderUpdates(order.id);
+
         // Show confirmation with animation
         setTimeout(() => {
             alert(`✅ Đặt hàng thành công!\n\nMã đơn: ${order.id}\nTổng tiền: ${this.formatPrice(order.total)}\nThời gian dự kiến: ${order.estimatedTime}\n\nNhà hàng sẽ liên hệ xác nhận ngay!`);
@@ -793,6 +799,99 @@ const CustomerApp = {
         this.showSection('tracking');
         document.getElementById('trackingOrderId').value = order.id;
         this.trackOrder();
+    },
+
+    // Sync order to Supabase
+    async syncOrderToSupabase(order) {
+        const isConfigured = typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured();
+        const isOnline = typeof OfflineManager !== 'undefined' ? OfflineManager.isOnline : navigator.onLine;
+
+        if (!isOnline) {
+            // Queue for offline sync
+            if (typeof OfflineManager !== 'undefined') {
+                await OfflineManager.queueOrder(order);
+                this.showToast('📴 Đã lưu đơn offline, sẽ đồng bộ khi có mạng');
+            }
+            return;
+        }
+
+        if (isConfigured && typeof SupabaseService !== 'undefined') {
+            try {
+                const result = await SupabaseService.createOrder({
+                    order_number: order.id,
+                    customer_name: order.delivery?.name || 'Khách',
+                    customer_phone: order.delivery?.phone || '',
+                    items: JSON.stringify(order.items),
+                    subtotal: order.subtotal,
+                    discount: order.discount || 0,
+                    total: order.total,
+                    status: 'pending',
+                    order_type: order.orderType,
+                    notes: order.delivery?.note || ''
+                });
+
+                if (result.error) {
+                    console.error('Failed to sync order:', result.error);
+                } else {
+                    console.log('✅ Order synced to Supabase:', result.data?.id);
+                    // Update local order with Supabase ID
+                    order.supabaseId = result.data?.id;
+                    this.updateLocalOrder(order);
+                }
+            } catch (err) {
+                console.error('Supabase sync error:', err);
+            }
+        }
+    },
+
+    // Subscribe to realtime order updates
+    subscribeToOrderUpdates(orderId) {
+        if (typeof SupabaseService !== 'undefined' && isSupabaseConfigured?.()) {
+            SupabaseService.subscribeToOrderById(orderId, (payload) => {
+                console.log('🔔 Order update received:', payload);
+
+                // Update local order status
+                const newStatus = payload.new?.status;
+                if (newStatus) {
+                    this.updateOrderStatus(orderId, newStatus);
+                }
+            });
+        }
+    },
+
+    // Update local order status
+    updateOrderStatus(orderId, newStatus) {
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orderIndex = orders.findIndex(o => o.id === orderId || o.supabaseId === orderId);
+
+        if (orderIndex !== -1) {
+            orders[orderIndex].status = newStatus;
+            orders[orderIndex].statusHistory = orders[orderIndex].statusHistory || [];
+            orders[orderIndex].statusHistory.push({
+                status: newStatus,
+                time: new Date().toISOString()
+            });
+            localStorage.setItem('customer_orders', JSON.stringify(orders));
+
+            // Re-render if on tracking page
+            const trackingContainer = document.getElementById('currentOrderTracking');
+            if (trackingContainer && document.getElementById('trackingOrderId')?.value === orderId) {
+                this.renderOrderStatus(orders[orderIndex], trackingContainer);
+            }
+
+            // Re-render order history
+            this.renderOrderHistory();
+        }
+    },
+
+    // Update local order with new data
+    updateLocalOrder(order) {
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        const orderIndex = orders.findIndex(o => o.id === order.id);
+        if (orderIndex !== -1) {
+            orders[orderIndex] = order;
+            localStorage.setItem('customer_orders', JSON.stringify(orders));
+        }
     },
 
     // ========================================
@@ -808,7 +907,7 @@ const CustomerApp = {
             return;
         }
 
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
         const order = orders.find(o => o.id === orderId);
 
         if (!order) {
@@ -893,7 +992,7 @@ const CustomerApp = {
         const container = document.getElementById('orderHistoryList');
         if (!container) return;
 
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
 
         if (orders.length === 0) {
             container.innerHTML = '<p class="no-orders">Chưa có đơn hàng nào</p>';

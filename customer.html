@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/mobile-bottom-nav.css">
     <link rel="stylesheet" href="css/menu-categories.css">
     <link rel="stylesheet" href="css/menu-hierarchy.css">
+    <link rel="stylesheet" href="css/mobile.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -441,6 +442,42 @@
     <script src="js/admin-dashboard.js"></script>
     <script src="js/mobile-pagination-enhanced.js"></script>
     <script src="js/performance-optimizer.js"></script>
+    <script src="js/offline-manager.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const reg = await navigator.serviceWorker.register('/sw.js');
+                    console.log('✅ SW registered:', reg.scope);
+
+                    // Listen for SW messages
+                    navigator.serviceWorker.addEventListener('message', event => {
+                        if (event.data?.type === 'ORDER_SYNCED') {
+                            CustomerApp.showToast(`✅ Đã đồng bộ đơn ${event.data.orderId}`);
+                            CustomerApp.renderOrderHistory();
+                        }
+                    });
+                } catch (err) {
+                    console.log('❌ SW failed:', err);
+                }
+            });
+        }
+
+        // Initialize Offline Manager after DOM ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof OfflineManager !== 'undefined') {
+                await OfflineManager.init();
+
+                // Cache menu for offline use
+                if (typeof CustomerApp !== 'undefined' && CustomerApp.menuData?.length) {
+                    OfflineManager.cacheMenu(CustomerApp.menuData);
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
