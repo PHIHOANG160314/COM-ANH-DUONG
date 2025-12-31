@@ -2,7 +2,7 @@
 // F&B MASTER - ANALYTICS MODULE
 // ========================================
 
-const Analytics = {
+const SalesAnalytics = {
     salesData: [],
     currentFilter: 'today',
     dateFrom: null,
@@ -278,4 +278,4 @@ const Analytics = {
     }
 };
 
-window.Analytics = Analytics;
+window.SalesAnalytics = SalesAnalytics;
