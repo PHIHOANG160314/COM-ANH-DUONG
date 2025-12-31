@@ -5,12 +5,12 @@
 
 const AdminCredentials = {
     // Default staff accounts
-    // In production, this should be stored in Supabase
+    // NOTE: In production, store in Supabase with hashed PINs
     defaultStaff: [
         {
             id: 'S001',
             name: 'Admin',
-            role: 'admin',
+            role: 'Quản lý',
             pin: '1234',  // Change in production!
             phone: '0917076061',
             active: true
@@ -18,23 +18,23 @@ const AdminCredentials = {
         {
             id: 'S002',
             name: 'Quản lý 1',
-            role: 'manager',
+            role: 'Quản lý',
             pin: '2345',
             phone: '',
             active: true
         },
         {
             id: 'S003',
-            name: 'Nhân viên 1',
-            role: 'staff',
+            name: 'Thu ngân 1',
+            role: 'Thu ngân',
             pin: '3456',
             phone: '',
             active: true
         },
         {
             id: 'S004',
-            name: 'Nhân viên 2',
-            role: 'staff',
+            name: 'Phục vụ 1',
+            role: 'Phục vụ',
             pin: '4567',
             phone: '',
             active: true
@@ -42,16 +42,8 @@ const AdminCredentials = {
         {
             id: 'S005',
             name: 'Bếp trưởng',
-            role: 'manager',
+            role: 'Bếp',
             pin: '5678',
-            phone: '',
-            active: true
-        },
-        {
-            id: 'S006',
-            name: 'Nhân viên bếp',
-            role: 'kitchen',  // New role for kitchen staff
-            pin: '6789',
             phone: '',
             active: true
         }

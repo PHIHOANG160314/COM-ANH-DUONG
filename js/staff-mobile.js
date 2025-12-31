@@ -58,9 +58,8 @@ const StaffApp = {
         }
     },
 
-    // Demo staff data removed - now uses AdminCredentials module
-    // Session timeout: 8 hours
-    SESSION_TIMEOUT: 8 * 60 * 60 * 1000,
+    // Demo staff data REMOVED - Now using AdminCredentials module
+    // See admin-credentials.js for centralized staff management
 
     // Check if current user has permission for a feature
     hasPermission(feature) {
@@ -95,12 +94,12 @@ const StaffApp = {
         if (saved) {
             const session = JSON.parse(saved);
 
-            // Check session timeout (8 hours)
+            // Session timeout check (8 hours)
+            const MAX_SESSION_AGE = 8 * 60 * 60 * 1000;
             const loginTime = new Date(session.loginTime || session.checkinTime).getTime();
-            if (Date.now() - loginTime > this.SESSION_TIMEOUT) {
+            if (Date.now() - loginTime > MAX_SESSION_AGE) {
                 if (window.Debug) Debug.info('Session expired, logging out');
-                this.logout();
-                this.showToast('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
+                localStorage.removeItem('staff_session');
                 return;
             }
 
@@ -120,19 +119,21 @@ const StaffApp = {
             return;
         }
 
-        // Use unified AdminCredentials for authentication
+        // Use centralized AdminCredentials for authentication
         let staff = null;
         if (typeof AdminCredentials !== 'undefined') {
             staff = AdminCredentials.authenticateByPin(pin);
             // Map role names for compatibility
             if (staff) {
-                const roleMap = {
+                const roleMapping = {
                     'admin': 'Quản lý',
                     'manager': 'Thu ngân',
-                    'staff': 'Phục vụ',
-                    'kitchen': 'Bếp'
+                    'staff': 'Phục vụ'
                 };
-                staff = { ...staff, role: roleMap[staff.role] || staff.role };
+                staff = {
+                    ...staff,
+                    role: roleMapping[staff.role] || staff.role
+                };
             }
         }
 
@@ -246,7 +247,7 @@ const StaffApp = {
             staff: this.currentStaff,
             isCheckedIn: this.isCheckedIn,
             checkinTime: this.checkinTime,
-            loginTime: new Date().toISOString()
+            loginTime: new Date().toISOString() // Add login time for session timeout
         }));
     },
 
