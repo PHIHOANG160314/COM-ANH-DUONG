@@ -17,4 +17,6 @@ window.ENV = {
     PLAUSIBLE_DOMAIN: ''  // Format: comanhduong.com
 };
 
-console.log('✅ Environment loaded:', window.ENV.SUPABASE_URL);
+if (window.Debug) {
+    Debug.info('✅ Environment loaded:', window.ENV.SUPABASE_URL);
+}

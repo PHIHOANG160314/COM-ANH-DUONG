@@ -1,10 +1,10 @@
-name: CI/CD Pipeline
+name: 🚀 CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 env:
@@ -12,61 +12,37 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  # Job 1: Validate and Check Files
+  # Job 1: Validate Files
   validate:
-    name: 🔍 Validate Files
+    name: 🔍 Validate
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout Repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
         
-      - name: 📋 List Repository Contents
+      - name: 📋 Validate Structure
         run: |
-          echo "📂 Repository Structure:"
-          find . -type f -not -path './.git/*' | head -50
-          
-      - name: ✅ Validation Complete
-        run: echo "All files validated successfully!"
+          echo "📂 Checking required files..."
+          for file in index.html customer.html staff-mobile.html manifest.json sw.js; do
+            if [ -f "$file" ]; then
+              echo "✅ $file exists"
+            else
+              echo "❌ Missing: $file"
+              exit 1
+            fi
+          done
+          echo "✅ All required files present"
 
-  # Job 2: Build (if applicable)
-  build:
-    name: 🏗️ Build Project
+  # Job 2: Deploy Production (main/master push only)
+  deploy-production:
+    name: 🚀 Deploy Production
     runs-on: ubuntu-latest
     needs: validate
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
-      - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
-        
-      - name: 🔧 Setup Environment
-        run: |
-          echo "Setting up build environment..."
-          echo "Build timestamp: $(date)"
-          
-      - name: 📦 Build Artifacts
-        run: |
-          echo "Building project..."
-          mkdir -p dist
-          cp -r . dist/ 2>/dev/null || true
-          echo "Build completed!"
-          
-      - name: 📤 Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/
-          retention-days: 7
-
-  # Job 3: Deploy to Vercel
-  deploy:
-    name: 🚀 Deploy to Vercel
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-      - name: 📥 Checkout Repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
         
       - name: 📦 Setup Node.js
@@ -77,20 +53,70 @@ jobs:
       - name: 📥 Install Vercel CLI
         run: npm install -g vercel@latest
         
-      - name: 🔗 Pull Vercel Environment
+      - name: 🔗 Pull Vercel Config
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         
       - name: 🏗️ Build with Vercel
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         
-      - name: 🚀 Deploy to Vercel Production
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-          
-      - name: 📧 Notify Success
+      - name: 🚀 Deploy to Production
+        id: deploy
         run: |
-          echo "✅ CI/CD Pipeline completed successfully!"
-          echo "📊 Summary:"
-          echo "  - Branch: ${{ github.ref_name }}"
-          echo "  - Commit: ${{ github.sha }}"
-          echo "  - Actor: ${{ github.actor }}"
-          echo "  - Deployed to: https://comanhduong.com"
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to: $URL"
+          
+      - name: 📧 Summary
+        run: |
+          echo "# 🎉 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Actor | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Production URL | https://comanhduong.com |" >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Preview Deployment (PRs only)
+  deploy-preview:
+    name: 🔍 Deploy Preview
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: 📥 Install Vercel CLI
+        run: npm install -g vercel@latest
+        
+      - name: 🔗 Pull Vercel Config
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🏗️ Build with Vercel
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: 🚀 Deploy Preview
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "🔍 Preview URL: $URL"
+          
+      - name: 💬 Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = '${{ steps.deploy.outputs.url }}';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Preview Deployment Ready!\n\n🔗 **URL**: ${url}\n\nThis preview will be updated with each new commit.`
+            });
