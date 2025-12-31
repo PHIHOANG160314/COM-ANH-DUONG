@@ -124,7 +124,7 @@ const MobileNav = {
                 if (this.deferredPrompt && !localStorage.getItem('pwa_install_dismissed')) {
                     this.showInstallPrompt();
                 }
-            }, 30000); // Show after 30 seconds
+            }, 10000); // Show after 10 seconds (optimized)
         });
 
         // Track successful installation
