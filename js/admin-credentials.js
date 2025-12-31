@@ -49,12 +49,19 @@ const AdminCredentials = {
         }
     ],
 
-    // Initialize staff data if not exists
+    // Version for cache invalidation
+    STAFF_VERSION: 'v2.0',
+
+    // Initialize staff data if not exists or version changed
     init() {
         const existing = localStorage.getItem('fb_staff');
-        if (!existing) {
+        const version = localStorage.getItem('fb_staff_version');
+
+        // Force update if version mismatch or no data
+        if (!existing || version !== this.STAFF_VERSION) {
             localStorage.setItem('fb_staff', JSON.stringify(this.defaultStaff));
-            console.log('✅ Default admin credentials initialized');
+            localStorage.setItem('fb_staff_version', this.STAFF_VERSION);
+            console.log('✅ Staff credentials updated to', this.STAFF_VERSION);
         }
     },
 
