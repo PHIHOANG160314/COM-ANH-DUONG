@@ -46,6 +46,14 @@ const AdminCredentials = {
             pin: '5678',
             phone: '',
             active: true
+        },
+        {
+            id: 'S006',
+            name: 'Nhân viên bếp',
+            role: 'kitchen',  // New role for kitchen staff
+            pin: '6789',
+            phone: '',
+            active: true
         }
     ],
 

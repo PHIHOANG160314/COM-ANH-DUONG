@@ -58,13 +58,9 @@ const StaffApp = {
         }
     },
 
-    // Demo staff data (in production, this would come from backend)
-    staffList: [
-        { id: 'S001', name: 'Nguyễn Văn A', pin: '1234', role: 'Phục vụ' },
-        { id: 'S002', name: 'Trần Thị B', pin: '2345', role: 'Thu ngân' },
-        { id: 'S003', name: 'Lê Văn C', pin: '3456', role: 'Bếp' },
-        { id: 'S004', name: 'Admin', pin: '0000', role: 'Quản lý' }
-    ],
+    // Demo staff data removed - now uses AdminCredentials module
+    // Session timeout: 8 hours
+    SESSION_TIMEOUT: 8 * 60 * 60 * 1000,
 
     // Check if current user has permission for a feature
     hasPermission(feature) {
@@ -98,6 +94,16 @@ const StaffApp = {
         const saved = localStorage.getItem('staff_session');
         if (saved) {
             const session = JSON.parse(saved);
+
+            // Check session timeout (8 hours)
+            const loginTime = new Date(session.loginTime || session.checkinTime).getTime();
+            if (Date.now() - loginTime > this.SESSION_TIMEOUT) {
+                if (window.Debug) Debug.info('Session expired, logging out');
+                this.logout();
+                this.showToast('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
+                return;
+            }
+
             this.currentStaff = session.staff;
             this.isCheckedIn = session.isCheckedIn;
             this.checkinTime = session.checkinTime;
@@ -105,9 +111,6 @@ const StaffApp = {
         }
     },
 
-    // ========================================
-    // AUTHENTICATION
-    // ========================================
     login() {
         const pinInput = document.getElementById('pinInput');
         const pin = pinInput?.value;
@@ -117,7 +120,22 @@ const StaffApp = {
             return;
         }
 
-        const staff = this.staffList.find(s => s.pin === pin);
+        // Use unified AdminCredentials for authentication
+        let staff = null;
+        if (typeof AdminCredentials !== 'undefined') {
+            staff = AdminCredentials.authenticateByPin(pin);
+            // Map role names for compatibility
+            if (staff) {
+                const roleMap = {
+                    'admin': 'Quản lý',
+                    'manager': 'Thu ngân',
+                    'staff': 'Phục vụ',
+                    'kitchen': 'Bếp'
+                };
+                staff = { ...staff, role: roleMap[staff.role] || staff.role };
+            }
+        }
+
         if (staff) {
             this.currentStaff = staff;
             this.saveSession();
@@ -227,7 +245,8 @@ const StaffApp = {
         localStorage.setItem('staff_session', JSON.stringify({
             staff: this.currentStaff,
             isCheckedIn: this.isCheckedIn,
-            checkinTime: this.checkinTime
+            checkinTime: this.checkinTime,
+            loginTime: new Date().toISOString()
         }));
     },
 
