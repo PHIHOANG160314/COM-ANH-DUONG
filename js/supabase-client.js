@@ -1,11 +1,19 @@
 // =====================================================
 // SUPABASE CLIENT - ÁNH DƯƠNG F&B
+// Enhanced with retry logic and standardized error handling
 // =====================================================
 
 // Config - Load from environment or use defaults
 const SUPABASE_CONFIG = {
     url: window.ENV?.SUPABASE_URL || 'YOUR_SUPABASE_URL',
     anonKey: window.ENV?.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY'
+};
+
+// Retry configuration
+const RETRY_CONFIG = {
+    maxRetries: 3,
+    baseDelay: 1000, // 1 second
+    maxDelay: 10000  // 10 seconds max
 };
 
 // Check if Supabase is available
@@ -21,14 +29,92 @@ const getSupabase = async () => {
     if (supabaseClient) return supabaseClient;
 
     if (!isSupabaseConfigured()) {
-        console.warn('Supabase not configured. Using local data.');
+        if (window.Debug) Debug.warn('Supabase not configured. Using local data.');
         return null;
     }
 
-    // Dynamic import of Supabase
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    supabaseClient = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-    return supabaseClient;
+    try {
+        // Dynamic import of Supabase
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        supabaseClient = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+        if (window.Debug) Debug.info('Supabase client initialized');
+        return supabaseClient;
+    } catch (err) {
+        if (window.Debug) Debug.error('Failed to initialize Supabase:', err.message);
+        return null;
+    }
+};
+
+// =====================================================
+// RETRY UTILITY WITH EXPONENTIAL BACKOFF
+// =====================================================
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const withRetry = async (operation, operationName = 'API call') => {
+    let lastError;
+
+    for (let attempt = 0; attempt <= RETRY_CONFIG.maxRetries; attempt++) {
+        try {
+            const result = await operation();
+
+            // If Supabase returns an error, check if it's retryable
+            if (result?.error) {
+                const isRetryable = isRetryableError(result.error);
+                if (isRetryable && attempt < RETRY_CONFIG.maxRetries) {
+                    const delay = calculateBackoff(attempt);
+                    if (window.Debug) Debug.warn(`${operationName} failed (attempt ${attempt + 1}), retrying in ${delay}ms...`);
+                    await sleep(delay);
+                    continue;
+                }
+                return result; // Return error result if not retryable
+            }
+
+            return result; // Success
+        } catch (err) {
+            lastError = err;
+
+            if (attempt < RETRY_CONFIG.maxRetries && isRetryableError(err)) {
+                const delay = calculateBackoff(attempt);
+                if (window.Debug) Debug.warn(`${operationName} exception (attempt ${attempt + 1}), retrying in ${delay}ms...`);
+                await sleep(delay);
+            }
+        }
+    }
+
+    if (window.Debug) Debug.error(`${operationName} failed after ${RETRY_CONFIG.maxRetries + 1} attempts`);
+    return { data: null, error: lastError?.message || 'Max retries exceeded' };
+};
+
+const calculateBackoff = (attempt) => {
+    const delay = RETRY_CONFIG.baseDelay * Math.pow(2, attempt);
+    const jitter = Math.random() * 500; // Add some randomness
+    return Math.min(delay + jitter, RETRY_CONFIG.maxDelay);
+};
+
+const isRetryableError = (error) => {
+    if (!error) return false;
+
+    // Check for network errors or temporary failures
+    const errorMessage = typeof error === 'string' ? error : error.message || '';
+    const retryablePatterns = [
+        'network', 'timeout', 'ECONNREFUSED', 'ENOTFOUND',
+        '502', '503', '504', 'rate limit', 'too many requests'
+    ];
+
+    return retryablePatterns.some(pattern =>
+        errorMessage.toLowerCase().includes(pattern.toLowerCase())
+    );
+};
+
+// =====================================================
+// STANDARDIZED API RESPONSE
+// =====================================================
+
+const createSuccessResponse = (data) => ({ data, error: null, success: true });
+const createErrorResponse = (error, context = '') => {
+    if (window.Debug) Debug.error(`API Error${context ? ` (${context})` : ''}:`, error);
+    return { data: null, error: typeof error === 'string' ? error : error?.message || 'Unknown error', success: false };
 };
 
 // =====================================================
@@ -40,115 +126,144 @@ const SupabaseService = {
     // ==================== MENU ====================
 
     async getMenuItems() {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getMenuItems');
 
-        const { data, error } = await supabase
-            .from('menu_items')
-            .select('*')
-            .eq('is_available', true)
-            .order('id');
+            const { data, error } = await supabase
+                .from('menu_items')
+                .select('*')
+                .eq('is_available', true)
+                .order('id');
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'getMenuItems');
+            return createSuccessResponse(data);
+        }, 'getMenuItems');
     },
 
     async getCategories() {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getCategories');
 
-        const { data, error } = await supabase
-            .from('categories')
-            .select('*')
-            .eq('is_active', true)
-            .order('order');
+            const { data, error } = await supabase
+                .from('categories')
+                .select('*')
+                .eq('is_active', true)
+                .order('order');
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'getCategories');
+            return createSuccessResponse(data);
+        }, 'getCategories');
     },
 
     async getCombos() {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getCombos');
 
-        const { data, error } = await supabase
-            .from('combos')
-            .select('*')
-            .eq('is_active', true);
+            const { data, error } = await supabase
+                .from('combos')
+                .select('*')
+                .eq('is_active', true);
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'getCombos');
+            return createSuccessResponse(data);
+        }, 'getCombos');
     },
 
     // ==================== ORDERS ====================
 
     async createOrder(orderData) {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'createOrder');
 
-        const { data, error } = await supabase
-            .from('orders')
-            .insert(orderData)
-            .select()
-            .single();
+            const { data, error } = await supabase
+                .from('orders')
+                .insert(orderData)
+                .select()
+                .single();
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'createOrder');
+            if (window.Debug) Debug.info('Order created:', data?.id);
+            return createSuccessResponse(data);
+        }, 'createOrder');
     },
 
     async getOrders(status = null) {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getOrders');
 
-        let query = supabase
-            .from('orders')
-            .select('*')
-            .order('created_at', { ascending: false });
+            let query = supabase
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        if (status) {
-            query = query.eq('status', status);
-        }
+            if (status) {
+                query = query.eq('status', status);
+            }
 
-        const { data, error } = await query;
-        return { data, error };
+            const { data, error } = await query;
+            if (error) return createErrorResponse(error, 'getOrders');
+            return createSuccessResponse(data);
+        }, 'getOrders');
     },
 
     async updateOrderStatus(orderId, status) {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateOrderStatus');
 
-        const { data, error } = await supabase
-            .from('orders')
-            .update({ status })
-            .eq('id', orderId)
-            .select()
-            .single();
+            const { data, error } = await supabase
+                .from('orders')
+                .update({ status })
+                .eq('id', orderId)
+                .select()
+                .single();
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'updateOrderStatus');
+            if (window.Debug) Debug.info('Order status updated:', orderId, '->', status);
+            return createSuccessResponse(data);
+        }, 'updateOrderStatus');
     },
 
     // ==================== CUSTOMERS ====================
 
     async getCustomerByPhone(phone) {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getCustomerByPhone');
 
-        const { data, error } = await supabase
-            .from('customers')
-            .select('*')
-            .eq('phone', phone)
-            .single();
+            const { data, error } = await supabase
+                .from('customers')
+                .select('*')
+                .eq('phone', phone)
+                .single();
 
-        return { data, error };
+            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows
+                return createErrorResponse(error, 'getCustomerByPhone');
+            }
+            return createSuccessResponse(data);
+        }, 'getCustomerByPhone');
     },
 
     async upsertCustomer(customerData) {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'upsertCustomer');
 
-        const { data, error } = await supabase
-            .from('customers')
-            .upsert(customerData, { onConflict: 'phone' })
-            .select()
-            .single();
+            const { data, error } = await supabase
+                .from('customers')
+                .upsert(customerData, { onConflict: 'phone' })
+                .select()
+                .single();
 
-        return { data, error };
+            if (error) return createErrorResponse(error, 'upsertCustomer');
+            if (window.Debug) Debug.info('Customer upserted:', data?.phone);
+            return createSuccessResponse(data);
+        }, 'upsertCustomer');
     },
 
     // ==================== REALTIME ====================
@@ -171,12 +286,12 @@ const SupabaseService = {
                 .on('postgres_changes',
                     { event: '*', schema: 'public', table: 'orders' },
                     (payload) => {
-                        console.log('🔔 Realtime order update:', payload.eventType);
+                        if (window.Debug) Debug.info('🔔 Realtime order update:', payload.eventType);
                         callback(payload);
                     }
                 )
                 .subscribe((status) => {
-                    console.log('📡 Orders subscription:', status);
+                    if (window.Debug) Debug.info('📡 Orders subscription:', status);
                 });
 
             this._subscriptions['orders'] = channel;
@@ -206,7 +321,7 @@ const SupabaseService = {
                         filter: `customer_phone=eq.${customerPhone}`
                     },
                     (payload) => {
-                        console.log('🔔 Customer order update:', payload.new?.status);
+                        if (window.Debug) Debug.info('🔔 Customer order update:', payload.new?.status);
                         callback(payload);
 
                         // Show notification
@@ -214,7 +329,7 @@ const SupabaseService = {
                     }
                 )
                 .subscribe((status) => {
-                    console.log('📡 Customer orders subscription:', status);
+                    if (window.Debug) Debug.info('📡 Customer orders subscription:', status);
                 });
 
             this._subscriptions[channelName] = channel;
@@ -243,7 +358,7 @@ const SupabaseService = {
                         filter: `id=eq.${orderId}`
                     },
                     (payload) => {
-                        console.log('🔔 Order update:', orderId, payload.new?.status);
+                        if (window.Debug) Debug.info('🔔 Order update:', orderId, payload.new?.status);
                         callback(payload);
                         this._showOrderNotification(payload);
                     }
@@ -261,7 +376,7 @@ const SupabaseService = {
             if (supabase && this._subscriptions[channelName]) {
                 supabase.removeChannel(this._subscriptions[channelName]);
                 delete this._subscriptions[channelName];
-                console.log('📴 Unsubscribed from:', channelName);
+                if (window.Debug) Debug.info('📴 Unsubscribed from:', channelName);
             }
         });
     },
@@ -327,39 +442,41 @@ const SupabaseService = {
             oscillator.start();
             oscillator.stop(audioContext.currentTime + 0.2);
         } catch (e) {
-            console.log('Audio notification not supported');
+            if (window.Debug) Debug.warn('Audio notification not supported');
         }
     },
 
     // ==================== ANALYTICS ====================
 
     async getTodayStats() {
-        const supabase = await getSupabase();
-        if (!supabase) return { data: null, error: 'Not configured' };
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getTodayStats');
 
-        const today = new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
 
-        const { data, error } = await supabase
-            .from('orders')
-            .select('total, status')
-            .gte('created_at', today);
+            const { data, error } = await supabase
+                .from('orders')
+                .select('total, status')
+                .gte('created_at', today);
 
-        if (error) return { data: null, error };
+            if (error) return createErrorResponse(error, 'getTodayStats');
 
-        const stats = {
-            totalOrders: data.length,
-            totalRevenue: data.reduce((sum, o) => sum + o.total, 0),
-            completedOrders: data.filter(o => o.status === 'completed').length,
-            pendingOrders: data.filter(o => o.status === 'pending').length
-        };
+            const stats = {
+                totalOrders: data.length,
+                totalRevenue: data.reduce((sum, o) => sum + (o.total || 0), 0),
+                completedOrders: data.filter(o => o.status === 'completed').length,
+                pendingOrders: data.filter(o => o.status === 'pending').length
+            };
 
-        return { data: stats, error: null };
+            return createSuccessResponse(stats);
+        }, 'getTodayStats');
     }
 };
 
 // Export to window
 window.SupabaseService = SupabaseService;
 window.isSupabaseConfigured = isSupabaseConfigured;
+window.getSupabase = getSupabase;
 
 if (window.Debug) Debug.info('Supabase Service loaded', isSupabaseConfigured() ? '(Configured)' : '(Using local data)');
-

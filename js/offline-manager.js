@@ -13,7 +13,7 @@ const OfflineManager = {
     // ========================================
     async init() {
         if (!window.indexedDB) {
-            console.warn('⚠️ IndexedDB not supported');
+            if (window.Debug) Debug.warn('IndexedDB not supported');
             return false;
         }
 
@@ -21,13 +21,13 @@ const OfflineManager = {
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
             request.onerror = () => {
-                console.error('❌ IndexedDB open failed');
+                if (window.Debug) Debug.error('IndexedDB open failed');
                 reject(request.error);
             };
 
             request.onsuccess = () => {
                 this.db = request.result;
-                console.log('✅ IndexedDB connected');
+                if (window.Debug) Debug.info('IndexedDB connected');
                 this.setupOnlineListener();
                 resolve(true);
             };
@@ -53,7 +53,7 @@ const OfflineManager = {
                     historyStore.createIndex('createdAt', 'createdAt', { unique: false });
                 }
 
-                console.log('📦 IndexedDB schema created');
+                if (window.Debug) Debug.info('IndexedDB schema created');
             };
         });
     },
@@ -66,14 +66,14 @@ const OfflineManager = {
     setupOnlineListener() {
         window.addEventListener('online', () => {
             this.isOnline = true;
-            console.log('🌐 Online - syncing pending orders...');
+            if (window.Debug) Debug.info('Online - syncing pending orders...');
             this.showStatus('online');
             this.syncPendingOrders();
         });
 
         window.addEventListener('offline', () => {
             this.isOnline = false;
-            console.log('📴 Offline mode');
+            if (window.Debug) Debug.info('Offline mode');
             this.showStatus('offline');
         });
 
@@ -122,7 +122,7 @@ const OfflineManager = {
             store.put(item);
         }
 
-        console.log('💾 Cached', menuItems.length, 'menu items');
+        if (window.Debug) Debug.info('Cached', menuItems.length, 'menu items');
     },
 
     async getCachedMenu() {
@@ -152,7 +152,7 @@ const OfflineManager = {
             const pending = JSON.parse(localStorage.getItem('pending_orders') || '[]');
             pending.push({ ...order, offlineId: 'OFF-' + Date.now(), status: 'pending_sync' });
             localStorage.setItem('pending_orders', JSON.stringify(pending));
-            console.log('📝 Order queued to localStorage (fallback)');
+            if (window.Debug) Debug.info('Order queued to localStorage (fallback)');
             return;
         }
 
@@ -170,7 +170,7 @@ const OfflineManager = {
             const request = store.add(orderData);
 
             request.onsuccess = () => {
-                console.log('📝 Order queued offline:', orderData.offlineId);
+                if (window.Debug) Debug.info('Order queued offline:', orderData.offlineId);
                 this.registerBackgroundSync();
                 resolve(orderData);
             };
@@ -214,7 +214,7 @@ const OfflineManager = {
             if (order) {
                 order.status = 'synced';
                 store.put(order);
-                console.log('✅ Order synced:', orderId);
+                if (window.Debug) Debug.info('Order synced:', orderId);
             }
         };
     },
@@ -227,9 +227,9 @@ const OfflineManager = {
             try {
                 const registration = await navigator.serviceWorker.ready;
                 await registration.sync.register('sync-orders');
-                console.log('🔄 Background sync registered');
+                if (window.Debug) Debug.info('Background sync registered');
             } catch (err) {
-                console.log('⚠️ Background sync not available, will sync manually');
+                if (window.Debug) Debug.warn('Background sync not available, will sync manually');
             }
         }
     },
@@ -238,11 +238,11 @@ const OfflineManager = {
         const pendingOrders = await this.getPendingOrders();
 
         if (pendingOrders.length === 0) {
-            console.log('✅ No pending orders to sync');
+            if (window.Debug) Debug.info('No pending orders to sync');
             return;
         }
 
-        console.log('🔄 Syncing', pendingOrders.length, 'pending orders...');
+        if (window.Debug) Debug.info('Syncing', pendingOrders.length, 'pending orders...');
 
         for (const order of pendingOrders) {
             try {
@@ -271,11 +271,11 @@ const OfflineManager = {
                     await this.markOrderSynced(order.id);
                 }
             } catch (err) {
-                console.error('❌ Failed to sync order:', order.offlineId, err);
+                if (window.Debug) Debug.error('Failed to sync order:', order.offlineId, err);
             }
         }
 
-        console.log('✅ Sync completed');
+        if (window.Debug) Debug.info('Sync completed');
     },
 
     // ========================================
@@ -323,7 +323,7 @@ const OfflineManager = {
         if (typeof Toast !== 'undefined') {
             Toast.show(message, type);
         } else {
-            console.log(message);
+            if (window.Debug) Debug.info(message);
         }
     },
 
@@ -337,7 +337,7 @@ const OfflineManager = {
 // Auto-initialize
 document.addEventListener('DOMContentLoaded', () => {
     OfflineManager.init().then(() => {
-        console.log('📴 Offline Manager ready');
+        if (window.Debug) Debug.info('Offline Manager ready');
     });
 });
 
