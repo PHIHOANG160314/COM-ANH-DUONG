@@ -1,5 +1,6 @@
 // ========================================
 // F&B MASTER - ANALYTICS MODULE
+// Enhanced with Supabase Integration
 // ========================================
 
 const SalesAnalytics = {
@@ -7,14 +8,38 @@ const SalesAnalytics = {
     currentFilter: 'today',
     dateFrom: null,
     dateTo: null,
+    useSupabase: false, // Will be set based on configuration
 
-    init() {
-        this.loadSalesData();
+    async init() {
+        this.useSupabase = typeof isSupabaseConfigured === 'function' && isSupabaseConfigured();
+        await this.loadSalesData();
         this.setupEventListeners();
+        this.setupRealtimeUpdates();
         this.renderAll();
     },
 
-    loadSalesData() {
+    async loadSalesData() {
+        // Apply filter first to set dateFrom/dateTo
+        if (!this.dateFrom || !this.dateTo) {
+            this.applyQuickFilter();
+        }
+
+        // Try Supabase first
+        if (this.useSupabase && typeof SupabaseService !== 'undefined') {
+            try {
+                const result = await SupabaseService.getRangeReport(this.dateFrom, this.dateTo);
+                if (result.success && result.data) {
+                    // Transform Supabase data to local format
+                    this.salesData = this.transformSupabaseData(result.data);
+                    if (window.Debug) Debug.info('📊 Analytics loaded from Supabase');
+                    return;
+                }
+            } catch (error) {
+                if (window.Debug) Debug.warn('Supabase analytics failed, using local data');
+            }
+        }
+
+        // Fallback to localStorage
         const saved = storage.get('sales_history');
         if (saved && saved.length > 0) {
             this.salesData = saved;
@@ -22,6 +47,32 @@ const SalesAnalytics = {
             // Generate sample data for demo
             this.salesData = this.generateSampleData();
             this.saveSalesData();
+        }
+    },
+
+    // Transform Supabase report data to local format
+    transformSupabaseData(reportData) {
+        const data = [];
+        if (reportData.dailyBreakdown) {
+            reportData.dailyBreakdown.forEach(day => {
+                data.push({
+                    date: day.sale_date,
+                    orders: day.orders,
+                    total: day.revenue
+                });
+            });
+        }
+        return data;
+    },
+
+    // Setup real-time updates from Supabase
+    setupRealtimeUpdates() {
+        if (this.useSupabase && typeof SupabaseService !== 'undefined') {
+            SupabaseService.subscribeToStats(async (stats) => {
+                if (window.Debug) Debug.info('📊 Real-time analytics update');
+                await this.loadSalesData();
+                this.renderAll();
+            });
         }
     },
 

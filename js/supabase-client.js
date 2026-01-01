@@ -446,31 +446,174 @@ const SupabaseService = {
         }
     },
 
-    // ==================== ANALYTICS ====================
+    // ==================== ANALYTICS & REPORTING ====================
 
     async getTodayStats() {
         return withRetry(async () => {
             const supabase = await getSupabase();
             if (!supabase) return createErrorResponse('Not configured', 'getTodayStats');
 
-            const today = new Date().toISOString().split('T')[0];
+            // Use RPC function for optimized query
+            const { data, error } = await supabase.rpc('get_daily_report');
+
+            if (error) {
+                // Fallback to direct query
+                const today = new Date().toISOString().split('T')[0];
+                const { data: orders, error: ordersError } = await supabase
+                    .from('orders')
+                    .select('total, status')
+                    .gte('created_at', today);
+
+                if (ordersError) return createErrorResponse(ordersError, 'getTodayStats');
+
+                return createSuccessResponse({
+                    totalOrders: orders.length,
+                    totalRevenue: orders.reduce((sum, o) => sum + (o.total || 0), 0),
+                    completedOrders: orders.filter(o => o.status === 'completed').length,
+                    pendingOrders: orders.filter(o => o.status === 'pending').length
+                });
+            }
+
+            return createSuccessResponse(data);
+        }, 'getTodayStats');
+    },
+
+    // Get daily report for specific date
+    async getDailyReport(date = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getDailyReport');
+
+            const reportDate = date || new Date().toISOString().split('T')[0];
+            const { data, error } = await supabase.rpc('get_daily_report', {
+                report_date: reportDate
+            });
+
+            if (error) return createErrorResponse(error, 'getDailyReport');
+            return createSuccessResponse(data);
+        }, 'getDailyReport');
+    },
+
+    // Get report for date range
+    async getRangeReport(dateFrom, dateTo) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getRangeReport');
+
+            const { data, error } = await supabase.rpc('get_range_report', {
+                date_from: dateFrom,
+                date_to: dateTo
+            });
+
+            if (error) return createErrorResponse(error, 'getRangeReport');
+            return createSuccessResponse(data);
+        }, 'getRangeReport');
+    },
+
+    // Get top selling items
+    async getTopItems(dateFrom = null, dateTo = null, limit = 10) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getTopItems');
+
+            const from = dateFrom || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const to = dateTo || new Date().toISOString().split('T')[0];
+
+            const { data, error } = await supabase.rpc('get_top_items', {
+                date_from: from,
+                date_to: to,
+                limit_count: limit
+            });
+
+            if (error) return createErrorResponse(error, 'getTopItems');
+            return createSuccessResponse(data || []);
+        }, 'getTopItems');
+    },
+
+    // Get revenue by category
+    async getCategoryRevenue(dateFrom = null, dateTo = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getCategoryRevenue');
+
+            const from = dateFrom || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const to = dateTo || new Date().toISOString().split('T')[0];
+
+            const { data, error } = await supabase.rpc('get_revenue_by_category', {
+                date_from: from,
+                date_to: to
+            });
+
+            if (error) return createErrorResponse(error, 'getCategoryRevenue');
+            return createSuccessResponse(data || []);
+        }, 'getCategoryRevenue');
+    },
+
+    // Get hourly stats for real-time dashboard
+    async getHourlyStats(date = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getHourlyStats');
+
+            const targetDate = date || new Date().toISOString().split('T')[0];
+            const { data, error } = await supabase.rpc('get_hourly_stats', {
+                target_date: targetDate
+            });
+
+            if (error) return createErrorResponse(error, 'getHourlyStats');
+            return createSuccessResponse(data || []);
+        }, 'getHourlyStats');
+    },
+
+    // Get all orders for export (with date range)
+    async getOrdersForExport(dateFrom, dateTo) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getOrdersForExport');
 
             const { data, error } = await supabase
                 .from('orders')
-                .select('total, status')
-                .gte('created_at', today);
+                .select('*')
+                .gte('created_at', dateFrom)
+                .lte('created_at', dateTo + 'T23:59:59')
+                .order('created_at', { ascending: false });
 
-            if (error) return createErrorResponse(error, 'getTodayStats');
+            if (error) return createErrorResponse(error, 'getOrdersForExport');
+            return createSuccessResponse(data || []);
+        }, 'getOrdersForExport');
+    },
 
-            const stats = {
-                totalOrders: data.length,
-                totalRevenue: data.reduce((sum, o) => sum + (o.total || 0), 0),
-                completedOrders: data.filter(o => o.status === 'completed').length,
-                pendingOrders: data.filter(o => o.status === 'pending').length
-            };
+    // Subscribe to real-time stats updates
+    subscribeToStats(callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return null;
 
-            return createSuccessResponse(stats);
-        }, 'getTodayStats');
+            const channelName = 'stats-realtime';
+
+            if (this._subscriptions[channelName]) {
+                supabase.removeChannel(this._subscriptions[channelName]);
+            }
+
+            const channel = supabase
+                .channel(channelName)
+                .on('postgres_changes',
+                    { event: '*', schema: 'public', table: 'orders' },
+                    async (payload) => {
+                        if (window.Debug) Debug.info('📊 Stats update triggered');
+                        // Fetch fresh stats and call callback
+                        const stats = await this.getTodayStats();
+                        if (stats.success) {
+                            callback(stats.data);
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    if (window.Debug) Debug.info('📡 Stats subscription:', status);
+                });
+
+            this._subscriptions[channelName] = channel;
+            return channel;
+        });
     }
 };
 

@@ -1,6 +1,7 @@
 // ========================================
 // F&B MASTER - ADMIN MOBILE DASHBOARD
 // Quick Stats & Management on Mobile
+// Enhanced with Supabase Integration
 // ========================================
 
 const AdminDashboard = {
@@ -12,14 +13,51 @@ const AdminDashboard = {
         activeOrders: 0,
         staffOnDuty: 0
     },
+    useSupabase: false,
 
-    init() {
-        console.log('📊 Admin Dashboard initialized');
-        this.loadStats();
+    async init() {
+        this.useSupabase = typeof isSupabaseConfigured === 'function' && isSupabaseConfigured();
+        if (window.Debug) Debug.info('📊 Admin Dashboard initialized', this.useSupabase ? '(Supabase)' : '(Local)');
+        await this.loadStats();
+        this.setupRealtimeUpdates();
     },
 
-    loadStats() {
-        // Load from localStorage or generate sample data
+    async loadStats() {
+        // Try Supabase first
+        if (this.useSupabase && typeof SupabaseService !== 'undefined') {
+            try {
+                // Get today's stats
+                const statsResult = await SupabaseService.getTodayStats();
+                if (statsResult.success && statsResult.data) {
+                    const data = statsResult.data;
+                    const summary = data.summary || data;
+
+                    this.stats.todayOrders = summary.orderCount || summary.totalOrders || 0;
+                    this.stats.todayRevenue = summary.totalRevenue || 0;
+                    this.stats.avgOrderValue = summary.avgOrderValue ||
+                        (this.stats.todayOrders > 0 ? Math.round(this.stats.todayRevenue / this.stats.todayOrders) : 0);
+                    this.stats.activeOrders = summary.pendingOrders || 0;
+                }
+
+                // Get top items
+                const topResult = await SupabaseService.getTopItems(null, null, 5);
+                if (topResult.success && topResult.data && topResult.data.length > 0) {
+                    this.stats.topItems = topResult.data.map(item => ({
+                        name: item.name,
+                        count: item.quantity || item.qty || 0,
+                        revenue: item.revenue || 0
+                    }));
+                }
+
+                if (window.Debug) Debug.info('📊 Stats loaded from Supabase');
+                return;
+
+            } catch (error) {
+                if (window.Debug) Debug.warn('Supabase stats failed, using localStorage');
+            }
+        }
+
+        // Fallback to localStorage
         const orders = JSON.parse(localStorage.getItem('all_orders') || '[]');
         const today = new Date().toDateString();
         const todayOrders = orders.filter(o =>
@@ -32,23 +70,49 @@ const AdminDashboard = {
             ? Math.round(this.stats.todayRevenue / this.stats.todayOrders)
             : 0;
 
-        // Sample data for demo
+        // Sample data for demo if no real data
         if (this.stats.todayOrders === 0) {
             this.stats.todayOrders = 47;
             this.stats.todayRevenue = 8750000;
             this.stats.avgOrderValue = 186170;
             this.stats.activeOrders = 5;
             this.stats.staffOnDuty = 8;
+            this.stats.topItems = [
+                { name: 'Phở bò tái', count: 28, revenue: 1400000 },
+                { name: 'Cà phê sữa đá', count: 45, revenue: 900000 },
+                { name: 'Bánh mì thịt', count: 22, revenue: 660000 },
+                { name: 'Bún chả', count: 19, revenue: 950000 },
+                { name: 'Nước chanh', count: 35, revenue: 525000 }
+            ];
         }
+    },
 
-        // Top items
-        this.stats.topItems = [
-            { name: 'Phở bò tái', count: 28, revenue: 1400000 },
-            { name: 'Cà phê sữa đá', count: 45, revenue: 900000 },
-            { name: 'Bánh mì thịt', count: 22, revenue: 660000 },
-            { name: 'Bún chả', count: 19, revenue: 950000 },
-            { name: 'Nước chanh', count: 35, revenue: 525000 }
-        ];
+    // Setup real-time updates
+    setupRealtimeUpdates() {
+        if (this.useSupabase && typeof SupabaseService !== 'undefined') {
+            SupabaseService.subscribeToStats(async (stats) => {
+                if (window.Debug) Debug.info('📊 Real-time dashboard update');
+                await this.loadStats();
+                // Update UI if modal is open
+                this.updateModalStats();
+            });
+        }
+    },
+
+    // Update stats in open modal
+    updateModalStats() {
+        const modal = document.getElementById('adminDashboardModal');
+        if (!modal) return;
+
+        const revenueEl = modal.querySelector('.stat-card.revenue .stat-value');
+        const ordersEl = modal.querySelector('.stat-card.orders .stat-value');
+        const avgEl = modal.querySelector('.stat-card.avg .stat-value');
+        const activeEl = modal.querySelector('.stat-card.active .stat-value');
+
+        if (revenueEl) revenueEl.textContent = this.formatPrice(this.stats.todayRevenue);
+        if (ordersEl) ordersEl.textContent = this.stats.todayOrders;
+        if (avgEl) avgEl.textContent = this.formatPrice(this.stats.avgOrderValue);
+        if (activeEl) activeEl.textContent = this.stats.activeOrders;
     },
 
     // ========================================
@@ -194,13 +258,36 @@ const AdminDashboard = {
         // In a real app, navigate to the section
     },
 
-    generateReport(type) {
+    async generateReport(type) {
         const reports = {
             daily: '📊 Báo cáo doanh thu ngày',
+            weekly: '📈 Báo cáo tuần',
             inventory: '📦 Báo cáo tồn kho',
             staff: '👥 Báo cáo chấm công'
         };
+
+        // Use ReportsManager if available
+        if (typeof ReportsManager !== 'undefined') {
+            this.close(); // Close admin dashboard
+            ReportsManager.showReportsModal();
+            return;
+        }
+
+        // Fallback for basic report
         this.showToast(`${reports[type]} đang được tạo...`);
+
+        if (this.useSupabase && typeof SupabaseService !== 'undefined') {
+            try {
+                const result = await SupabaseService.getDailyReport();
+                if (result.success) {
+                    this.showToast(`✅ ${reports[type]} đã sẵn sàng!`);
+                    // Could integrate with ReportsManager.exportToExcel here
+                    return;
+                }
+            } catch (error) {
+                if (window.Debug) Debug.error('Report generation failed:', error);
+            }
+        }
 
         // Simulate report generation
         setTimeout(() => {
