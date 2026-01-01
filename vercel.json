@@ -52,8 +52,20 @@
             "destination": "/customer.html"
         },
         {
+            "source": "/customer/",
+            "destination": "/customer.html"
+        },
+        {
             "source": "/staff",
             "destination": "/staff-mobile.html"
+        },
+        {
+            "source": "/staff/",
+            "destination": "/staff-mobile.html"
+        },
+        {
+            "source": "/admin",
+            "destination": "/index.html"
         }
     ]
 }
