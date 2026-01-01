@@ -1,23 +1,33 @@
 // ========================================
 // F&B MASTER - ORDER MANAGEMENT MODULE
+// Enhanced with Supabase Integration
 // ========================================
 
 const OrderManagement = {
     orders: [],
+    useSupabase: false,
 
-    init() {
-        this.loadOrders();
+    async init() {
+        await this.loadOrders();
+        this.setupRealtimeSubscription();
         this.render();
         this.setupEventListeners();
     },
 
-    loadOrders() {
-        // Load from localStorage or use sample data
+    async loadOrders() {
+        // Try loading from Supabase first
+        if (await this.loadFromSupabase()) {
+            this.useSupabase = true;
+            if (window.Debug) Debug.info('📦 Orders loaded from Supabase');
+            return;
+        }
+
+        // Fallback to localStorage
         const saved = storage.get('orders_data');
         if (saved && saved.length > 0) {
             this.orders = saved;
         } else {
-            // Updated Sample orders data with type
+            // Sample orders data with type
             this.orders = [
                 {
                     id: 'DH001',
@@ -27,7 +37,7 @@ const OrderManagement = {
                     address: 'Bàn 1 (Tại quán)',
                     items: 'Bún Bò Huế x2, Cà Phê Sữa x2',
                     total: 160000,
-                    status: 'new',
+                    status: 'delivered',
                     createdAt: '07:30',
                     note: ''
                 },
@@ -39,12 +49,143 @@ const OrderManagement = {
                     address: '456 Lê Lợi, Q.3, TP.HCM',
                     items: 'Phở Bò Tái x1',
                     total: 55000,
-                    status: 'received',
+                    status: 'delivered',
                     createdAt: '08:00',
                     note: 'Ít hành'
                 }
             ];
             this.saveOrders();
+        }
+    },
+
+    // ========================================
+    // SUPABASE INTEGRATION
+    // ========================================
+
+    async loadFromSupabase() {
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            return false;
+        }
+
+        try {
+            const result = await SupabaseService.getOrders();
+            if (result.data && result.data.length > 0) {
+                this.orders = result.data.map(o => this.mapSupabaseToLocal(o));
+                return true;
+            }
+        } catch (err) {
+            console.error('Failed to load from Supabase:', err);
+        }
+        return false;
+    },
+
+    setupRealtimeSubscription() {
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            return;
+        }
+
+        SupabaseService.subscribeToOrders((payload) => {
+            this.handleRealtimeEvent(payload);
+        });
+
+        if (window.Debug) Debug.info('📡 Orders realtime subscription active');
+    },
+
+    handleRealtimeEvent(payload) {
+        if (payload.eventType === 'INSERT') {
+            const newOrder = this.mapSupabaseToLocal(payload.new);
+            // Check if already exists (avoid duplicates)
+            if (!this.orders.find(o => o.id === newOrder.id || o.supabaseId === newOrder.supabaseId)) {
+                this.orders.unshift(newOrder);
+                this.render();
+                toast.success('🔔 Đơn hàng mới: #' + newOrder.id);
+                this.playNotificationSound();
+            }
+        } else if (payload.eventType === 'UPDATE') {
+            const idx = this.orders.findIndex(o => o.supabaseId == payload.new.id);
+            if (idx !== -1) {
+                this.orders[idx] = this.mapSupabaseToLocal(payload.new);
+                this.render();
+            }
+        } else if (payload.eventType === 'DELETE') {
+            const idx = this.orders.findIndex(o => o.supabaseId == payload.old.id);
+            if (idx !== -1) {
+                this.orders.splice(idx, 1);
+                this.render();
+            }
+        }
+    },
+
+    mapSupabaseToLocal(supabaseOrder) {
+        // Parse items from JSON string
+        let itemsStr = '';
+        try {
+            const items = JSON.parse(supabaseOrder.items || '[]');
+            itemsStr = items.map(i => `${i.name} x${i.qty}`).join(', ');
+        } catch {
+            itemsStr = supabaseOrder.items || '';
+        }
+
+        return {
+            id: supabaseOrder.order_number || ('ORD' + supabaseOrder.id),
+            supabaseId: supabaseOrder.id,
+            type: supabaseOrder.order_type === 'delivery' ? 'delivery' : 'dine_in',
+            customer: supabaseOrder.customer_name || 'Khách hàng',
+            phone: supabaseOrder.customer_phone || '',
+            address: supabaseOrder.address || 'Tại quán',
+            items: itemsStr,
+            total: supabaseOrder.total || 0,
+            status: this.mapStatusFromSupabase(supabaseOrder.status),
+            createdAt: new Date(supabaseOrder.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+            note: supabaseOrder.notes || ''
+        };
+    },
+
+    mapStatusFromSupabase(supabaseStatus) {
+        const map = {
+            pending: 'new',
+            confirmed: 'received',
+            preparing: 'received',
+            delivering: 'delivering',
+            completed: 'delivered',
+            cancelled: 'cancelled'
+        };
+        return map[supabaseStatus] || 'new';
+    },
+
+    mapStatusToSupabase(localStatus) {
+        const map = {
+            new: 'pending',
+            received: 'preparing',
+            delivering: 'delivering',
+            delivered: 'completed'
+        };
+        return map[localStatus] || 'pending';
+    },
+
+    playNotificationSound() {
+        try {
+            // Simple beep sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (err) {
+            // Ignore audio errors
         }
     },
 
@@ -251,6 +392,19 @@ const OrderManagement = {
             this.saveOrders();
             this.render();
             toast.success(`Cập nhật trạng thái: ${newStatus}`);
+
+            // Sync to Supabase if available
+            if (order.supabaseId && this.useSupabase && typeof SupabaseService !== 'undefined') {
+                const supabaseStatus = this.mapStatusToSupabase(newStatus);
+                SupabaseService.updateOrderStatus(order.supabaseId, supabaseStatus)
+                    .then(result => {
+                        if (result.error) {
+                            console.error('Failed to sync status to Supabase:', result.error);
+                        } else {
+                            if (window.Debug) Debug.info('✅ Status synced to Supabase:', supabaseStatus);
+                        }
+                    });
+            }
         }
     },
 
