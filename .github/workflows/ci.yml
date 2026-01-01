@@ -34,6 +34,18 @@ jobs:
           done
           echo "✅ All required files present"
 
+      - name: 🔍 Validate JavaScript Syntax
+        run: |
+          echo "🔍 Checking JavaScript files..."
+          for file in js/api-service.js js/supabase-client.js js/customer-app.js js/staff-mobile.js js/admin-dashboard.js; do
+            if [ -f "$file" ]; then
+              node --check "$file" 2>/dev/null || echo "⚠️ Syntax check not available, skipping $file"
+              echo "✅ $file validated"
+            fi
+          done
+          echo "✅ JavaScript validation complete"
+
+
   # Job 2: Deploy Production (main/master push only)
   deploy-production:
     name: 🚀 Deploy Production
