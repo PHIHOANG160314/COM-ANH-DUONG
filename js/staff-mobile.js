@@ -541,7 +541,7 @@ const StaffApp = {
         }
     },
 
-    updateOrderStatus(orderId, newStatus) {
+    async updateOrderStatus(orderId, newStatus) {
         const orders = this.getOrders();
         const order = orders.find(o => o.id === orderId);
 
@@ -554,7 +554,19 @@ const StaffApp = {
                 by: this.currentStaff?.name || 'Staff'
             });
 
+            // Cập nhật localStorage
             localStorage.setItem('customer_orders', JSON.stringify(orders));
+
+            // Đồng bộ với Supabase qua APIService
+            if (typeof APIService !== 'undefined' && APIService.isConfigured()) {
+                const result = await APIService.orders.updateStatus(order.supabaseId || orderId, newStatus);
+                if (result.success) {
+                    if (window.Debug) Debug.info('✅ Đã đồng bộ trạng thái với Supabase:', orderId, newStatus);
+                } else if (result.offline) {
+                    if (window.Debug) Debug.info('📴 Đã lưu offline, sẽ đồng bộ sau');
+                }
+            }
+
             this.showToast(`Đã cập nhật: ${this.getStatusLabel(newStatus)}`);
 
             // Refresh views

@@ -438,7 +438,7 @@ const CustomerApp = {
             `).join('');
         }
 
-        console.log('✅ Rendered', items.length, 'menu cards with animations');
+        if (window.Debug) Debug.info('✅ Rendered', items.length, 'menu cards with animations');
     },
 
     renderMenuCard(item) {
@@ -501,12 +501,12 @@ const CustomerApp = {
     // CART
     // ========================================
     addToCart(itemId) {
-        console.log('📦 Adding item:', itemId);
+        if (window.Debug) Debug.info('📦 Adding item:', itemId);
         const items = this.getMenuItems();
         const item = items.find(i => i.id === itemId || String(i.id) === String(itemId));
 
         if (!item) {
-            console.error('❌ Item not found:', itemId);
+            if (window.Debug) Debug.error('❌ Item not found:', itemId);
             this.showToast('Không tìm thấy món này', 'error');
             return;
         }
@@ -514,10 +514,10 @@ const CustomerApp = {
         const existing = this.cart.find(c => c.id === item.id || String(c.id) === String(item.id));
         if (existing) {
             existing.qty++;
-            console.log('📦 Updated qty:', existing.qty);
+            if (window.Debug) Debug.info('📦 Updated qty:', existing.qty);
         } else {
             this.cart.push({ ...item, qty: 1 });
-            console.log('📦 Added new item to cart');
+            if (window.Debug) Debug.info('📦 Added new item to cart');
         }
 
         this.saveCart();
@@ -831,15 +831,15 @@ const CustomerApp = {
                 });
 
                 if (result.error) {
-                    console.error('Failed to sync order:', result.error);
+                    if (window.Debug) Debug.error('Failed to sync order:', result.error);
                 } else {
-                    console.log('✅ Order synced to Supabase:', result.data?.id);
+                    if (window.Debug) Debug.info('✅ Order synced to Supabase:', result.data?.id);
                     // Update local order with Supabase ID
                     order.supabaseId = result.data?.id;
                     this.updateLocalOrder(order);
                 }
             } catch (err) {
-                console.error('Supabase sync error:', err);
+                if (window.Debug) Debug.error('Supabase sync error:', err);
             }
         }
     },
@@ -848,7 +848,7 @@ const CustomerApp = {
     subscribeToOrderUpdates(orderId) {
         if (typeof SupabaseService !== 'undefined' && isSupabaseConfigured?.()) {
             SupabaseService.subscribeToOrderById(orderId, (payload) => {
-                console.log('🔔 Order update received:', payload);
+                if (window.Debug) Debug.info('🔔 Order update received:', payload);
 
                 // Update local order status
                 const newStatus = payload.new?.status;
