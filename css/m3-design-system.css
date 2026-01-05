@@ -311,7 +311,81 @@
     --ad-color-tertiary-container: #FFECB3;
     --ad-color-on-tertiary-container: #4E3B00;
 
-    /* Apply brand to M3 tokens */
+    /* =====================================================
+       SEMANTIC COLORS - Ánh Dương Extended
+       ===================================================== */
+
+    /* Success - Green */
+    --ad-color-success: #4CAF50;
+    --ad-color-on-success: #FFFFFF;
+    --ad-color-success-container: #E8F5E9;
+    --ad-color-on-success-container: #1B5E20;
+
+    /* Warning - Amber */
+    --ad-color-warning: #FF9800;
+    --ad-color-on-warning: #000000;
+    --ad-color-warning-container: #FFF3E0;
+    --ad-color-on-warning-container: #E65100;
+
+    /* Info - Blue */
+    --ad-color-info: #2196F3;
+    --ad-color-on-info: #FFFFFF;
+    --ad-color-info-container: #E3F2FD;
+    --ad-color-on-info-container: #0D47A1;
+
+    /* Danger - Red (extends error) */
+    --ad-color-danger: #F44336;
+    --ad-color-on-danger: #FFFFFF;
+    --ad-color-danger-container: #FFEBEE;
+    --ad-color-on-danger-container: #B71C1C;
+
+    /* =====================================================
+       STATUS COLORS - Order/Kitchen Status
+       ===================================================== */
+
+    /* Pending - Yellow */
+    --ad-status-pending: #FFC107;
+    --ad-status-pending-bg: #FFF8E1;
+
+    /* Preparing - Blue */
+    --ad-status-preparing: #2196F3;
+    --ad-status-preparing-bg: #E3F2FD;
+
+    /* Ready - Orange */
+    --ad-status-ready: #FF9800;
+    --ad-status-ready-bg: #FFF3E0;
+
+    /* Completed - Green */
+    --ad-status-completed: #4CAF50;
+    --ad-status-completed-bg: #E8F5E9;
+
+    /* Cancelled - Grey */
+    --ad-status-cancelled: #9E9E9E;
+    --ad-status-cancelled-bg: #F5F5F5;
+
+    /* =====================================================
+       EXTENDED PALETTE - Gradients & Accents
+       ===================================================== */
+
+    /* Gradient Colors */
+    --ad-gradient-primary: linear-gradient(135deg, #FF6B35 0%, #FF8F5C 100%);
+    --ad-gradient-secondary: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+    --ad-gradient-tertiary: linear-gradient(135deg, #FFB300 0%, #FFCA28 100%);
+    --ad-gradient-premium: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+    --ad-gradient-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+
+    /* Accent Colors */
+    --ad-accent-pink: #E91E63;
+    --ad-accent-purple: #9C27B0;
+    --ad-accent-indigo: #3F51B5;
+    --ad-accent-cyan: #00BCD4;
+    --ad-accent-teal: #009688;
+    --ad-accent-lime: #CDDC39;
+
+    /* =====================================================
+       APPLY BRAND TO M3 TOKENS
+       ===================================================== */
+
     --md-sys-color-primary: var(--ad-color-primary);
     --md-sys-color-on-primary: var(--ad-color-on-primary);
     --md-sys-color-primary-container: var(--ad-color-primary-container);
@@ -713,6 +787,119 @@
     display: flex;
     justify-content: flex-end;
     gap: 8px;
+}
+
+/* =====================================================
+   ÁNH DƯƠNG UTILITY CLASSES
+   ===================================================== */
+
+/* Semantic Button Variants */
+.md-button-success {
+    background: var(--ad-color-success);
+    color: var(--ad-color-on-success);
+}
+
+.md-button-warning {
+    background: var(--ad-color-warning);
+    color: var(--ad-color-on-warning);
+}
+
+.md-button-info {
+    background: var(--ad-color-info);
+    color: var(--ad-color-on-info);
+}
+
+.md-button-danger {
+    background: var(--ad-color-danger);
+    color: var(--ad-color-on-danger);
+}
+
+/* Status Badges */
+.ad-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: var(--md-sys-shape-corner-full);
+    font-size: var(--md-sys-typescale-label-medium-size);
+    font-weight: 500;
+}
+
+.ad-status-pending {
+    background: var(--ad-status-pending-bg);
+    color: var(--ad-status-pending);
+}
+
+.ad-status-preparing {
+    background: var(--ad-status-preparing-bg);
+    color: var(--ad-status-preparing);
+}
+
+.ad-status-ready {
+    background: var(--ad-status-ready-bg);
+    color: var(--ad-status-ready);
+}
+
+.ad-status-completed {
+    background: var(--ad-status-completed-bg);
+    color: var(--ad-status-completed);
+}
+
+.ad-status-cancelled {
+    background: var(--ad-status-cancelled-bg);
+    color: var(--ad-status-cancelled);
+}
+
+/* Gradient Backgrounds */
+.ad-bg-primary {
+    background: var(--ad-gradient-primary);
+}
+
+.ad-bg-secondary {
+    background: var(--ad-gradient-secondary);
+}
+
+.ad-bg-tertiary {
+    background: var(--ad-gradient-tertiary);
+}
+
+.ad-bg-premium {
+    background: var(--ad-gradient-premium);
+}
+
+.ad-bg-dark {
+    background: var(--ad-gradient-dark);
+    color: white;
+}
+
+/* Alert/Toast Variants */
+.ad-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    font-size: var(--md-sys-typescale-body-medium-size);
+}
+
+.ad-alert-success {
+    background: var(--ad-color-success-container);
+    color: var(--ad-color-on-success-container);
+}
+
+.ad-alert-warning {
+    background: var(--ad-color-warning-container);
+    color: var(--ad-color-on-warning-container);
+}
+
+.ad-alert-info {
+    background: var(--ad-color-info-container);
+    color: var(--ad-color-on-info-container);
+}
+
+.ad-alert-danger {
+    background: var(--ad-color-danger-container);
+    color: var(--ad-color-on-danger-container);
 }
 
 /* Print Debug */

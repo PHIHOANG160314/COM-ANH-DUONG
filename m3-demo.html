@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Design 3 - Components Demo | Ánh Dương</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <!-- M3 Design System -->
+    <link rel="stylesheet" href="css/m3-design-system.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--md-sys-typescale-display-large-font);
+            background: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            min-height: 100vh;
+        }
+
+        /* Demo Page Layout */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .demo-header {
+            text-align: center;
+            padding: 48px 0;
+            background: linear-gradient(135deg, var(--md-sys-color-primary-container), var(--md-sys-color-tertiary-container));
+            border-radius: var(--md-sys-shape-corner-extra-large);
+            margin-bottom: 32px;
+        }
+
+        .demo-header h1 {
+            font-size: var(--md-sys-typescale-display-small-size);
+            color: var(--md-sys-color-on-primary-container);
+            margin-bottom: 8px;
+        }
+
+        .demo-header p {
+            font-size: var(--md-sys-typescale-title-medium-size);
+            color: var(--md-sys-color-on-primary-container);
+            opacity: 0.8;
+        }
+
+        /* Section */
+        .demo-section {
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-large);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .demo-section h2 {
+            font-size: var(--md-sys-typescale-title-large-size);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-section h3 {
+            font-size: var(--md-sys-typescale-title-medium-size);
+            margin: 16px 0 12px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .demo-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        /* Color Grid */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .color-swatch {
+            padding: 16px 12px;
+            border-radius: var(--md-sys-shape-corner-medium);
+            text-align: center;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .color-swatch.primary {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .color-swatch.on-primary {
+            background: var(--md-sys-color-on-primary);
+            color: var(--md-sys-color-primary);
+            border: 1px solid var(--md-sys-color-outline);
+        }
+
+        .color-swatch.primary-container {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .color-swatch.secondary {
+            background: var(--md-sys-color-secondary);
+            color: var(--md-sys-color-on-secondary);
+        }
+
+        .color-swatch.secondary-container {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .color-swatch.tertiary {
+            background: var(--md-sys-color-tertiary);
+            color: var(--md-sys-color-on-tertiary);
+        }
+
+        .color-swatch.tertiary-container {
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+        }
+
+        .color-swatch.error {
+            background: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error);
+        }
+
+        .color-swatch.surface {
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .color-swatch.surface-variant {
+            background: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Semantic Colors */
+        .color-swatch.success {
+            background: var(--ad-color-success, #4CAF50);
+            color: white;
+        }
+
+        .color-swatch.warning {
+            background: var(--ad-color-warning, #FF9800);
+            color: white;
+        }
+
+        .color-swatch.info {
+            background: var(--ad-color-info, #2196F3);
+            color: white;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 100;
+        }
+
+        /* Typography Demo */
+        .typo-demo {
+            margin-bottom: 8px;
+        }
+
+        .typo-label {
+            font-size: 10px;
+            color: var(--md-sys-color-outline);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cards Demo */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .demo-card-content {
+            padding: 16px;
+        }
+
+        .demo-card-content h4 {
+            font-size: var(--md-sys-typescale-title-medium-size);
+            margin-bottom: 8px;
+        }
+
+        .demo-card-content p {
+            font-size: var(--md-sys-typescale-body-small-size);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Elevation Demo */
+        .elevation-grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .elevation-box {
+            width: 80px;
+            height: 80px;
+            background: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--md-sys-typescale-label-medium-size);
+        }
+
+        /* Shape Demo */
+        .shape-grid {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .shape-box {
+            width: 80px;
+            height: 80px;
+            background: var(--md-sys-color-primary-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* Navigation Demo */
+        .nav-demo {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--md-sys-shape-corner-large);
+            overflow: hidden;
+        }
+
+        /* Footer */
+        .demo-footer {
+            text-align: center;
+            padding: 48px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .demo-footer a {
+            color: var(--md-sys-color-primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: 16px;
+            }
+
+            .demo-header {
+                padding: 32px 16px;
+            }
+
+            .demo-header h1 {
+                font-size: var(--md-sys-typescale-headline-large-size);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button class="md-fab md-fab-small" onclick="toggleTheme()" title="Đổi theme">
+            🌓
+        </button>
+    </div>
+
+    <div class="demo-container">
+        <!-- Header -->
+        <header class="demo-header">
+            <h1>🎨 Material Design 3</h1>
+            <p>Ánh Dương F&B Design System</p>
+        </header>
+
+        <!-- Color Tokens -->
+        <section class="demo-section">
+            <h2>🎨 Color Tokens</h2>
+
+            <h3>Primary Colors</h3>
+            <div class="color-grid">
+                <div class="color-swatch primary">Primary<br>#FF6B35</div>
+                <div class="color-swatch on-primary">On Primary</div>
+                <div class="color-swatch primary-container">Primary Container</div>
+            </div>
+
+            <h3>Secondary Colors</h3>
+            <div class="color-grid">
+                <div class="color-swatch secondary">Secondary<br>#4CAF50</div>
+                <div class="color-swatch secondary-container">Secondary Container</div>
+            </div>
+
+            <h3>Tertiary Colors</h3>
+            <div class="color-grid">
+                <div class="color-swatch tertiary">Tertiary<br>#FFB300</div>
+                <div class="color-swatch tertiary-container">Tertiary Container</div>
+            </div>
+
+            <h3>Error & Surface</h3>
+            <div class="color-grid">
+                <div class="color-swatch error">Error</div>
+                <div class="color-swatch surface">Surface</div>
+                <div class="color-swatch surface-variant">Surface Variant</div>
+            </div>
+
+            <h3>Semantic Colors (Ánh Dương)</h3>
+            <div class="color-grid">
+                <div class="color-swatch success">Success</div>
+                <div class="color-swatch warning">Warning</div>
+                <div class="color-swatch info">Info</div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section class="demo-section">
+            <h2>📝 Typography</h2>
+
+            <div class="typo-demo">
+                <span class="typo-label">Display Large (57px)</span>
+                <p class="md-display-large">Ánh Dương</p>
+            </div>
+
+            <div class="typo-demo">
+                <span class="typo-label">Headline Large (32px)</span>
+                <p class="md-headline-large">Menu & Đặt Hàng Online</p>
+            </div>
+
+            <div class="typo-demo">
+                <span class="typo-label">Title Large (22px)</span>
+                <p class="md-title-large">Nhà hàng & Quán ăn</p>
+            </div>
+
+            <div class="typo-demo">
+                <span class="typo-label">Title Medium (16px)</span>
+                <p class="md-title-medium">Đồ ăn ngon, giao hàng nhanh</p>
+            </div>
+
+            <div class="typo-demo">
+                <span class="typo-label">Body Large (16px)</span>
+                <p class="md-body-large">Chào mừng bạn đến với nhà hàng Ánh Dương. Chúng tôi phục vụ các món ăn ngon với
+                    chất lượng tốt nhất.</p>
+            </div>
+
+            <div class="typo-demo">
+                <span class="typo-label">Label Large (14px)</span>
+                <p class="md-label-large">THÊm vào giỏ hàng</p>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section class="demo-section">
+            <h2>🔘 Buttons</h2>
+
+            <h3>Filled Buttons</h3>
+            <div class="demo-row">
+                <button class="md-button md-button-filled">Đặt hàng</button>
+                <button class="md-button md-button-filled">🛒 Thêm vào giỏ</button>
+                <button class="md-button md-button-filled" disabled>Disabled</button>
+            </div>
+
+            <h3>Outlined Buttons</h3>
+            <div class="demo-row">
+                <button class="md-button md-button-outlined">Xem menu</button>
+                <button class="md-button md-button-outlined">📞 Liên hệ</button>
+            </div>
+
+            <h3>Tonal Buttons</h3>
+            <div class="demo-row">
+                <button class="md-button md-button-tonal">Áp dụng mã</button>
+                <button class="md-button md-button-tonal">🎁 Đổi điểm</button>
+            </div>
+
+            <h3>Text Buttons</h3>
+            <div class="demo-row">
+                <button class="md-button md-button-text">Hủy</button>
+                <button class="md-button md-button-text">Xem thêm →</button>
+            </div>
+        </section>
+
+        <!-- FABs -->
+        <section class="demo-section">
+            <h2>⭕ Floating Action Buttons</h2>
+
+            <div class="demo-row">
+                <button class="md-fab md-fab-small">➕</button>
+                <button class="md-fab">🛒</button>
+                <button class="md-fab md-fab-large">📦</button>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section class="demo-section">
+            <h2>🃏 Cards</h2>
+
+            <div class="cards-grid">
+                <div class="md-card md-card-elevated">
+                    <div class="demo-card-content">
+                        <h4>Elevated Card</h4>
+                        <p>Card với shadow nổi lên từ surface</p>
+                    </div>
+                </div>
+
+                <div class="md-card md-card-filled">
+                    <div class="demo-card-content">
+                        <h4>Filled Card</h4>
+                        <p>Card với màu nền đậm hơn</p>
+                    </div>
+                </div>
+
+                <div class="md-card md-card-outlined">
+                    <div class="demo-card-content">
+                        <h4>Outlined Card</h4>
+                        <p>Card với viền mỏng</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chips -->
+        <section class="demo-section">
+            <h2>🏷️ Chips</h2>
+
+            <h3>Assist Chips</h3>
+            <div class="demo-row">
+                <span class="md-chip md-chip-assist">📍 Giao hàng</span>
+                <span class="md-chip md-chip-assist">🪑 Ăn tại quán</span>
+                <span class="md-chip md-chip-assist">🥡 Mang đi</span>
+            </div>
+
+            <h3>Filter Chips</h3>
+            <div class="demo-row">
+                <span class="md-chip md-chip-filter selected">✓ Tất cả</span>
+                <span class="md-chip md-chip-filter">Đồ uống</span>
+                <span class="md-chip md-chip-filter">Thức ăn</span>
+                <span class="md-chip md-chip-filter">Tráng miệng</span>
+            </div>
+        </section>
+
+        <!-- Badges -->
+        <section class="demo-section">
+            <h2>🔴 Badges</h2>
+
+            <div class="demo-row">
+                <span class="md-badge">3</span>
+                <span class="md-badge">12</span>
+                <span class="md-badge-large">99+</span>
+            </div>
+        </section>
+
+        <!-- Elevation -->
+        <section class="demo-section">
+            <h2>📐 Elevation</h2>
+
+            <div class="elevation-grid">
+                <div class="elevation-box">Level 0</div>
+                <div class="elevation-box md-elevation-1">Level 1</div>
+                <div class="elevation-box md-elevation-2">Level 2</div>
+                <div class="elevation-box md-elevation-3">Level 3</div>
+                <div class="elevation-box md-elevation-4">Level 4</div>
+                <div class="elevation-box md-elevation-5">Level 5</div>
+            </div>
+        </section>
+
+        <!-- Shapes -->
+        <section class="demo-section">
+            <h2>🔷 Shapes</h2>
+
+            <div class="shape-grid">
+                <div class="shape-box md-shape-extra-small">XS (4px)</div>
+                <div class="shape-box md-shape-small">S (8px)</div>
+                <div class="shape-box md-shape-medium">M (12px)</div>
+                <div class="shape-box md-shape-large">L (16px)</div>
+                <div class="shape-box md-shape-extra-large">XL (28px)</div>
+                <div class="shape-box md-shape-full">Full</div>
+            </div>
+        </section>
+
+        <!-- Snackbar -->
+        <section class="demo-section">
+            <h2>💬 Snackbar</h2>
+
+            <div class="md-snackbar">
+                <span>✅ Đã thêm vào giỏ hàng</span>
+                <button class="md-button md-button-text" style="color: var(--md-sys-color-inverse-primary);">Hoàn
+                    tác</button>
+            </div>
+        </section>
+
+        <!-- Dialog -->
+        <section class="demo-section">
+            <h2>📋 Dialog</h2>
+
+            <div class="md-dialog" style="max-width: 400px;">
+                <h3 class="md-dialog-title">Xác nhận đặt hàng?</h3>
+                <p class="md-dialog-content">
+                    Đơn hàng của bạn gồm 3 món với tổng giá trị 150.000đ. Bạn có chắc muốn đặt hàng?
+                </p>
+                <div class="md-dialog-actions">
+                    <button class="md-button md-button-text">Hủy</button>
+                    <button class="md-button md-button-filled">Xác nhận</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Bar -->
+        <section class="demo-section">
+            <h2>📱 Navigation Bar</h2>
+
+            <div class="nav-demo md-navigation-bar">
+                <div class="md-navigation-bar-item active">
+                    <div class="indicator">📜</div>
+                    <span class="md-label-medium">Menu</span>
+                </div>
+                <div class="md-navigation-bar-item">
+                    <div class="indicator">📦</div>
+                    <span class="md-label-medium">Đặt hàng</span>
+                </div>
+                <div class="md-navigation-bar-item">
+                    <div class="indicator">📍</div>
+                    <span class="md-label-medium">Theo dõi</span>
+                </div>
+                <div class="md-navigation-bar-item">
+                    <div class="indicator">🎁</div>
+                    <span class="md-label-medium">Tích điểm</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="demo-footer">
+            <p>Material Design 3 for <strong>Ánh Dương F&B</strong></p>
+            <p>
+                <a href="customer.html">Customer Portal</a> •
+                <a href="staff-mobile.html">Staff Portal</a> •
+                <a href="https://m3.material.io" target="_blank">M3 Docs</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+
+</html>
