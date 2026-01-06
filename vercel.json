@@ -10,6 +10,17 @@
             "source": "/:path*",
             "has": [
                 {
+                    "type": "host",
+                    "value": "www.comanhduong.com"
+                }
+            ],
+            "destination": "https://comanhduong.com/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/:path*",
+            "has": [
+                {
                     "type": "header",
                     "key": "x-forwarded-proto",
                     "value": "http"
@@ -91,6 +102,10 @@
         },
         {
             "source": "/admin",
+            "destination": "/index.html"
+        },
+        {
+            "source": "/admin/",
             "destination": "/index.html"
         }
     ]
