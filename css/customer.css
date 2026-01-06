@@ -4,21 +4,30 @@
    ======================================== */
 
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --bg-dark: #0a0a12;
-    --bg-card: rgba(26, 26, 46, 0.95);
-    --text-primary: #f8f8fa;
-    --text-secondary: #b4b4bc;
-    --text-muted: #8888a0;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    --radius: 16px;
-    --radius-sm: 10px;
+    /* M3 Color Tokens - Ánh Dương Brand */
+    --primary: var(--ad-color-primary, #FF6B35);
+    --primary-dark: var(--ad-color-primary-container, #E55A2B);
+    --primary-light: var(--md-sys-color-primary, #6750A4);
+    --secondary: var(--ad-color-secondary, #4CAF50);
+    --warning: var(--ad-color-warning, #FF9800);
+    --danger: var(--ad-color-danger, #F44336);
+
+    /* M3 Surface Colors */
+    --bg-dark: var(--md-sys-color-background, #0a0a12);
+    --bg-card: var(--md-sys-color-surface-container, rgba(26, 26, 46, 0.95));
+
+    /* M3 Text Colors */
+    --text-primary: var(--md-sys-color-on-surface, #f8f8fa);
+    --text-secondary: var(--md-sys-color-on-surface-variant, #b4b4bc);
+    --text-muted: var(--md-sys-color-outline, #8888a0);
+
+    /* M3 Border & Shadow */
+    --border-color: var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.1));
+    --shadow: var(--md-sys-elevation-level2, 0 10px 40px rgba(0, 0, 0, 0.3));
+
+    /* M3 Shape Tokens */
+    --radius: var(--md-sys-shape-corner-large, 16px);
+    --radius-sm: var(--md-sys-shape-corner-medium, 12px);
 }
 
 * {
@@ -28,9 +37,9 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 100%);
-    color: var(--text-primary);
+    font-family: var(--md-sys-typescale-body-large-font, 'Inter', -apple-system, sans-serif);
+    background: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
 }
@@ -42,9 +51,9 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10, 10, 18, 0.95);
+    background: var(--md-sys-color-surface-container);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .header-content {
@@ -152,9 +161,9 @@ body {
 }
 
 .nav-btn.active {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--md-sys-color-secondary-container);
     border-color: transparent;
-    color: white;
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 /* ========================================
@@ -223,11 +232,11 @@ body {
 }
 
 .menu-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-medium);
     overflow: hidden;
-    transition: all 0.3s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
 
 .menu-card:active {
@@ -269,13 +278,13 @@ body {
     padding: 10px;
     margin-top: 8px;
     border: none;
-    border-radius: var(--radius-sm);
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 500;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
 
 .menu-card-add:active {
@@ -345,9 +354,9 @@ body {
 }
 
 .order-summary {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 16px;
 }
 
@@ -401,12 +410,13 @@ body {
 .qty-btn {
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-card);
-    color: var(--text-primary);
+    border-radius: var(--md-sys-shape-corner-small);
+    border: 1px solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-on-surface);
     font-size: 1rem;
     cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short3);
 }
 
 .qty-value {
@@ -447,13 +457,14 @@ body {
     padding: 16px;
     margin-top: 16px;
     border: none;
-    border-radius: var(--radius);
-    background: linear-gradient(135deg, var(--secondary), #059669);
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    box-shadow: var(--md-sys-elevation-level1);
 }
 
 .btn-checkout:active {
@@ -470,12 +481,13 @@ body {
 }
 
 .member-card {
-    background: linear-gradient(145deg, #1a1a2e, #2d1f5e);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 20px;
+    background: linear-gradient(145deg, var(--md-sys-color-surface-container-highest), var(--md-sys-color-primary-container));
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-extra-large);
     padding: 20px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--md-sys-elevation-level2);
 }
 
 .member-card::before {

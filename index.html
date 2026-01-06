@@ -7,7 +7,7 @@
     <title>F&B Master - Hệ Thống Quản Lý Nhà Hàng</title>
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#FF6B35">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,6 +25,12 @@
     <!-- Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Material Design 3 Design System -->
+    <link rel="stylesheet" href="css/m3-design-system.css">
+
+    <!-- Application Styles -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/mobile.css">
@@ -140,7 +146,7 @@
                 <!-- Dashboard Page -->
                 <section class="page active" id="page-dashboard">
                     <div class="kpi-grid">
-                        <div class="kpi-card revenue shimmer">
+                        <div class="kpi-card md-card md-card-elevated revenue shimmer">
                             <div class="kpi-icon icon-bounce">💵</div>
                             <div class="kpi-content">
                                 <h3 id="totalRevenue">0</h3>
@@ -148,7 +154,7 @@
                                 <span class="kpi-trend up">↑ 12%</span>
                             </div>
                         </div>
-                        <div class="kpi-card orders shimmer">
+                        <div class="kpi-card md-card md-card-elevated orders shimmer">
                             <div class="kpi-icon icon-bounce">🧾</div>
                             <div class="kpi-content">
                                 <h3 id="totalOrders">0</h3>
@@ -156,7 +162,7 @@
                                 <span class="kpi-trend up">↑ 8%</span>
                             </div>
                         </div>
-                        <div class="kpi-card foodcost shimmer">
+                        <div class="kpi-card md-card md-card-elevated foodcost shimmer">
                             <div class="kpi-icon icon-bounce">📉</div>
                             <div class="kpi-content">
                                 <h3 id="foodCostPercent">0%</h3>
@@ -164,7 +170,7 @@
                                 <span class="kpi-trend down">↓ 2%</span>
                             </div>
                         </div>
-                        <div class="kpi-card inventory shimmer">
+                        <div class="kpi-card md-card md-card-elevated inventory shimmer">
                             <div class="kpi-icon icon-bounce">⚠️</div>
                             <div class="kpi-content">
                                 <h3 id="lowStockItems">0</h3>
@@ -202,10 +208,14 @@
                             <h2>📊 Thống Kê Doanh Thu</h2>
                             <div class="analytics-filters">
                                 <div class="quick-filters">
-                                    <button class="quick-filter-btn active" data-filter="today">Hôm nay</button>
-                                    <button class="quick-filter-btn" data-filter="week">Tuần</button>
-                                    <button class="quick-filter-btn" data-filter="month">Tháng</button>
-                                    <button class="quick-filter-btn" data-filter="year">Năm</button>
+                                    <button class="quick-filter-btn md-chip md-chip-filter active"
+                                        data-filter="today">Hôm nay</button>
+                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                        data-filter="week">Tuần</button>
+                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                        data-filter="month">Tháng</button>
+                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                        data-filter="year">Năm</button>
                                 </div>
                                 <div class="date-picker-group">
                                     <input type="date" id="analyticsDateFrom">
@@ -281,10 +291,14 @@
                     <div class="pos-container">
                         <div class="pos-menu">
                             <div class="category-tabs" id="categoryTabs">
-                                <button class="category-tab active" data-category="all">Tất cả</button>
-                                <button class="category-tab" data-category="food">Món chính</button>
-                                <button class="category-tab" data-category="drinks">Đồ uống</button>
-                                <button class="category-tab" data-category="dessert">Tráng miệng</button>
+                                <button class="category-tab md-chip md-chip-filter active" data-category="all">Tất
+                                    cả</button>
+                                <button class="category-tab md-chip md-chip-filter" data-category="food">Món
+                                    chính</button>
+                                <button class="category-tab md-chip md-chip-filter" data-category="drinks">Đồ
+                                    uống</button>
+                                <button class="category-tab md-chip md-chip-filter" data-category="dessert">Tráng
+                                    miệng</button>
                             </div>
                             <div class="menu-grid" id="menuGrid"></div>
                         </div>
@@ -319,8 +333,10 @@
                                 </div>
                             </div>
                             <div class="cart-actions">
-                                <button class="btn-secondary" id="clearCartBtn">Xóa đơn</button>
-                                <button class="btn-primary" id="checkoutBtn">Thanh toán</button>
+                                <button class="btn-secondary md-button md-button-outlined" id="clearCartBtn">Xóa
+                                    đơn</button>
+                                <button class="btn-primary md-button md-button-filled" id="checkoutBtn">Thanh
+                                    toán</button>
                             </div>
                         </div>
                     </div>
@@ -377,8 +393,10 @@
                 <section class="page" id="page-inventory">
                     <div class="inventory-header">
                         <div class="inventory-actions">
-                            <button class="btn-primary" id="addInventoryBtn">+ Nhập kho</button>
-                            <button class="btn-secondary" id="exportInventoryBtn">Xuất kho</button>
+                            <button class="btn-primary md-button md-button-filled" id="addInventoryBtn">+ Nhập
+                                kho</button>
+                            <button class="btn-secondary md-button md-button-outlined" id="exportInventoryBtn">Xuất
+                                kho</button>
                         </div>
                         <div class="inventory-filters">
                             <select id="inventoryCategory">

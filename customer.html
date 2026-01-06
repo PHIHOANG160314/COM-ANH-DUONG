@@ -28,7 +28,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-72.png">
 
     <!-- PWA & Theme -->
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#FF6B35">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
@@ -62,24 +62,25 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="btn-cart" id="cartBtn" onclick="CustomerApp.toggleCart()">
-                    🛒 <span class="cart-count" id="cartCount">0</span>
+                <button class="btn-cart md-button md-button-tonal" id="cartBtn" onclick="CustomerApp.toggleCart()">
+                    🛒 <span class="cart-count md-badge" id="cartCount">0</span>
                 </button>
-                <button class="btn-member" id="memberBtn" onclick="CustomerApp.showMemberModal()">
+                <button class="btn-member md-fab md-fab-small" id="memberBtn" onclick="CustomerApp.showMemberModal()">
                     👤
                 </button>
             </div>
         </div>
         <nav class="customer-nav">
-            <button class="nav-btn active" data-section="menu" onclick="CustomerApp.showSection('menu')">📜
-                Menu</button>
-            <button class="nav-btn" data-section="order" onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
-            <button class="nav-btn" data-section="tracking" onclick="CustomerApp.showSection('tracking')">📍 Theo
-                dõi</button>
-            <button class="nav-btn" data-section="loyalty" onclick="CustomerApp.showSection('loyalty')">🎁 Tích
-                điểm</button>
-            <button class="nav-btn" data-section="contact" onclick="CustomerApp.showSection('contact')">📞 Liên
-                hệ</button>
+            <button class="nav-btn md-chip md-chip-filter active" data-section="menu"
+                onclick="CustomerApp.showSection('menu')">📜 Menu</button>
+            <button class="nav-btn md-chip md-chip-filter" data-section="order"
+                onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
+            <button class="nav-btn md-chip md-chip-filter" data-section="tracking"
+                onclick="CustomerApp.showSection('tracking')">📍 Theo dõi</button>
+            <button class="nav-btn md-chip md-chip-filter" data-section="loyalty"
+                onclick="CustomerApp.showSection('loyalty')">🎁 Tích điểm</button>
+            <button class="nav-btn md-chip md-chip-filter" data-section="contact"
+                onclick="CustomerApp.showSection('contact')">📞 Liên hệ</button>
         </nav>
     </header>
 
@@ -105,23 +106,28 @@
 
             <!-- LEVEL 1: Menu Groups -->
             <div class="menu-groups" id="menuGroups">
-                <button class="menu-group-btn active" data-group="all" onclick="CustomerApp.filterByGroup('all')">
+                <button class="menu-group-btn md-chip md-chip-assist active" data-group="all"
+                    onclick="CustomerApp.filterByGroup('all')">
                     <span class="group-icon">📋</span>
                     <span>Tất cả</span>
                 </button>
-                <button class="menu-group-btn" data-group="beverages" onclick="CustomerApp.filterByGroup('beverages')">
+                <button class="menu-group-btn md-chip md-chip-assist" data-group="beverages"
+                    onclick="CustomerApp.filterByGroup('beverages')">
                     <span class="group-icon">🥤</span>
                     <span>Đồ Uống</span>
                 </button>
-                <button class="menu-group-btn" data-group="food" onclick="CustomerApp.filterByGroup('food')">
+                <button class="menu-group-btn md-chip md-chip-assist" data-group="food"
+                    onclick="CustomerApp.filterByGroup('food')">
                     <span class="group-icon">🍜</span>
                     <span>Thức Ăn</span>
                 </button>
-                <button class="menu-group-btn" data-group="dessert" onclick="CustomerApp.filterByGroup('dessert')">
+                <button class="menu-group-btn md-chip md-chip-assist" data-group="dessert"
+                    onclick="CustomerApp.filterByGroup('dessert')">
                     <span class="group-icon">🍰</span>
                     <span>Tráng Miệng</span>
                 </button>
-                <button class="menu-group-btn" data-group="combo" onclick="CustomerApp.filterByGroup('combo')">
+                <button class="menu-group-btn md-chip md-chip-assist" data-group="combo"
+                    onclick="CustomerApp.filterByGroup('combo')">
                     <span class="group-icon">🎁</span>
                     <span>Combo</span>
                 </button>
@@ -185,15 +191,16 @@
                             <span id="orderTotal">0đ</span>
                         </div>
                     </div>
-                    <!-- Promo Code -->
                     <div class="promo-code-section">
                         <div class="promo-input-group">
                             <input type="text" id="promoCode" placeholder="Nhập mã giảm giá">
-                            <button class="btn-apply-promo" onclick="CustomerApp.applyPromo()">Áp dụng</button>
+                            <button class="btn-apply-promo md-button md-button-tonal"
+                                onclick="CustomerApp.applyPromo()">Áp dụng</button>
                         </div>
                         <div id="promoStatus" class="promo-status"></div>
                     </div>
-                    <button class="btn-checkout" id="checkoutBtn" onclick="CustomerApp.checkout()">
+                    <button class="btn-checkout md-button md-button-filled" id="checkoutBtn"
+                        onclick="CustomerApp.checkout()">
                         Xác nhận đặt hàng
                     </button>
                 </div>
@@ -207,7 +214,8 @@
                     <h2>📍 Theo dõi đơn hàng</h2>
                     <div class="tracking-search">
                         <input type="text" id="trackingOrderId" placeholder="Nhập mã đơn hàng (VD: ORD...)">
-                        <button class="btn-track" onclick="CustomerApp.trackOrder()">Tra cứu</button>
+                        <button class="btn-track md-button md-button-filled" onclick="CustomerApp.trackOrder()">Tra
+                            cứu</button>
                     </div>
                 </div>
 
@@ -273,7 +281,8 @@
                     </div>
                 </div>
 
-                <button class="btn-register" id="registerBtn" onclick="CustomerApp.showRegisterModal()">
+                <button class="btn-register md-button md-button-filled" id="registerBtn"
+                    onclick="CustomerApp.showRegisterModal()">
                     ✨ Đăng ký thành viên
                 </button>
             </div>
@@ -337,21 +346,22 @@
                 <span>Tổng cộng:</span>
                 <strong id="floatingCartTotal">0đ</strong>
             </div>
-            <button class="btn-order" onclick="CustomerApp.goToOrder()">Đặt hàng ngay</button>
+            <button class="btn-order md-button md-button-filled" onclick="CustomerApp.goToOrder()">Đặt hàng
+                ngay</button>
         </div>
     </div>
 
-    <!-- Member Modal -->
     <div class="modal-overlay" id="memberModal">
-        <div class="modal">
+        <div class="modal md-dialog">
             <div class="modal-header">
-                <h3>👤 Thành viên</h3>
-                <button class="modal-close" onclick="CustomerApp.closeMemberModal()">×</button>
+                <h3 class="md-dialog-title">👤 Thành viên</h3>
+                <button class="modal-close md-button md-button-text" onclick="CustomerApp.closeMemberModal()">×</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body md-dialog-content">
                 <div class="member-lookup">
                     <input type="tel" id="lookupPhone" placeholder="Nhập số điện thoại">
-                    <button class="btn-lookup" onclick="CustomerApp.lookupMember()">Tra cứu</button>
+                    <button class="btn-lookup md-button md-button-filled" onclick="CustomerApp.lookupMember()">Tra
+                        cứu</button>
                 </div>
                 <div class="member-result" id="memberResult"></div>
             </div>
@@ -360,16 +370,17 @@
 
     <!-- Register Modal -->
     <div class="modal-overlay" id="registerModal">
-        <div class="modal">
+        <div class="modal md-dialog">
             <div class="modal-header">
-                <h3>✨ Đăng ký thành viên</h3>
-                <button class="modal-close" onclick="CustomerApp.closeRegisterModal()">×</button>
+                <h3 class="md-dialog-title">✨ Đăng ký thành viên</h3>
+                <button class="modal-close md-button md-button-text"
+                    onclick="CustomerApp.closeRegisterModal()">×</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body md-dialog-content">
                 <input type="text" id="regName" placeholder="Họ và tên">
                 <input type="tel" id="regPhone" placeholder="Số điện thoại">
                 <input type="email" id="regEmail" placeholder="Email (tùy chọn)">
-                <button class="btn-register-submit" onclick="CustomerApp.registerMember()">
+                <button class="btn-register-submit md-button md-button-filled" onclick="CustomerApp.registerMember()">
                     Đăng ký ngay
                 </button>
             </div>

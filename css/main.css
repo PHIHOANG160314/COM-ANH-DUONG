@@ -2,64 +2,64 @@
    F&B MASTER - MAIN STYLES
    ======================================== */
 
-/* Reset & Variables - 2026 LIQUID GLASS DESIGN SYSTEM */
+/* Reset & Variables - M3 MATERIAL DESIGN SYSTEM */
 :root {
-    /* Colors - 2026 Liquid Glass Palette */
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --primary-glow: rgba(99, 102, 241, 0.5);
-    --secondary: #10b981;
-    --secondary-glow: rgba(16, 185, 129, 0.5);
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --info: #06b6d4;
-    --accent-pink: #ec4899;
-    --accent-purple: #a855f7;
-    --accent-cyan: #22d3ee;
-    --accent-orange: #fb923c;
+    /* Colors - Using M3 Brand Colors from m3-design-system.css */
+    --primary: var(--ad-color-primary, #FF6B35);
+    --primary-dark: #E55A2B;
+    --primary-light: #FF8F5C;
+    --primary-glow: rgba(255, 107, 53, 0.5);
+    --secondary: var(--ad-color-secondary, #4CAF50);
+    --secondary-glow: rgba(76, 175, 80, 0.5);
+    --warning: var(--ad-color-warning, #FF9800);
+    --danger: var(--ad-color-danger, #F44336);
+    --info: var(--ad-color-info, #2196F3);
+    --accent-pink: #E91E63;
+    --accent-purple: #9C27B0;
+    --accent-cyan: #00BCD4;
+    --accent-orange: #FF9800;
 
-    /* Liquid Glass Theme - 2026 */
-    --bg-dark: #050508;
-    --bg-primary: #0a0a10;
-    --bg-card: rgba(20, 20, 35, 0.7);
-    --bg-hover: rgba(30, 30, 55, 0.8);
-    --bg-input: rgba(15, 15, 30, 0.9);
+    /* Surface Colors - M3 Theme */
+    --bg-dark: var(--md-sys-color-background, #050508);
+    --bg-primary: var(--md-sys-color-surface, #0a0a10);
+    --bg-card: var(--md-sys-color-surface-container, rgba(20, 20, 35, 0.7));
+    --bg-hover: var(--md-sys-color-surface-container-high, rgba(30, 30, 55, 0.8));
+    --bg-input: var(--md-sys-color-surface-container-highest, rgba(15, 15, 30, 0.9));
     --bg-glass: rgba(255, 255, 255, 0.02);
     --bg-glass-strong: rgba(255, 255, 255, 0.05);
 
-    /* Text - Improved Accessibility */
-    --text-primary: #f8f8fa;
-    --text-secondary: #b4b4bc;
-    --text-muted: #8888a0;
+    /* Text - M3 Color Roles */
+    --text-primary: var(--md-sys-color-on-surface, #f8f8fa);
+    --text-secondary: var(--md-sys-color-on-surface-variant, #b4b4bc);
+    --text-muted: var(--md-sys-color-outline, #8888a0);
 
-    /* Borders - Liquid Glass */
-    --border-color: rgba(255, 255, 255, 0.06);
+    /* Borders - M3 Outline */
+    --border-color: var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.06));
     --border-light: rgba(255, 255, 255, 0.03);
-    --border-glow: rgba(99, 102, 241, 0.4);
+    --border-glow: rgba(255, 107, 53, 0.4);
 
-    /* Shadows - 2026 Depth System */
-    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.25);
+    /* Shadows - M3 Elevation Levels */
+    --shadow-sm: var(--md-sys-elevation-level1, 0 2px 10px rgba(0, 0, 0, 0.4));
+    --shadow-md: var(--md-sys-elevation-level2, 0 8px 40px rgba(0, 0, 0, 0.5));
+    --shadow-lg: var(--md-sys-elevation-level3, 0 20px 60px rgba(0, 0, 0, 0.6));
+    --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.25);
     --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
-    /* Sizes - Modern Proportions */
+    /* Sizes - M3 Shape Tokens */
     --sidebar-width: 260px;
     --sidebar-collapsed: 80px;
     --header-height: 70px;
-    --border-radius: 16px;
-    --border-radius-lg: 28px;
-    --border-radius-xl: 36px;
+    --border-radius: var(--md-sys-shape-corner-medium, 12px);
+    --border-radius-lg: var(--md-sys-shape-corner-large, 16px);
+    --border-radius-xl: var(--md-sys-shape-corner-extra-large, 28px);
 
-    /* Transitions - Fluid Motion 2026 */
-    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    --transition-smooth: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    /* Transitions - M3 Motion Tokens */
+    --transition-fast: var(--md-sys-motion-duration-short2, 0.15s) var(--md-sys-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+    --transition-normal: var(--md-sys-motion-duration-medium2, 0.3s) var(--md-sys-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+    --transition-spring: var(--md-sys-motion-duration-long1, 0.5s) var(--md-sys-motion-easing-emphasized, cubic-bezier(0.175, 0.885, 0.32, 1.275));
+    --transition-smooth: var(--md-sys-motion-duration-long2, 0.6s) var(--md-sys-motion-easing-emphasized-decelerate, cubic-bezier(0.23, 1, 0.32, 1));
 
-    /* Glass Effects - 2026 Liquid Glass */
+    /* Glass Effects */
     --glass-blur: 20px;
     --glass-saturate: 180%;
 }
@@ -162,8 +162,8 @@ body::after {
    ======================================== */
 .sidebar {
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
-    border-right: 1px solid var(--border-color);
+    background: var(--md-sys-color-surface-container);
+    border-right: 1px solid var(--md-sys-color-outline-variant);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -364,8 +364,8 @@ body::after {
 .main-header {
     height: var(--header-height);
     padding: 0 2rem;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--md-sys-color-surface-container);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -500,16 +500,16 @@ body::after {
 }
 
 .kpi-card {
-    background: rgba(26, 26, 46, 0.6);
+    background: var(--md-sys-color-surface-container-low);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
     position: relative;
     overflow: hidden;
 }
