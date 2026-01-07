@@ -62,24 +62,26 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="btn-cart md-button md-button-tonal" id="cartBtn" onclick="CustomerApp.toggleCart()">
+                <button type="button" class="btn-cart md-button md-button-tonal" id="cartBtn"
+                    onclick="CustomerApp.toggleCart()">
                     🛒 <span class="cart-count md-badge" id="cartCount">0</span>
                 </button>
-                <button class="btn-member md-fab md-fab-small" id="memberBtn" onclick="CustomerApp.showMemberModal()">
+                <button type="button" class="btn-member md-fab md-fab-small" id="memberBtn"
+                    onclick="CustomerApp.showMemberModal()">
                     👤
                 </button>
             </div>
         </div>
-        <nav class="customer-nav">
-            <button class="nav-btn md-chip md-chip-filter active" data-section="menu"
+        <nav class="customer-nav" aria-label="Customer Navigation">
+            <button type="button" class="nav-btn md-chip md-chip-filter active" data-section="menu"
                 onclick="CustomerApp.showSection('menu')">📜 Menu</button>
-            <button class="nav-btn md-chip md-chip-filter" data-section="order"
+            <button type="button" class="nav-btn md-chip md-chip-filter" data-section="order"
                 onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
-            <button class="nav-btn md-chip md-chip-filter" data-section="tracking"
+            <button type="button" class="nav-btn md-chip md-chip-filter" data-section="tracking"
                 onclick="CustomerApp.showSection('tracking')">📍 Theo dõi</button>
-            <button class="nav-btn md-chip md-chip-filter" data-section="loyalty"
+            <button type="button" class="nav-btn md-chip md-chip-filter" data-section="loyalty"
                 onclick="CustomerApp.showSection('loyalty')">🎁 Tích điểm</button>
-            <button class="nav-btn md-chip md-chip-filter" data-section="contact"
+            <button type="button" class="nav-btn md-chip md-chip-filter" data-section="contact"
                 onclick="CustomerApp.showSection('contact')">📞 Liên hệ</button>
         </nav>
     </header>
@@ -106,27 +108,27 @@
 
             <!-- LEVEL 1: Menu Groups -->
             <div class="menu-groups" id="menuGroups">
-                <button class="menu-group-btn md-chip md-chip-assist active" data-group="all"
+                <button type="button" class="menu-group-btn md-chip md-chip-assist active" data-group="all"
                     onclick="CustomerApp.filterByGroup('all')">
                     <span class="group-icon">📋</span>
                     <span>Tất cả</span>
                 </button>
-                <button class="menu-group-btn md-chip md-chip-assist" data-group="beverages"
+                <button type="button" class="menu-group-btn md-chip md-chip-assist" data-group="beverages"
                     onclick="CustomerApp.filterByGroup('beverages')">
                     <span class="group-icon">🥤</span>
                     <span>Đồ Uống</span>
                 </button>
-                <button class="menu-group-btn md-chip md-chip-assist" data-group="food"
+                <button type="button" class="menu-group-btn md-chip md-chip-assist" data-group="food"
                     onclick="CustomerApp.filterByGroup('food')">
                     <span class="group-icon">🍜</span>
                     <span>Thức Ăn</span>
                 </button>
-                <button class="menu-group-btn md-chip md-chip-assist" data-group="dessert"
+                <button type="button" class="menu-group-btn md-chip md-chip-assist" data-group="dessert"
                     onclick="CustomerApp.filterByGroup('dessert')">
                     <span class="group-icon">🍰</span>
                     <span>Tráng Miệng</span>
                 </button>
-                <button class="menu-group-btn md-chip md-chip-assist" data-group="combo"
+                <button type="button" class="menu-group-btn md-chip md-chip-assist" data-group="combo"
                     onclick="CustomerApp.filterByGroup('combo')">
                     <span class="group-icon">🎁</span>
                     <span>Combo</span>
@@ -153,13 +155,16 @@
         <section class="section" id="section-order">
             <div class="order-container">
                 <div class="order-type-selector">
-                    <button class="order-type active" data-type="dinein" onclick="CustomerApp.setOrderType('dinein')">
+                    <button type="button" class="order-type active" data-type="dinein"
+                        onclick="CustomerApp.setOrderType('dinein')">
                         🪑 Ăn tại quán
                     </button>
-                    <button class="order-type" data-type="takeaway" onclick="CustomerApp.setOrderType('takeaway')">
+                    <button type="button" class="order-type" data-type="takeaway"
+                        onclick="CustomerApp.setOrderType('takeaway')">
                         🥡 Mang đi
                     </button>
-                    <button class="order-type" data-type="delivery" onclick="CustomerApp.setOrderType('delivery')">
+                    <button type="button" class="order-type" data-type="delivery"
+                        onclick="CustomerApp.setOrderType('delivery')">
                         🛵 Giao hàng
                     </button>
                 </div>
@@ -194,12 +199,12 @@
                     <div class="promo-code-section">
                         <div class="promo-input-group">
                             <input type="text" id="promoCode" placeholder="Nhập mã giảm giá">
-                            <button class="btn-apply-promo md-button md-button-tonal"
+                            <button type="button" class="btn-apply-promo md-button md-button-tonal"
                                 onclick="CustomerApp.applyPromo()">Áp dụng</button>
                         </div>
                         <div id="promoStatus" class="promo-status"></div>
                     </div>
-                    <button class="btn-checkout md-button md-button-filled" id="checkoutBtn"
+                    <button type="button" class="btn-checkout md-button md-button-filled" id="checkoutBtn"
                         onclick="CustomerApp.checkout()">
                         Xác nhận đặt hàng
                     </button>
@@ -214,7 +219,8 @@
                     <h2>📍 Theo dõi đơn hàng</h2>
                     <div class="tracking-search">
                         <input type="text" id="trackingOrderId" placeholder="Nhập mã đơn hàng (VD: ORD...)">
-                        <button class="btn-track md-button md-button-filled" onclick="CustomerApp.trackOrder()">Tra
+                        <button type="button" class="btn-track md-button md-button-filled"
+                            onclick="CustomerApp.trackOrder()">Tra
                             cứu</button>
                     </div>
                 </div>
@@ -281,7 +287,7 @@
                     </div>
                 </div>
 
-                <button class="btn-register md-button md-button-filled" id="registerBtn"
+                <button type="button" class="btn-register md-button md-button-filled" id="registerBtn"
                     onclick="CustomerApp.showRegisterModal()">
                     ✨ Đăng ký thành viên
                 </button>
@@ -305,7 +311,7 @@
                             <span class="icon">📞</span>
                             <div>
                                 <strong>Điện thoại</strong>
-                                <p><a href="tel:0917076061">0917 076 061</a></p>
+                                <p><a href="tel:0917076061">0917&nbsp;076&nbsp;061</a></p>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -326,7 +332,7 @@
                 <div class="map-container">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8897!2d105.7667!3d10.2897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDE3JzIzLjAiTiAxMDXCsDQ2JzAwLjAiRQ!5e0!3m2!1sen!2s!4v1635000000000!5m2!1sen!2s"
-                        width="100%" height="200" style="border:0; border-radius: 12px;" allowfullscreen=""
+                        height="200" title="Bản đồ Nhà hàng Ánh Dương" class="map-iframe" allowfullscreen=""
                         loading="lazy">
                     </iframe>
                 </div>
@@ -346,7 +352,8 @@
                 <span>Tổng cộng:</span>
                 <strong id="floatingCartTotal">0đ</strong>
             </div>
-            <button class="btn-order md-button md-button-filled" onclick="CustomerApp.goToOrder()">Đặt hàng
+            <button type="button" class="btn-order md-button md-button-filled" onclick="CustomerApp.goToOrder()">Đặt
+                hàng
                 ngay</button>
         </div>
     </div>
@@ -355,12 +362,14 @@
         <div class="modal md-dialog">
             <div class="modal-header">
                 <h3 class="md-dialog-title">👤 Thành viên</h3>
-                <button class="modal-close md-button md-button-text" onclick="CustomerApp.closeMemberModal()">×</button>
+                <button type="button" class="modal-close md-button md-button-text"
+                    onclick="CustomerApp.closeMemberModal()">×</button>
             </div>
             <div class="modal-body md-dialog-content">
                 <div class="member-lookup">
                     <input type="tel" id="lookupPhone" placeholder="Nhập số điện thoại">
-                    <button class="btn-lookup md-button md-button-filled" onclick="CustomerApp.lookupMember()">Tra
+                    <button type="button" class="btn-lookup md-button md-button-filled"
+                        onclick="CustomerApp.lookupMember()">Tra
                         cứu</button>
                 </div>
                 <div class="member-result" id="memberResult"></div>
@@ -373,14 +382,15 @@
         <div class="modal md-dialog">
             <div class="modal-header">
                 <h3 class="md-dialog-title">✨ Đăng ký thành viên</h3>
-                <button class="modal-close md-button md-button-text"
+                <button type="button" class="modal-close md-button md-button-text"
                     onclick="CustomerApp.closeRegisterModal()">×</button>
             </div>
             <div class="modal-body md-dialog-content">
                 <input type="text" id="regName" placeholder="Họ và tên">
                 <input type="tel" id="regPhone" placeholder="Số điện thoại">
                 <input type="email" id="regEmail" placeholder="Email (tùy chọn)">
-                <button class="btn-register-submit md-button md-button-filled" onclick="CustomerApp.registerMember()">
+                <button type="button" class="btn-register-submit md-button md-button-filled"
+                    onclick="CustomerApp.registerMember()">
                     Đăng ký ngay
                 </button>
             </div>
@@ -388,24 +398,28 @@
     </div>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="mobile-bottom-nav" id="mobileBottomNav">
-        <button class="bottom-nav-item active" data-section="menu" onclick="CustomerApp.showSection('menu')">
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Bottom Navigation">
+        <button type="button" class="bottom-nav-item active" data-section="menu"
+            onclick="CustomerApp.showSection('menu')">
             <span class="bottom-nav-icon">📜</span>
             <span class="bottom-nav-label">Menu</span>
         </button>
-        <button class="bottom-nav-item" data-section="tracking" onclick="CustomerApp.showSection('tracking')">
+        <button type="button" class="bottom-nav-item" data-section="tracking"
+            onclick="CustomerApp.showSection('tracking')">
             <span class="bottom-nav-icon">📍</span>
             <span class="bottom-nav-label">Đơn hàng</span>
         </button>
-        <button class="bottom-nav-fab" onclick="CustomerApp.goToOrder()">
+        <button type="button" class="bottom-nav-fab" onclick="CustomerApp.goToOrder()">
             <span class="bottom-nav-icon">🛒</span>
             <span class="bottom-nav-badge" id="navCartBadge"></span>
         </button>
-        <button class="bottom-nav-item" data-section="loyalty" onclick="CustomerApp.showSection('loyalty')">
+        <button type="button" class="bottom-nav-item" data-section="loyalty"
+            onclick="CustomerApp.showSection('loyalty')">
             <span class="bottom-nav-icon">🎁</span>
             <span class="bottom-nav-label">Tích điểm</span>
         </button>
-        <button class="bottom-nav-item" data-section="contact" onclick="CustomerApp.showSection('contact')">
+        <button type="button" class="bottom-nav-item" data-section="contact"
+            onclick="CustomerApp.showSection('contact')">
             <span class="bottom-nav-icon">📞</span>
             <span class="bottom-nav-label">Liên hệ</span>
         </button>
@@ -418,13 +432,13 @@
 
     <!-- Install App Prompt -->
     <div class="install-prompt" id="installPrompt">
-        <button class="install-prompt-close" onclick="MobileNav.hideInstallPrompt()">×</button>
+        <button type="button" class="install-prompt-close" onclick="MobileNav.hideInstallPrompt()">×</button>
         <span class="install-prompt-icon">📱</span>
         <div class="install-prompt-content">
             <div class="install-prompt-title">Cài đặt ứng dụng</div>
             <div class="install-prompt-desc">Thêm vào màn hình chính để truy cập nhanh hơn!</div>
         </div>
-        <button class="install-prompt-btn" onclick="MobileNav.installApp()">Cài đặt</button>
+        <button type="button" class="install-prompt-btn" onclick="MobileNav.installApp()">Cài đặt</button>
     </div>
 
     <!-- Toast Container -->

@@ -726,6 +726,12 @@ body {
     overflow: hidden;
 }
 
+.map-iframe {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+}
+
 /* ========================================
    FLOATING CART
    ======================================== */

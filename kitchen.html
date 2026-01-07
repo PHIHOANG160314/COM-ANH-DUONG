@@ -442,6 +442,13 @@
             flex-direction: column;
             gap: 0.5rem;
         }
+
+        .notification-badge {
+            background: #10B981;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+        }
     </style>
 </head>
 
@@ -477,8 +484,7 @@
                 <a href="index.html" class="nav-btn">🏠 Admin</a>
                 <button type="button" class="nav-btn" onclick="KitchenDisplay.showReadyOrders()">
                     🔔 Đơn sẵn sàng
-                    <span id="notificationBadge"
-                        style="background: #10B981; padding: 0.125rem 0.5rem; border-radius: 10px; font-weight: 700;">0</span>
+                    <span id="notificationBadge" class="notification-badge">0</span>
                 </button>
             </nav>
         </header>

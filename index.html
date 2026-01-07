@@ -46,10 +46,10 @@
                     <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
                     <span class="logo-text text-gradient">Ánh Dương</span>
                 </div>
-                <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">☰</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="sidebar-nav" aria-label="Main Navigation">
                 <a href="#" class="nav-item active" data-page="dashboard">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text" data-i18n="nav_dashboard">Dashboard</span>
@@ -128,14 +128,15 @@
                         <input type="text" placeholder="Tìm kiếm..." id="globalSearch">
                         <span class="search-icon">🔍</span>
                     </div>
-                    <button class="btn-icon" id="themeToggleBtn" title="Chuyển đổi sáng/tối">
+                    <button type="button" class="btn-icon" id="themeToggleBtn" title="Chuyển đổi sáng/tối">
                         <span id="themeIcon">🌙</span>
                     </button>
-                    <button class="btn-icon" id="langToggleBtn" onclick="i18n.toggleLanguage()" title="Change Language">
+                    <button type="button" class="btn-icon" id="langToggleBtn" onclick="i18n.toggleLanguage()"
+                        title="Change Language">
                         🌐 EN
                     </button>
-                    <button class="btn-icon" id="notificationBtn" onclick="KitchenDisplay.showReadyOrders()"
-                        title="Đơn sẵn sàng phục vụ">
+                    <button type="button" class="btn-icon" id="notificationBtn"
+                        onclick="KitchenDisplay.showReadyOrders()" title="Đơn sẵn sàng phục vụ">
                         <span>🔔</span>
                         <span class="badge">0</span>
                     </button>
@@ -209,13 +210,13 @@
                             <h2>📊 Thống Kê Doanh Thu</h2>
                             <div class="analytics-filters">
                                 <div class="quick-filters">
-                                    <button class="quick-filter-btn md-chip md-chip-filter active"
+                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter active"
                                         data-filter="today">Hôm nay</button>
-                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
                                         data-filter="week">Tuần</button>
-                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
                                         data-filter="month">Tháng</button>
-                                    <button class="quick-filter-btn md-chip md-chip-filter"
+                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
                                         data-filter="year">Năm</button>
                                 </div>
                                 <div class="date-picker-group">
@@ -292,13 +293,17 @@
                     <div class="pos-container">
                         <div class="pos-menu">
                             <div class="category-tabs" id="categoryTabs">
-                                <button class="category-tab md-chip md-chip-filter active" data-category="all">Tất
+                                <button type="button" class="category-tab md-chip md-chip-filter active"
+                                    data-category="all">Tất
                                     cả</button>
-                                <button class="category-tab md-chip md-chip-filter" data-category="food">Món
+                                <button type="button" class="category-tab md-chip md-chip-filter"
+                                    data-category="food">Món
                                     chính</button>
-                                <button class="category-tab md-chip md-chip-filter" data-category="drinks">Đồ
+                                <button type="button" class="category-tab md-chip md-chip-filter"
+                                    data-category="drinks">Đồ
                                     uống</button>
-                                <button class="category-tab md-chip md-chip-filter" data-category="dessert">Tráng
+                                <button type="button" class="category-tab md-chip md-chip-filter"
+                                    data-category="dessert">Tráng
                                     miệng</button>
                             </div>
                             <div class="menu-grid" id="menuGrid"></div>
@@ -334,9 +339,11 @@
                                 </div>
                             </div>
                             <div class="cart-actions">
-                                <button class="btn-secondary md-button md-button-outlined" id="clearCartBtn">Xóa
+                                <button type="button" class="btn-secondary md-button md-button-outlined"
+                                    id="clearCartBtn">Xóa
                                     đơn</button>
-                                <button class="btn-primary md-button md-button-filled" id="checkoutBtn">Thanh
+                                <button type="button" class="btn-primary md-button md-button-filled"
+                                    id="checkoutBtn">Thanh
                                     toán</button>
                             </div>
                         </div>
@@ -355,7 +362,7 @@
                             <div class="ingredients-section">
                                 <div class="section-header">
                                     <h4>Nguyên liệu</h4>
-                                    <button class="btn-icon-sm" id="addIngredientBtn">+ Thêm</button>
+                                    <button type="button" class="btn-icon-sm" id="addIngredientBtn">+ Thêm</button>
                                 </div>
                                 <div id="ingredientsList"></div>
                             </div>
@@ -363,7 +370,7 @@
                                 <label>Target Food Cost %</label>
                                 <input type="number" id="targetFoodCost" value="30" min="1" max="100">
                             </div>
-                            <button class="btn-primary full-width" id="calculateBtn">Tính toán</button>
+                            <button type="button" class="btn-primary full-width" id="calculateBtn">Tính toán</button>
                         </div>
                         <div class="foodcost-result card">
                             <h3>Kết quả</h3>
@@ -385,7 +392,8 @@
                                     <span class="result-value" id="grossProfit">0đ</span>
                                 </div>
                             </div>
-                            <button class="btn-secondary full-width" id="saveRecipeBtn">Lưu công thức</button>
+                            <button type="button" class="btn-secondary full-width" id="saveRecipeBtn">Lưu công
+                                thức</button>
                         </div>
                     </div>
                 </section>
@@ -394,9 +402,11 @@
                 <section class="page" id="page-inventory">
                     <div class="inventory-header">
                         <div class="inventory-actions">
-                            <button class="btn-primary md-button md-button-filled" id="addInventoryBtn">+ Nhập
+                            <button type="button" class="btn-primary md-button md-button-filled" id="addInventoryBtn">+
+                                Nhập
                                 kho</button>
-                            <button class="btn-secondary md-button md-button-outlined" id="exportInventoryBtn">Xuất
+                            <button type="button" class="btn-secondary md-button md-button-outlined"
+                                id="exportInventoryBtn">Xuất
                                 kho</button>
                         </div>
                         <div class="inventory-filters">
@@ -438,7 +448,7 @@
                 <!-- Recipes Page -->
                 <section class="page" id="page-recipes">
                     <div class="recipes-header">
-                        <button class="btn-primary" id="addRecipeBtn">+ Thêm công thức</button>
+                        <button type="button" class="btn-primary" id="addRecipeBtn">+ Thêm công thức</button>
                         <input type="text" class="search-input" id="recipeSearch" placeholder="Tìm công thức...">
                     </div>
                     <div class="recipes-grid" id="recipesGrid"></div>
@@ -448,8 +458,8 @@
                 <section class="page" id="page-menu">
                     <div class="menu-management">
                         <div class="menu-tabs">
-                            <button class="menu-tab active" data-menu-type="master">📋 Menu Tổng</button>
-                            <button class="menu-tab" data-menu-type="daily">📅 Menu Hôm Nay</button>
+                            <button type="button" class="menu-tab active" data-menu-type="master">📋 Menu Tổng</button>
+                            <button type="button" class="menu-tab" data-menu-type="daily">📅 Menu Hôm Nay</button>
                         </div>
 
                         <!-- Master Menu -->
@@ -459,14 +469,16 @@
                                 <div class="menu-header-actions">
                                     <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv"
                                         style="display:none">
-                                    <button class="btn-info" id="importExcelBtn" title="Import từ file Excel">📥
+                                    <button type="button" class="btn-info" id="importExcelBtn"
+                                        title="Import từ file Excel">📥
                                         Import</button>
-                                    <button class="btn-warning" id="exportExcelBtn" title="Xuất menu ra Excel">📤
+                                    <button type="button" class="btn-warning" id="exportExcelBtn"
+                                        title="Xuất menu ra Excel">📤
                                         Export</button>
-                                    <button class="btn-success" id="addToDailyBtn">➕ Menu Ngày</button>
-                                    <button class="btn-secondary" id="resetMenuBtn"
+                                    <button type="button" class="btn-success" id="addToDailyBtn">➕ Menu Ngày</button>
+                                    <button type="button" class="btn-secondary" id="resetMenuBtn"
                                         title="Khôi phục lại menu mẫu đầy đủ">🔄 Nạp Mẫu</button>
-                                    <button class="btn-primary" id="addMenuItemBtn">+ Thêm món</button>
+                                    <button type="button" class="btn-primary" id="addMenuItemBtn">+ Thêm món</button>
                                 </div>
                             </div>
                             <div class="menu-table-container">
@@ -493,8 +505,9 @@
                             <div class="menu-header">
                                 <h3>📅 Menu Hôm Nay - <span id="todayDate"></span></h3>
                                 <div class="menu-header-actions">
-                                    <button class="btn-secondary" id="clearDailyBtn">Xóa tất cả</button>
-                                    <button class="btn-primary" id="copyYesterdayBtn">📋 Copy từ hôm qua</button>
+                                    <button type="button" class="btn-secondary" id="clearDailyBtn">Xóa tất cả</button>
+                                    <button type="button" class="btn-primary" id="copyYesterdayBtn">📋 Copy từ hôm
+                                        qua</button>
                                 </div>
                             </div>
                             <div class="daily-menu-grid" id="dailyMenuGrid"></div>
@@ -511,12 +524,12 @@
                         <div class="sops-sidebar">
                             <h3>Danh mục SOP</h3>
                             <div class="sop-categories">
-                                <button class="sop-cat-btn active" data-sop="opening">🌅 Opening</button>
-                                <button class="sop-cat-btn" data-sop="closing">🌙 Closing</button>
-                                <button class="sop-cat-btn" data-sop="service">🍽️ Service</button>
-                                <button class="sop-cat-btn" data-sop="kitchen">🧑‍🍳 Kitchen</button>
-                                <button class="sop-cat-btn" data-sop="cleaning">🧹 Cleaning</button>
-                                <button class="sop-cat-btn" data-sop="safety">🛡️ Food Safety</button>
+                                <button type="button" class="sop-cat-btn active" data-sop="opening">🌅 Opening</button>
+                                <button type="button" class="sop-cat-btn" data-sop="closing">🌙 Closing</button>
+                                <button type="button" class="sop-cat-btn" data-sop="service">🍽️ Service</button>
+                                <button type="button" class="sop-cat-btn" data-sop="kitchen">🧑‍🍳 Kitchen</button>
+                                <button type="button" class="sop-cat-btn" data-sop="cleaning">🧹 Cleaning</button>
+                                <button type="button" class="sop-cat-btn" data-sop="safety">🛡️ Food Safety</button>
                             </div>
                         </div>
                         <div class="sops-content">
@@ -531,8 +544,8 @@
                             </div>
                             <div class="sop-checklist" id="sopChecklist"></div>
                             <div class="sop-actions">
-                                <button class="btn-secondary" id="resetSopBtn">Reset</button>
-                                <button class="btn-primary" id="completeSopBtn">Hoàn thành</button>
+                                <button type="button" class="btn-secondary" id="resetSopBtn">Reset</button>
+                                <button type="button" class="btn-primary" id="completeSopBtn">Hoàn thành</button>
                             </div>
                         </div>
                     </div>
@@ -559,7 +572,7 @@
                                 <span class="stat-label">Đã giao</span>
                             </div>
                         </div>
-                        <button class="btn-primary" id="addOrderBtn">+ Tạo đơn mới</button>
+                        <button type="button" class="btn-primary" id="addOrderBtn">+ Tạo đơn mới</button>
                     </div>
                     <div class="orders-kanban">
                         <div class="kanban-column" data-status="new">
@@ -603,7 +616,7 @@
                         <div class="tables-header">
                             <h2>🍽️ Sơ Đồ Bàn</h2>
                             <div id="tableStats" class="table-stats"></div>
-                            <button class="btn-primary" id="addTableBtn">+ Thêm bàn</button>
+                            <button type="button" class="btn-primary" id="addTableBtn">+ Thêm bàn</button>
                         </div>
                         <div class="tables-grid" id="tablesGrid"></div>
                     </div>
@@ -629,9 +642,10 @@
                             <h2>👥 Quản Lý Nhân Viên</h2>
                             <div id="staffStats" class="staff-stats"></div>
                             <div class="staff-actions">
-                                <button class="btn-info" id="payrollBtn" onclick="StaffManagement.showPayrollModal()">💰
+                                <button type="button" class="btn-info" id="payrollBtn"
+                                    onclick="StaffManagement.showPayrollModal()">💰
                                     Bảng lương</button>
-                                <button class="btn-primary" id="addStaffBtn">+ Thêm nhân viên</button>
+                                <button type="button" class="btn-primary" id="addStaffBtn">+ Thêm nhân viên</button>
                             </div>
                         </div>
                         <div class="staff-table-container">
@@ -652,7 +666,7 @@
                         </div>
 
                         <!-- Attendance Section -->
-                        <div class="attendance-section" style="margin-top: 2rem;">
+                        <div class="attendance-section">
                             <h3>📅 Chấm Công Hôm Nay</h3>
                             <div class="staff-table-container">
                                 <table class="data-table" id="attendanceTable">
@@ -678,12 +692,14 @@
                         <div class="customers-header">
                             <h2>💎 Khách Hàng Thân Thiết</h2>
                             <div id="customerStats" class="customer-stats"></div>
-                            <div class="customer-actions" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                                <button class="btn-success" onclick="CustomerLoyalty.showStoreScanModal()">📲 Quét QR
+                            <div class="customer-actions">
+                                <button type="button" class="btn-success"
+                                    onclick="CustomerLoyalty.showStoreScanModal()">📲 Quét QR
                                     tích điểm</button>
-                                <button class="btn-warning" onclick="CustomerLoyalty.showBulkPromotionModal()">📢 Gửi
+                                <button type="button" class="btn-warning"
+                                    onclick="CustomerLoyalty.showBulkPromotionModal()">📢 Gửi
                                     khuyến mãi</button>
-                                <button class="btn-primary" id="addCustomerBtn">+ Thêm khách hàng</button>
+                                <button type="button" class="btn-primary" id="addCustomerBtn">+ Thêm khách hàng</button>
                             </div>
                         </div>
                         <div class="customers-table-container">
@@ -714,7 +730,7 @@
         <div class="modal" id="modal">
             <div class="modal-header">
                 <h3 id="modalTitle">Modal Title</h3>
-                <button class="modal-close" id="modalClose">×</button>
+                <button type="button" class="modal-close" id="modalClose">×</button>
             </div>
             <div class="modal-body" id="modalBody"></div>
             <div class="modal-footer" id="modalFooter"></div>
@@ -725,7 +741,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="mobile-nav" id="mobileNav">
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile Navigation">
         <div class="mobile-nav-items">
             <a href="#" class="mobile-nav-item active" data-page="dashboard">
                 <span class="mobile-nav-icon">📊</span>
