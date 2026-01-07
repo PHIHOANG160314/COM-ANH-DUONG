@@ -59,7 +59,41 @@ const CustomerLoyalty = {
 
     saveCustomers() {
         localStorage.setItem('fb_customers', JSON.stringify(this.customers));
-        // TODO: Sync to Supabase when online
+
+        // Sync to Supabase when online
+        if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+            this.syncCustomersToSupabase();
+        }
+    },
+
+    async syncCustomersToSupabase() {
+        try {
+            const supabase = await window.getSupabase?.();
+            if (!supabase) return;
+
+            // Batch upsert all customers
+            const customersData = this.customers.map(c => ({
+                id: c.id,
+                name: c.name,
+                phone: c.phone,
+                email: c.email || null,
+                tier: c.tier?.toUpperCase() || 'BRONZE',
+                points: c.points || 0,
+                total_spent: c.totalSpent || 0,
+                visits: c.visits || 0,
+                created_at: c.createdAt ? new Date(c.createdAt).toISOString() : new Date().toISOString()
+            }));
+
+            const { error } = await supabase.from('customers').upsert(customersData);
+
+            if (error) {
+                if (window.Debug) Debug.warn('Customer sync failed:', error.message);
+            } else {
+                if (window.Debug) Debug.info('Customers synced to Supabase:', this.customers.length);
+            }
+        } catch (e) {
+            if (window.Debug) Debug.warn('Supabase customer sync error:', e.message);
+        }
     },
 
 

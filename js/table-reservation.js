@@ -41,10 +41,37 @@ const TableReservation = {
         this.reservations.push(reservation);
         localStorage.setItem('table_reservations', JSON.stringify(this.reservations));
 
-        // TODO: Sync to Supabase when configured
-        // if (window.isSupabaseConfigured && isSupabaseConfigured()) {
-        //     SupabaseService.upsertReservation(reservation);
-        // }
+        // Sync to Supabase when configured
+        if (window.isSupabaseConfigured && isSupabaseConfigured()) {
+            this.syncToSupabase(reservation);
+        }
+    },
+
+    async syncToSupabase(reservation) {
+        try {
+            const supabase = await window.getSupabase?.();
+            if (!supabase) return;
+
+            const { error } = await supabase.from('reservations').upsert({
+                id: reservation.id,
+                table_id: reservation.selectedTable,
+                date: reservation.selectedDate,
+                time: reservation.selectedTime,
+                guests: reservation.guests,
+                phone: reservation.phone,
+                special_request: reservation.specialRequest || '',
+                status: reservation.status,
+                created_at: reservation.createdAt
+            });
+
+            if (error) {
+                if (window.Debug) Debug.warn('Reservation sync failed:', error.message);
+            } else {
+                if (window.Debug) Debug.info('Reservation synced to Supabase:', reservation.id);
+            }
+        } catch (e) {
+            if (window.Debug) Debug.warn('Supabase sync error:', e.message);
+        }
     },
 
     // ========================================

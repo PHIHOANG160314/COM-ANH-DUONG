@@ -1,48 +1,52 @@
 /* ========================================
    F&B MASTER - MAIN STYLES
+   Material Design 3 Integration
    ======================================== */
+
+/* Import M3 Design System */
+@import url('./m3-design-system.css');
 
 /* Reset & Variables - M3 MATERIAL DESIGN SYSTEM */
 :root {
     /* Colors - Using M3 Brand Colors from m3-design-system.css */
-    --primary: var(--ad-color-primary, #FF6B35);
-    --primary-dark: #E55A2B;
-    --primary-light: #FF8F5C;
-    --primary-glow: rgba(255, 107, 53, 0.5);
-    --secondary: var(--ad-color-secondary, #4CAF50);
-    --secondary-glow: rgba(76, 175, 80, 0.5);
+    --primary: var(--ad-color-primary, #006400);
+    --primary-dark: #004D00;
+    --primary-light: #2E7D32;
+    --primary-glow: rgba(0, 100, 0, 0.5);
+    --secondary: var(--ad-color-secondary, #73C249);
+    --secondary-glow: rgba(115, 194, 73, 0.5);
     --warning: var(--ad-color-warning, #FF9800);
-    --danger: var(--ad-color-danger, #F44336);
+    --danger: var(--ad-color-danger, #BA1A1A);
     --info: var(--ad-color-info, #2196F3);
-    --accent-pink: #E91E63;
-    --accent-purple: #9C27B0;
+    --accent-green: #73C249;
+    --accent-gold: #FFB300;
     --accent-cyan: #00BCD4;
-    --accent-orange: #FF9800;
+    --accent-emerald: #10B981;
 
     /* Surface Colors - M3 Theme */
-    --bg-dark: var(--md-sys-color-background, #050508);
-    --bg-primary: var(--md-sys-color-surface, #0a0a10);
-    --bg-card: var(--md-sys-color-surface-container, rgba(20, 20, 35, 0.7));
-    --bg-hover: var(--md-sys-color-surface-container-high, rgba(30, 30, 55, 0.8));
-    --bg-input: var(--md-sys-color-surface-container-highest, rgba(15, 15, 30, 0.9));
+    --bg-dark: var(--md-sys-color-background, #121410);
+    --bg-primary: var(--md-sys-color-surface, #0F1410);
+    --bg-card: var(--md-sys-color-surface-container, rgba(20, 30, 25, 0.7));
+    --bg-hover: var(--md-sys-color-surface-container-high, rgba(30, 45, 35, 0.8));
+    --bg-input: var(--md-sys-color-surface-container-highest, rgba(15, 25, 20, 0.9));
     --bg-glass: rgba(255, 255, 255, 0.02);
     --bg-glass-strong: rgba(255, 255, 255, 0.05);
 
     /* Text - M3 Color Roles */
-    --text-primary: var(--md-sys-color-on-surface, #f8f8fa);
-    --text-secondary: var(--md-sys-color-on-surface-variant, #b4b4bc);
-    --text-muted: var(--md-sys-color-outline, #8888a0);
+    --text-primary: var(--md-sys-color-on-surface, #E2E3DC);
+    --text-secondary: var(--md-sys-color-on-surface-variant, #C2C9BD);
+    --text-muted: var(--md-sys-color-outline, #8C9388);
 
     /* Borders - M3 Outline */
-    --border-color: var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.06));
+    --border-color: var(--md-sys-color-outline-variant, rgba(194, 201, 189, 0.2));
     --border-light: rgba(255, 255, 255, 0.03);
-    --border-glow: rgba(255, 107, 53, 0.4);
+    --border-glow: rgba(0, 100, 0, 0.4);
 
     /* Shadows - M3 Elevation Levels */
     --shadow-sm: var(--md-sys-elevation-level1, 0 2px 10px rgba(0, 0, 0, 0.4));
     --shadow-md: var(--md-sys-elevation-level2, 0 8px 40px rgba(0, 0, 0, 0.5));
     --shadow-lg: var(--md-sys-elevation-level3, 0 20px 60px rgba(0, 0, 0, 0.6));
-    --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.25);
+    --shadow-glow: 0 0 40px rgba(0, 100, 0, 0.25);
     --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
     /* Sizes - M3 Shape Tokens */
@@ -75,7 +79,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg-dark);
     color: var(--text-primary);
     line-height: 1.6;
@@ -85,7 +89,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Animated Background - 2025 Cyberpunk Aurora */
+/* Animated Background - 2025 Green Aurora */
 body::before {
     content: '';
     position: fixed;
@@ -94,12 +98,12 @@ body::before {
     right: 0;
     bottom: 0;
     background:
-        radial-gradient(ellipse at 10% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 40%),
-        radial-gradient(ellipse at 90% 20%, rgba(99, 102, 241, 0.25) 0%, transparent 45%),
+        radial-gradient(ellipse at 10% 20%, rgba(0, 100, 0, 0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 20%, rgba(115, 194, 73, 0.25) 0%, transparent 45%),
         radial-gradient(ellipse at 50% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 60%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
-        radial-gradient(ellipse at 20% 70%, rgba(6, 182, 212, 0.1) 0%, transparent 35%),
-        linear-gradient(180deg, #050508 0%, #0a0a12 30%, #0f0f1a 70%, #1a1a2e 100%);
+        radial-gradient(ellipse at 80% 60%, rgba(46, 125, 50, 0.12) 0%, transparent 40%),
+        radial-gradient(ellipse at 20% 70%, rgba(168, 240, 160, 0.08) 0%, transparent 35%),
+        linear-gradient(180deg, #0D0F0B 0%, #121410 30%, #1A1C18 70%, #1E201B 100%);
     z-index: -1;
     animation: auroraShift 20s ease-in-out infinite alternate;
 }
@@ -113,8 +117,8 @@ body::after {
     bottom: 0;
     background-image:
         radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.15), transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(99, 102, 241, 0.3), transparent),
-        radial-gradient(1px 1px at 90px 40px, rgba(236, 72, 153, 0.4), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(115, 194, 73, 0.3), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(0, 100, 0, 0.4), transparent),
         radial-gradient(2px 2px at 160px 120px, rgba(16, 185, 129, 0.3), transparent),
         radial-gradient(1px 1px at 230px 80px, rgba(255, 255, 255, 0.2), transparent);
     background-size: 250px 250px;
@@ -269,9 +273,9 @@ body::after {
 }
 
 .nav-item.active {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.1));
-    color: var(--primary-light);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .nav-item.active::before {
@@ -407,8 +411,8 @@ body::after {
 
 .search-box input:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
 }
 
 .search-box input::placeholder {
@@ -531,8 +535,8 @@ body::after {
 
 .kpi-card:hover {
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: var(--md-sys-elevation-level4), 0 0 30px rgba(0, 100, 0, 0.2);
+    border-color: var(--md-sys-color-primary);
 }
 
 .kpi-icon {

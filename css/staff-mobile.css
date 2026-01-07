@@ -1,24 +1,35 @@
 /* ========================================
    F&B MASTER - STAFF MOBILE CSS
    Mobile-First Staff Portal
+   Material Design 3 Integration
    ======================================== */
 
+/* Import M3 Design System */
+@import url('./m3-design-system.css');
+
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --bg-dark: #0a0a12;
-    --bg-card: rgba(26, 26, 46, 0.95);
-    --text-primary: #f8f8fa;
-    --text-secondary: #b4b4bc;
-    --text-muted: #8888a0;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    --radius: 16px;
-    --radius-sm: 10px;
+    /* M3 Color Tokens - Override with M3 System */
+    --primary: var(--md-sys-color-primary);
+    --primary-dark: var(--ad-color-primary, #004D00);
+    --primary-light: var(--md-sys-color-secondary);
+    --secondary: var(--md-sys-color-tertiary);
+    --warning: var(--ad-color-warning, #f59e0b);
+    --danger: var(--md-sys-color-error);
+
+    /* M3 Surface Colors */
+    --bg-dark: var(--md-sys-color-background);
+    --bg-card: var(--md-sys-color-surface-container);
+    --text-primary: var(--md-sys-color-on-background);
+    --text-secondary: var(--md-sys-color-on-surface-variant);
+    --text-muted: var(--md-sys-color-outline);
+    --border-color: var(--md-sys-color-outline-variant);
+
+    /* M3 Elevation */
+    --shadow: var(--md-sys-elevation-level2);
+
+    /* M3 Shape */
+    --radius: var(--md-sys-shape-corner-large);
+    --radius-sm: var(--md-sys-shape-corner-medium);
 }
 
 * {
@@ -28,23 +39,31 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: linear-gradient(180deg, #0a0a12 0%, #1a1a2e 100%);
-    color: var(--text-primary);
+    font-family: var(--md-sys-typescale-body-large-font, 'Roboto', -apple-system, sans-serif);
+    background: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
 }
 
+/* M3 Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: var(--md-sys-color-surface);
+    }
+}
+
 /* ========================================
-   HEADER
+   HEADER - M3 Top App Bar
    ======================================== */
 .staff-header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10, 10, 18, 0.98);
+    background: var(--md-sys-color-surface-container);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    box-shadow: var(--md-sys-elevation-level1);
 }
 
 .header-content {
@@ -52,6 +71,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
+    min-height: 64px;
 }
 
 .header-left {
@@ -63,19 +83,19 @@ body {
 .logo-img {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: var(--md-sys-shape-corner-medium);
     object-fit: cover;
 }
 
 .header-title h1 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary-light);
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    color: var(--md-sys-color-primary);
 }
 
 .header-title p {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: var(--md-sys-typescale-label-small-size);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .staff-info {
@@ -83,9 +103,9 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    background: var(--bg-card);
-    border-radius: 25px;
-    border: 1px solid var(--border-color);
+    background: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-full);
+    border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .staff-avatar {
@@ -93,22 +113,23 @@ body {
 }
 
 .staff-name {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
+    color: var(--md-sys-color-on-surface);
 }
 
-/* Role Badge */
+/* Role Badge - M3 Badge Style */
 .role-badge {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
     margin-left: 8px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: 12px;
-    font-size: 0.7rem;
+    background: var(--ad-gradient-primary);
+    border-radius: var(--md-sys-shape-corner-full);
+    font-size: var(--md-sys-typescale-label-small-size);
     font-weight: 600;
-    color: white;
+    color: var(--md-sys-color-on-primary);
 }
 
 /* Disabled/Hidden action cards */
@@ -133,7 +154,7 @@ body {
 
 .section {
     display: none;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
 }
 
 .section.active {
@@ -153,7 +174,7 @@ body {
 }
 
 /* ========================================
-   LOGIN
+   LOGIN - M3 Card Style
    ======================================== */
 .login-container {
     display: flex;
@@ -163,13 +184,14 @@ body {
 }
 
 .login-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-extra-large);
     padding: 32px;
     text-align: center;
     width: 100%;
     max-width: 320px;
+    box-shadow: var(--md-sys-elevation-level2);
 }
 
 .login-icon {
@@ -178,12 +200,15 @@ body {
 }
 
 .login-card h2 {
-    font-size: 1.5rem;
+    font-size: var(--md-sys-typescale-headline-small-size);
+    font-weight: var(--md-sys-typescale-headline-small-weight);
+    color: var(--md-sys-color-on-surface);
     margin-bottom: 8px;
 }
 
 .login-card p {
-    color: var(--text-muted);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-typescale-body-medium-size);
     margin-bottom: 24px;
 }
 
@@ -197,29 +222,35 @@ body {
     font-size: 2rem;
     text-align: center;
     letter-spacing: 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-    transition: all 0.2s;
+    border: 2px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-highest);
+    color: var(--md-sys-color-on-surface);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
 
 .pin-input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
 }
 
+/* M3 Filled Button */
 .btn-login {
     width: 100%;
     padding: 16px;
     border: none;
-    border-radius: var(--radius);
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
+}
+
+.btn-login:hover {
+    box-shadow: var(--md-sys-elevation-level2);
 }
 
 .btn-login:active {
@@ -228,12 +259,12 @@ body {
 
 .login-help {
     margin-top: 16px;
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-size: var(--md-sys-typescale-body-small-size);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 /* ========================================
-   DASHBOARD
+   DASHBOARD - M3 Cards
    ======================================== */
 .dashboard-container {
     display: flex;
@@ -247,6 +278,7 @@ body {
     gap: 12px;
 }
 
+/* M3 Filled Card Style for Actions */
 .action-card {
     position: relative;
     display: flex;
@@ -255,12 +287,17 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 20px 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    color: var(--text-primary);
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
+    color: var(--md-sys-color-on-surface);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
+    box-shadow: var(--md-sys-elevation-level1);
+}
+
+.action-card:hover {
+    box-shadow: var(--md-sys-elevation-level2);
 }
 
 .action-card:active {
@@ -268,28 +305,53 @@ body {
 }
 
 .action-card.checkin {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-    border-color: rgba(16, 185, 129, 0.3);
+    background: var(--md-sys-color-secondary-container);
+    border-color: transparent;
+}
+
+.action-card.checkin .action-icon,
+.action-card.checkin .action-label {
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 .action-card.checkin.checked-in {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-    border-color: rgba(239, 68, 68, 0.3);
+    background: var(--md-sys-color-error-container);
+    border-color: transparent;
+}
+
+.action-card.checkin.checked-in .action-icon,
+.action-card.checkin.checked-in .action-label {
+    color: var(--md-sys-color-on-error-container);
 }
 
 .action-card.kitchen {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
-    border-color: rgba(245, 158, 11, 0.3);
+    background: var(--md-sys-color-tertiary-container);
+    border-color: transparent;
+}
+
+.action-card.kitchen .action-icon,
+.action-card.kitchen .action-label {
+    color: var(--md-sys-color-on-tertiary-container);
 }
 
 .action-card.pos {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
-    border-color: rgba(99, 102, 241, 0.3);
+    background: var(--md-sys-color-primary-container);
+    border-color: transparent;
+}
+
+.action-card.pos .action-icon,
+.action-card.pos .action-label {
+    color: var(--md-sys-color-on-primary-container);
 }
 
 .action-card.orders {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-    border-color: rgba(16, 185, 129, 0.3);
+    background: var(--md-sys-color-secondary-container);
+    border-color: transparent;
+}
+
+.action-card.orders .action-icon,
+.action-card.orders .action-label {
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 .action-icon {
@@ -297,38 +359,43 @@ body {
 }
 
 .action-label {
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: var(--md-sys-typescale-label-large-weight);
+    font-size: var(--md-sys-typescale-label-large-size);
 }
 
 .action-time {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: var(--md-sys-typescale-label-small-size);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
+/* M3 Badge */
 .action-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: var(--danger);
-    color: white;
-    font-size: 0.7rem;
+    background: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-error);
+    font-size: var(--md-sys-typescale-label-small-size);
     font-weight: 600;
     padding: 2px 8px;
-    border-radius: 10px;
+    border-radius: var(--md-sys-shape-corner-full);
+    min-width: 20px;
+    text-align: center;
 }
 
-/* Summary Card */
+/* Summary Card - M3 Outlined Card */
 .summary-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 20px;
 }
 
 .summary-card h3 {
     margin-bottom: 16px;
-    font-size: 1rem;
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    color: var(--md-sys-color-on-surface);
 }
 
 .summary-grid {
@@ -345,26 +412,28 @@ body {
 }
 
 .summary-value {
-    font-size: 1.25rem;
+    font-size: var(--md-sys-typescale-headline-small-size);
     font-weight: 700;
-    color: var(--primary-light);
+    color: var(--md-sys-color-primary);
 }
 
 .summary-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: var(--md-sys-typescale-label-small-size);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
-/* Recent Orders */
+/* Recent Orders - M3 Card */
 .recent-orders {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 20px;
 }
 
 .recent-orders h3 {
     margin-bottom: 16px;
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
 }
 
 .orders-list {
@@ -374,7 +443,7 @@ body {
 }
 
 /* ========================================
-   KITCHEN
+   KITCHEN - M3 Cards
    ======================================== */
 .kitchen-container,
 .orders-container {
@@ -389,18 +458,25 @@ body {
     gap: 12px;
 }
 
+/* M3 Text Button */
 .btn-back {
     padding: 8px 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    color: var(--text-primary);
-    font-size: 0.85rem;
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    color: var(--md-sys-color-on-surface);
+    font-size: var(--md-sys-typescale-label-large-size);
     cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.btn-back:hover {
+    background: var(--md-sys-color-surface-container-high);
 }
 
 .section-header h2 {
-    font-size: 1.1rem;
+    font-size: var(--md-sys-typescale-title-large-size);
+    font-weight: var(--md-sys-typescale-title-large-weight);
 }
 
 .kitchen-orders {
@@ -410,15 +486,17 @@ body {
 }
 
 .kitchen-order-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 16px;
-    transition: all 0.2s;
+    box-shadow: var(--md-sys-elevation-level1);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
 
 .kitchen-order-card.urgent {
-    border-color: var(--danger);
+    border-color: var(--md-sys-color-error);
+    background: var(--md-sys-color-error-container);
     animation: pulse-border 2s infinite;
 }
 
@@ -426,11 +504,11 @@ body {
 
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.4);
     }
 
     50% {
-        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+        box-shadow: 0 0 0 8px rgba(186, 26, 26, 0);
     }
 }
 
@@ -442,22 +520,23 @@ body {
 }
 
 .kitchen-order-id {
-    font-weight: 600;
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    font-size: var(--md-sys-typescale-title-medium-size);
 }
 
 .kitchen-order-time {
-    font-size: 0.8rem;
-    color: var(--warning);
+    font-size: var(--md-sys-typescale-label-medium-size);
+    color: var(--ad-color-warning);
 }
 
 .kitchen-order-items {
     margin-bottom: 12px;
-    font-size: 0.9rem;
+    font-size: var(--md-sys-typescale-body-medium-size);
 }
 
 .kitchen-order-item {
     padding: 6px 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .kitchen-order-item:last-child {
@@ -469,24 +548,34 @@ body {
     gap: 8px;
 }
 
+/* M3 Filled Tonal Button */
 .btn-kitchen {
     flex: 1;
     padding: 12px;
     border: none;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
+    border-radius: var(--md-sys-shape-corner-full);
+    font-weight: var(--md-sys-typescale-label-large-weight);
+    font-size: var(--md-sys-typescale-label-large-size);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
 }
 
 .btn-kitchen.start {
-    background: var(--warning);
-    color: white;
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+}
+
+.btn-kitchen.start:hover {
+    box-shadow: var(--md-sys-elevation-level1);
 }
 
 .btn-kitchen.complete {
-    background: var(--secondary);
-    color: white;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+
+.btn-kitchen.complete:hover {
+    box-shadow: var(--md-sys-elevation-level2);
 }
 
 .btn-kitchen:active {
@@ -494,7 +583,7 @@ body {
 }
 
 /* ========================================
-   ORDERS
+   ORDERS - M3 Filter Chips
    ======================================== */
 .order-filters {
     display: flex;
@@ -503,29 +592,37 @@ body {
     padding: 4px 0;
 }
 
+/* M3 Filter Chip */
 .filter-btn {
     flex-shrink: 0;
     padding: 10px 18px;
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
 }
 
 .filter-btn.active {
-    background: var(--primary);
+    background: var(--md-sys-color-secondary-container);
     border-color: transparent;
-    color: white;
+    color: var(--md-sys-color-on-secondary-container);
 }
 
+.filter-btn:hover:not(.active) {
+    background: var(--md-sys-color-surface-container);
+}
+
+/* Order Card - M3 Outlined Card */
 .order-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-large);
     padding: 16px;
+    box-shadow: var(--md-sys-elevation-level1);
 }
 
 .order-card-header {
@@ -535,44 +632,45 @@ body {
 }
 
 .order-card-id {
-    font-weight: 600;
+    font-weight: var(--md-sys-typescale-title-medium-weight);
 }
 
+/* M3 Status Chips */
 .order-card-status {
     padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    border-radius: var(--md-sys-shape-corner-full);
+    font-size: var(--md-sys-typescale-label-small-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
 }
 
 .order-card-status.pending {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--warning);
+    background: var(--ad-status-pending-bg);
+    color: var(--ad-status-pending);
 }
 
 .order-card-status.preparing {
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--primary-light);
+    background: var(--ad-status-preparing-bg);
+    color: var(--ad-status-preparing);
 }
 
 .order-card-status.completed {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--secondary);
+    background: var(--ad-status-completed-bg);
+    color: var(--ad-status-completed);
 }
 
 .order-card-info {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+    font-size: var(--md-sys-typescale-body-medium-size);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .order-card-total {
     margin-top: 12px;
-    font-weight: 600;
-    color: var(--secondary);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    color: var(--md-sys-color-primary);
 }
 
 /* ========================================
-   BOTTOM NAVIGATION
+   BOTTOM NAVIGATION - M3 Navigation Bar
    ======================================== */
 .bottom-nav {
     display: none;
@@ -580,10 +678,9 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 64px;
-    background: rgba(26, 26, 46, 0.98);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border-color);
+    height: 80px;
+    background: var(--md-sys-color-surface-container);
+    border-top: 1px solid var(--md-sys-color-outline-variant);
     padding: 0 16px;
     padding-bottom: env(safe-area-inset-bottom);
     z-index: 1000;
@@ -595,34 +692,47 @@ body {
     align-items: center;
 }
 
+/* M3 Navigation Bar Item */
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding: 8px 16px;
+    padding: 12px 16px;
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: var(--md-sys-color-on-surface-variant);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.nav-item .nav-icon {
+    width: 64px;
+    height: 32px;
+    border-radius: var(--md-sys-shape-corner-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
 }
 
 .nav-item.active {
-    color: var(--primary-light);
+    color: var(--md-sys-color-on-surface);
 }
 
-.nav-icon {
-    font-size: 1.3rem;
+.nav-item.active .nav-icon {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 .nav-label {
-    font-size: 0.7rem;
-    font-weight: 500;
+    font-size: var(--md-sys-typescale-label-medium-size);
+    font-weight: var(--md-sys-typescale-label-medium-weight);
 }
 
 /* ========================================
-   TOAST
+   TOAST - M3 Snackbar
    ======================================== */
 .toast-container {
     position: fixed;
@@ -633,19 +743,25 @@ body {
 }
 
 .toast {
-    padding: 12px 20px;
+    padding: 14px 20px;
     margin-bottom: 8px;
-    border-radius: var(--radius-sm);
-    background: var(--secondary);
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
-    animation: toastIn 0.3s ease;
-    box-shadow: var(--shadow);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    font-size: var(--md-sys-typescale-body-medium-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
+    animation: toastIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+    box-shadow: var(--md-sys-elevation-level3);
 }
 
 .toast.error {
-    background: var(--danger);
+    background: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-error);
+}
+
+.toast.success {
+    background: var(--ad-color-success);
+    color: var(--ad-color-on-success);
 }
 
 @keyframes toastIn {
@@ -662,6 +778,7 @@ body {
 
 .no-orders {
     text-align: center;
-    color: var(--text-muted);
+    color: var(--md-sys-color-on-surface-variant);
     padding: 24px;
+    font-size: var(--md-sys-typescale-body-large-size);
 }

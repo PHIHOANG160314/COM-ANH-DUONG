@@ -12,57 +12,57 @@
    ===================================================== */
 
 :root {
-    /* === PRIMARY COLORS === */
-    --md-sys-color-primary: #6750A4;
+    /* === PRIMARY COLORS - Dark Green from Logo #006400 === */
+    --md-sys-color-primary: #006400;
     --md-sys-color-on-primary: #FFFFFF;
-    --md-sys-color-primary-container: #EADDFF;
-    --md-sys-color-on-primary-container: #21005D;
+    --md-sys-color-primary-container: #A8F0A0;
+    --md-sys-color-on-primary-container: #002204;
 
-    /* === SECONDARY COLORS === */
-    --md-sys-color-secondary: #625B71;
+    /* === SECONDARY COLORS - Light Green from Logo #73C249 === */
+    --md-sys-color-secondary: #4E6A41;
     --md-sys-color-on-secondary: #FFFFFF;
-    --md-sys-color-secondary-container: #E8DEF8;
-    --md-sys-color-on-secondary-container: #1D192B;
+    --md-sys-color-secondary-container: #D0F0BD;
+    --md-sys-color-on-secondary-container: #0C2004;
 
-    /* === TERTIARY COLORS === */
-    --md-sys-color-tertiary: #7D5260;
+    /* === TERTIARY COLORS - Gold/Amber Complement === */
+    --md-sys-color-tertiary: #7D5700;
     --md-sys-color-on-tertiary: #FFFFFF;
-    --md-sys-color-tertiary-container: #FFD8E4;
-    --md-sys-color-on-tertiary-container: #31111D;
+    --md-sys-color-tertiary-container: #FFDEAB;
+    --md-sys-color-on-tertiary-container: #271900;
 
     /* === ERROR COLORS === */
-    --md-sys-color-error: #B3261E;
+    --md-sys-color-error: #BA1A1A;
     --md-sys-color-on-error: #FFFFFF;
-    --md-sys-color-error-container: #F9DEDC;
-    --md-sys-color-on-error-container: #410E0B;
+    --md-sys-color-error-container: #FFDAD6;
+    --md-sys-color-on-error-container: #410002;
 
-    /* === SURFACE COLORS === */
-    --md-sys-color-surface: #FEF7FF;
-    --md-sys-color-on-surface: #1D1B20;
-    --md-sys-color-surface-variant: #E7E0EC;
-    --md-sys-color-on-surface-variant: #49454F;
+    /* === SURFACE COLORS - Green Tinted === */
+    --md-sys-color-surface: #FCFDF6;
+    --md-sys-color-on-surface: #1A1C18;
+    --md-sys-color-surface-variant: #DEE5D8;
+    --md-sys-color-on-surface-variant: #424940;
 
     /* === BACKGROUND === */
-    --md-sys-color-background: #FEF7FF;
-    --md-sys-color-on-background: #1D1B20;
+    --md-sys-color-background: #FCFDF6;
+    --md-sys-color-on-background: #1A1C18;
 
     /* === OUTLINE === */
-    --md-sys-color-outline: #79747E;
-    --md-sys-color-outline-variant: #CAC4D0;
+    --md-sys-color-outline: #72796F;
+    --md-sys-color-outline-variant: #C2C9BD;
 
     /* === INVERSE === */
-    --md-sys-color-inverse-surface: #322F35;
-    --md-sys-color-inverse-on-surface: #F5EFF7;
-    --md-sys-color-inverse-primary: #D0BCFF;
+    --md-sys-color-inverse-surface: #2F312C;
+    --md-sys-color-inverse-on-surface: #F1F1EA;
+    --md-sys-color-inverse-primary: #7CDC70;
 
-    /* === SURFACE LEVELS === */
-    --md-sys-color-surface-dim: #DED8E1;
-    --md-sys-color-surface-bright: #FEF7FF;
+    /* === SURFACE LEVELS - Green Tinted === */
+    --md-sys-color-surface-dim: #DCDDD6;
+    --md-sys-color-surface-bright: #FCFDF6;
     --md-sys-color-surface-container-lowest: #FFFFFF;
-    --md-sys-color-surface-container-low: #F7F2FA;
-    --md-sys-color-surface-container: #F3EDF7;
-    --md-sys-color-surface-container-high: #ECE6F0;
-    --md-sys-color-surface-container-highest: #E6E0E9;
+    --md-sys-color-surface-container-low: #F6F7F0;
+    --md-sys-color-surface-container: #F0F1EA;
+    --md-sys-color-surface-container-high: #EAEBE4;
+    --md-sys-color-surface-container-highest: #E4E5DF;
 
     /* === FIXED COLORS === */
     --md-sys-color-primary-fixed: #EADDFF;
@@ -212,78 +212,88 @@
 
 [data-theme="dark"],
 .dark-theme {
-    --md-sys-color-primary: #D0BCFF;
-    --md-sys-color-on-primary: #381E72;
-    --md-sys-color-primary-container: #4F378B;
-    --md-sys-color-on-primary-container: #EADDFF;
-    --md-sys-color-secondary: #CCC2DC;
-    --md-sys-color-on-secondary: #332D41;
-    --md-sys-color-secondary-container: #4A4458;
-    --md-sys-color-on-secondary-container: #E8DEF8;
-    --md-sys-color-tertiary: #EFB8C8;
-    --md-sys-color-on-tertiary: #492532;
-    --md-sys-color-tertiary-container: #633B48;
-    --md-sys-color-on-tertiary-container: #FFD8E4;
-    --md-sys-color-error: #F2B8B5;
-    --md-sys-color-on-error: #601410;
-    --md-sys-color-error-container: #8C1D18;
-    --md-sys-color-on-error-container: #F9DEDC;
-    --md-sys-color-surface: #141218;
-    --md-sys-color-on-surface: #E6E0E9;
-    --md-sys-color-surface-variant: #49454F;
-    --md-sys-color-on-surface-variant: #CAC4D0;
-    --md-sys-color-background: #141218;
-    --md-sys-color-on-background: #E6E0E9;
-    --md-sys-color-outline: #938F99;
-    --md-sys-color-outline-variant: #49454F;
-    --md-sys-color-inverse-surface: #E6E0E9;
-    --md-sys-color-inverse-on-surface: #322F35;
-    --md-sys-color-inverse-primary: #6750A4;
-    --md-sys-color-surface-dim: #141218;
-    --md-sys-color-surface-bright: #3B383E;
-    --md-sys-color-surface-container-lowest: #0F0D13;
-    --md-sys-color-surface-container-low: #1D1B20;
-    --md-sys-color-surface-container: #211F26;
-    --md-sys-color-surface-container-high: #2B2930;
-    --md-sys-color-surface-container-highest: #36343B;
+    /* === PRIMARY - Green Dark Theme === */
+    --md-sys-color-primary: #7CDC70;
+    --md-sys-color-on-primary: #003A00;
+    --md-sys-color-primary-container: #005000;
+    --md-sys-color-on-primary-container: #A8F0A0;
+
+    /* === SECONDARY === */
+    --md-sys-color-secondary: #B4D4A2;
+    --md-sys-color-on-secondary: #213517;
+    --md-sys-color-secondary-container: #374B2B;
+    --md-sys-color-on-secondary-container: #D0F0BD;
+
+    /* === TERTIARY === */
+    --md-sys-color-tertiary: #F5BF48;
+    --md-sys-color-on-tertiary: #422D00;
+    --md-sys-color-tertiary-container: #5F4200;
+    --md-sys-color-on-tertiary-container: #FFDEAB;
+
+    /* === ERROR === */
+    --md-sys-color-error: #FFB4AB;
+    --md-sys-color-on-error: #690005;
+    --md-sys-color-error-container: #93000A;
+    --md-sys-color-on-error-container: #FFDAD6;
+
+    /* === SURFACE - Green Tinted Dark === */
+    --md-sys-color-surface: #121410;
+    --md-sys-color-on-surface: #E2E3DC;
+    --md-sys-color-surface-variant: #424940;
+    --md-sys-color-on-surface-variant: #C2C9BD;
+    --md-sys-color-background: #121410;
+    --md-sys-color-on-background: #E2E3DC;
+    --md-sys-color-outline: #8C9388;
+    --md-sys-color-outline-variant: #424940;
+    --md-sys-color-inverse-surface: #E2E3DC;
+    --md-sys-color-inverse-on-surface: #2F312C;
+    --md-sys-color-inverse-primary: #006400;
+    --md-sys-color-surface-dim: #121410;
+    --md-sys-color-surface-bright: #383A35;
+    --md-sys-color-surface-container-lowest: #0D0F0B;
+    --md-sys-color-surface-container-low: #1A1C18;
+    --md-sys-color-surface-container: #1E201B;
+    --md-sys-color-surface-container-high: #282A25;
+    --md-sys-color-surface-container-highest: #333530;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --md-sys-color-primary: #D0BCFF;
-        --md-sys-color-on-primary: #381E72;
-        --md-sys-color-primary-container: #4F378B;
-        --md-sys-color-on-primary-container: #EADDFF;
-        --md-sys-color-secondary: #CCC2DC;
-        --md-sys-color-on-secondary: #332D41;
-        --md-sys-color-secondary-container: #4A4458;
-        --md-sys-color-on-secondary-container: #E8DEF8;
-        --md-sys-color-tertiary: #EFB8C8;
-        --md-sys-color-on-tertiary: #492532;
-        --md-sys-color-tertiary-container: #633B48;
-        --md-sys-color-on-tertiary-container: #FFD8E4;
-        --md-sys-color-error: #F2B8B5;
-        --md-sys-color-on-error: #601410;
-        --md-sys-color-error-container: #8C1D18;
-        --md-sys-color-on-error-container: #F9DEDC;
-        --md-sys-color-surface: #141218;
-        --md-sys-color-on-surface: #E6E0E9;
-        --md-sys-color-surface-variant: #49454F;
-        --md-sys-color-on-surface-variant: #CAC4D0;
-        --md-sys-color-background: #141218;
-        --md-sys-color-on-background: #E6E0E9;
-        --md-sys-color-outline: #938F99;
-        --md-sys-color-outline-variant: #49454F;
-        --md-sys-color-inverse-surface: #E6E0E9;
-        --md-sys-color-inverse-on-surface: #322F35;
-        --md-sys-color-inverse-primary: #6750A4;
-        --md-sys-color-surface-dim: #141218;
-        --md-sys-color-surface-bright: #3B383E;
-        --md-sys-color-surface-container-lowest: #0F0D13;
-        --md-sys-color-surface-container-low: #1D1B20;
-        --md-sys-color-surface-container: #211F26;
-        --md-sys-color-surface-container-high: #2B2930;
-        --md-sys-color-surface-container-highest: #36343B;
+        /* === PRIMARY - Green Dark Theme (Auto) === */
+        --md-sys-color-primary: #7CDC70;
+        --md-sys-color-on-primary: #003A00;
+        --md-sys-color-primary-container: #005000;
+        --md-sys-color-on-primary-container: #A8F0A0;
+        --md-sys-color-secondary: #B4D4A2;
+        --md-sys-color-on-secondary: #213517;
+        --md-sys-color-secondary-container: #374B2B;
+        --md-sys-color-on-secondary-container: #D0F0BD;
+        --md-sys-color-tertiary: #F5BF48;
+        --md-sys-color-on-tertiary: #422D00;
+        --md-sys-color-tertiary-container: #5F4200;
+        --md-sys-color-on-tertiary-container: #FFDEAB;
+        --md-sys-color-error: #FFB4AB;
+        --md-sys-color-on-error: #690005;
+        --md-sys-color-error-container: #93000A;
+        --md-sys-color-on-error-container: #FFDAD6;
+        --md-sys-color-surface: #121410;
+        --md-sys-color-on-surface: #E2E3DC;
+        --md-sys-color-surface-variant: #424940;
+        --md-sys-color-on-surface-variant: #C2C9BD;
+        --md-sys-color-background: #121410;
+        --md-sys-color-on-background: #E2E3DC;
+        --md-sys-color-outline: #8C9388;
+        --md-sys-color-outline-variant: #424940;
+        --md-sys-color-inverse-surface: #E2E3DC;
+        --md-sys-color-inverse-on-surface: #2F312C;
+        --md-sys-color-inverse-primary: #006400;
+        --md-sys-color-surface-dim: #121410;
+        --md-sys-color-surface-bright: #383A35;
+        --md-sys-color-surface-container-lowest: #0D0F0B;
+        --md-sys-color-surface-container-low: #1A1C18;
+        --md-sys-color-surface-container: #1E201B;
+        --md-sys-color-surface-container-high: #282A25;
+        --md-sys-color-surface-container-highest: #333530;
     }
 }
 
@@ -293,22 +303,22 @@
    ===================================================== */
 
 :root {
-    /* Brand Primary - Orange/Warm */
-    --ad-color-primary: #FF6B35;
+    /* Brand Primary - Dark Green from Logo #006400 */
+    --ad-color-primary: #006400;
     --ad-color-on-primary: #FFFFFF;
-    --ad-color-primary-container: #FFE0D6;
-    --ad-color-on-primary-container: #3D1600;
+    --ad-color-primary-container: #A8F0A0;
+    --ad-color-on-primary-container: #002204;
 
-    /* Brand Secondary - Green/Fresh */
-    --ad-color-secondary: #4CAF50;
+    /* Brand Secondary - Light Green from Logo #73C249 */
+    --ad-color-secondary: #73C249;
     --ad-color-on-secondary: #FFFFFF;
-    --ad-color-secondary-container: #C8E6C9;
-    --ad-color-on-secondary-container: #1B5E20;
+    --ad-color-secondary-container: #D0F0BD;
+    --ad-color-on-secondary-container: #0C2004;
 
-    /* Brand Tertiary - Gold/Premium */
+    /* Brand Tertiary - Gold/Premium (complementary) */
     --ad-color-tertiary: #FFB300;
     --ad-color-on-tertiary: #000000;
-    --ad-color-tertiary-container: #FFECB3;
+    --ad-color-tertiary-container: #FFDEAB;
     --ad-color-on-tertiary-container: #4E3B00;
 
     /* =====================================================
@@ -367,12 +377,12 @@
        EXTENDED PALETTE - Gradients & Accents
        ===================================================== */
 
-    /* Gradient Colors */
-    --ad-gradient-primary: linear-gradient(135deg, #FF6B35 0%, #FF8F5C 100%);
-    --ad-gradient-secondary: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+    /* Gradient Colors - Green Based from Logo */
+    --ad-gradient-primary: linear-gradient(135deg, #006400 0%, #2E7D32 100%);
+    --ad-gradient-secondary: linear-gradient(135deg, #73C249 0%, #8BC34A 100%);
     --ad-gradient-tertiary: linear-gradient(135deg, #FFB300 0%, #FFCA28 100%);
     --ad-gradient-premium: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
-    --ad-gradient-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --ad-gradient-dark: linear-gradient(135deg, #121410 0%, #1A2218 100%);
 
     /* Accent Colors */
     --ad-accent-pink: #E91E63;
@@ -913,4 +923,592 @@
         box-shadow: none !important;
         border: 1px solid var(--md-sys-color-outline);
     }
+}
+
+/* =====================================================
+   M3 TEXT FIELDS
+   ===================================================== */
+
+.md-text-field {
+    position: relative;
+    width: 100%;
+}
+
+.md-text-field input,
+.md-text-field textarea {
+    width: 100%;
+    padding: 16px;
+    font-family: inherit;
+    font-size: var(--md-sys-typescale-body-large-size);
+    line-height: var(--md-sys-typescale-body-large-line-height);
+    border: none;
+    outline: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+/* Filled Text Field */
+.md-text-field-filled input,
+.md-text-field-filled textarea {
+    background: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-extra-small) var(--md-sys-shape-corner-extra-small) 0 0;
+    border-bottom: 1px solid var(--md-sys-color-on-surface-variant);
+    color: var(--md-sys-color-on-surface);
+}
+
+.md-text-field-filled input:focus,
+.md-text-field-filled textarea:focus {
+    border-bottom: 2px solid var(--md-sys-color-primary);
+}
+
+.md-text-field-filled input::placeholder,
+.md-text-field-filled textarea::placeholder {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Outlined Text Field */
+.md-text-field-outlined input,
+.md-text-field-outlined textarea {
+    background: transparent;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    color: var(--md-sys-color-on-surface);
+}
+
+.md-text-field-outlined input:focus,
+.md-text-field-outlined textarea:focus {
+    border: 2px solid var(--md-sys-color-primary);
+    padding: 15px;
+}
+
+.md-text-field-outlined input::placeholder,
+.md-text-field-outlined textarea::placeholder {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Text Field Error State */
+.md-text-field-error input,
+.md-text-field-error textarea {
+    border-color: var(--md-sys-color-error) !important;
+}
+
+.md-text-field-helper {
+    font-size: var(--md-sys-typescale-body-small-size);
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 4px 16px 0;
+}
+
+.md-text-field-error .md-text-field-helper {
+    color: var(--md-sys-color-error);
+}
+
+/* =====================================================
+   M3 SWITCH / TOGGLE
+   ===================================================== */
+
+.md-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.md-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.md-switch-track {
+    width: 52px;
+    height: 32px;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 2px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    position: relative;
+}
+
+.md-switch-thumb {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: var(--md-sys-color-outline);
+    border-radius: 50%;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
+}
+
+.md-switch input:checked+.md-switch-track {
+    background: var(--md-sys-color-primary);
+    border-color: var(--md-sys-color-primary);
+}
+
+.md-switch input:checked+.md-switch-track .md-switch-thumb {
+    left: 28px;
+    width: 24px;
+    height: 24px;
+    background: var(--md-sys-color-on-primary);
+}
+
+/* =====================================================
+   M3 PROGRESS INDICATORS
+   ===================================================== */
+
+/* Linear Progress */
+.md-progress-linear {
+    width: 100%;
+    height: 4px;
+    background: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-full);
+    overflow: hidden;
+}
+
+.md-progress-linear-bar {
+    height: 100%;
+    background: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-full);
+    transition: width var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+
+.md-progress-linear-indeterminate .md-progress-linear-bar {
+    width: 50%;
+    animation: md-progress-indeterminate 2s infinite var(--md-sys-motion-easing-standard);
+}
+
+@keyframes md-progress-indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(300%);
+    }
+}
+
+/* Circular Progress */
+.md-progress-circular {
+    width: 48px;
+    height: 48px;
+    position: relative;
+}
+
+.md-progress-circular svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.md-progress-circular-track {
+    fill: none;
+    stroke: var(--md-sys-color-surface-container-highest);
+    stroke-width: 4;
+}
+
+.md-progress-circular-bar {
+    fill: none;
+    stroke: var(--md-sys-color-primary);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dasharray var(--md-sys-motion-duration-medium2);
+}
+
+.md-progress-circular-indeterminate {
+    animation: md-circular-rotate 2s linear infinite;
+}
+
+.md-progress-circular-indeterminate .md-progress-circular-bar {
+    animation: md-circular-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes md-circular-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes md-circular-dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+/* =====================================================
+   M3 TOP APP BAR
+   ===================================================== */
+
+.md-top-app-bar {
+    display: flex;
+    align-items: center;
+    height: 64px;
+    padding: 0 16px;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+}
+
+.md-top-app-bar-title {
+    flex: 1;
+    font-size: var(--md-sys-typescale-title-large-size);
+    font-weight: var(--md-sys-typescale-title-large-weight);
+    margin-left: 16px;
+}
+
+.md-top-app-bar-center-aligned {
+    justify-content: center;
+}
+
+.md-top-app-bar-center-aligned .md-top-app-bar-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 0;
+}
+
+.md-top-app-bar-small {
+    height: 56px;
+}
+
+.md-top-app-bar-medium {
+    height: 112px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding-top: 8px;
+}
+
+.md-top-app-bar-large {
+    height: 152px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding-top: 8px;
+}
+
+.md-top-app-bar-medium .md-top-app-bar-title,
+.md-top-app-bar-large .md-top-app-bar-title {
+    width: 100%;
+    margin-left: 0;
+    padding: 24px 16px 0;
+    font-size: var(--md-sys-typescale-headline-small-size);
+}
+
+.md-top-app-bar-large .md-top-app-bar-title {
+    font-size: var(--md-sys-typescale-headline-medium-size);
+}
+
+/* =====================================================
+   M3 LIST
+   ===================================================== */
+
+.md-list {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.md-list-item {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 8px 16px;
+    gap: 16px;
+    cursor: pointer;
+    transition: background var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.md-list-item:hover {
+    background: rgba(var(--md-sys-color-on-surface), 0.08);
+}
+
+.md-list-item-leading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    flex-shrink: 0;
+}
+
+.md-list-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.md-list-item-headline {
+    font-size: var(--md-sys-typescale-body-large-size);
+    color: var(--md-sys-color-on-surface);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.md-list-item-supporting {
+    font-size: var(--md-sys-typescale-body-medium-size);
+    color: var(--md-sys-color-on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.md-list-item-trailing {
+    flex-shrink: 0;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Two-line and Three-line list items */
+.md-list-item-two-line {
+    min-height: 72px;
+}
+
+.md-list-item-three-line {
+    min-height: 88px;
+    align-items: flex-start;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.md-list-item-three-line .md-list-item-supporting {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* =====================================================
+   M3 ICON BUTTON
+   ===================================================== */
+
+.md-icon-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: background var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.md-icon-button:hover {
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+.md-icon-button-filled {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+
+.md-icon-button-filled:hover {
+    box-shadow: var(--md-sys-elevation-level1);
+}
+
+.md-icon-button-tonal {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.md-icon-button-outlined {
+    border: 1px solid var(--md-sys-color-outline);
+}
+
+/* =====================================================
+   M3 SEGMENTED BUTTONS
+   ===================================================== */
+
+.md-segmented-buttons {
+    display: inline-flex;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    overflow: hidden;
+}
+
+.md-segmented-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: none;
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    border-right: 1px solid var(--md-sys-color-outline);
+}
+
+.md-segmented-button:last-child {
+    border-right: none;
+}
+
+.md-segmented-button:hover {
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+.md-segmented-button.selected {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* =====================================================
+   M3 BOTTOM SHEET
+   ===================================================== */
+
+.md-bottom-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--md-sys-color-scrim);
+    opacity: 0.32;
+    z-index: 999;
+}
+
+.md-bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: var(--md-sys-shape-corner-extra-large) var(--md-sys-shape-corner-extra-large) 0 0;
+    padding: 24px;
+    z-index: 1000;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--md-sys-elevation-level1);
+    animation: md-sheet-slide-up var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized-decelerate);
+}
+
+@keyframes md-sheet-slide-up {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.md-bottom-sheet-handle {
+    width: 32px;
+    height: 4px;
+    background: var(--md-sys-color-on-surface-variant);
+    border-radius: var(--md-sys-shape-corner-full);
+    margin: 0 auto 16px;
+    opacity: 0.4;
+}
+
+/* =====================================================
+   M3 MENU
+   ===================================================== */
+
+.md-menu {
+    background: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    padding: 8px 0;
+    box-shadow: var(--md-sys-elevation-level2);
+    min-width: 112px;
+    max-width: 280px;
+}
+
+.md-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: var(--md-sys-typescale-body-large-size);
+    color: var(--md-sys-color-on-surface);
+    transition: background var(--md-sys-motion-duration-short2);
+}
+
+.md-menu-item:hover {
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+.md-menu-item-leading {
+    font-size: 24px;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.md-menu-divider {
+    height: 1px;
+    background: var(--md-sys-color-outline-variant);
+    margin: 8px 0;
+}
+
+/* =====================================================
+   M3 UTILITIES - ADDITIONAL
+   ===================================================== */
+
+/* Ripple Effect */
+.md-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.md-ripple::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(circle, currentColor 10%, transparent 10.01%);
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 1s;
+}
+
+.md-ripple:active::after {
+    transform: scale(0, 0);
+    opacity: 0.2;
+    transition: 0s;
+}
+
+/* Focus Ring */
+.md-focus-ring:focus-visible {
+    outline: 3px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+}
+
+/* Disabled State */
+.md-disabled,
+[disabled] {
+    opacity: 0.38;
+    pointer-events: none;
+}
+
+/* Touch Target */
+.md-touch-target {
+    position: relative;
+}
+
+.md-touch-target::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
 }

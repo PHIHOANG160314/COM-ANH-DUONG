@@ -1,28 +1,32 @@
 /* ========================================
    F&B MASTER - CUSTOMER PORTAL CSS
    Mobile-First Design
+   Material Design 3 Integration
    ======================================== */
 
-:root {
-    /* M3 Color Tokens - Ánh Dương Brand */
-    --primary: var(--ad-color-primary, #FF6B35);
-    --primary-dark: var(--ad-color-primary-container, #E55A2B);
-    --primary-light: var(--md-sys-color-primary, #6750A4);
-    --secondary: var(--ad-color-secondary, #4CAF50);
-    --warning: var(--ad-color-warning, #FF9800);
-    --danger: var(--ad-color-danger, #F44336);
+/* Import M3 Design System */
+@import url('./m3-design-system.css');
 
-    /* M3 Surface Colors */
-    --bg-dark: var(--md-sys-color-background, #0a0a12);
-    --bg-card: var(--md-sys-color-surface-container, rgba(26, 26, 46, 0.95));
+:root {
+    /* M3 Color Tokens - Ánh Dương Brand (Green from Logo) */
+    --primary: var(--ad-color-primary, #006400);
+    --primary-dark: var(--ad-color-primary-container, #A8F0A0);
+    --primary-light: var(--md-sys-color-primary, #006400);
+    --secondary: var(--ad-color-secondary, #73C249);
+    --warning: var(--ad-color-warning, #FF9800);
+    --danger: var(--ad-color-danger, #BA1A1A);
+
+    /* M3 Surface Colors - Green Tinted */
+    --bg-dark: var(--md-sys-color-background, #121410);
+    --bg-card: var(--md-sys-color-surface-container, rgba(26, 36, 30, 0.95));
 
     /* M3 Text Colors */
-    --text-primary: var(--md-sys-color-on-surface, #f8f8fa);
-    --text-secondary: var(--md-sys-color-on-surface-variant, #b4b4bc);
-    --text-muted: var(--md-sys-color-outline, #8888a0);
+    --text-primary: var(--md-sys-color-on-surface, #E2E3DC);
+    --text-secondary: var(--md-sys-color-on-surface-variant, #C2C9BD);
+    --text-muted: var(--md-sys-color-outline, #8C9388);
 
     /* M3 Border & Shadow */
-    --border-color: var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.1));
+    --border-color: var(--md-sys-color-outline-variant, rgba(194, 201, 189, 0.2));
     --shadow: var(--md-sys-elevation-level2, 0 10px 40px rgba(0, 0, 0, 0.3));
 
     /* M3 Shape Tokens */
@@ -207,22 +211,28 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+/* M3 Filter Chip */
 .filter-btn {
     flex-shrink: 0;
     padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    font-size: 0.8rem;
+    border-radius: var(--md-sys-shape-corner-small);
+    border: 1px solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: var(--md-sys-typescale-label-large-weight);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.filter-btn:hover:not(.active) {
+    background: var(--md-sys-color-surface-container);
 }
 
 .filter-btn.active {
-    background: var(--secondary);
+    background: var(--md-sys-color-secondary-container);
     border-color: transparent;
-    color: white;
+    color: var(--md-sys-color-on-secondary-container);
 }
 
 .menu-grid {
@@ -246,7 +256,7 @@ body {
 .menu-card-image {
     width: 100%;
     height: 100px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
+    background: linear-gradient(135deg, var(--md-sys-color-primary-container), var(--md-sys-color-secondary-container));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -959,8 +969,8 @@ body {
 
 .search-input:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px var(--md-sys-color-primary-container);
 }
 
 .search-input::placeholder {
@@ -1105,23 +1115,23 @@ body {
 }
 
 .order-status-badge.pending {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--warning);
+    background: var(--ad-status-pending-bg);
+    color: var(--ad-status-pending);
 }
 
 .order-status-badge.preparing {
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--primary-light);
+    background: var(--ad-status-preparing-bg);
+    color: var(--ad-status-preparing);
 }
 
 .order-status-badge.ready {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--secondary);
+    background: var(--ad-status-ready-bg);
+    color: var(--ad-status-ready);
 }
 
 .order-status-badge.delivered {
-    background: rgba(16, 185, 129, 0.3);
-    color: var(--secondary);
+    background: var(--ad-status-completed-bg);
+    color: var(--ad-status-completed);
 }
 
 /* Timeline */
@@ -1181,11 +1191,11 @@ body {
 
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 0 0 rgba(0, 100, 0, 0.5);
     }
 
     50% {
-        box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+        box-shadow: 0 0 0 10px rgba(0, 100, 0, 0);
     }
 }
 
