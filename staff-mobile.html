@@ -49,7 +49,7 @@
                         <input type="tel" id="pinInput" maxlength="4" placeholder="••••" class="pin-input"
                             inputmode="numeric" pattern="[0-9]*">
                     </div>
-                    <button class="btn-login" onclick="StaffApp.login()">Đăng nhập</button>
+                    <button type="button" class="btn-login" onclick="StaffApp.login()">Đăng nhập</button>
                     <div class="login-help">
                         <p>Quên mã PIN? Liên hệ quản lý</p>
                     </div>
@@ -62,21 +62,22 @@
             <div class="dashboard-container">
                 <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <button class="action-card checkin" id="checkinBtn" onclick="StaffApp.toggleCheckin()">
+                    <button type="button" class="action-card checkin" id="checkinBtn"
+                        onclick="StaffApp.toggleCheckin()">
                         <span class="action-icon">🟢</span>
                         <span class="action-label">Check-in</span>
                         <span class="action-time" id="checkinTime">--:--</span>
                     </button>
-                    <button class="action-card kitchen" onclick="StaffApp.showSection('kitchen')">
+                    <button type="button" class="action-card kitchen" onclick="StaffApp.showSection('kitchen')">
                         <span class="action-icon">👨‍🍳</span>
                         <span class="action-label">Bếp</span>
                         <span class="action-badge" id="kitchenOrderCount">0</span>
                     </button>
-                    <button class="action-card pos" onclick="window.location='index.html#pos'">
+                    <button type="button" class="action-card pos" onclick="window.location='index.html#pos'">
                         <span class="action-icon">💳</span>
                         <span class="action-label">POS</span>
                     </button>
-                    <button class="action-card orders" onclick="StaffApp.showSection('orders')">
+                    <button type="button" class="action-card orders" onclick="StaffApp.showSection('orders')">
                         <span class="action-icon">📋</span>
                         <span class="action-label">Đơn hàng</span>
                         <span class="action-badge" id="orderCount">0</span>
@@ -116,7 +117,8 @@
         <section class="section" id="section-kitchen">
             <div class="kitchen-container">
                 <div class="section-header">
-                    <button class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay lại</button>
+                    <button type="button" class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay
+                        lại</button>
                     <h2>👨‍🍳 Màn hình bếp</h2>
                 </div>
                 <div class="kitchen-orders" id="kitchenOrders">
@@ -129,14 +131,17 @@
         <section class="section" id="section-orders">
             <div class="orders-container">
                 <div class="section-header">
-                    <button class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay lại</button>
+                    <button type="button" class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay
+                        lại</button>
                     <h2>📋 Quản lý đơn</h2>
                 </div>
                 <div class="order-filters">
-                    <button class="filter-btn active" onclick="StaffApp.filterOrders('all')">Tất cả</button>
-                    <button class="filter-btn" onclick="StaffApp.filterOrders('pending')">Chờ</button>
-                    <button class="filter-btn" onclick="StaffApp.filterOrders('preparing')">Đang làm</button>
-                    <button class="filter-btn" onclick="StaffApp.filterOrders('completed')">Xong</button>
+                    <button type="button" class="filter-btn active" onclick="StaffApp.filterOrders('all')">Tất
+                        cả</button>
+                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('pending')">Chờ</button>
+                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('preparing')">Đang
+                        làm</button>
+                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('completed')">Xong</button>
                 </div>
                 <div class="orders-list" id="allOrdersList">
                     <p class="no-orders">Chưa có đơn hàng</p>
@@ -147,19 +152,20 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav" id="bottomNav">
-        <button class="nav-item active" data-section="dashboard" onclick="StaffApp.showSection('dashboard')">
+        <button type="button" class="nav-item active" data-section="dashboard"
+            onclick="StaffApp.showSection('dashboard')">
             <span class="nav-icon">🏠</span>
             <span class="nav-label">Trang chủ</span>
         </button>
-        <button class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')">
+        <button type="button" class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')">
             <span class="nav-icon">👨‍🍳</span>
             <span class="nav-label">Bếp</span>
         </button>
-        <button class="nav-item" data-section="orders" onclick="StaffApp.showSection('orders')">
+        <button type="button" class="nav-item" data-section="orders" onclick="StaffApp.showSection('orders')">
             <span class="nav-icon">📋</span>
             <span class="nav-label">Đơn hàng</span>
         </button>
-        <button class="nav-item" onclick="StaffApp.logout()">
+        <button type="button" class="nav-item" onclick="StaffApp.logout()">
             <span class="nav-icon">🚪</span>
             <span class="nav-label">Đăng xuất</span>
         </button>

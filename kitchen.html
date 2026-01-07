@@ -475,7 +475,7 @@
             <nav class="kitchen-nav">
                 <a href="staff-mobile.html" class="nav-btn">📱 Staff</a>
                 <a href="index.html" class="nav-btn">🏠 Admin</a>
-                <button class="nav-btn" onclick="KitchenDisplay.showReadyOrders()">
+                <button type="button" class="nav-btn" onclick="KitchenDisplay.showReadyOrders()">
                     🔔 Đơn sẵn sàng
                     <span id="notificationBadge"
                         style="background: #10B981; padding: 0.125rem 0.5rem; border-radius: 10px; font-weight: 700;">0</span>
@@ -487,19 +487,23 @@
         <main class="kitchen-main">
             <!-- Tabs -->
             <div class="kitchen-tabs">
-                <button class="kitchen-tab active" data-status="all" onclick="KitchenPage.filterOrders('all')">
+                <button type="button" class="kitchen-tab active" data-status="all"
+                    onclick="KitchenPage.filterOrders('all')">
                     📋 Tất cả
                     <span class="badge" id="allCount">0</span>
                 </button>
-                <button class="kitchen-tab" data-status="pending" onclick="KitchenPage.filterOrders('pending')">
+                <button type="button" class="kitchen-tab" data-status="pending"
+                    onclick="KitchenPage.filterOrders('pending')">
                     ⏳ Chờ xử lý
                     <span class="badge" id="pendingTabCount">0</span>
                 </button>
-                <button class="kitchen-tab" data-status="preparing" onclick="KitchenPage.filterOrders('preparing')">
+                <button type="button" class="kitchen-tab" data-status="preparing"
+                    onclick="KitchenPage.filterOrders('preparing')">
                     🍳 Đang làm
                     <span class="badge" id="preparingTabCount">0</span>
                 </button>
-                <button class="kitchen-tab" data-status="ready" onclick="KitchenPage.filterOrders('ready')">
+                <button type="button" class="kitchen-tab" data-status="ready"
+                    onclick="KitchenPage.filterOrders('ready')">
                     ✅ Sẵn sàng
                     <span class="badge" id="readyTabCount">0</span>
                 </button>
