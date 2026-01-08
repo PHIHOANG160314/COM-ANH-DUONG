@@ -113,7 +113,7 @@ const KitchenDisplay = {
                         <div class="kitchen-item">
                             <span class="item-icon">${item.icon || '🍽️'}</span>
                             <span class="item-name">${item.name}</span>
-                            <span class="item-qty">x${item.quantity}</span>
+                            <span class="item-qty">x${item.qty || item.quantity || 1}</span>
                         </div>
                     `).join('') : order.items.split(', ').map(item => `
                         <div class="kitchen-item">
