@@ -5,7 +5,19 @@
     "outputDirectory": ".",
     "cleanUrls": true,
     "trailingSlash": false,
-    "redirects": [],
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "host",
+                    "value": "comanhduong.com"
+                }
+            ],
+            "destination": "https://www.comanhduong.com/:path*",
+            "permanent": true
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",
