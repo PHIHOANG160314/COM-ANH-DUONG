@@ -162,12 +162,14 @@ body::after {
 }
 
 /* ========================================
-   SIDEBAR
+   SIDEBAR - Glassmorphism Enhanced
    ======================================== */
 .sidebar {
     width: var(--sidebar-width);
-    background: var(--md-sys-color-surface-container);
-    border-right: 1px solid var(--md-sys-color-outline-variant);
+    background: rgba(20, 30, 25, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -364,12 +366,14 @@ body::after {
     flex-direction: column;
 }
 
-/* Header */
+/* Header - Glassmorphism Enhanced */
 .main-header {
     height: var(--header-height);
     padding: 0 2rem;
-    background: var(--md-sys-color-surface-container);
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    background: rgba(20, 30, 25, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -550,23 +554,23 @@ body::after {
 }
 
 .kpi-card.revenue .kpi-icon {
-    background: linear-gradient(135deg, #10b981, #059669);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, var(--md-custom-color-success), var(--md-ref-palette-primary50));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--md-custom-color-success) 30%, transparent);
 }
 
 .kpi-card.orders .kpi-icon {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, var(--md-custom-color-info), var(--md-ref-palette-tertiary60));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--md-custom-color-info) 30%, transparent);
 }
 
 .kpi-card.foodcost .kpi-icon {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, var(--md-custom-color-warning), var(--md-ref-palette-tertiary50));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--md-custom-color-warning) 30%, transparent);
 }
 
 .kpi-card.inventory .kpi-icon {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, var(--md-sys-color-error), var(--md-ref-palette-error40));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
 }
 
 .kpi-content h3 {
@@ -590,18 +594,18 @@ body::after {
 }
 
 .kpi-trend.up {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background: var(--md-custom-color-success-container);
+    color: var(--md-custom-color-on-success-container);
 }
 
 .kpi-trend.down {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
 }
 
 .kpi-trend.warning {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    background: var(--md-custom-color-warning-container);
+    color: var(--md-custom-color-on-warning-container);
 }
 
 /* ========================================
@@ -795,33 +799,33 @@ body::after {
 }
 
 .status-badge.pending {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    background: var(--md-custom-color-warning-container);
+    color: var(--md-custom-color-on-warning-container);
 }
 
 .status-badge.completed {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background: var(--md-custom-color-success-container);
+    color: var(--md-custom-color-on-success-container);
 }
 
 .status-badge.cancelled {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
 }
 
 .status-badge.low {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
 }
 
 .status-badge.ok {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background: var(--md-custom-color-success-container);
+    color: var(--md-custom-color-on-success-container);
 }
 
 .status-badge.excess {
-    background: rgba(6, 182, 212, 0.15);
-    color: #06b6d4;
+    background: var(--md-custom-color-info-container);
+    color: var(--md-custom-color-on-info-container);
 }
 
 /* ========================================
@@ -856,8 +860,8 @@ body::after {
 .btn-primary:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow:
-        0 10px 25px rgba(99, 102, 241, 0.4),
-        0 0 30px rgba(99, 102, 241, 0.3);
+        0 10px 25px color-mix(in srgb, var(--md-sys-color-primary) 40%, transparent),
+        0 0 30px color-mix(in srgb, var(--md-sys-color-primary) 30%, transparent);
 }
 
 .btn-primary:hover::before {

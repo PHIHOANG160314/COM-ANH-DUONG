@@ -1,0 +1,615 @@
+/* =====================================================
+   MATERIAL DESIGN 3 - WOW EFFECTS
+   Aurora Gradients, Glassmorphism, Premium Animations
+   Ánh Dương F&B - Premium Experience
+   ===================================================== */
+
+/* =====================================================
+   AURORA GRADIENT BACKGROUNDS
+   Flowing, animated color backgrounds
+   ===================================================== */
+
+@keyframes aurora {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    25% {
+        background-position: 50% 100%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    75% {
+        background-position: 50% 0%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes aurora-pulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        filter: blur(60px);
+    }
+
+    50% {
+        opacity: 1;
+        filter: blur(80px);
+    }
+}
+
+/* Main Aurora Background */
+.aurora-bg {
+    position: relative;
+    background: linear-gradient(-45deg,
+            #002200,
+            #003300,
+            #004400,
+            #1a3a1a,
+            #004d00,
+            #003300);
+    background-size: 400% 400%;
+    animation: aurora 20s ease infinite;
+}
+
+/* Aurora Overlay Effect */
+.aurora-bg::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(ellipse at 20% 30%, rgba(115, 194, 73, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 100, 0, 0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(255, 179, 0, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 10% 70%, rgba(46, 125, 50, 0.15) 0%, transparent 50%);
+    animation: aurora-pulse 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Light Aurora for Headers */
+.aurora-header {
+    background: linear-gradient(135deg,
+            var(--md-sys-color-primary) 0%,
+            var(--md-sys-color-secondary) 50%,
+            var(--md-sys-color-primary) 100%);
+    background-size: 200% 200%;
+    animation: aurora 8s ease infinite;
+}
+
+/* =====================================================
+   GLASSMORPHISM EFFECTS
+   Frosted glass with backdrop blur
+   ===================================================== */
+
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--md-sys-shape-corner-large, 16px);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-nav {
+    background: rgba(0, 50, 0, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-header {
+    background: rgba(0, 50, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-modal {
+    background: rgba(30, 40, 30, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--md-sys-shape-corner-extra-large, 28px);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+/* =====================================================
+   GLOW EFFECTS
+   Vibrant glow on hover and focus
+   ===================================================== */
+
+.glow-primary {
+    box-shadow: 0 0 20px rgba(0, 100, 0, 0.4);
+}
+
+.glow-secondary {
+    box-shadow: 0 0 20px rgba(115, 194, 73, 0.4);
+}
+
+.glow-tertiary {
+    box-shadow: 0 0 20px rgba(255, 179, 0, 0.4);
+}
+
+.glow-hover:hover {
+    box-shadow:
+        0 4px 20px rgba(0, 100, 0, 0.4),
+        0 0 40px rgba(115, 194, 73, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glow-active {
+    box-shadow:
+        0 0 0 2px rgba(115, 194, 73, 0.3),
+        0 0 20px rgba(115, 194, 73, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Glow */
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg,
+            var(--md-sys-color-primary),
+            var(--md-sys-color-secondary),
+            var(--ad-color-tertiary),
+            var(--md-sys-color-primary));
+    background-size: 400%;
+    filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    animation: aurora 4s linear infinite;
+}
+
+.btn-glow:hover::before {
+    opacity: 0.6;
+}
+
+/* =====================================================
+   MICRO-INTERACTIONS & ANIMATIONS
+   Delightful feedback animations
+   ===================================================== */
+
+/* Float Animation */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+}
+
+/* Glow Pulse */
+@keyframes glow-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(115, 194, 73, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(115, 194, 73, 0.5);
+    }
+}
+
+.glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Icon Bounce */
+@keyframes icon-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-4px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    75% {
+        transform: translateY(-2px);
+    }
+}
+
+.icon-bounce:hover {
+    animation: icon-bounce 0.5s ease;
+}
+
+/* Card Lift */
+.card-lift {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+}
+
+.card-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* Ripple Effect */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.4s, opacity 0.8s;
+}
+
+.ripple:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Page Transition */
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-enter {
+    animation: page-enter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Slide In */
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    animation: slide-in-right 0.4s ease-out forwards;
+}
+
+/* Scale In */
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-in {
+    animation: scale-in 0.3s ease-out forwards;
+}
+
+/* =====================================================
+   GRADIENT TEXT
+   Beautiful gradient text effects
+   ===================================================== */
+
+.text-gradient {
+    background: linear-gradient(135deg,
+            var(--md-sys-color-primary) 0%,
+            var(--md-sys-color-secondary) 50%,
+            var(--ad-color-tertiary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+    background: linear-gradient(135deg,
+            #FFD700 0%,
+            #FFA000 50%,
+            #FF8C00 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-green {
+    background: linear-gradient(135deg,
+            #4CAF50 0%,
+            #73C249 50%,
+            #8BC34A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =====================================================
+   STATUS GLOW EFFECTS
+   For kitchen/order status indicators
+   ===================================================== */
+
+.status-pending {
+    border-left: 4px solid #FFC107;
+    box-shadow: -2px 0 20px rgba(255, 193, 7, 0.3);
+}
+
+.status-preparing {
+    border-left: 4px solid #2196F3;
+    box-shadow: -2px 0 20px rgba(33, 150, 243, 0.3);
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.status-ready {
+    border-left: 4px solid #4CAF50;
+    box-shadow: -2px 0 20px rgba(76, 175, 80, 0.4);
+}
+
+.status-urgent {
+    border-left: 4px solid #F44336;
+    box-shadow: -2px 0 20px rgba(244, 67, 54, 0.4);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* =====================================================
+   PREMIUM BUTTON STYLES
+   Enhanced M3 buttons with glow
+   ===================================================== */
+
+.btn-premium {
+    background: linear-gradient(135deg,
+            var(--md-sys-color-primary) 0%,
+            var(--md-sys-color-secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--md-sys-shape-corner-full, 9999px);
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: left 0.5s;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 25px rgba(0, 100, 0, 0.4),
+        0 0 40px rgba(115, 194, 73, 0.3);
+}
+
+.btn-premium:hover::before {
+    left: 100%;
+}
+
+.btn-premium:active {
+    transform: translateY(0);
+}
+
+/* =====================================================
+   NAVIGATION GLOW INDICATOR
+   Active nav with glow effect
+   ===================================================== */
+
+.nav-glow-indicator {
+    position: relative;
+}
+
+.nav-glow-indicator::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 0;
+    background: linear-gradient(180deg,
+            var(--md-sys-color-primary),
+            var(--md-sys-color-secondary));
+    border-radius: 0 4px 4px 0;
+    transition: height 0.3s ease;
+    box-shadow: 0 0 10px var(--md-sys-color-primary);
+}
+
+.nav-glow-indicator.active::after {
+    height: 70%;
+}
+
+/* =====================================================
+   LOADING STATES
+   Premium loading animations
+   ===================================================== */
+
+.skeleton {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.05) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--md-sys-shape-corner-small, 8px);
+}
+
+/* Spinner with glow */
+@keyframes spin-glow {
+    0% {
+        transform: rotate(0deg);
+        box-shadow: 0 0 10px var(--md-sys-color-primary);
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--md-sys-color-secondary);
+    }
+
+    100% {
+        transform: rotate(360deg);
+        box-shadow: 0 0 10px var(--md-sys-color-primary);
+    }
+}
+
+.spinner-glow {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--md-sys-color-primary);
+    border-radius: 50%;
+    animation: spin-glow 1s linear infinite;
+}
+
+/* =====================================================
+   RESPONSIVE ADJUSTMENTS
+   Reduce effects on mobile for performance
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .aurora-bg::before {
+        animation: none;
+        opacity: 0.5;
+    }
+
+    .glass-card:hover {
+        transform: none;
+    }
+
+    .card-lift:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    .aurora-bg,
+    .aurora-bg::before,
+    .float,
+    .pulse,
+    .shimmer,
+    .glow-pulse {
+        animation: none;
+    }
+
+    .card-lift:hover,
+    .glass-card:hover {
+        transform: none;
+    }
+}

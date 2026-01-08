@@ -5,108 +5,108 @@
 /* Linked Badge for Recipe-Menu connection */
 .linked-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2));
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    color: #10b981;
+    background: linear-gradient(135deg, var(--md-custom-color-success-container), var(--md-custom-color-info-container));
+    border: 1px solid var(--md-custom-color-success);
+    color: var(--md-custom-color-on-success-container);
     padding: 0.25rem 0.5rem;
-    border-radius: 20px;
+    border-radius: var(--md-sys-shape-corner-full, 20px);
     font-size: 0.7rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
 
 .btn-danger-sm {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, var(--md-sys-color-error), var(--md-ref-palette-error40));
     border: none;
-    color: white;
+    color: var(--md-sys-color-on-error);
     padding: 0.4rem 0.6rem;
-    border-radius: 6px;
+    border-radius: var(--md-sys-shape-corner-small, 6px);
     cursor: pointer;
     font-size: 0.8rem;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .btn-danger-sm:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--md-sys-color-error) 30%, transparent);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--md-custom-color-success), var(--md-ref-palette-primary50));
     border: none;
-    color: white;
+    color: var(--md-custom-color-on-success);
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: var(--md-sys-shape-corner-small, 8px);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .btn-success:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--md-custom-color-success) 40%, transparent);
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, var(--md-sys-color-error), var(--md-ref-palette-error40));
     border: none;
-    color: white;
+    color: var(--md-sys-color-on-error);
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: var(--md-sys-shape-corner-small, 8px);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--md-sys-color-error) 40%, transparent);
 }
 
 .delete-btn {
     opacity: 0.6;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .delete-btn:hover {
     opacity: 1;
-    background: rgba(239, 68, 68, 0.2) !important;
+    background: var(--md-sys-color-error-container) !important;
 }
 
 .btn-info {
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    background: linear-gradient(135deg, var(--md-custom-color-info), var(--md-ref-palette-tertiary60));
     border: none;
-    color: white;
+    color: var(--md-custom-color-on-info);
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: var(--md-sys-shape-corner-small, 8px);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .btn-info:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--md-custom-color-info) 40%, transparent);
 }
 
 .btn-warning {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--md-custom-color-warning), var(--md-ref-palette-tertiary50));
     border: none;
-    color: white;
+    color: var(--md-custom-color-on-warning);
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: var(--md-sys-shape-corner-small, 8px);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all var(--md-sys-motion-duration-short2);
 }
 
 .btn-warning:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--md-custom-color-warning) 40%, transparent);
 }
 
 /* ========================================
@@ -201,9 +201,9 @@
 }
 
 .summary-card {
-    background: linear-gradient(145deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.05));
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 12px;
+    background: linear-gradient(145deg, var(--md-sys-color-surface-container-high), var(--md-sys-color-surface-container));
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-medium, 12px);
     padding: 1rem;
     display: flex;
     align-items: center;
@@ -221,13 +221,13 @@
 
 .summary-label {
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .summary-value {
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #10b981, #34d399);
+    background: linear-gradient(135deg, var(--md-custom-color-success), var(--md-ref-palette-primary70));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

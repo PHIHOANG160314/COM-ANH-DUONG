@@ -1,0 +1,477 @@
+/* =====================================================
+   MATERIAL DESIGN 3 - ADAPTIVE LAYOUTS
+   M3 Window Size Classes & Responsive Grid
+   Ánh Dương F&B
+   ===================================================== */
+
+/* =====================================================
+   M3 WINDOW SIZE CLASSES
+   Compact: 0-599px (phones portrait)
+   Medium: 600-839px (tablets portrait, phones landscape)
+   Expanded: 840-1199px (tablets landscape, small desktops)
+   Large: 1200px+ (desktops)
+   ===================================================== */
+
+/* Base Layout Tokens */
+:root {
+    --md-layout-margin: 16px;
+    --md-layout-gutter: 16px;
+    --md-layout-columns: 4;
+    --md-layout-max-width: none;
+}
+
+/* =====================================================
+   COMPACT LAYOUT (0-599px)
+   Mobile phones in portrait mode
+   ===================================================== */
+
+@media (max-width: 599px) {
+    :root {
+        --md-layout-margin: 16px;
+        --md-layout-gutter: 8px;
+        --md-layout-columns: 4;
+        --md-sys-typescale-display-large-size: 36px;
+        --md-sys-typescale-display-large-line-height: 44px;
+        --md-sys-typescale-display-medium-size: 32px;
+        --md-sys-typescale-headline-large-size: 28px;
+    }
+
+    /* Hide elements on compact */
+    .md-hide-compact {
+        display: none !important;
+    }
+
+    /* Full width containers */
+    .md-compact-full-width {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Stack navigation */
+    .md-navigation-rail {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        height: auto;
+        width: 100%;
+        flex-direction: row;
+        border-top: 1px solid var(--md-sys-color-outline-variant);
+        border-right: none;
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Cards stack vertically */
+    .md-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Dialog full screen */
+    .md-dialog-fullscreen-compact {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        margin: 0;
+    }
+}
+
+/* =====================================================
+   MEDIUM LAYOUT (600-839px)
+   Tablets portrait, foldables, phones landscape
+   ===================================================== */
+
+@media (min-width: 600px) and (max-width: 839px) {
+    :root {
+        --md-layout-margin: 24px;
+        --md-layout-gutter: 16px;
+        --md-layout-columns: 8;
+    }
+
+    /* Hide elements on medium */
+    .md-hide-medium {
+        display: none !important;
+    }
+
+    /* Show navigation rail */
+    .md-navigation-rail {
+        width: 80px;
+        flex-direction: column;
+    }
+
+    /* 2-column grid */
+    .md-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Content with rail */
+    .md-main-content-with-rail {
+        margin-left: 80px;
+    }
+}
+
+/* =====================================================
+   EXPANDED LAYOUT (840-1199px)
+   Tablets landscape, small desktops
+   ===================================================== */
+
+@media (min-width: 840px) and (max-width: 1199px) {
+    :root {
+        --md-layout-margin: 24px;
+        --md-layout-gutter: 24px;
+        --md-layout-columns: 12;
+    }
+
+    /* Hide elements on expanded */
+    .md-hide-expanded {
+        display: none !important;
+    }
+
+    /* Show navigation drawer */
+    .md-navigation-drawer {
+        width: 256px;
+    }
+
+    /* 3-column grid */
+    .md-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Content with drawer */
+    .md-main-content-with-drawer {
+        margin-left: 256px;
+    }
+
+    /* Supporting pane */
+    .md-supporting-pane {
+        width: 320px;
+    }
+}
+
+/* =====================================================
+   LARGE LAYOUT (1200px+)
+   Desktops and large screens
+   ===================================================== */
+
+@media (min-width: 1200px) {
+    :root {
+        --md-layout-margin: 32px;
+        --md-layout-gutter: 24px;
+        --md-layout-columns: 12;
+        --md-layout-max-width: 1440px;
+    }
+
+    /* Hide elements on large */
+    .md-hide-large {
+        display: none !important;
+    }
+
+    /* Expanded navigation drawer */
+    .md-navigation-drawer {
+        width: 360px;
+    }
+
+    /* 4-column grid */
+    .md-cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Content with expanded drawer */
+    .md-main-content-with-drawer {
+        margin-left: 360px;
+        max-width: calc(var(--md-layout-max-width) - 360px);
+    }
+
+    /* Large supporting pane */
+    .md-supporting-pane {
+        width: 400px;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE GRID UTILITY CLASSES
+   ===================================================== */
+
+.md-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--md-layout-columns), 1fr);
+    gap: var(--md-layout-gutter);
+    padding: 0 var(--md-layout-margin);
+}
+
+/* Span utilities */
+.md-span-1 {
+    grid-column: span 1;
+}
+
+.md-span-2 {
+    grid-column: span 2;
+}
+
+.md-span-3 {
+    grid-column: span 3;
+}
+
+.md-span-4 {
+    grid-column: span 4;
+}
+
+.md-span-6 {
+    grid-column: span 6;
+}
+
+.md-span-8 {
+    grid-column: span 8;
+}
+
+.md-span-12 {
+    grid-column: span 12;
+}
+
+.md-span-full {
+    grid-column: 1 / -1;
+}
+
+/* Responsive span overrides */
+@media (max-width: 599px) {
+    .md-span-compact-full {
+        grid-column: 1 / -1;
+    }
+
+    .md-span-compact-2 {
+        grid-column: span 2;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 839px) {
+    .md-span-medium-4 {
+        grid-column: span 4;
+    }
+
+    .md-span-medium-full {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (min-width: 840px) {
+    .md-span-expanded-4 {
+        grid-column: span 4;
+    }
+
+    .md-span-expanded-6 {
+        grid-column: span 6;
+    }
+}
+
+/* =====================================================
+   ADAPTIVE CARDS GRID
+   ===================================================== */
+
+.md-cards-grid {
+    display: grid;
+    gap: var(--md-layout-gutter);
+    padding: var(--md-layout-margin);
+}
+
+/* Flex layout alternative */
+.md-flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--md-layout-gutter);
+    padding: var(--md-layout-margin);
+}
+
+.md-flex-item {
+    flex: 1 1 300px;
+    min-width: 280px;
+    max-width: 100%;
+}
+
+/* =====================================================
+   NAVIGATION ADAPTIVE COMPONENTS
+   ===================================================== */
+
+/* Navigation Rail - Vertical on medium+ */
+.md-navigation-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    background: var(--md-sys-color-surface-container);
+    border-right: 1px solid var(--md-sys-color-outline-variant);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+
+.md-navigation-rail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.md-navigation-rail-item:hover {
+    background: var(--md-sys-color-surface-container-highest);
+}
+
+.md-navigation-rail-item.active {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* Navigation Drawer */
+.md-navigation-drawer {
+    display: flex;
+    flex-direction: column;
+    background: var(--md-sys-color-surface-container-low);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    overflow-y: auto;
+    transition: width var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+
+/* =====================================================
+   PANE LAYOUTS
+   ===================================================== */
+
+/* List-Detail Layout */
+.md-list-detail {
+    display: flex;
+    height: 100vh;
+}
+
+.md-list-pane {
+    width: 360px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--md-sys-color-outline-variant);
+    overflow-y: auto;
+}
+
+.md-detail-pane {
+    flex: 1;
+    overflow-y: auto;
+}
+
+@media (max-width: 599px) {
+    .md-list-detail {
+        flex-direction: column;
+    }
+
+    .md-list-pane {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .md-detail-pane {
+        display: none;
+    }
+
+    .md-list-detail.show-detail .md-list-pane {
+        display: none;
+    }
+
+    .md-list-detail.show-detail .md-detail-pane {
+        display: block;
+    }
+}
+
+/* Supporting Pane */
+.md-with-supporting-pane {
+    display: flex;
+}
+
+.md-main-pane {
+    flex: 1;
+}
+
+.md-supporting-pane {
+    flex-shrink: 0;
+    border-left: 1px solid var(--md-sys-color-outline-variant);
+    overflow-y: auto;
+}
+
+@media (max-width: 839px) {
+    .md-supporting-pane {
+        display: none;
+    }
+
+    .md-supporting-pane.md-show-as-modal {
+        display: block;
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 200;
+        box-shadow: var(--md-sys-elevation-level4);
+    }
+}
+
+/* =====================================================
+   CONTAINER QUERIES (Progressive Enhancement)
+   ===================================================== */
+
+@supports (container-type: inline-size) {
+    .md-container {
+        container-type: inline-size;
+    }
+
+    @container (max-width: 400px) {
+        .md-container .md-cards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @container (min-width: 401px) and (max-width: 700px) {
+        .md-container .md-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @container (min-width: 701px) {
+        .md-container .md-cards-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+/* =====================================================
+   SAFE AREA INSETS
+   For devices with notches/rounded corners
+   ===================================================== */
+
+.md-safe-area-top {
+    padding-top: env(safe-area-inset-top);
+}
+
+.md-safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.md-safe-area-left {
+    padding-left: env(safe-area-inset-left);
+}
+
+.md-safe-area-right {
+    padding-right: env(safe-area-inset-right);
+}
+
+.md-safe-area-all {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}

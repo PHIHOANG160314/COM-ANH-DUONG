@@ -1,0 +1,428 @@
+/* =====================================================
+   MATERIAL DESIGN 3 - ACCESSIBILITY
+   Focus states, reduced motion, high contrast
+   Ánh Dương F&B
+   ===================================================== */
+
+/* =====================================================
+   FOCUS VISIBLE STATES
+   Clear, accessible focus indicators
+   ===================================================== */
+
+/* Default focus visible */
+:focus-visible {
+    outline: 3px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+}
+
+/* Focus visible on dark backgrounds */
+.dark-theme :focus-visible,
+[data-theme="dark"] :focus-visible {
+    outline-color: var(--md-sys-color-primary);
+}
+
+/* Focus ring - alternative with ring */
+.md-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--md-sys-color-primary),
+        0 0 0 6px rgba(var(--md-sys-color-primary), 0.2);
+}
+
+/* Skip to content link */
+.md-skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 9999;
+    padding: 16px 24px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-radius: var(--md-sys-shape-corner-medium);
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: var(--md-sys-elevation-level3);
+    transition: top var(--md-sys-motion-duration-short2);
+}
+
+.md-skip-link:focus {
+    top: 16px;
+}
+
+/* Focus within for containers */
+.md-focus-within:focus-within {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 4px;
+}
+
+/* =====================================================
+   TOUCH TARGETS
+   Minimum 48x48px interactive areas
+   ===================================================== */
+
+.md-touch-target {
+    min-width: 48px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Touch target wrapper */
+.md-touch-target-wrapper {
+    position: relative;
+}
+
+.md-touch-target-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+}
+
+/* Larger touch target for mobile */
+@media (pointer: coarse) {
+    .md-touch-target {
+        min-width: 56px;
+        min-height: 56px;
+    }
+}
+
+/* =====================================================
+   REDUCED MOTION
+   Respects user's motion preferences
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Disable specific animations */
+    .aurora-bg,
+    .aurora-bg::before,
+    .aurora-header,
+    .float,
+    .pulse,
+    .shimmer,
+    .glow-pulse,
+    .spinner-glow {
+        animation: none !important;
+    }
+
+    /* Keep opacity transitions but make them instant */
+    .md-fade {
+        opacity: 1 !important;
+    }
+
+    /* Disable transform animations */
+    .card-lift:hover,
+    .glass-card:hover,
+    .btn-premium:hover {
+        transform: none !important;
+    }
+}
+
+/* =====================================================
+   HIGH CONTRAST MODE
+   Enhanced visibility for users who need it
+   ===================================================== */
+
+@media (prefers-contrast: more) {
+    :root {
+        --md-sys-color-outline: #000000;
+        --md-sys-color-outline-variant: #000000;
+        --md-sys-color-surface: #FFFFFF;
+        --md-sys-color-on-surface: #000000;
+        --md-sys-color-surface-variant: #FFFFFF;
+        --md-sys-color-on-surface-variant: #000000;
+    }
+
+    /* Increase border widths */
+    .md-card-outlined,
+    .md-button-outlined {
+        border-width: 2px;
+    }
+
+    /* Stronger shadows */
+    .md-elevation-1,
+    .md-elevation-2,
+    .md-elevation-3 {
+        box-shadow: 0 0 0 2px #000000;
+    }
+
+    /* Links underlined */
+    a:not(.md-button) {
+        text-decoration: underline;
+    }
+}
+
+/* High contrast dark mode */
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+    :root {
+        --md-sys-color-outline: #FFFFFF;
+        --md-sys-color-outline-variant: #FFFFFF;
+        --md-sys-color-surface: #000000;
+        --md-sys-color-on-surface: #FFFFFF;
+    }
+}
+
+/* =====================================================
+   FORCED COLORS MODE (Windows High Contrast)
+   ===================================================== */
+
+@media (forced-colors: active) {
+
+    /* Use system colors */
+    .md-button-filled {
+        background: ButtonFace;
+        color: ButtonText;
+        border: 2px solid ButtonText;
+    }
+
+    .md-button-filled:hover {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    .md-card {
+        border: 2px solid CanvasText;
+    }
+
+    :focus-visible {
+        outline: 3px solid Highlight;
+        outline-offset: 2px;
+    }
+
+    /* Ensure icons are visible */
+    svg,
+    .md-icon {
+        forced-color-adjust: auto;
+    }
+}
+
+/* =====================================================
+   COLOR CONTRAST HELPERS
+   ===================================================== */
+
+/* Text on various backgrounds */
+.md-text-on-primary {
+    color: var(--md-sys-color-on-primary);
+}
+
+.md-text-on-secondary {
+    color: var(--md-sys-color-on-secondary);
+}
+
+.md-text-on-surface {
+    color: var(--md-sys-color-on-surface);
+}
+
+.md-text-on-surface-variant {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+/* High contrast text */
+.md-text-high-emphasis {
+    color: var(--md-sys-color-on-surface);
+    opacity: 1;
+}
+
+.md-text-medium-emphasis {
+    color: var(--md-sys-color-on-surface);
+    opacity: 0.87;
+}
+
+.md-text-disabled {
+    color: var(--md-sys-color-on-surface);
+    opacity: 0.38;
+}
+
+/* =====================================================
+   SCREEN READER UTILITIES
+   ===================================================== */
+
+/* Visually hidden but accessible */
+.md-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Visible when focused (for skip links) */
+.md-sr-only-focusable:focus,
+.md-sr-only-focusable:focus-within {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Not for screen readers (decorative) */
+/* Note: Add aria-hidden="true" attribute in HTML for decorative elements */
+.md-decorative {
+    pointer-events: none;
+}
+
+/* =====================================================
+   INTERACTIVE STATE INDICATORS
+   ===================================================== */
+
+/* Disabled state */
+.md-disabled,
+[disabled] {
+    opacity: 0.38;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Loading state */
+.md-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.md-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--md-sys-color-surface);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Selected state */
+.md-selected {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* =====================================================
+   ARIA LIVE REGIONS
+   ===================================================== */
+
+/* Polite announcements */
+.md-live-polite {
+    /* aria-live="polite" should be added in HTML */
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+/* Assertive announcements */
+.md-live-assertive {
+    /* aria-live="assertive" should be added in HTML */
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+}
+
+/* Status messages */
+.md-status {
+    /* role="status" should be added in HTML */
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-surface-container);
+}
+
+/* Alert messages */
+.md-alert {
+    /* role="alert" should be added in HTML */
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+
+/* =====================================================
+   KEYBOARD NAVIGATION HELPERS
+   ===================================================== */
+
+/* Tab trap indicator */
+.md-tab-trap {
+    outline: 2px dashed var(--md-sys-color-primary);
+    outline-offset: 4px;
+}
+
+/* Focus order indicator (dev tool) */
+.md-show-focus-order [tabindex]:focus::before {
+    content: attr(tabindex);
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 20px;
+    height: 20px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* =====================================================
+   COLOR BLIND FRIENDLY INDICATORS
+   ===================================================== */
+
+/* Success with check mark */
+.md-status-success {
+    background: var(--md-custom-color-success-container);
+    color: var(--md-custom-color-on-success-container);
+}
+
+.md-status-success::before {
+    content: '✓ ';
+}
+
+/* Error with cross mark */
+.md-status-error {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+
+.md-status-error::before {
+    content: '✕ ';
+}
+
+/* Warning with exclamation */
+.md-status-warning {
+    background: var(--md-custom-color-warning-container);
+    color: var(--md-custom-color-on-warning-container);
+}
+
+.md-status-warning::before {
+    content: '⚠ ';
+}
+
+/* Info with info mark */
+.md-status-info {
+    background: var(--md-custom-color-info-container);
+    color: var(--md-custom-color-on-info-container);
+}
+
+.md-status-info::before {
+    content: 'ℹ ';
+}
