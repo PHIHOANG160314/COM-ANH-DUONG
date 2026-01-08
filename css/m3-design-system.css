@@ -36,18 +36,19 @@
     --md-ref-palette-primary100: #FFFFFF;
 
     /* === SECONDARY TONAL PALETTE === */
+    /* Generated from logo secondary color #73C249 */
     --md-ref-palette-secondary0: #000000;
-    --md-ref-palette-secondary10: #0C2004;
-    --md-ref-palette-secondary20: #1D3517;
-    --md-ref-palette-secondary30: #344B2B;
-    --md-ref-palette-secondary40: #4B6241;
-    --md-ref-palette-secondary50: #647A58;
-    --md-ref-palette-secondary60: #7D9471;
-    --md-ref-palette-secondary70: #97AE8A;
-    --md-ref-palette-secondary80: #B2CAA4;
-    --md-ref-palette-secondary90: #CEE7BF;
-    --md-ref-palette-secondary95: #DCF5CD;
-    --md-ref-palette-secondary99: #F6FFF0;
+    --md-ref-palette-secondary10: #0B2000;
+    --md-ref-palette-secondary20: #173800;
+    --md-ref-palette-secondary30: #245100;
+    --md-ref-palette-secondary40: #316B00;
+    --md-ref-palette-secondary50: #4A8A1A;
+    --md-ref-palette-secondary60: #63A535;
+    --md-ref-palette-secondary70: #73C249;
+    --md-ref-palette-secondary80: #98DF6A;
+    --md-ref-palette-secondary90: #B4FC85;
+    --md-ref-palette-secondary95: #CFFFAB;
+    --md-ref-palette-secondary99: #F5FFEC;
     --md-ref-palette-secondary100: #FFFFFF;
 
     /* === TERTIARY TONAL PALETTE (Gold) === */
@@ -124,10 +125,10 @@
     --md-sys-color-on-primary-container: #002204;
 
     /* === SECONDARY COLORS - Light Green from Logo #73C249 === */
-    --md-sys-color-secondary: #4E6A41;
+    --md-sys-color-secondary: #316B00;
     --md-sys-color-on-secondary: #FFFFFF;
-    --md-sys-color-secondary-container: #D0F0BD;
-    --md-sys-color-on-secondary-container: #0C2004;
+    --md-sys-color-secondary-container: #B4FC85;
+    --md-sys-color-on-secondary-container: #0B2000;
 
     /* === TERTIARY COLORS - Gold/Amber Complement === */
     --md-sys-color-tertiary: #7D5700;
@@ -323,11 +324,11 @@
     --md-sys-color-primary-container: #005000;
     --md-sys-color-on-primary-container: #A8F0A0;
 
-    /* === SECONDARY === */
-    --md-sys-color-secondary: #B4D4A2;
-    --md-sys-color-on-secondary: #213517;
-    --md-sys-color-secondary-container: #374B2B;
-    --md-sys-color-on-secondary-container: #D0F0BD;
+    /* === SECONDARY - Logo Green #73C249 === */
+    --md-sys-color-secondary: #98DF6A;
+    --md-sys-color-on-secondary: #173800;
+    --md-sys-color-secondary-container: #245100;
+    --md-sys-color-on-secondary-container: #B4FC85;
 
     /* === TERTIARY === */
     --md-sys-color-tertiary: #F5BF48;
@@ -369,10 +370,10 @@
         --md-sys-color-on-primary: #003A00;
         --md-sys-color-primary-container: #005000;
         --md-sys-color-on-primary-container: #A8F0A0;
-        --md-sys-color-secondary: #B4D4A2;
-        --md-sys-color-on-secondary: #213517;
-        --md-sys-color-secondary-container: #374B2B;
-        --md-sys-color-on-secondary-container: #D0F0BD;
+        --md-sys-color-secondary: #98DF6A;
+        --md-sys-color-on-secondary: #173800;
+        --md-sys-color-secondary-container: #245100;
+        --md-sys-color-on-secondary-container: #B4FC85;
         --md-sys-color-tertiary: #F5BF48;
         --md-sys-color-on-tertiary: #422D00;
         --md-sys-color-tertiary-container: #5F4200;
