@@ -140,36 +140,45 @@ const KitchenDisplay = {
         if (counter) counter.textContent = this.orders.length;
     },
 
-    startPreparing(orderId) {
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
-        const order = orders.find(o => o.id === orderId);
+    async startPreparing(orderId) {
+        const order = this.orders.find(o => o.id === orderId);
         if (order) {
+            // Optimistic update
             order.status = 'preparing';
-            localStorage.setItem('fb_orders', JSON.stringify(orders));
-            this.loadOrders();
-            toast.info(`🍳 Đang chuẩn bị đơn ${orderId}`);
+            this.render();
+
+            if (typeof Toast !== 'undefined') Toast.show(`🍳 Đang chuẩn bị đơn ${orderId}`, 'info');
+
+            // Call API
+            if (typeof APIService !== 'undefined') {
+                await APIService.orders.updateStatus(order.supabaseId || orderId, 'preparing');
+            }
         }
     },
 
-    markReady(orderId) {
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
-        const order = orders.find(o => o.id === orderId);
+    async markReady(orderId) {
+        const order = this.orders.find(o => o.id === orderId);
         if (order) {
+            // Optimistic update
             order.status = 'ready';
             order.readyAt = new Date().toISOString();
-            localStorage.setItem('fb_orders', JSON.stringify(orders));
-            this.loadOrders();
+            this.render();
 
-            // Play notification sound
+            // Play sound
             this.playNotificationSound();
 
-            // Show big notification for staff
+            // Notify staff locally (visual)
             this.notifyStaff(order);
 
-            // Update ready counter
+            // Update counter
             this.updateReadyCounter();
 
-            toast.success(`✅ Đơn ${orderId} đã sẵn sàng phục vụ!`);
+            if (typeof Toast !== 'undefined') Toast.show(`✅ Đơn ${orderId} đã sẵn sàng phục vụ!`, 'success');
+
+            // Call API
+            if (typeof APIService !== 'undefined') {
+                await APIService.orders.updateStatus(order.supabaseId || orderId, 'ready');
+            }
         }
     },
 
@@ -294,17 +303,16 @@ const KitchenDisplay = {
         `, `<button class="btn-secondary" onclick="modal.close()">Đóng</button>`);
     },
 
-    markServed(orderId) {
-        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
-        const order = orders.find(o => o.id === orderId);
-        if (order) {
-            order.status = 'served';
-            order.servedAt = new Date().toISOString();
-            localStorage.setItem('fb_orders', JSON.stringify(orders));
-            this.updateReadyCounter();
-            modal.close();
-            toast.success(`🍽️ Đơn ${orderId} đã được phục vụ!`);
-        }
+    async markServed(orderId) {
+        // Optimistic update from ready orders list
+        await APIService.orders.updateStatus(orderId, 'served');
+        this.updateReadyCounter();
+
+        if (typeof modal !== 'undefined') modal.close();
+        if (typeof Toast !== 'undefined') Toast.show(`🍽️ Đơn ${orderId} đã được phục vụ!`, 'success');
+
+        // Reload to sync
+        this.loadOrders();
     }
 };
 
