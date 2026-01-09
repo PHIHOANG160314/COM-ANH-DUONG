@@ -515,7 +515,7 @@
     flex-wrap: wrap;
     position: fixed;
     top: 70px;
-    left: 200px;
+    left: calc(var(--sidebar-width, 260px) + 1rem);
     right: 420px;
     z-index: 90;
     background: var(--bg-primary);
