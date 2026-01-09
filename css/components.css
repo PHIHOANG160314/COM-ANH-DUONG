@@ -497,11 +497,16 @@
    POS MODULE
    ======================================== */
 .pos-container {
-    display: grid;
-    grid-template-columns: 1fr 400px;
+    display: flex;
     gap: 1.5rem;
-    min-height: calc(100vh - var(--header-height) - 4rem);
-    align-items: start;
+    position: relative;
+}
+
+.pos-menu {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding-bottom: 2rem;
 }
 
 .pos-menu {
@@ -628,18 +633,21 @@
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
 
-/* Cart - Fixed position visible */
+/* Cart - Fixed position on right side */
 .pos-cart {
+    width: 380px;
+    min-width: 380px;
+    max-width: 380px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     display: flex;
     flex-direction: column;
-    min-height: 400px;
-    max-height: calc(100vh - 120px);
+    height: calc(100vh - 150px);
     position: sticky;
-    top: 80px;
+    top: 90px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .cart-header {
