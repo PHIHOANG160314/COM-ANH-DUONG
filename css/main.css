@@ -262,7 +262,7 @@ body::after {
     align-items: center;
     gap: 1rem;
     padding: 0.875rem 1rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
     border-radius: var(--border-radius);
     transition: var(--transition-fast);
@@ -271,7 +271,7 @@ body::after {
 
 .nav-item:hover {
     background: var(--bg-hover);
-    color: var(--text-primary);
+    color: #ffffff;
 }
 
 .nav-item.active {
@@ -301,6 +301,7 @@ body::after {
 .nav-text {
     font-size: 0.95rem;
     font-weight: 500;
+    opacity: 1;
 }
 
 /* Sidebar Footer */
