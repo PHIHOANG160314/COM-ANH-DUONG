@@ -674,8 +674,13 @@ const CustomerApp = {
         });
 
         const deliveryInfo = document.getElementById('deliveryInfo');
+        const dineinInfo = document.getElementById('dineinInfo');
+
         if (deliveryInfo) {
             deliveryInfo.style.display = type === 'delivery' ? 'block' : 'none';
+        }
+        if (dineinInfo) {
+            dineinInfo.style.display = type === 'dinein' ? 'block' : 'none';
         }
 
         this.updateOrderSummary();
@@ -710,6 +715,15 @@ const CustomerApp = {
             return;
         }
 
+        // Validate based on order type
+        if (this.orderType === 'dinein') {
+            const tableSelect = document.getElementById('dineinTable');
+            if (tableSelect && !tableSelect.value) {
+                this.showToast('Vui lòng chọn bàn', 'error');
+                return;
+            }
+        }
+
         if (this.orderType === 'delivery') {
             const name = document.getElementById('deliveryName')?.value;
             const phone = document.getElementById('deliveryPhone')?.value;
@@ -731,11 +745,17 @@ const CustomerApp = {
         }
         const total = Math.max(0, subtotal - discount + deliveryFee);
 
+        // Get table number for dine-in
+        const tableNumber = this.orderType === 'dinein'
+            ? document.getElementById('dineinTable')?.value || null
+            : null;
+
         // Create order with tracking
         const order = {
             id: 'ORD' + Date.now(),
             items: [...this.cart],
             orderType: this.orderType,
+            tableNumber: tableNumber,
             subtotal,
             discount,
             deliveryFee,
@@ -832,7 +852,9 @@ const CustomerApp = {
                     total: order.total,
                     status: 'pending',
                     order_type: order.orderType,
-                    notes: order.delivery?.note || ''
+                    table_number: order.tableNumber || null,
+                    notes: order.delivery?.note || '',
+                    address: order.tableNumber ? `Bàn ${order.tableNumber}` : (order.delivery?.address || 'Tại quán')
                 });
 
                 console.log('🔄 Supabase createOrder result:', result);

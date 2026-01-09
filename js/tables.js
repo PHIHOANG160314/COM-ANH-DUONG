@@ -9,6 +9,8 @@ const TableManagement = {
         this.loadTables();
         this.render();
         this.setupEventListeners();
+        this.syncWithOrders();
+        this.setupRealtimeSync();
     },
 
     loadTables() {
@@ -200,6 +202,142 @@ const TableManagement = {
         this.render();
         modal.close();
         toast.success(`Đã thêm ${name}`);
+    },
+
+    // ========================================
+    // SYNC WITH ORDERS (Supabase Integration)
+    // ========================================
+
+    async syncWithOrders() {
+        // Check if Supabase is available
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            console.log('Tables: Supabase not configured, skipping sync');
+            return;
+        }
+
+        try {
+            const result = await SupabaseService.getOrders();
+            if (result.data) {
+                this.updateTablesFromOrders(result.data);
+            }
+        } catch (err) {
+            console.error('Tables: Failed to sync with orders:', err);
+        }
+    },
+
+    updateTablesFromOrders(orders) {
+        // Reset all tables to available first
+        this.tables.forEach(table => {
+            // Only reset if no manual status was set
+            if (!table.manualStatus) {
+                table.status = 'available';
+                table.order = null;
+                table.customerName = '';
+            }
+        });
+
+        // Filter active orders (not completed/cancelled)
+        const activeOrders = orders.filter(o =>
+            o.status !== 'completed' &&
+            o.status !== 'served' &&
+            o.status !== 'cancelled'
+        );
+
+        // Update table status based on orders
+        activeOrders.forEach(order => {
+            // Extract table number from order
+            const tableNumber = this.extractTableNumber(order);
+            if (tableNumber) {
+                const table = this.tables.find(t => t.id === tableNumber || t.name === `Bàn ${tableNumber}`);
+                if (table) {
+                    // Determine status based on order status
+                    if (order.status === 'pending' || order.status === 'confirmed') {
+                        table.status = 'reserved';
+                    } else if (order.status === 'preparing' || order.status === 'ready') {
+                        table.status = 'occupied';
+                    }
+                    table.order = order.order_number || order.id;
+                    table.customerName = order.customer_name || '';
+                }
+            }
+        });
+
+        this.saveTables();
+        this.render();
+        console.log('Tables: Synced with orders, active orders:', activeOrders.length);
+    },
+
+    extractTableNumber(order) {
+        // First, check if table_number is directly set in the order (Supabase field)
+        if (order.table_number) {
+            const num = parseInt(order.table_number);
+            if (!isNaN(num)) return num;
+            // Also handle "Bàn 1" format in table_number field
+            const match = order.table_number.match(/(\d+)/);
+            if (match) return parseInt(match[1]);
+        }
+
+        // Try to extract table number from various fields
+        const address = order.address || '';
+        const notes = order.notes || '';
+        const combined = `${address} ${notes}`.toLowerCase();
+
+        // Match patterns like "Bàn 1", "bàn 1", "table 1", "#1"
+        const patterns = [
+            /bàn\s*(\d+)/i,
+            /ban\s*(\d+)/i,
+            /table\s*(\d+)/i,
+            /#(\d+)/
+        ];
+
+        for (const pattern of patterns) {
+            const match = combined.match(pattern);
+            if (match) {
+                return parseInt(match[1]);
+            }
+        }
+
+        // Check if order_type is dine_in and has table info in metadata
+        if (order.order_type === 'dine_in' || order.order_type === 'pickup') {
+            // Try parsing items for table reference
+            try {
+                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                if (items && items.tableNumber) {
+                    return parseInt(items.tableNumber);
+                }
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+
+        return null;
+    },
+
+    setupRealtimeSync() {
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            return;
+        }
+
+        // Subscribe to order changes
+        SupabaseService.subscribeToOrders((payload) => {
+            this.handleOrderChange(payload);
+        }, 'TableManagement');
+
+        console.log('Tables: Realtime subscription active');
+    },
+
+    handleOrderChange(payload) {
+        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+            // Re-sync tables when orders change
+            this.syncWithOrders();
+        } else if (payload.eventType === 'DELETE') {
+            // Also re-sync on delete
+            this.syncWithOrders();
+        }
     }
 };
 
