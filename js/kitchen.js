@@ -159,16 +159,22 @@ const KitchenDisplay = {
             // Call API to sync with server
             if (typeof APIService !== 'undefined') {
                 try {
-                    const result = await APIService.orders.updateStatus(order.supabaseId || orderId, 'preparing');
+                    const targetId = order.supabaseId || orderId;
+                    console.log('🔄 Kitchen API call:', { orderId, supabaseId: order.supabaseId, targetId, newStatus: 'preparing' });
+
+                    const result = await APIService.orders.updateStatus(targetId, 'preparing');
+                    console.log('🔄 Kitchen API result:', result);
+
                     if (!result.success) {
-                        console.error('Failed to update status:', result.error);
-                        // Revert optimistic update if needed, or just let valid queue handle it
+                        console.error('❌ Failed to update status:', result.error);
+                    } else {
+                        console.log('✅ Status updated successfully in DB');
                     }
                 } catch (e) {
-                    console.error('API Error:', e);
+                    console.error('❌ API Error:', e);
                 }
             } else {
-                console.warn('APIService not found');
+                console.warn('⚠️ APIService not found');
             }
         }
     },
