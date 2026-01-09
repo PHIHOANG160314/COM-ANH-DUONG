@@ -109,6 +109,10 @@ const KitchenDisplay = {
                     <span class="order-time">${order.time}</span>
                 </div>
                 <div class="kitchen-order-items">
+                    ${(() => {
+                if (window.Debug) console.log('Rendering items for order:', order.id, order.itemsDetail);
+                return '';
+            })()}
                     ${order.itemsDetail ? order.itemsDetail.map(item => `
                         <div class="kitchen-item">
                             <span class="item-icon">${item.icon || '🍽️'}</span>
