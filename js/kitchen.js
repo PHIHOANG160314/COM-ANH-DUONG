@@ -86,7 +86,7 @@ const KitchenDisplay = {
                 } else if (payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
                     this.loadOrders();
                 }
-            });
+            }, 'KitchenDisplay'); // Named listener
             if (window.Debug) Debug.info('KitchenDisplay subscribed to realtime orders');
         }
     },

@@ -277,32 +277,60 @@ const SupabaseService = {
     // Active subscriptions tracking
     _subscriptions: {},
 
-    // Subscribe to all order changes (for staff/kitchen)
-    subscribeToOrders(callback) {
-        getSupabase().then(supabase => {
-            if (!supabase) return null;
+    // Multiple listeners for order events (broadcast pattern)
+    _orderListeners: [],
+    _ordersChannelInitialized: false,
 
-            // Unsubscribe existing if any
-            if (this._subscriptions['orders']) {
-                supabase.removeChannel(this._subscriptions['orders']);
-            }
+    // Initialize orders channel once, broadcast to all listeners
+    _initOrdersChannel() {
+        if (this._ordersChannelInitialized) return;
+
+        getSupabase().then(supabase => {
+            if (!supabase) return;
 
             const channel = supabase
-                .channel('orders-channel')
+                .channel('orders-channel-shared')
                 .on('postgres_changes',
                     { event: '*', schema: 'public', table: 'orders' },
                     (payload) => {
                         if (window.Debug) Debug.info('🔔 Realtime order update:', payload.eventType);
-                        callback(payload);
+                        // Broadcast to ALL registered listeners
+                        this._orderListeners.forEach(listener => {
+                            try {
+                                listener.callback(payload);
+                            } catch (e) {
+                                console.error('Order listener error:', listener.name, e);
+                            }
+                        });
                     }
                 )
                 .subscribe((status) => {
                     if (window.Debug) Debug.info('📡 Orders subscription:', status);
                 });
 
-            this._subscriptions['orders'] = channel;
-            return channel;
+            this._subscriptions['orders-shared'] = channel;
+            this._ordersChannelInitialized = true;
         });
+    },
+
+    // Subscribe to all order changes (supports multiple listeners)
+    subscribeToOrders(callback, listenerName = 'anonymous') {
+        // Remove existing listener with same name to prevent duplicates
+        this._orderListeners = this._orderListeners.filter(l => l.name !== listenerName);
+
+        // Add new listener
+        this._orderListeners.push({ name: listenerName, callback });
+
+        if (window.Debug) Debug.info(`📡 Added order listener: ${listenerName} (total: ${this._orderListeners.length})`);
+
+        // Initialize shared channel if not already
+        this._initOrdersChannel();
+    },
+
+    // Unsubscribe a specific listener
+    unsubscribeFromOrders(listenerName) {
+        this._orderListeners = this._orderListeners.filter(l => l.name !== listenerName);
+        if (window.Debug) Debug.info(`📡 Removed order listener: ${listenerName}`);
     },
 
     // Subscribe to specific customer's orders (for customer portal)

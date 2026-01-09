@@ -90,9 +90,9 @@ const OrderManagement = {
 
         SupabaseService.subscribeToOrders((payload) => {
             this.handleRealtimeEvent(payload);
-        });
+        }, 'OrderManagement'); // Named listener
 
-        if (window.Debug) Debug.info('📡 Orders realtime subscription active');
+        if (window.Debug) Debug.info('📡 OrderManagement realtime subscription active');
     },
 
     handleRealtimeEvent(payload) {
