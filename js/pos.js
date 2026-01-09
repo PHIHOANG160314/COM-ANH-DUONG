@@ -206,6 +206,9 @@ const POS = {
 
         toast.success(`✅ Đơn ${orderId} đã gửi đến bếp!`);
 
+        // *** SYNC TO SUPABASE FOR REALTIME ***
+        this.syncOrderToSupabase(newOrder);
+
         // *** REFRESH KITCHEN DISPLAY ***
         if (window.KitchenDisplay) {
             KitchenDisplay.loadOrders();
@@ -220,6 +223,48 @@ const POS = {
 
         // Refresh dashboard
         if (Dashboard) Dashboard.refresh();
+    },
+
+    // Sync order to Supabase for realtime updates
+    async syncOrderToSupabase(order) {
+        console.log('🔄 POS syncOrderToSupabase called:', order.id);
+
+        const isConfigured = typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured();
+        if (!isConfigured || typeof SupabaseService === 'undefined') {
+            console.warn('⚠️ Supabase not configured, skipping sync');
+            return;
+        }
+
+        try {
+            const result = await SupabaseService.createOrder({
+                order_number: order.id,
+                customer_name: 'Khách tại quán',
+                customer_phone: '',
+                table_number: order.table,
+                items: JSON.stringify(order.itemsDetail.map(item => ({
+                    name: item.name,
+                    icon: item.icon,
+                    qty: item.quantity,
+                    price: item.price
+                }))),
+                subtotal: Math.round(order.total / 1.1),
+                discount: 0,
+                total: order.total,
+                status: 'pending',
+                order_type: order.table === 'Mang đi' ? 'takeaway' : 'dinein',
+                notes: ''
+            });
+
+            console.log('🔄 Supabase createOrder result:', result);
+
+            if (result.error) {
+                console.error('❌ Failed to sync order:', result.error);
+            } else {
+                console.log('✅ Order synced to Supabase:', result.data?.id);
+            }
+        } catch (err) {
+            console.error('❌ Supabase sync error:', err);
+        }
     },
 
     printReceipt(order, items) {
