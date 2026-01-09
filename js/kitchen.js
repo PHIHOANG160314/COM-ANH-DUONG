@@ -25,6 +25,10 @@ const KitchenDisplay = {
                         .filter(o => o.status === 'pending' || o.status === 'preparing')
                         .map(o => this._convertOrder(o))
                         .sort((a, b) => new Date(a.time) - new Date(b.time));
+
+                    // Debug: Log loaded orders with their supabaseIds
+                    console.log('🍳 Kitchen loaded orders:', this.orders.map(o => ({ id: o.id, supabaseId: o.supabaseId, status: o.status })));
+
                     this.render();
                     return;
                 }
