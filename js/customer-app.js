@@ -803,8 +803,13 @@ const CustomerApp = {
 
     // Sync order to Supabase
     async syncOrderToSupabase(order) {
+        console.log('🔄 syncOrderToSupabase called:', order.id);
+
         const isConfigured = typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured();
+        console.log('🔄 Supabase configured:', isConfigured);
+
         const isOnline = typeof OfflineManager !== 'undefined' ? OfflineManager.isOnline : navigator.onLine;
+        console.log('🔄 Online:', isOnline);
 
         if (!isOnline) {
             // Queue for offline sync
@@ -830,9 +835,13 @@ const CustomerApp = {
                     notes: order.delivery?.note || ''
                 });
 
+                console.log('🔄 Supabase createOrder result:', result);
+
                 if (result.error) {
+                    console.error('❌ Failed to sync order:', result.error);
                     if (window.Debug) Debug.error('Failed to sync order:', result.error);
                 } else {
+                    console.log('✅ Order synced to Supabase:', result.data?.id);
                     if (window.Debug) Debug.info('✅ Order synced to Supabase:', result.data?.id);
                     // Update local order with Supabase ID
                     order.supabaseId = result.data?.id;
