@@ -628,18 +628,18 @@
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
 
-/* Cart - Sticky position so it stays visible when scrolling */
+/* Cart - Fixed position visible */
 .pos-cart {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     display: flex;
     flex-direction: column;
-    height: fit-content;
-    max-height: calc(100vh - var(--header-height) - 4rem);
+    min-height: 400px;
+    max-height: calc(100vh - 120px);
     position: sticky;
-    top: 1rem;
-    align-self: flex-start;
+    top: 80px;
+    overflow: hidden;
 }
 
 .cart-header {
