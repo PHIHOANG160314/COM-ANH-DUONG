@@ -68,11 +68,11 @@ const StaffApp = {
         return this.rolePermissions[role]?.[feature] ?? false;
     },
 
-    init() {
+    async init() {
         if (window.Debug) Debug.info('Staff Portal initializing...');
         this.updateDate();
         this.checkSession();
-        this.loadOrders();
+        await this.loadOrders();
         setInterval(() => this.updateDate(), 60000);
         if (window.Debug) Debug.info('Staff Portal ready!');
     },
