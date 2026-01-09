@@ -23,6 +23,14 @@
             "destination": "/staff-mobile.html"
         },
         {
+            "source": "/kitchen",
+            "destination": "/kitchen.html"
+        },
+        {
+            "source": "/kitchen/",
+            "destination": "/kitchen.html"
+        },
+        {
             "source": "/admin",
             "destination": "/index.html"
         },
