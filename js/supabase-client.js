@@ -220,12 +220,18 @@ const SupabaseService = {
                 .from('orders')
                 .update({ status })
                 .eq('id', orderId)
-                .select()
-                .single();
+                .select();
 
             if (error) return createErrorResponse(error, 'updateOrderStatus');
+
+            // Check if any rows were updated
+            if (!data || data.length === 0) {
+                if (window.Debug) Debug.warn('No order found with id:', orderId);
+                return createErrorResponse('Order not found', 'updateOrderStatus');
+            }
+
             if (window.Debug) Debug.info('Order status updated:', orderId, '->', status);
-            return createSuccessResponse(data);
+            return createSuccessResponse(data[0]);
         }, 'updateOrderStatus');
     },
 
