@@ -412,7 +412,38 @@ const StaffApp = {
     // ========================================
     // ORDERS
     // ========================================
-    loadOrders() {
+    async loadOrders() {
+        // Try fetch from API if online
+        if (typeof APIService !== 'undefined' && APIService.isConfigured()) {
+            const result = await APIService.orders.getAll();
+            if (result.success && result.data) {
+                // Map Supabase data to local format
+                const mappedOrders = result.data.map(o => {
+                    let items = [];
+                    try {
+                        items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items;
+                    } catch (e) { items = []; }
+
+                    return {
+                        id: o.order_number || o.id,
+                        supabaseId: o.id,
+                        status: o.status,
+                        items: items,
+                        total: o.total,
+                        createdAt: o.created_at,
+                        orderType: o.order_type || 'dinein',
+                        table: o.table_number,
+                        customerName: o.customer_name,
+                        customerPhone: o.customer_phone
+                    };
+                });
+
+                // Save to localStorage (single source of truth for UI)
+                localStorage.setItem('customer_orders', JSON.stringify(mappedOrders));
+                if (window.Debug) Debug.info('Synced', mappedOrders.length, 'orders from API');
+            }
+        }
+
         this.initOrdersPagination();
     },
 
