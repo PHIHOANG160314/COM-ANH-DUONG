@@ -58,7 +58,7 @@ const KitchenDisplay = {
             table: supabaseOrder.table_number || (supabaseOrder.order_type === 'delivery' ? 'Giao hàng' : 'Mang đi'),
             time: new Date(supabaseOrder.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
             status: supabaseOrder.status,
-            items: items.map(i => `${i.icon || ''} ${i.name} x${i.qty || 1}`).join(', '),
+            items: items.map(i => `${i.icon || ''} ${i.name} x${i.qty || i.quantity || 1}`).join(', '),
             itemsDetail: items,
             customer: supabaseOrder.customer_name,
             total: supabaseOrder.total
@@ -147,11 +147,24 @@ const KitchenDisplay = {
             order.status = 'preparing';
             this.render();
 
-            if (typeof Toast !== 'undefined') Toast.show(`🍳 Đang chuẩn bị đơn ${orderId}`, 'info');
+            // Show toast
+            if (typeof Toast !== 'undefined') {
+                Toast.show(`👨‍🍳 Bắt đầu làm đơn ${orderId}`, 'info');
+            }
 
-            // Call API
+            // Call API to sync with server
             if (typeof APIService !== 'undefined') {
-                await APIService.orders.updateStatus(order.supabaseId || orderId, 'preparing');
+                try {
+                    const result = await APIService.orders.updateStatus(order.supabaseId || orderId, 'preparing');
+                    if (!result.success) {
+                        console.error('Failed to update status:', result.error);
+                        // Revert optimistic update if needed, or just let valid queue handle it
+                    }
+                } catch (e) {
+                    console.error('API Error:', e);
+                }
+            } else {
+                console.warn('APIService not found');
             }
         }
     },
