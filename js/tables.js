@@ -200,8 +200,22 @@ const TableManagement = {
         });
         this.saveTables();
         this.render();
+        this.syncDropdowns();
         modal.close();
         toast.success(`Đã thêm ${name}`);
+    },
+
+    // Sync table dropdowns across POS and Customer portals
+    syncDropdowns() {
+        // Sync POS dropdown
+        if (typeof POS !== 'undefined' && POS.populateTableSelect) {
+            POS.populateTableSelect();
+        }
+        // Dispatch event for other modules to listen
+        window.dispatchEvent(new CustomEvent('tables-updated', {
+            detail: { tables: this.tables }
+        }));
+        console.log('Tables: Dropdowns synced');
     },
 
     // ========================================

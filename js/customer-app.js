@@ -45,8 +45,52 @@ const CustomerApp = {
         this.renderMenu();
         this.updateCartUI();
         this.renderOrderHistory();
+        this.populateDineinTables();
+        this.listenForTableUpdates();
         console.log('🍽️ Customer Portal ready!');
     },
+
+    // Dynamically populate dine-in table dropdown from localStorage/TableManagement
+    populateDineinTables() {
+        const select = document.getElementById('dineinTable');
+        if (!select) return;
+
+        // Try to get tables from localStorage (saved by TableManagement)
+        let tables = [];
+        const saved = localStorage.getItem('fb_tables');
+        if (saved) {
+            try {
+                tables = JSON.parse(saved);
+            } catch (e) {
+                tables = [];
+            }
+        }
+
+        // Default tables if none exist
+        if (tables.length === 0) {
+            tables = [];
+            for (let i = 1; i <= 12; i++) {
+                tables.push({ id: i, name: `Bàn ${i}` });
+            }
+        }
+
+        // Build options
+        let optionsHTML = '<option value="">-- Chọn bàn --</option>';
+        tables.forEach(table => {
+            optionsHTML += `<option value="${table.id}">${table.name}</option>`;
+        });
+
+        select.innerHTML = optionsHTML;
+        console.log('Customer: Populated', tables.length, 'tables');
+    },
+
+    // Listen for table updates from TableManagement
+    listenForTableUpdates() {
+        window.addEventListener('tables-updated', (e) => {
+            this.populateDineinTables();
+        });
+    },
+
 
     // ========================================
     // LEVEL 1: FILTER BY GROUP

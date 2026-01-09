@@ -10,6 +10,57 @@ const POS = {
         this.renderMenu();
         this.setupEventListeners();
         this.updateCart();
+        this.populateTableSelect();
+    },
+
+    // Dynamically populate table dropdown from TableManagement
+    populateTableSelect() {
+        const select = document.getElementById('tableSelect');
+        if (!select) return;
+
+        // Get tables from TableManagement if available
+        let tables = [];
+        if (typeof TableManagement !== 'undefined' && TableManagement.tables) {
+            tables = TableManagement.tables;
+        } else {
+            // Fallback: try to get from localStorage
+            const saved = localStorage.getItem('fb_tables');
+            if (saved) {
+                try {
+                    tables = JSON.parse(saved);
+                } catch (e) {
+                    tables = [];
+                }
+            }
+        }
+
+        // Default tables if none exist
+        if (tables.length === 0) {
+            tables = [
+                { id: 1, name: 'Bàn 1' },
+                { id: 2, name: 'Bàn 2' },
+                { id: 3, name: 'Bàn 3' },
+                { id: 4, name: 'Bàn 4' },
+                { id: 5, name: 'Bàn 5' },
+                { id: 6, name: 'Bàn 6' },
+                { id: 7, name: 'Bàn 7' },
+                { id: 8, name: 'Bàn 8' },
+                { id: 9, name: 'Bàn 9' },
+                { id: 10, name: 'Bàn 10' },
+                { id: 11, name: 'Bàn 11' },
+                { id: 12, name: 'Bàn 12' }
+            ];
+        }
+
+        // Build options
+        let optionsHTML = '<option value="">Chọn bàn</option>';
+        tables.forEach(table => {
+            optionsHTML += `<option value="${table.id}">${table.name}</option>`;
+        });
+        optionsHTML += '<option value="takeaway">Mang đi</option>';
+
+        select.innerHTML = optionsHTML;
+        console.log('POS: Populated', tables.length, 'tables');
     },
 
     setupEventListeners() {
