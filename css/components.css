@@ -500,7 +500,8 @@
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: 1.5rem;
-    height: calc(100vh - var(--header-height) - 4rem);
+    min-height: calc(100vh - var(--header-height) - 4rem);
+    align-items: start;
 }
 
 .pos-menu {
@@ -627,14 +628,18 @@
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
 }
 
-/* Cart */
+/* Cart - Sticky position so it stays visible when scrolling */
 .pos-cart {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: fit-content;
+    max-height: calc(100vh - var(--header-height) - 4rem);
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
 }
 
 .cart-header {
