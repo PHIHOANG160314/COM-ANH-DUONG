@@ -413,6 +413,34 @@ const StaffApp = {
     // ORDERS
     // ========================================
     async loadOrders() {
+        // Add refresh button if not exists
+        const header = document.querySelector('#section-orders .section-header');
+        if (header && !document.getElementById('forceRefreshBtn')) {
+            const btn = document.createElement('button');
+            btn.id = 'forceRefreshBtn';
+            btn.className = 'btn-icon';
+            btn.innerHTML = '🔄';
+            btn.style.cssText = 'position:absolute; right:16px; top:16px; background:none; border:none; font-size:1.5rem; cursor:pointer; z-index:10;';
+            btn.onclick = async (e) => {
+                e.stopPropagation();
+                btn.classList.add('spinning');
+                await this.loadOrders();
+                this.loadKitchenOrders();
+                this.showToast('Đã làm mới dữ liệu');
+                setTimeout(() => btn.classList.remove('spinning'), 1000);
+            };
+            header.style.position = 'relative';
+            header.appendChild(btn);
+
+            // Add spin animation
+            if (!document.getElementById('spinStyle')) {
+                const style = document.createElement('style');
+                style.id = 'spinStyle';
+                style.textContent = '@keyframes spin { 100% { transform: rotate(360deg); } } .spinning { animation: spin 1s linear infinite; }';
+                document.head.appendChild(style);
+            }
+        }
+
         // Try fetch from API if online
         if (typeof APIService !== 'undefined' && APIService.isConfigured()) {
             const result = await APIService.orders.getAll();
@@ -448,17 +476,20 @@ const StaffApp = {
     },
 
     // Subscribe to realtime order updates
+    // Subscribe to realtime order updates
     subscribeToOrders() {
         if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
-            SupabaseService.subscribeToOrders((payload) => {
+            SupabaseService.subscribeToOrders(async (payload) => {
+                if (window.Debug) Debug.info('🔔 Realtime update received:', payload.eventType);
+
                 if (payload.eventType === 'INSERT') {
                     // New order!
                     this.showNewOrderNotification(payload.new);
-                    this.loadOrders(); // Refresh list
+                    await this.loadOrders(); // Refresh list (await to ensure data is saved)
                     this.loadKitchenOrders(); // Refresh kitchen
                     this.updateDashboard(); // Refresh dashboard
                 } else if (payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
-                    this.loadOrders();
+                    await this.loadOrders();
                     this.loadKitchenOrders();
                     this.updateDashboard();
                 }
