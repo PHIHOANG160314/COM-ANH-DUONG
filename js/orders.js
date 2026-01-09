@@ -150,8 +150,10 @@ const OrderManagement = {
             pending: 'new',
             confirmed: 'received',
             preparing: 'received',
+            ready: 'received',       // Ready for pickup = received state
             delivering: 'delivering',
             completed: 'delivered',
+            served: 'delivered',     // Served = delivered
             cancelled: 'cancelled'
         };
         return map[supabaseStatus] || 'new';
