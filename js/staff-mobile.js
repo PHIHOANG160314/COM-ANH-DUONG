@@ -395,7 +395,7 @@ const StaffApp = {
                     </div>
                     <div class="kitchen-order-items">
                         ${order.items?.map(item => `
-                            <div class="kitchen-order-item">${item.icon || '🍽️'} ${item.name} x${item.qty}</div>
+                            <div class="kitchen-order-item">${item.icon || '🍽️'} ${item.name} x${item.qty ?? item.quantity ?? 1}</div>
                         `).join('') || 'Không có món'}
                     </div>
                     <div class="kitchen-order-actions">
@@ -476,7 +476,6 @@ const StaffApp = {
     },
 
     // Subscribe to realtime order updates
-    // Subscribe to realtime order updates
     subscribeToOrders() {
         if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
             SupabaseService.subscribeToOrders(async (payload) => {
@@ -485,10 +484,28 @@ const StaffApp = {
                 if (payload.eventType === 'INSERT') {
                     // New order!
                     this.showNewOrderNotification(payload.new);
-                    await this.loadOrders(); // Refresh list (await to ensure data is saved)
-                    this.loadKitchenOrders(); // Refresh kitchen
-                    this.updateDashboard(); // Refresh dashboard
-                } else if (payload.eventType === 'UPDATE' || payload.eventType === 'DELETE') {
+                    await this.loadOrders();
+                    this.loadKitchenOrders();
+                    this.updateDashboard();
+                } else if (payload.eventType === 'UPDATE') {
+                    // Order status changed - refresh and notify
+                    await this.loadOrders();
+                    this.loadKitchenOrders();
+                    this.updateDashboard();
+
+                    // Force refresh Pagination UI
+                    if (typeof Pagination !== 'undefined') {
+                        Pagination.refresh('allOrdersList');
+                    }
+
+                    // Show quick toast for status change
+                    const order = payload.new;
+                    if (order.status === 'preparing') {
+                        this.showToast(`🍳 Đơn ${order.order_number || order.id} đang được làm`, 'info');
+                    } else if (order.status === 'ready') {
+                        this.showToast(`✅ Đơn ${order.order_number || order.id} đã sẵn sàng!`, 'success');
+                    }
+                } else if (payload.eventType === 'DELETE') {
                     await this.loadOrders();
                     this.loadKitchenOrders();
                     this.updateDashboard();
