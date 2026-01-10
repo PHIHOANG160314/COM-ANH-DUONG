@@ -77,7 +77,13 @@ const CustomerApp = {
             // Get local orders to match with Supabase
             const localOrders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
 
-            if (localOrders.length === 0) return;
+            if (localOrders.length === 0) {
+                console.log('Customer: No local orders to sync');
+                return;
+            }
+
+            console.log('Customer: Syncing', localOrders.length, 'local orders...');
+            console.log('Customer: Local order IDs:', localOrders.map(o => o.id));
 
             // Get all orders from Supabase
             const result = await SupabaseService.getOrders();
@@ -86,28 +92,67 @@ const CustomerApp = {
                 return;
             }
 
+            console.log('Customer: Got', result.data?.length || 0, 'orders from Supabase');
+
             // Update local orders with Supabase status
             let updated = false;
             localOrders.forEach(localOrder => {
-                const supabaseOrder = result.data?.find(o =>
-                    o.order_number === localOrder.id ||
-                    o.id === localOrder.supabaseId
-                );
+                // Match by order_number OR supabaseId
+                const supabaseOrder = result.data?.find(o => {
+                    const matchByOrderNumber = o.order_number === localOrder.id;
+                    const matchBySupabaseId = localOrder.supabaseId && o.id === localOrder.supabaseId;
+                    return matchByOrderNumber || matchBySupabaseId;
+                });
 
-                if (supabaseOrder && supabaseOrder.status !== localOrder.status) {
-                    localOrder.status = supabaseOrder.status;
-                    localOrder.supabaseId = supabaseOrder.id;
-                    updated = true;
-                    console.log('🔄 Order', localOrder.id, 'status updated to:', supabaseOrder.status);
+                if (supabaseOrder) {
+                    console.log('Customer: Found match for', localOrder.id, '- Supabase status:', supabaseOrder.status, 'Local status:', localOrder.status);
+
+                    // Always update supabaseId if missing
+                    if (!localOrder.supabaseId) {
+                        localOrder.supabaseId = supabaseOrder.id;
+                        updated = true;
+                    }
+
+                    // Update status if different
+                    if (supabaseOrder.status !== localOrder.status) {
+                        const oldStatus = localOrder.status;
+                        localOrder.status = supabaseOrder.status;
+
+                        // Add to status history
+                        localOrder.statusHistory = localOrder.statusHistory || [];
+                        localOrder.statusHistory.push({
+                            status: supabaseOrder.status,
+                            time: new Date().toISOString(),
+                            label: this.getStatusLabel(supabaseOrder.status)
+                        });
+
+                        updated = true;
+                        console.log('🔄 Customer: Order', localOrder.id, 'status updated from', oldStatus, 'to:', supabaseOrder.status);
+                    }
+                } else {
+                    console.log('Customer: No Supabase match for local order:', localOrder.id);
                 }
             });
 
             if (updated) {
                 localStorage.setItem('customer_orders', JSON.stringify(localOrders));
+
+                // Re-render order history
                 this.renderOrderHistory();
+
+                // Re-render current tracking if visible
+                const trackingContainer = document.getElementById('currentOrderTracking');
+                const trackingOrderId = document.getElementById('trackingOrderId')?.value;
+                if (trackingContainer && trackingOrderId) {
+                    const trackedOrder = localOrders.find(o => o.id === trackingOrderId);
+                    if (trackedOrder) {
+                        this.renderOrderStatus(trackedOrder, trackingContainer);
+                        console.log('Customer: Updated tracking UI for order', trackingOrderId);
+                    }
+                }
             }
 
-            console.log('✅ Customer: Synced', localOrders.length, 'orders from Supabase');
+            console.log('✅ Customer: Synced orders from Supabase, updated:', updated);
         } catch (err) {
             console.error('Customer: Error syncing orders:', err);
         }
