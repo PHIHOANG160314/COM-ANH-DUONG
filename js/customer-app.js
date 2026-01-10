@@ -47,7 +47,137 @@ const CustomerApp = {
         this.renderOrderHistory();
         this.populateDineinTables();
         this.listenForTableUpdates();
+
+        // Initialize realtime order tracking
+        this.initRealtimeOrderTracking();
+
         console.log('🍽️ Customer Portal ready!');
+    },
+
+    // ========================================
+    // REALTIME ORDER TRACKING
+    // ========================================
+    async initRealtimeOrderTracking() {
+        // Sync orders from Supabase
+        await this.loadOrdersFromSupabase();
+
+        // Subscribe to realtime updates for all customer orders
+        this.subscribeToAllOrderUpdates();
+    },
+
+    async loadOrdersFromSupabase() {
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            console.log('Customer: Supabase not configured, using local orders');
+            return;
+        }
+
+        try {
+            // Get local orders to match with Supabase
+            const localOrders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+
+            if (localOrders.length === 0) return;
+
+            // Get all orders from Supabase
+            const result = await SupabaseService.getOrders();
+            if (result.error) {
+                console.error('Customer: Failed to load orders from Supabase:', result.error);
+                return;
+            }
+
+            // Update local orders with Supabase status
+            let updated = false;
+            localOrders.forEach(localOrder => {
+                const supabaseOrder = result.data?.find(o =>
+                    o.order_number === localOrder.id ||
+                    o.id === localOrder.supabaseId
+                );
+
+                if (supabaseOrder && supabaseOrder.status !== localOrder.status) {
+                    localOrder.status = supabaseOrder.status;
+                    localOrder.supabaseId = supabaseOrder.id;
+                    updated = true;
+                    console.log('🔄 Order', localOrder.id, 'status updated to:', supabaseOrder.status);
+                }
+            });
+
+            if (updated) {
+                localStorage.setItem('customer_orders', JSON.stringify(localOrders));
+                this.renderOrderHistory();
+            }
+
+            console.log('✅ Customer: Synced', localOrders.length, 'orders from Supabase');
+        } catch (err) {
+            console.error('Customer: Error syncing orders:', err);
+        }
+    },
+
+    subscribeToAllOrderUpdates() {
+        if (typeof SupabaseService === 'undefined' ||
+            typeof isSupabaseConfigured === 'undefined' ||
+            !isSupabaseConfigured()) {
+            return;
+        }
+
+        // Subscribe to all order changes
+        SupabaseService.subscribeToOrders((payload) => {
+            console.log('🔔 Customer: Order update received:', payload.eventType);
+
+            if (payload.eventType === 'UPDATE' && payload.new) {
+                const localOrders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+                const orderIndex = localOrders.findIndex(o =>
+                    o.id === payload.new.order_number ||
+                    o.supabaseId === payload.new.id
+                );
+
+                if (orderIndex !== -1) {
+                    const oldStatus = localOrders[orderIndex].status;
+                    const newStatus = payload.new.status;
+
+                    if (oldStatus !== newStatus) {
+                        localOrders[orderIndex].status = newStatus;
+                        localOrders[orderIndex].statusHistory = localOrders[orderIndex].statusHistory || [];
+                        localOrders[orderIndex].statusHistory.push({
+                            status: newStatus,
+                            time: new Date().toISOString(),
+                            label: this.getStatusLabel(newStatus)
+                        });
+
+                        localStorage.setItem('customer_orders', JSON.stringify(localOrders));
+
+                        // Re-render tracking and history
+                        this.renderOrderHistory();
+
+                        // If tracking section is visible, update it
+                        const trackingContainer = document.getElementById('currentOrderTracking');
+                        if (trackingContainer && trackingContainer.innerHTML.includes(localOrders[orderIndex].id)) {
+                            this.renderOrderStatus(localOrders[orderIndex], trackingContainer);
+                        }
+
+                        // Show notification
+                        this.showToast(`Đơn ${localOrders[orderIndex].id}: ${this.getStatusLabel(newStatus)}`, 'success');
+                        console.log('✅ Order', localOrders[orderIndex].id, 'updated to:', newStatus);
+                    }
+                }
+            }
+        }, 'CustomerPortal');
+
+        console.log('📡 Customer: Subscribed to realtime order updates');
+    },
+
+    getStatusLabel(status) {
+        const labels = {
+            'pending': 'Chờ xác nhận',
+            'confirmed': 'Đã xác nhận',
+            'preparing': 'Đang chuẩn bị',
+            'ready': 'Sẵn sàng giao',
+            'delivering': 'Đang giao hàng',
+            'completed': 'Hoàn thành',
+            'served': 'Đã phục vụ',
+            'cancelled': 'Đã hủy'
+        };
+        return labels[status] || status;
     },
 
     // Dynamically populate dine-in table dropdown from localStorage/TableManagement
