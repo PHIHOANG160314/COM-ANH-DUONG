@@ -1073,7 +1073,8 @@ const CustomerApp = {
 
         if (isConfigured && typeof SupabaseService !== 'undefined') {
             try {
-                const result = await SupabaseService.createOrder({
+                // Build order data without 'address' field (not in Supabase schema)
+                const orderData = {
                     order_number: order.id,
                     customer_name: order.delivery?.name || 'Khách',
                     customer_phone: order.delivery?.phone || '',
@@ -1084,11 +1085,12 @@ const CustomerApp = {
                     status: 'pending',
                     order_type: order.orderType,
                     table_number: order.tableNumber || null,
-                    notes: order.delivery?.note || '',
-                    address: order.tableNumber ? `Bàn ${order.tableNumber}` : (order.delivery?.address || 'Tại quán')
-                });
+                    notes: order.delivery?.note || (order.tableNumber ? `Bàn ${order.tableNumber}` : (order.delivery?.address || 'Tại quán'))
+                };
 
-                console.log('🔄 Supabase createOrder result:', result);
+                console.log('🔄 Creating order with data:', orderData);
+
+                const result = await SupabaseService.createOrder(orderData);
 
                 if (result.error) {
                     console.error('❌ Failed to sync order:', result.error);
