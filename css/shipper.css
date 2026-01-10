@@ -1,0 +1,651 @@
+/* ===========================================
+   SHIPPER PORTAL STYLES
+   Mobile-first design for delivery drivers
+   =========================================== */
+
+:root {
+    --shipper-primary: #1565C0;
+    --shipper-primary-light: #1976D2;
+    --shipper-primary-dark: #0D47A1;
+    --shipper-accent: #FF6F00;
+    --shipper-success: #2E7D32;
+    --shipper-warning: #F57C00;
+    --shipper-danger: #C62828;
+
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #1a1a2e;
+    --bg-card: #252540;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0c0;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+/* ===========================================
+   HEADER
+   =========================================== */
+.shipper-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(135deg, var(--shipper-primary-dark) 0%, var(--shipper-primary) 100%);
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.header-title h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.header-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shipper-status {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+}
+
+.btn-logout {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===========================================
+   MAIN CONTENT
+   =========================================== */
+.shipper-main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================================
+   LOGIN
+   =========================================== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.login-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 40px 30px;
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.login-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.login-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+}
+
+.pin-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pin-input {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.pin-input:focus {
+    border-color: var(--shipper-primary);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--shipper-primary) 0%, var(--shipper-primary-light) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-login:active {
+    transform: scale(0.98);
+}
+
+.login-help {
+    margin-top: 20px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ===========================================
+   STATS GRID
+   =========================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid transparent;
+    transition: transform 0.2s;
+}
+
+.stat-card:active {
+    transform: scale(0.98);
+}
+
+.stat-card.pending {
+    border-left-color: var(--shipper-warning);
+}
+
+.stat-card.delivering {
+    border-left-color: var(--shipper-primary);
+}
+
+.stat-card.completed {
+    border-left-color: var(--shipper-success);
+}
+
+.stat-card.earnings {
+    border-left-color: var(--shipper-accent);
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ===========================================
+   ORDERS SECTION
+   =========================================== */
+.orders-section {
+    margin-top: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header h2 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.btn-refresh {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-refresh:active {
+    background: var(--bg-secondary);
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: var(--shipper-primary-light);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-orders {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px;
+    background: var(--bg-card);
+    border-radius: 16px;
+}
+
+/* ===========================================
+   ORDER CARD
+   =========================================== */
+.order-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.order-card:active {
+    transform: scale(0.98);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.order-id {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--shipper-primary-light);
+}
+
+.order-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.order-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.order-status.pending {
+    background: rgba(255, 152, 0, 0.2);
+    color: #FFB74D;
+}
+
+.order-status.picked_up {
+    background: rgba(33, 150, 243, 0.2);
+    color: #64B5F6;
+}
+
+.order-status.delivering {
+    background: rgba(21, 101, 192, 0.2);
+    color: #42A5F5;
+}
+
+.order-status.completed {
+    background: rgba(76, 175, 80, 0.2);
+    color: #81C784;
+}
+
+.order-customer {
+    margin-bottom: 12px;
+}
+
+.customer-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.customer-phone {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.customer-phone a {
+    color: var(--shipper-primary-light);
+    text-decoration: none;
+}
+
+.order-address {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.address-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.address-text {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.order-items {
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+}
+
+.order-items-title {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.order-items-list {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+    margin-bottom: 12px;
+}
+
+.total-label {
+    color: var(--text-secondary);
+}
+
+.total-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--shipper-accent);
+}
+
+.order-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-action:active {
+    transform: scale(0.96);
+}
+
+.btn-action.primary {
+    background: linear-gradient(135deg, var(--shipper-primary) 0%, var(--shipper-primary-light) 100%);
+    color: white;
+}
+
+.btn-action.success {
+    background: linear-gradient(135deg, var(--shipper-success) 0%, #43A047 100%);
+    color: white;
+}
+
+.btn-action.navigate {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-action.danger {
+    background: var(--shipper-danger);
+    color: white;
+}
+
+/* ===========================================
+   BOTTOM NAVIGATION
+   =========================================== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    border-top: 1px solid var(--border-color);
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.nav-item.active {
+    color: var(--shipper-primary-light);
+}
+
+.nav-icon {
+    font-size: 1.5rem;
+}
+
+.nav-badge {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    background: var(--shipper-danger);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.nav-badge:empty,
+.nav-badge[data-count="0"] {
+    display: none;
+}
+
+/* ===========================================
+   TOAST
+   =========================================== */
+.toast-container {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.toast {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 14px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    border-left: 4px solid var(--shipper-primary);
+}
+
+.toast.success {
+    border-left-color: var(--shipper-success);
+}
+
+.toast.error {
+    border-left-color: var(--shipper-danger);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================================
+   ORDER DETAIL
+   =========================================== */
+.order-detail-container {
+    padding: 0;
+}
+
+.order-detail-content {
+    margin-top: 16px;
+}
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (min-width: 600px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

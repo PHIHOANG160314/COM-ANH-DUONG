@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ánh Dương - Shipper Portal</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1565C0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/m3-design-system.css">
+    <link rel="stylesheet" href="css/shipper.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="shipper-header">
+        <div class="header-content">
+            <div class="header-left">
+                <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
+                <div class="header-title">
+                    <h1>Shipper</h1>
+                    <span class="header-subtitle">Ánh Dương F&B</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span class="shipper-status" id="shipperStatus">🟢 Online</span>
+                <button type="button" class="btn-logout" id="logoutBtn" onclick="ShipperApp.logout()">
+                    Đăng xuất
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="shipper-main">
+        <!-- Login Section -->
+        <section class="section active" id="section-login">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-icon">🛵</div>
+                    <h2>Đăng nhập Shipper</h2>
+                    <div class="pin-input-container">
+                        <input type="password" id="shipperPin" maxlength="4" placeholder="Nhập mã PIN" class="pin-input"
+                            inputmode="numeric" pattern="[0-9]*">
+                        <button type="button" class="btn-login" onclick="ShipperApp.login()">
+                            Đăng nhập
+                        </button>
+                    </div>
+                    <div class="login-help">
+                        <p>Liên hệ quản lý để nhận mã PIN</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="section" id="section-dashboard">
+            <div class="dashboard-container">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card pending">
+                        <span class="stat-icon">📦</span>
+                        <div class="stat-info">
+                            <span class="stat-value" id="pendingCount">0</span>
+                            <span class="stat-label">Chờ nhận</span>
+                        </div>
+                    </div>
+                    <div class="stat-card delivering">
+                        <span class="stat-icon">🚀</span>
+                        <div class="stat-info">
+                            <span class="stat-value" id="deliveringCount">0</span>
+                            <span class="stat-label">Đang giao</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed">
+                        <span class="stat-icon">✅</span>
+                        <div class="stat-info">
+                            <span class="stat-value" id="completedCount">0</span>
+                            <span class="stat-label">Hoàn thành</span>
+                        </div>
+                    </div>
+                    <div class="stat-card earnings">
+                        <span class="stat-icon">💰</span>
+                        <div class="stat-info">
+                            <span class="stat-value" id="todayEarnings">0đ</span>
+                            <span class="stat-label">Hôm nay</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders List -->
+                <div class="orders-section">
+                    <div class="section-header">
+                        <h2>📋 Đơn hàng giao</h2>
+                        <button type="button" class="btn-refresh" onclick="ShipperApp.refreshOrders()">
+                            🔄 Làm mới
+                        </button>
+                    </div>
+                    <div class="orders-list" id="ordersList">
+                        <p class="no-orders">Đang tải đơn hàng...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Detail Section -->
+        <section class="section" id="section-order-detail">
+            <div class="order-detail-container">
+                <div class="section-header">
+                    <button type="button" class="btn-back" onclick="ShipperApp.showSection('dashboard')">
+                        ← Quay lại
+                    </button>
+                    <h2>Chi tiết đơn hàng</h2>
+                </div>
+                <div class="order-detail-content" id="orderDetailContent">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button type="button" class="nav-item active" data-section="dashboard"
+            onclick="ShipperApp.showSection('dashboard')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Trang chủ</span>
+        </button>
+        <button type="button" class="nav-item" data-section="pending" onclick="ShipperApp.filterOrders('pending')">
+            <span class="nav-icon">📦</span>
+            <span class="nav-label">Chờ nhận</span>
+            <span class="nav-badge" id="navPendingBadge">0</span>
+        </button>
+        <button type="button" class="nav-item" data-section="delivering"
+            onclick="ShipperApp.filterOrders('delivering')">
+            <span class="nav-icon">🚀</span>
+            <span class="nav-label">Đang giao</span>
+            <span class="nav-badge" id="navDeliveringBadge">0</span>
+        </button>
+        <button type="button" class="nav-item" data-section="history" onclick="ShipperApp.showHistory()">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Lịch sử</span>
+        </button>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/shipper.js"></script>
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('✅ SW registered'))
+                .catch(err => console.log('SW registration failed:', err));
+        }
+    </script>
+</body>
+
+</html>

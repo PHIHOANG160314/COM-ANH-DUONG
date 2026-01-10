@@ -93,6 +93,18 @@
           "sizes": "96x96"
         }
       ]
+    },
+    {
+      "name": "Shipper",
+      "short_name": "Shipper",
+      "description": "Cổng giao hàng",
+      "url": "/shipper.html",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "categories": [
