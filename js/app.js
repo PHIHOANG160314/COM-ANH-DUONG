@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 const App = {
-    currentPage: 'dashboard',
+    currentPage: 'pos',
 
     init() {
         this.setupNavigation();
@@ -102,8 +102,8 @@ const App = {
 
         // Update title
         const titles = {
-            dashboard: 'Dashboard',
-            pos: 'POS - Đơn hàng',
+            dashboard: 'Tổng quan',
+            pos: 'Bán hàng',
             foodcost: 'Tính Giá Thành',
             inventory: 'Quản Lý Kho',
             recipes: 'Công Thức',
