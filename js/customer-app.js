@@ -167,18 +167,26 @@ const CustomerApp = {
 
         // Subscribe to all order changes
         SupabaseService.subscribeToOrders((payload) => {
-            console.log('🔔 Customer: Order update received:', payload.eventType);
+            console.log('🔔 Customer: Order update received:', payload.eventType, payload.new?.id);
 
             if (payload.eventType === 'UPDATE' && payload.new) {
                 const localOrders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
-                const orderIndex = localOrders.findIndex(o =>
-                    o.id === payload.new.order_number ||
-                    o.supabaseId === payload.new.id
-                );
+
+                // Try to match by supabaseId first, then by order_number
+                const orderIndex = localOrders.findIndex(o => {
+                    const matchBySupabaseId = o.supabaseId && o.supabaseId === payload.new.id;
+                    const matchByOrderNumber = o.id === payload.new.order_number;
+                    return matchBySupabaseId || matchByOrderNumber;
+                });
+
+                console.log('🔔 Customer: Looking for match - Supabase ID:', payload.new.id, 'Order Number:', payload.new.order_number);
+                console.log('🔔 Customer: Found at index:', orderIndex);
 
                 if (orderIndex !== -1) {
                     const oldStatus = localOrders[orderIndex].status;
                     const newStatus = payload.new.status;
+
+                    console.log('🔔 Customer: Order', localOrders[orderIndex].id, 'status change:', oldStatus, '->', newStatus);
 
                     if (oldStatus !== newStatus) {
                         localOrders[orderIndex].status = newStatus;
@@ -194,16 +202,20 @@ const CustomerApp = {
                         // Re-render tracking and history
                         this.renderOrderHistory();
 
-                        // If tracking section is visible, update it
+                        // Update tracking section - check by order ID
                         const trackingContainer = document.getElementById('currentOrderTracking');
-                        if (trackingContainer && trackingContainer.innerHTML.includes(localOrders[orderIndex].id)) {
+                        const trackingOrderId = document.getElementById('trackingOrderId')?.value;
+                        if (trackingContainer && trackingOrderId === localOrders[orderIndex].id) {
                             this.renderOrderStatus(localOrders[orderIndex], trackingContainer);
+                            console.log('✅ Customer: Updated tracking UI for', localOrders[orderIndex].id);
                         }
 
                         // Show notification
                         this.showToast(`Đơn ${localOrders[orderIndex].id}: ${this.getStatusLabel(newStatus)}`, 'success');
-                        console.log('✅ Order', localOrders[orderIndex].id, 'updated to:', newStatus);
+                        console.log('✅ Customer: Order', localOrders[orderIndex].id, 'updated to:', newStatus);
                     }
+                } else {
+                    console.log('⚠️ Customer: No local match for Supabase order', payload.new.id);
                 }
             }
         }, 'CustomerPortal');
@@ -1136,11 +1148,17 @@ const CustomerApp = {
 
     // Update local order with new data
     updateLocalOrder(order) {
+        console.log('📝 updateLocalOrder called for:', order.id, 'supabaseId:', order.supabaseId);
+
         const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
         const orderIndex = orders.findIndex(o => o.id === order.id);
+
         if (orderIndex !== -1) {
-            orders[orderIndex] = order;
+            orders[orderIndex] = { ...orders[orderIndex], ...order };
             localStorage.setItem('customer_orders', JSON.stringify(orders));
+            console.log('✅ updateLocalOrder: Order updated at index', orderIndex, 'with supabaseId:', order.supabaseId);
+        } else {
+            console.warn('⚠️ updateLocalOrder: Order not found in localStorage:', order.id);
         }
     },
 
