@@ -9,6 +9,13 @@ const ShipperApp = {
     currentFilter: 'all',
     realtimeChannel: null,
 
+    // Check if Supabase is configured and ready
+    isSupabaseReady() {
+        return typeof SupabaseService !== 'undefined' &&
+            typeof isSupabaseConfigured === 'function' &&
+            isSupabaseConfigured();
+    },
+
     // Initialize the app
     init() {
         console.log('🛵 Shipper Portal initializing...');
@@ -112,8 +119,10 @@ const ShipperApp = {
     // Load orders from Supabase
     async loadOrders() {
         try {
-            if (typeof SupabaseService === 'undefined' || !isSupabaseConfigured?.()) {
-                console.log('Shipper: Supabase not configured, using demo data');
+            console.log('🛵 Shipper: Checking Supabase...', this.isSupabaseReady());
+
+            if (!this.isSupabaseReady()) {
+                console.log('🛵 Shipper: Supabase not ready, using demo data');
                 this.orders = this.getDemoOrders();
                 this.renderOrders();
                 this.updateStats();
@@ -145,7 +154,8 @@ const ShipperApp = {
 
     // Subscribe to realtime order updates
     subscribeToOrders() {
-        if (typeof SupabaseService === 'undefined' || !isSupabaseConfigured?.()) {
+        if (!this.isSupabaseReady()) {
+            console.log('🛵 Shipper: Cannot subscribe - Supabase not ready');
             return;
         }
 
@@ -278,7 +288,7 @@ const ShipperApp = {
     // Update order status
     async updateOrderStatus(orderId, newStatus) {
         try {
-            if (typeof SupabaseService === 'undefined' || !isSupabaseConfigured?.()) {
+            if (!this.isSupabaseReady()) {
                 // Demo mode - update locally
                 const order = this.orders.find(o => o.id === orderId);
                 if (order) {
@@ -338,7 +348,7 @@ const ShipperApp = {
     // Load completed orders
     async loadCompletedOrders() {
         try {
-            if (typeof SupabaseService === 'undefined' || !isSupabaseConfigured?.()) {
+            if (!this.isSupabaseReady()) {
                 this.orders = this.getDemoOrders().filter(o => o.status === 'completed');
                 this.renderOrders();
                 return;
