@@ -648,6 +648,423 @@ const SupabaseService = {
             this._subscriptions[channelName] = channel;
             return channel;
         });
+    },
+
+    // ==================== SHIPPER SERVICE ====================
+
+    // Login shipper by phone + PIN
+    async loginShipper(phone, pin) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'loginShipper');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .select('*')
+                .eq('phone', phone)
+                .eq('pin', pin)
+                .eq('is_active', true)
+                .single();
+
+            if (error) {
+                if (error.code === 'PGRST116') {
+                    return createErrorResponse('Số điện thoại hoặc mã PIN không đúng', 'loginShipper');
+                }
+                return createErrorResponse(error, 'loginShipper');
+            }
+
+            if (window.Debug) Debug.info('🛵 Shipper logged in:', data?.name);
+            return createSuccessResponse(data);
+        }, 'loginShipper');
+    },
+
+    // Get shipper by ID
+    async getShipperById(shipperId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getShipperById');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .select('*')
+                .eq('id', shipperId)
+                .single();
+
+            if (error) return createErrorResponse(error, 'getShipperById');
+            return createSuccessResponse(data);
+        }, 'getShipperById');
+    },
+
+    // Update shipper status (online/offline/busy)
+    async updateShipperStatus(shipperId, status) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateShipperStatus');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .update({ status, updated_at: new Date().toISOString() })
+                .eq('id', shipperId)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'updateShipperStatus');
+            if (window.Debug) Debug.info('🛵 Shipper status:', status);
+            return createSuccessResponse(data);
+        }, 'updateShipperStatus');
+    },
+
+    // Update shipper location
+    async updateShipperLocation(shipperId, lat, lng) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateShipperLocation');
+
+            const location = {
+                lat,
+                lng,
+                updated_at: new Date().toISOString()
+            };
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .update({ current_location: location })
+                .eq('id', shipperId)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'updateShipperLocation');
+            return createSuccessResponse(data);
+        }, 'updateShipperLocation');
+    },
+
+    // Get all active shippers
+    async getActiveShippers() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getActiveShippers');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .select('*')
+                .eq('is_active', true)
+                .order('name');
+
+            if (error) return createErrorResponse(error, 'getActiveShippers');
+            return createSuccessResponse(data);
+        }, 'getActiveShippers');
+    },
+
+    // Get available shippers (online and not busy)
+    async getAvailableShippers() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getAvailableShippers');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .select('*')
+                .eq('is_active', true)
+                .eq('status', 'online')
+                .order('total_deliveries', { ascending: true }); // Prefer shippers with fewer deliveries
+
+            if (error) return createErrorResponse(error, 'getAvailableShippers');
+            return createSuccessResponse(data);
+        }, 'getAvailableShippers');
+    },
+
+    // Create delivery assignment for order
+    async createDeliveryAssignment(orderId, shipperId = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'createDeliveryAssignment');
+
+            const assignmentData = {
+                order_id: orderId,
+                shipper_id: shipperId,
+                status: shipperId ? 'assigned' : 'pending',
+                assigned_at: shipperId ? new Date().toISOString() : null
+            };
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .insert(assignmentData)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'createDeliveryAssignment');
+            if (window.Debug) Debug.info('🛵 Delivery assignment created:', data?.id);
+            return createSuccessResponse(data);
+        }, 'createDeliveryAssignment');
+    },
+
+    // Assign shipper to delivery
+    async assignShipperToDelivery(orderId, shipperId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'assignShipperToDelivery');
+
+            // Get shipper commission rate
+            const { data: shipper } = await supabase
+                .from('shippers')
+                .select('commission_rate')
+                .eq('id', shipperId)
+                .single();
+
+            const commission = shipper?.commission_rate || 15000;
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .upsert({
+                    order_id: orderId,
+                    shipper_id: shipperId,
+                    status: 'assigned',
+                    assigned_at: new Date().toISOString(),
+                    commission
+                }, { onConflict: 'order_id' })
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'assignShipperToDelivery');
+
+            // Update shipper status to busy
+            await supabase
+                .from('shippers')
+                .update({ status: 'busy' })
+                .eq('id', shipperId);
+
+            if (window.Debug) Debug.info('🛵 Assigned shipper to order:', orderId);
+            return createSuccessResponse(data);
+        }, 'assignShipperToDelivery');
+    },
+
+    // Get delivery assignment by order ID
+    async getDeliveryAssignment(orderId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getDeliveryAssignment');
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .select('*, shipper:shippers(*)')
+                .eq('order_id', orderId)
+                .single();
+
+            if (error && error.code !== 'PGRST116') {
+                return createErrorResponse(error, 'getDeliveryAssignment');
+            }
+            return createSuccessResponse(data);
+        }, 'getDeliveryAssignment');
+    },
+
+    // Get shipper's deliveries
+    async getShipperDeliveries(shipperId, status = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getShipperDeliveries');
+
+            let query = supabase
+                .from('delivery_assignments')
+                .select('*, order:orders(*)')
+                .eq('shipper_id', shipperId)
+                .order('created_at', { ascending: false });
+
+            if (status) {
+                if (Array.isArray(status)) {
+                    query = query.in('status', status);
+                } else {
+                    query = query.eq('status', status);
+                }
+            }
+
+            const { data, error } = await query;
+            if (error) return createErrorResponse(error, 'getShipperDeliveries');
+            return createSuccessResponse(data);
+        }, 'getShipperDeliveries');
+    },
+
+    // Get pending delivery orders (for shipper to pick)
+    async getPendingDeliveryOrders() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getPendingDeliveryOrders');
+
+            // Get orders that are delivery type and ready but not yet assigned
+            const { data, error } = await supabase
+                .from('orders')
+                .select('*')
+                .eq('order_type', 'delivery')
+                .in('status', ['ready', 'confirmed', 'preparing'])
+                .order('created_at', { ascending: true });
+
+            if (error) return createErrorResponse(error, 'getPendingDeliveryOrders');
+
+            // Filter out orders that already have an assigned shipper
+            const { data: assignments } = await supabase
+                .from('delivery_assignments')
+                .select('order_id')
+                .in('status', ['assigned', 'picked_up', 'delivering']);
+
+            const assignedOrderIds = (assignments || []).map(a => a.order_id);
+            const availableOrders = (data || []).filter(o => !assignedOrderIds.includes(o.id));
+
+            return createSuccessResponse(availableOrders);
+        }, 'getPendingDeliveryOrders');
+    },
+
+    // Update delivery assignment status
+    async updateDeliveryStatus(assignmentId, status, extraData = {}) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateDeliveryStatus');
+
+            const updateData = {
+                status,
+                ...extraData
+            };
+
+            // Add timestamps based on status
+            if (status === 'picked_up') {
+                updateData.picked_up_at = new Date().toISOString();
+            } else if (status === 'completed') {
+                updateData.delivered_at = new Date().toISOString();
+            }
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .update(updateData)
+                .eq('id', assignmentId)
+                .select('*, shipper:shippers(*)')
+                .single();
+
+            if (error) return createErrorResponse(error, 'updateDeliveryStatus');
+
+            // Update shipper status based on delivery status
+            if (data?.shipper_id) {
+                if (status === 'completed' || status === 'cancelled') {
+                    await supabase
+                        .from('shippers')
+                        .update({ status: 'online' })
+                        .eq('id', data.shipper_id);
+                }
+            }
+
+            if (window.Debug) Debug.info('🛵 Delivery status updated:', status);
+            return createSuccessResponse(data);
+        }, 'updateDeliveryStatus');
+    },
+
+    // Complete delivery with optional customer rating
+    async completeDelivery(assignmentId, customerRating = null, customerFeedback = null) {
+        const extraData = {};
+        if (customerRating) extraData.customer_rating = customerRating;
+        if (customerFeedback) extraData.customer_feedback = customerFeedback;
+
+        return this.updateDeliveryStatus(assignmentId, 'completed', extraData);
+    },
+
+    // Get shipper earnings for date range
+    async getShipperEarnings(shipperId, dateFrom = null, dateTo = null) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getShipperEarnings');
+
+            let query = supabase
+                .from('delivery_assignments')
+                .select('commission, delivered_at, customer_rating')
+                .eq('shipper_id', shipperId)
+                .eq('status', 'completed');
+
+            if (dateFrom) {
+                query = query.gte('delivered_at', dateFrom);
+            }
+            if (dateTo) {
+                query = query.lte('delivered_at', dateTo + 'T23:59:59');
+            }
+
+            const { data, error } = await query;
+            if (error) return createErrorResponse(error, 'getShipperEarnings');
+
+            const totalEarnings = (data || []).reduce((sum, d) => sum + (d.commission || 0), 0);
+            const totalDeliveries = (data || []).length;
+            const avgRating = data?.length > 0
+                ? data.filter(d => d.customer_rating).reduce((sum, d) => sum + d.customer_rating, 0) / data.filter(d => d.customer_rating).length
+                : 0;
+
+            return createSuccessResponse({
+                totalEarnings,
+                totalDeliveries,
+                avgRating: Math.round(avgRating * 10) / 10,
+                deliveries: data
+            });
+        }, 'getShipperEarnings');
+    },
+
+    // Subscribe to shipper assignments realtime
+    subscribeToShipperAssignments(shipperId, callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return null;
+
+            const channelName = `shipper-assignments-${shipperId}`;
+
+            if (this._subscriptions[channelName]) {
+                supabase.removeChannel(this._subscriptions[channelName]);
+            }
+
+            const channel = supabase
+                .channel(channelName)
+                .on('postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'delivery_assignments',
+                        filter: `shipper_id=eq.${shipperId}`
+                    },
+                    (payload) => {
+                        if (window.Debug) Debug.info('🛵 Assignment update:', payload.eventType);
+                        callback(payload);
+                    }
+                )
+                .subscribe((status) => {
+                    if (window.Debug) Debug.info('📡 Shipper assignments subscription:', status);
+                });
+
+            this._subscriptions[channelName] = channel;
+            return channel;
+        });
+    },
+
+    // Subscribe to all delivery assignments (for admin)
+    subscribeToAllDeliveries(callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return null;
+
+            const channelName = 'all-deliveries';
+
+            if (this._subscriptions[channelName]) {
+                supabase.removeChannel(this._subscriptions[channelName]);
+            }
+
+            const channel = supabase
+                .channel(channelName)
+                .on('postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'delivery_assignments'
+                    },
+                    (payload) => {
+                        if (window.Debug) Debug.info('🛵 All deliveries update:', payload.eventType);
+                        callback(payload);
+                    }
+                )
+                .subscribe((status) => {
+                    if (window.Debug) Debug.info('📡 All deliveries subscription:', status);
+                });
+
+            this._subscriptions[channelName] = channel;
+            return channel;
+        });
     }
 };
 

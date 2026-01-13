@@ -41,7 +41,10 @@
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- Auth Login Overlay -->
+    <div id="adminAuthContainer"></div>
+
+    <div class="app-container" id="appContainer" style="display: none;">
         <!-- Sidebar -->
         <aside class="sidebar glass-nav" id="sidebar">
             <div class="sidebar-header">
@@ -115,6 +118,10 @@
                     <p>📞 0917 076 061</p>
                     <p>📍 91 Hùng Vương, Sa Đéc</p>
                 </div>
+                <button type="button" class="btn-logout" onclick="AuthService.logout(); location.reload();"
+                    title="Đăng xuất">
+                    🚪 Đăng xuất
+                </button>
             </div>
         </aside>
 
@@ -792,6 +799,7 @@
     <script src="js/utils.js"></script>
     <script src="js/access-control.js"></script>
     <script src="js/admin-credentials.js"></script>
+    <script src="js/auth-service.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/pos.js?v=2.1"></script>
@@ -812,6 +820,43 @@
 
     <!-- Service Worker Registration -->
     <script>
+        // Admin Portal Authentication
+        document.addEventListener('DOMContentLoaded', () => {
+            const authContainer = document.getElementById('adminAuthContainer');
+            const appContainer = document.getElementById('appContainer');
+
+            // Check existing session
+            const session = AuthService.validateSession();
+
+            if (session && session.portal === 'admin') {
+                // User is authenticated
+                appContainer.style.display = '';
+                updateUserInfo(session.user);
+            } else {
+                // Show login screen
+                AuthService.showLoginRequired('adminAuthContainer', (user, session) => {
+                    appContainer.style.display = '';
+                    updateUserInfo(user);
+                });
+            }
+
+            function updateUserInfo(user) {
+                const userName = document.querySelector('.user-name');
+                const userRole = document.querySelector('.user-role');
+                if (userName) userName.textContent = user.name;
+                if (userRole) {
+                    const roleMap = {
+                        'admin': 'Quản lý',
+                        'manager': 'Quản lý',
+                        'cashier': 'Thu ngân',
+                        'waiter': 'Phục vụ',
+                        'chef': 'Bếp trưởng'
+                    };
+                    userRole.textContent = roleMap[user.role] || user.role;
+                }
+            }
+        });
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')

@@ -6,6 +6,26 @@
 /* Import M3 Design System */
 @import url('./m3-design-system.css');
 
+/* Logout Button */
+.btn-logout {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+}
+
 /* Reset & Variables - M3 MATERIAL DESIGN SYSTEM */
 :root {
     /* Colors - Using M3 Brand Colors from m3-design-system.css */

@@ -12,6 +12,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <!-- SEO -->
+    <meta name="description"
+        content="Shipper Portal - Ánh Dương F&B. Quản lý đơn giao hàng, theo dõi thu nhập và đánh giá.">
+
     <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -29,12 +33,23 @@
                 <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
                 <div class="header-title">
                     <h1>Shipper</h1>
-                    <span class="header-subtitle">Ánh Dương F&B</span>
+                    <span class="header-subtitle" id="shipperName">Ánh Dương F&B</span>
                 </div>
             </div>
             <div class="header-right">
-                <span class="shipper-status" id="shipperStatus">🟢 Online</span>
-                <button type="button" class="btn-logout" id="logoutBtn" onclick="ShipperApp.logout()">
+                <!-- Status Toggle -->
+                <div class="status-toggle-wrap" id="statusToggleWrap" style="display: none;">
+                    <label class="status-toggle">
+                        <input type="checkbox" id="statusToggle" onchange="ShipperApp.toggleStatus()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="shipper-status" id="shipperStatus">⚪ Offline</span>
+                </div>
+                <!-- Rating -->
+                <span class="shipper-rating" id="shipperRating">⭐ 5.0</span>
+                <!-- Logout -->
+                <button type="button" class="btn-logout" id="logoutBtn" onclick="ShipperApp.logout()"
+                    style="display: none;">
                     Đăng xuất
                 </button>
             </div>
@@ -49,15 +64,24 @@
                 <div class="login-card">
                     <div class="login-icon">🛵</div>
                     <h2>Đăng nhập Shipper</h2>
-                    <div class="pin-input-container">
-                        <input type="password" id="shipperPin" maxlength="4" placeholder="Nhập mã PIN" class="pin-input"
-                            inputmode="numeric" pattern="[0-9]*">
+                    <div class="login-form">
+                        <div class="form-group">
+                            <label for="shipperPhone">Số điện thoại</label>
+                            <input type="tel" id="shipperPhone" maxlength="11" placeholder="0901234567"
+                                class="form-input" inputmode="tel" autocomplete="tel">
+                        </div>
+                        <div class="form-group">
+                            <label for="shipperPin">Mã PIN</label>
+                            <input type="password" id="shipperPin" maxlength="6" placeholder="••••" class="pin-input"
+                                inputmode="numeric" pattern="[0-9]*" autocomplete="current-password">
+                        </div>
                         <button type="button" class="btn-login" onclick="ShipperApp.login()">
                             Đăng nhập
                         </button>
                     </div>
                     <div class="login-help">
-                        <p>Liên hệ quản lý để nhận mã PIN</p>
+                        <p>Liên hệ quản lý để nhận tài khoản</p>
+                        <p class="demo-hint">Demo: 0901234567 / 1234</p>
                     </div>
                 </div>
             </div>
@@ -86,7 +110,7 @@
                         <span class="stat-icon">✅</span>
                         <div class="stat-info">
                             <span class="stat-value" id="completedCount">0</span>
-                            <span class="stat-label">Hoàn thành</span>
+                            <span class="stat-label">Tổng đơn</span>
                         </div>
                     </div>
                     <div class="stat-card earnings">
@@ -98,10 +122,20 @@
                     </div>
                 </div>
 
-                <!-- Orders List -->
+                <!-- My Active Deliveries -->
+                <div class="orders-section" id="myDeliveriesSection">
+                    <div class="section-header">
+                        <h2>🚀 Đơn đang giao</h2>
+                    </div>
+                    <div class="orders-list" id="myDeliveriesList">
+                        <p class="no-orders">Không có đơn đang giao</p>
+                    </div>
+                </div>
+
+                <!-- Available Orders -->
                 <div class="orders-section">
                     <div class="section-header">
-                        <h2>📋 Đơn hàng giao</h2>
+                        <h2>📋 Đơn hàng mới</h2>
                         <button type="button" class="btn-refresh" onclick="ShipperApp.refreshOrders()">
                             🔄 Làm mới
                         </button>
@@ -109,6 +143,62 @@
                     <div class="orders-list" id="ordersList">
                         <p class="no-orders">Đang tải đơn hàng...</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Earnings Section -->
+        <section class="section" id="section-earnings">
+            <div class="earnings-container">
+                <div class="section-header">
+                    <h2>💰 Thu nhập</h2>
+                </div>
+
+                <div class="earnings-cards">
+                    <div class="earnings-card today">
+                        <div class="earnings-icon">📅</div>
+                        <div class="earnings-info">
+                            <span class="earnings-label">Hôm nay</span>
+                            <span class="earnings-value" id="todayEarnings2">0đ</span>
+                        </div>
+                    </div>
+                    <div class="earnings-card week">
+                        <div class="earnings-icon">📆</div>
+                        <div class="earnings-info">
+                            <span class="earnings-label">7 ngày qua</span>
+                            <span class="earnings-value" id="weekEarnings">0đ</span>
+                        </div>
+                    </div>
+                    <div class="earnings-card month">
+                        <div class="earnings-icon">🗓️</div>
+                        <div class="earnings-info">
+                            <span class="earnings-label">Tháng này</span>
+                            <span class="earnings-value" id="monthEarnings">0đ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="earnings-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Hoa hồng/đơn:</span>
+                        <span class="summary-value">15.000đ</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Đánh giá trung bình:</span>
+                        <span class="summary-value" id="avgRating">⭐ 5.0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section class="section" id="section-history">
+            <div class="history-container">
+                <div class="section-header">
+                    <h2>📊 Lịch sử giao hàng</h2>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="no-orders">Đang tải lịch sử...</p>
                 </div>
             </div>
         </section>
@@ -130,7 +220,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav" id="bottomNav">
+    <nav class="bottom-nav" id="bottomNav" style="display: none;">
         <button type="button" class="nav-item active" data-section="dashboard"
             onclick="ShipperApp.showSection('dashboard')">
             <span class="nav-icon">🏠</span>
@@ -146,6 +236,10 @@
             <span class="nav-icon">🚀</span>
             <span class="nav-label">Đang giao</span>
             <span class="nav-badge" id="navDeliveringBadge">0</span>
+        </button>
+        <button type="button" class="nav-item" data-section="earnings" onclick="ShipperApp.showSection('earnings')">
+            <span class="nav-icon">💰</span>
+            <span class="nav-label">Thu nhập</span>
         </button>
         <button type="button" class="nav-item" data-section="history" onclick="ShipperApp.showHistory()">
             <span class="nav-icon">📊</span>

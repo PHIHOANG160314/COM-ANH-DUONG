@@ -1,133 +1,176 @@
 // =====================================================
 // ADMIN CREDENTIALS - ÁNH DƯƠNG F&B
-// Default staff accounts and PIN codes
+// Staff session management (no plaintext credentials)
 // =====================================================
 
 const AdminCredentials = {
-    // Default staff accounts
-    // NOTE: In production, store in Supabase with hashed PINs
-    defaultStaff: [
-        {
-            id: 'S001',
-            name: 'Admin',
-            role: 'Quản lý',
-            pin: '1234',  // Change in production!
-            phone: '0917076061',
-            active: true
-        },
-        {
-            id: 'S002',
-            name: 'Quản lý 1',
-            role: 'Quản lý',
-            pin: '2345',
-            phone: '',
-            active: true
-        },
-        {
-            id: 'S003',
-            name: 'Thu ngân 1',
-            role: 'Thu ngân',
-            pin: '3456',
-            phone: '',
-            active: true
-        },
-        {
-            id: 'S004',
-            name: 'Phục vụ 1',
-            role: 'Phục vụ',
-            pin: '4567',
-            phone: '',
-            active: true
-        },
-        {
-            id: 'S005',
-            name: 'Bếp trưởng',
-            role: 'Bếp',
-            pin: '5678',
-            phone: '',
-            active: true
-        }
-    ],
+    // NOTE: Staff credentials are stored in Supabase with hashed PINs
+    // This module only manages local session fallback
+
+    // Staff structure template (loaded from Supabase, not hardcoded)
+    _staffTemplate: {
+        id: '',
+        name: '',
+        role: '',
+        phone: '',
+        active: true
+    },
 
     // Version for cache invalidation
-    STAFF_VERSION: 'v2.0',
+    STAFF_VERSION: 'v3.0-secure',
 
-    // Initialize staff data if not exists or version changed
+    // Initialize - no longer stores default credentials
     init() {
-        const existing = localStorage.getItem('fb_staff');
         const version = localStorage.getItem('fb_staff_version');
 
-        // Force update if version mismatch or no data
-        if (!existing || version !== this.STAFF_VERSION) {
-            localStorage.setItem('fb_staff', JSON.stringify(this.defaultStaff));
+        // Clear old insecure credentials if version mismatch
+        if (version && version !== this.STAFF_VERSION) {
+            console.warn('⚠️ Old credentials cleared for security upgrade');
+            localStorage.removeItem('fb_staff');
             localStorage.setItem('fb_staff_version', this.STAFF_VERSION);
-            console.log('✅ Staff credentials updated to', this.STAFF_VERSION);
         }
+
+        console.log('✅ Admin Credentials v3.0 (Secure Mode)');
     },
 
-    // Get all staff
+    // Get staff from localStorage cache (synced from Supabase)
     getStaff() {
         const data = localStorage.getItem('fb_staff');
-        return data ? JSON.parse(data) : this.defaultStaff;
-    },
-
-    // Authenticate by PIN
-    authenticateByPin(pin) {
-        const staff = this.getStaff();
-        return staff.find(s => s.pin === pin && s.active);
-    },
-
-    // Add new staff
-    addStaff(staffData) {
-        const staff = this.getStaff();
-        const newStaff = {
-            id: 'S' + String(staff.length + 1).padStart(3, '0'),
-            ...staffData,
-            active: true
-        };
-        staff.push(newStaff);
-        localStorage.setItem('fb_staff', JSON.stringify(staff));
-        return newStaff;
-    },
-
-    // Update staff
-    updateStaff(id, updates) {
-        const staff = this.getStaff();
-        const index = staff.findIndex(s => s.id === id);
-        if (index !== -1) {
-            staff[index] = { ...staff[index], ...updates };
-            localStorage.setItem('fb_staff', JSON.stringify(staff));
-            return staff[index];
+        if (data) {
+            try {
+                return JSON.parse(data);
+            } catch {
+                return [];
+            }
         }
+        return [];
+    },
+
+    // Authenticate by PIN - MUST use Supabase (no local plaintext check)
+    // Returns null - authentication should go through AuthService → Supabase
+    authenticateByPin(pin) {
+        console.warn('⚠️ Local PIN authentication disabled for security');
+        console.info('💡 Use AuthService.login() with Supabase backend');
         return null;
     },
 
-    // Reset to default (for development/testing)
-    resetToDefault() {
-        localStorage.setItem('fb_staff', JSON.stringify(this.defaultStaff));
-        console.log('✅ Staff credentials reset to default');
+    // Cache staff from Supabase (without PIN - never store PINs locally)
+    cacheStaffFromSupabase(staffList) {
+        // Remove sensitive fields before caching
+        const safeStaff = staffList.map(s => ({
+            id: s.id,
+            name: s.name,
+            role: s.role,
+            phone: s.phone || '',
+            active: s.is_active !== false
+        }));
+        localStorage.setItem('fb_staff', JSON.stringify(safeStaff));
+        localStorage.setItem('fb_staff_version', this.STAFF_VERSION);
+        console.log('✅ Staff list cached (without credentials)');
     },
 
-    // Change PIN
-    changePin(staffId, oldPin, newPin) {
-        const staff = this.getStaff();
-        const index = staff.findIndex(s => s.id === staffId);
-
-        if (index === -1) {
-            return { success: false, error: 'Staff not found' };
+    // Add new staff - via Supabase only
+    async addStaff(staffData, pin) {
+        if (typeof SupabaseService === 'undefined') {
+            return { success: false, error: 'Supabase chưa được cấu hình' };
         }
 
-        if (staff[index].pin !== oldPin) {
-            return { success: false, error: 'Incorrect old PIN' };
+        try {
+            const supabase = await window.getSupabase();
+            const { data, error } = await supabase
+                .from('staff')
+                .insert({
+                    name: staffData.name,
+                    role: staffData.role,
+                    pin: pin, // Will be hashed by database trigger
+                    phone: staffData.phone || '',
+                    is_active: true
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
+            return { success: true, staff: data };
+        } catch (err) {
+            console.error('Failed to add staff:', err);
+            return { success: false, error: err.message };
+        }
+    },
+
+    // Update staff - via Supabase only
+    async updateStaff(id, updates) {
+        if (typeof SupabaseService === 'undefined') {
+            return { success: false, error: 'Supabase chưa được cấu hình' };
         }
 
+        try {
+            const supabase = await window.getSupabase();
+            const { data, error } = await supabase
+                .from('staff')
+                .update(updates)
+                .eq('id', id)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return { success: true, staff: data };
+        } catch (err) {
+            console.error('Failed to update staff:', err);
+            return { success: false, error: err.message };
+        }
+    },
+
+    // Change PIN - via Supabase RPC function
+    async changePin(staffId, oldPin, newPin) {
+        if (typeof SupabaseService === 'undefined') {
+            return { success: false, error: 'Supabase chưa được cấu hình' };
+        }
+
+        // Validate new PIN format
         if (newPin.length !== 4 || !/^\d+$/.test(newPin)) {
-            return { success: false, error: 'PIN must be 4 digits' };
+            return { success: false, error: 'Mã PIN phải là 4 chữ số' };
         }
 
-        staff[index].pin = newPin;
-        localStorage.setItem('fb_staff', JSON.stringify(staff));
-        return { success: true };
+        try {
+            const supabase = await window.getSupabase();
+            const { data, error } = await supabase.rpc('change_staff_pin', {
+                p_staff_id: staffId,
+                p_old_pin: oldPin,
+                p_new_pin: newPin
+            });
+
+            if (error) throw error;
+            if (!data || !data.success) {
+                return { success: false, error: data?.error || 'PIN cũ không đúng' };
+            }
+            return { success: true };
+        } catch (err) {
+            console.error('Failed to change PIN:', err);
+            return { success: false, error: err.message };
+        }
+    },
+
+    // Sync staff list from Supabase
+    async syncFromSupabase() {
+        if (typeof SupabaseService === 'undefined') {
+            console.warn('⚠️ Supabase not available for sync');
+            return false;
+        }
+
+        try {
+            const supabase = await window.getSupabase();
+            const { data, error } = await supabase
+                .from('staff')
+                .select('id, name, role, phone, is_active')
+                .eq('is_active', true);
+
+            if (error) throw error;
+            this.cacheStaffFromSupabase(data || []);
+            return true;
+        } catch (err) {
+            console.error('Failed to sync staff:', err);
+            return false;
+        }
     }
 };
 
@@ -137,4 +180,5 @@ AdminCredentials.init();
 // Export
 window.AdminCredentials = AdminCredentials;
 
-console.log('✅ Admin Credentials module loaded');
+console.log('✅ Admin Credentials module loaded (Secure Mode)');
+

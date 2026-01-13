@@ -1,13 +1,19 @@
 /**
- * Shipper Portal Application
- * Handles shipper authentication, order management, and realtime updates
+ * Shipper Portal Application - Enhanced Version
+ * Handles shipper authentication, GPS tracking, delivery management, and realtime updates
+ * @version 2.0
  */
 
 const ShipperApp = {
     currentShipper: null,
     orders: [],
+    deliveries: [],
     currentFilter: 'all',
     realtimeChannel: null,
+    locationWatchId: null,
+    locationUpdateInterval: null,
+
+    // ==================== INITIALIZATION ====================
 
     // Check if Supabase is configured and ready
     isSupabaseReady() {
@@ -18,64 +24,135 @@ const ShipperApp = {
 
     // Initialize the app
     init() {
-        console.log('🛵 Shipper Portal initializing...');
+        console.log('🛵 Shipper Portal v2.0 initializing...');
 
         // Check existing login
         const savedShipper = localStorage.getItem('shipper_session');
         if (savedShipper) {
             try {
                 this.currentShipper = JSON.parse(savedShipper);
-                this.showSection('dashboard');
-                this.loadOrders();
-                this.subscribeToOrders();
+                this.onLoginSuccess();
             } catch (e) {
                 localStorage.removeItem('shipper_session');
             }
         }
 
-        // Setup PIN input
+        // Setup PIN inputs
+        this.setupLoginForm();
+
+        console.log('🛵 Shipper Portal ready!');
+    },
+
+    // Setup login form events
+    setupLoginForm() {
+        const phoneInput = document.getElementById('shipperPhone');
         const pinInput = document.getElementById('shipperPin');
+
+        if (phoneInput) {
+            phoneInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    pinInput?.focus();
+                }
+            });
+        }
+
         if (pinInput) {
             pinInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') this.login();
             });
         }
-
-        console.log('🛵 Shipper Portal ready!');
     },
 
-    // Login with PIN
+    // ==================== AUTHENTICATION ====================
+
+    // Login with phone + PIN
     async login() {
-        const pin = document.getElementById('shipperPin')?.value;
+        const phone = document.getElementById('shipperPhone')?.value?.trim();
+        const pin = document.getElementById('shipperPin')?.value?.trim();
+
+        if (!phone || phone.length < 10) {
+            this.showToast('Vui lòng nhập số điện thoại hợp lệ', 'error');
+            return;
+        }
 
         if (!pin || pin.length < 4) {
             this.showToast('Vui lòng nhập mã PIN 4 số', 'error');
             return;
         }
 
-        // Check PIN against staff list (shippers have role = 'shipper')
-        // For demo, accept PIN 1234 as default shipper
-        const shippers = {
-            '1234': { id: 'shipper1', name: 'Shipper Demo', phone: '0901234567' },
-            '5678': { id: 'shipper2', name: 'Nguyễn Văn A', phone: '0909876543' }
-        };
+        // Show loading
+        const loginBtn = document.querySelector('.btn-login');
+        if (loginBtn) {
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Đang đăng nhập...';
+        }
 
-        if (shippers[pin]) {
-            this.currentShipper = shippers[pin];
-            localStorage.setItem('shipper_session', JSON.stringify(this.currentShipper));
+        try {
+            if (!this.isSupabaseReady()) {
+                // Demo mode - use hardcoded shippers
+                const demoShippers = {
+                    '0901234567': { id: 'demo1', name: 'Shipper Demo', phone: '0901234567', pin: '1234', status: 'online', rating: 4.8, total_deliveries: 125, commission_rate: 15000 },
+                    '0909876543': { id: 'demo2', name: 'Nguyễn Văn Shipper', phone: '0909876543', pin: '5678', status: 'online', rating: 4.5, total_deliveries: 89, commission_rate: 15000 }
+                };
 
-            this.showToast(`Chào mừng ${this.currentShipper.name}!`, 'success');
-            this.showSection('dashboard');
-            this.loadOrders();
-            this.subscribeToOrders();
-        } else {
-            this.showToast('Mã PIN không đúng', 'error');
+                const shipper = demoShippers[phone];
+                if (shipper && shipper.pin === pin) {
+                    this.currentShipper = shipper;
+                    localStorage.setItem('shipper_session', JSON.stringify(shipper));
+                    this.onLoginSuccess();
+                } else {
+                    this.showToast('Số điện thoại hoặc mã PIN không đúng', 'error');
+                }
+            } else {
+                // Real login via Supabase
+                const result = await SupabaseService.loginShipper(phone, pin);
+                if (result.error) {
+                    this.showToast(result.error, 'error');
+                } else {
+                    this.currentShipper = result.data;
+                    localStorage.setItem('shipper_session', JSON.stringify(result.data));
+                    this.onLoginSuccess();
+                }
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            this.showToast('Lỗi đăng nhập, vui lòng thử lại', 'error');
+        } finally {
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Đăng nhập';
+            }
             document.getElementById('shipperPin').value = '';
         }
     },
 
+    // After successful login
+    async onLoginSuccess() {
+        this.showToast(`Chào mừng ${this.currentShipper.name}!`, 'success');
+        this.showSection('dashboard');
+        this.updateHeader();
+        this.loadOrders();
+        this.loadMyDeliveries();
+        this.subscribeToUpdates();
+        this.startLocationTracking();
+        this.loadEarnings();
+
+        // Set status to online
+        if (this.isSupabaseReady() && this.currentShipper?.id) {
+            await SupabaseService.updateShipperStatus(this.currentShipper.id, 'online');
+            this.currentShipper.status = 'online';
+            this.updateStatusToggle();
+        }
+    },
+
     // Logout
-    logout() {
+    async logout() {
+        // Set status to offline before logout
+        if (this.isSupabaseReady() && this.currentShipper?.id) {
+            await SupabaseService.updateShipperStatus(this.currentShipper.id, 'offline');
+        }
+
+        this.stopLocationTracking();
         this.currentShipper = null;
         localStorage.removeItem('shipper_session');
 
@@ -88,85 +165,185 @@ const ShipperApp = {
         this.showToast('Đã đăng xuất');
     },
 
-    // Show section
-    showSection(sectionId) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        const section = document.getElementById(`section-${sectionId}`);
-        if (section) {
-            section.classList.add('active');
+    // ==================== STATUS MANAGEMENT ====================
+
+    // Toggle online/offline status
+    async toggleStatus() {
+        if (!this.currentShipper) return;
+
+        const newStatus = this.currentShipper.status === 'online' ? 'offline' : 'online';
+
+        if (this.isSupabaseReady() && this.currentShipper?.id) {
+            const result = await SupabaseService.updateShipperStatus(this.currentShipper.id, newStatus);
+            if (!result.error) {
+                this.currentShipper.status = newStatus;
+                this.updateStatusToggle();
+                this.showToast(newStatus === 'online' ? '🟢 Đang nhận đơn' : '⚪ Đã tắt nhận đơn');
+            }
+        } else {
+            // Demo mode
+            this.currentShipper.status = newStatus;
+            this.updateStatusToggle();
+            this.showToast(newStatus === 'online' ? '🟢 Đang nhận đơn' : '⚪ Đã tắt nhận đơn');
         }
 
-        // Update bottom nav
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const navItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
-        if (navItem) {
-            navItem.classList.add('active');
-        }
-
-        // Toggle nav visibility
-        const bottomNav = document.getElementById('bottomNav');
-        if (bottomNav) {
-            bottomNav.style.display = sectionId === 'login' ? 'none' : 'flex';
-        }
-
-        // Toggle header logout
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.style.display = sectionId === 'login' ? 'none' : 'block';
+        // Update location tracking based on status
+        if (newStatus === 'online') {
+            this.startLocationTracking();
+        } else {
+            this.stopLocationTracking();
         }
     },
 
-    // Load orders from Supabase
+    // Update status toggle UI
+    updateStatusToggle() {
+        const statusEl = document.getElementById('shipperStatus');
+        const statusToggle = document.getElementById('statusToggle');
+
+        if (statusEl) {
+            const status = this.currentShipper?.status || 'offline';
+            const statusMap = {
+                'online': '🟢 Online',
+                'offline': '⚪ Offline',
+                'busy': '🟡 Đang giao'
+            };
+            statusEl.textContent = statusMap[status] || status;
+            statusEl.className = `shipper-status ${status}`;
+        }
+
+        if (statusToggle) {
+            statusToggle.checked = this.currentShipper?.status === 'online';
+        }
+    },
+
+    // ==================== LOCATION TRACKING ====================
+
+    // Start GPS location tracking
+    startLocationTracking() {
+        if (!navigator.geolocation) {
+            console.warn('Geolocation not supported');
+            return;
+        }
+
+        // Watch position changes
+        this.locationWatchId = navigator.geolocation.watchPosition(
+            (position) => this.onLocationUpdate(position),
+            (error) => console.warn('Location error:', error.message),
+            {
+                enableHighAccuracy: true,
+                timeout: 30000,
+                maximumAge: 10000
+            }
+        );
+
+        // Also update location every 30 seconds
+        this.locationUpdateInterval = setInterval(() => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => this.onLocationUpdate(position),
+                (error) => console.warn('Location update error:', error.message)
+            );
+        }, 30000);
+
+        console.log('📍 Location tracking started');
+    },
+
+    // Handle location update
+    async onLocationUpdate(position) {
+        const { latitude, longitude } = position.coords;
+
+        if (this.isSupabaseReady() && this.currentShipper?.id) {
+            await SupabaseService.updateShipperLocation(this.currentShipper.id, latitude, longitude);
+        }
+
+        // Update local cache
+        this.currentShipper.current_location = {
+            lat: latitude,
+            lng: longitude,
+            updated_at: new Date().toISOString()
+        };
+    },
+
+    // Stop location tracking
+    stopLocationTracking() {
+        if (this.locationWatchId) {
+            navigator.geolocation.clearWatch(this.locationWatchId);
+            this.locationWatchId = null;
+        }
+
+        if (this.locationUpdateInterval) {
+            clearInterval(this.locationUpdateInterval);
+            this.locationUpdateInterval = null;
+        }
+
+        console.log('📍 Location tracking stopped');
+    },
+
+    // ==================== ORDERS & DELIVERIES ====================
+
+    // Load available orders from Supabase
     async loadOrders() {
         try {
-            console.log('🛵 Shipper: Checking Supabase...', this.isSupabaseReady());
+            console.log('🛵 Loading orders...');
 
             if (!this.isSupabaseReady()) {
-                console.log('🛵 Shipper: Supabase not ready, using demo data');
                 this.orders = this.getDemoOrders();
                 this.renderOrders();
                 this.updateStats();
                 return;
             }
 
-            const result = await SupabaseService.getOrders();
+            // Get pending delivery orders
+            const result = await SupabaseService.getPendingDeliveryOrders();
             if (result.error) {
-                console.error('Shipper: Failed to load orders', result.error);
-                this.showToast('Không tải được đơn hàng', 'error');
+                console.error('Failed to load orders', result.error);
                 return;
             }
 
-            // Filter orders for delivery type with status pending/delivering
-            this.orders = (result.data || []).filter(order =>
-                order.order_type === 'delivery' &&
-                ['pending', 'confirmed', 'preparing', 'ready', 'delivering'].includes(order.status)
-            );
-
-            console.log('🛵 Loaded', this.orders.length, 'delivery orders');
+            this.orders = result.data || [];
+            console.log('🛵 Loaded', this.orders.length, 'available orders');
             this.renderOrders();
             this.updateStats();
 
         } catch (err) {
-            console.error('Shipper: Error loading orders', err);
-            this.showToast('Lỗi tải đơn hàng', 'error');
+            console.error('Error loading orders', err);
+        }
+    },
+
+    // Load shipper's own deliveries
+    async loadMyDeliveries() {
+        if (!this.isSupabaseReady() || !this.currentShipper?.id) {
+            this.deliveries = [];
+            return;
+        }
+
+        try {
+            const result = await SupabaseService.getShipperDeliveries(
+                this.currentShipper.id,
+                ['assigned', 'picked_up', 'delivering']
+            );
+
+            if (!result.error) {
+                this.deliveries = result.data || [];
+                this.renderMyDeliveries();
+            }
+        } catch (err) {
+            console.error('Error loading deliveries', err);
         }
     },
 
     // Subscribe to realtime order updates
-    subscribeToOrders() {
+    subscribeToUpdates() {
         if (!this.isSupabaseReady()) {
-            console.log('🛵 Shipper: Cannot subscribe - Supabase not ready');
+            console.log('🛵 Cannot subscribe - Supabase not ready');
             return;
         }
 
+        // Subscribe to order changes
         SupabaseService.subscribeToOrders((payload) => {
-            console.log('🛵 Realtime order update:', payload.eventType);
-
+            console.log('🛵 Order update:', payload.eventType);
             if (payload.new?.order_type === 'delivery') {
-                // Reload orders on any change
                 this.loadOrders();
 
-                // Show notification for new delivery orders
                 if (payload.eventType === 'INSERT') {
                     this.showToast('🆕 Có đơn giao mới!', 'success');
                     this.playNotificationSound();
@@ -174,10 +351,32 @@ const ShipperApp = {
             }
         }, 'ShipperPortal');
 
-        console.log('🛵 Subscribed to realtime orders');
+        // Subscribe to my assignments
+        if (this.currentShipper?.id) {
+            SupabaseService.subscribeToShipperAssignments(this.currentShipper.id, (payload) => {
+                console.log('🛵 My assignment update:', payload.eventType);
+                this.loadMyDeliveries();
+                this.loadEarnings();
+            });
+        }
+
+        console.log('🛵 Subscribed to realtime updates');
     },
 
-    // Render orders list
+    // ==================== RENDERING ====================
+
+    // Update header with shipper info
+    updateHeader() {
+        const nameEl = document.getElementById('shipperName');
+        const ratingEl = document.getElementById('shipperRating');
+
+        if (nameEl) nameEl.textContent = this.currentShipper?.name || 'Shipper';
+        if (ratingEl) ratingEl.textContent = `⭐ ${this.currentShipper?.rating?.toFixed(1) || '5.0'}`;
+
+        this.updateStatusToggle();
+    },
+
+    // Render available orders list
     renderOrders() {
         const container = document.getElementById('ordersList');
         if (!container) return;
@@ -188,15 +387,30 @@ const ShipperApp = {
         if (this.currentFilter === 'pending') {
             filteredOrders = this.orders.filter(o => ['pending', 'confirmed', 'preparing', 'ready'].includes(o.status));
         } else if (this.currentFilter === 'delivering') {
-            filteredOrders = this.orders.filter(o => o.status === 'delivering');
+            filteredOrders = this.deliveries.map(d => d.order);
         }
 
         if (filteredOrders.length === 0) {
-            container.innerHTML = '<p class="no-orders">Không có đơn hàng</p>';
+            container.innerHTML = '<p class="no-orders">Không có đơn hàng mới</p>';
             return;
         }
 
         container.innerHTML = filteredOrders.map(order => this.renderOrderCard(order)).join('');
+    },
+
+    // Render my active deliveries
+    renderMyDeliveries() {
+        const container = document.getElementById('myDeliveriesList');
+        if (!container) return;
+
+        if (this.deliveries.length === 0) {
+            container.innerHTML = '<p class="no-orders">Không có đơn đang giao</p>';
+            return;
+        }
+
+        container.innerHTML = this.deliveries.map(delivery =>
+            this.renderDeliveryCard(delivery)
+        ).join('');
     },
 
     // Render single order card
@@ -205,12 +419,9 @@ const ShipperApp = {
             'pending': '⏳ Chờ xác nhận',
             'confirmed': '✅ Đã xác nhận',
             'preparing': '👨‍🍳 Đang chuẩn bị',
-            'ready': '📦 Sẵn sàng',
-            'delivering': '🚀 Đang giao',
-            'completed': '✅ Hoàn thành'
+            'ready': '📦 Sẵn sàng giao'
         };
 
-        // Parse items
         let items = [];
         try {
             items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
@@ -218,33 +429,8 @@ const ShipperApp = {
             items = [];
         }
 
-        const itemsText = items.map(item => `${item.name} x${item.qty}`).join(', ') || 'Không có thông tin';
-
-        // Format address
+        const itemsText = items.map(item => `${item.name} x${item.qty || item.quantity || 1}`).join(', ') || 'Không có thông tin';
         const address = order.notes || order.address || 'Không có địa chỉ';
-
-        // Action buttons based on status
-        let actionsHtml = '';
-
-        if (['pending', 'confirmed', 'preparing', 'ready'].includes(order.status)) {
-            actionsHtml = `
-                <button class="btn-action primary" onclick="ShipperApp.pickupOrder('${order.id}')">
-                    📦 Nhận đơn
-                </button>
-                <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
-                    🗺️ Chỉ đường
-                </a>
-            `;
-        } else if (order.status === 'delivering') {
-            actionsHtml = `
-                <button class="btn-action success" onclick="ShipperApp.completeOrder('${order.id}')">
-                    ✅ Đã giao
-                </button>
-                <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
-                    🗺️ Chỉ đường
-                </a>
-            `;
-        }
 
         return `
             <div class="order-card" data-order-id="${order.id}">
@@ -279,57 +465,333 @@ const ShipperApp = {
                 </div>
                 
                 <div class="order-actions">
-                    ${actionsHtml}
+                    <button class="btn-action primary" onclick="ShipperApp.pickupOrder('${order.id}')">
+                        📦 Nhận đơn
+                    </button>
+                    <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                        🗺️ Chỉ đường
+                    </a>
                 </div>
             </div>
         `;
     },
 
-    // Update order status
-    async updateOrderStatus(orderId, newStatus) {
+    // Render delivery card (my active delivery)
+    renderDeliveryCard(delivery) {
+        const order = delivery.order || {};
+        const statusLabels = {
+            'assigned': '📌 Đã nhận',
+            'picked_up': '🏃 Đã lấy hàng',
+            'delivering': '🚀 Đang giao'
+        };
+
+        let items = [];
+        try {
+            items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+        } catch (e) {
+            items = [];
+        }
+
+        const itemsText = items.map(item => `${item.name} x${item.qty || item.quantity || 1}`).join(', ');
+        const address = order.notes || order.address || 'Không có địa chỉ';
+
+        let actionsHtml = '';
+        if (delivery.status === 'assigned') {
+            actionsHtml = `
+                <button class="btn-action primary" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
+                    🏃 Đã lấy hàng
+                </button>
+            `;
+        } else if (delivery.status === 'picked_up' || delivery.status === 'delivering') {
+            actionsHtml = `
+                <button class="btn-action success" onclick="ShipperApp.completeDelivery('${delivery.id}')">
+                    ✅ Đã giao xong
+                </button>
+            `;
+        }
+
+        return `
+            <div class="order-card delivery-card ${delivery.status}" data-delivery-id="${delivery.id}">
+                <div class="delivery-badge">${statusLabels[delivery.status] || delivery.status}</div>
+                
+                <div class="order-card-header">
+                    <div>
+                        <div class="order-id">#${order.order_number || order.id?.substring(0, 8)}</div>
+                        <div class="order-time">${this.formatTime(delivery.assigned_at)}</div>
+                    </div>
+                    <span class="commission-badge">+${this.formatPrice(delivery.commission || this.currentShipper?.commission_rate || 15000)}</span>
+                </div>
+                
+                <div class="order-customer">
+                    <div class="customer-name">👤 ${order.customer_name || 'Khách hàng'}</div>
+                    <div class="customer-phone">
+                        📞 <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
+                    </div>
+                </div>
+                
+                <div class="order-address">
+                    <div class="address-label">📍 Địa chỉ giao hàng</div>
+                    <div class="address-text">${address}</div>
+                </div>
+                
+                <div class="order-items">
+                    <div class="order-items-title">🍽️ ${itemsText}</div>
+                </div>
+                
+                <div class="order-total">
+                    <span class="total-label">Thu hộ:</span>
+                    <span class="total-value">${this.formatPrice(order.total)}</span>
+                </div>
+                
+                <div class="order-actions">
+                    ${actionsHtml}
+                    <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                        🗺️ Chỉ đường
+                    </a>
+                    <a class="btn-action call" href="tel:${order.customer_phone}">
+                        📞 Gọi
+                    </a>
+                </div>
+            </div>
+        `;
+    },
+
+    // ==================== DELIVERY ACTIONS ====================
+
+    // Pickup/accept an order
+    async pickupOrder(orderId) {
+        if (!this.currentShipper) {
+            this.showToast('Vui lòng đăng nhập', 'error');
+            return;
+        }
+
         try {
             if (!this.isSupabaseReady()) {
-                // Demo mode - update locally
+                // Demo mode
                 const order = this.orders.find(o => o.id === orderId);
                 if (order) {
-                    order.status = newStatus;
+                    order.status = 'delivering';
+                    this.deliveries.push({
+                        id: 'demo-' + Date.now(),
+                        order_id: orderId,
+                        order: order,
+                        status: 'assigned',
+                        assigned_at: new Date().toISOString(),
+                        commission: 15000
+                    });
+                    this.orders = this.orders.filter(o => o.id !== orderId);
                     this.renderOrders();
+                    this.renderMyDeliveries();
                     this.updateStats();
-                    this.showToast(`Đơn hàng đã ${newStatus === 'delivering' ? 'nhận' : 'hoàn thành'}`, 'success');
+                    this.showToast('Đã nhận đơn!', 'success');
                 }
                 return;
             }
 
-            const result = await SupabaseService.updateOrderStatus(orderId, newStatus);
+            // Real assignment
+            const result = await SupabaseService.assignShipperToDelivery(orderId, this.currentShipper.id);
             if (result.error) {
-                throw new Error(result.error);
+                this.showToast('Lỗi nhận đơn: ' + result.error, 'error');
+            } else {
+                // Update order status to delivering
+                await SupabaseService.updateOrderStatus(orderId, 'delivering');
+                this.showToast('Đã nhận đơn!', 'success');
+                this.loadOrders();
+                this.loadMyDeliveries();
+            }
+        } catch (err) {
+            console.error('Error picking up order', err);
+            this.showToast('Lỗi nhận đơn', 'error');
+        }
+    },
+
+    // Update delivery status
+    async updateDelivery(assignmentId, newStatus) {
+        try {
+            if (!this.isSupabaseReady()) {
+                // Demo mode
+                const delivery = this.deliveries.find(d => d.id === assignmentId);
+                if (delivery) {
+                    delivery.status = newStatus;
+                    this.renderMyDeliveries();
+                    this.showToast('Đã cập nhật trạng thái!', 'success');
+                }
+                return;
             }
 
-            this.showToast(`Cập nhật thành công`, 'success');
-            this.loadOrders(); // Refresh
-
+            const result = await SupabaseService.updateDeliveryStatus(assignmentId, newStatus);
+            if (result.error) {
+                this.showToast('Lỗi cập nhật: ' + result.error, 'error');
+            } else {
+                this.showToast('Đã cập nhật!', 'success');
+                this.loadMyDeliveries();
+            }
         } catch (err) {
-            console.error('Shipper: Failed to update order', err);
-            this.showToast('Lỗi cập nhật đơn hàng', 'error');
+            console.error('Error updating delivery', err);
+            this.showToast('Lỗi cập nhật', 'error');
         }
     },
 
-    // Pickup order
-    pickupOrder(orderId) {
-        this.updateOrderStatus(orderId, 'delivering');
+    // Complete delivery
+    async completeDelivery(assignmentId) {
+        if (!confirm('Xác nhận đã giao hàng thành công?')) return;
+
+        try {
+            if (!this.isSupabaseReady()) {
+                // Demo mode
+                this.deliveries = this.deliveries.filter(d => d.id !== assignmentId);
+                this.renderMyDeliveries();
+                this.updateStats();
+                this.loadEarnings();
+                this.showToast('✅ Giao hàng thành công!', 'success');
+                this.playSuccessSound();
+                return;
+            }
+
+            // Real completion
+            const result = await SupabaseService.completeDelivery(assignmentId);
+            if (result.error) {
+                this.showToast('Lỗi hoàn thành: ' + result.error, 'error');
+            } else {
+                // Update order status
+                if (result.data?.order_id) {
+                    await SupabaseService.updateOrderStatus(result.data.order_id, 'completed');
+                }
+                this.showToast('✅ Giao hàng thành công!', 'success');
+                this.playSuccessSound();
+                this.loadMyDeliveries();
+                this.loadEarnings();
+                this.refreshShipperData();
+            }
+        } catch (err) {
+            console.error('Error completing delivery', err);
+            this.showToast('Lỗi hoàn thành', 'error');
+        }
     },
 
-    // Complete order
-    completeOrder(orderId) {
-        if (confirm('Xác nhận đã giao hàng thành công?')) {
-            this.updateOrderStatus(orderId, 'completed');
+    // Refresh shipper data from server
+    async refreshShipperData() {
+        if (!this.isSupabaseReady() || !this.currentShipper?.id) return;
+
+        const result = await SupabaseService.getShipperById(this.currentShipper.id);
+        if (!result.error && result.data) {
+            this.currentShipper = { ...this.currentShipper, ...result.data };
+            localStorage.setItem('shipper_session', JSON.stringify(this.currentShipper));
+            this.updateHeader();
+            this.updateStats();
         }
+    },
+
+    // ==================== EARNINGS ====================
+
+    // Load earnings data
+    async loadEarnings() {
+        const todayEarningsEl = document.getElementById('todayEarnings');
+        const weekEarningsEl = document.getElementById('weekEarnings');
+        const monthEarningsEl = document.getElementById('monthEarnings');
+
+        if (!this.isSupabaseReady() || !this.currentShipper?.id) {
+            // Demo earnings
+            if (todayEarningsEl) todayEarningsEl.textContent = this.formatPrice(45000);
+            if (weekEarningsEl) weekEarningsEl.textContent = this.formatPrice(315000);
+            if (monthEarningsEl) monthEarningsEl.textContent = this.formatPrice(1250000);
+            return;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+        try {
+            // Today earnings
+            const todayResult = await SupabaseService.getShipperEarnings(this.currentShipper.id, today, today);
+            if (!todayResult.error && todayEarningsEl) {
+                todayEarningsEl.textContent = this.formatPrice(todayResult.data.totalEarnings);
+            }
+
+            // Week earnings
+            const weekResult = await SupabaseService.getShipperEarnings(this.currentShipper.id, weekAgo, today);
+            if (!weekResult.error && weekEarningsEl) {
+                weekEarningsEl.textContent = this.formatPrice(weekResult.data.totalEarnings);
+            }
+
+            // Month earnings
+            const monthResult = await SupabaseService.getShipperEarnings(this.currentShipper.id, monthStart, today);
+            if (!monthResult.error && monthEarningsEl) {
+                monthEarningsEl.textContent = this.formatPrice(monthResult.data.totalEarnings);
+            }
+        } catch (err) {
+            console.error('Error loading earnings', err);
+        }
+    },
+
+    // ==================== STATS & UI ====================
+
+    // Update dashboard stats
+    updateStats() {
+        const pendingCount = this.orders.length;
+        const deliveringCount = this.deliveries.length;
+        const completedCount = this.currentShipper?.total_deliveries || 0;
+
+        const pendingEl = document.getElementById('pendingCount');
+        const deliveringEl = document.getElementById('deliveringCount');
+        const completedEl = document.getElementById('completedCount');
+
+        if (pendingEl) pendingEl.textContent = pendingCount;
+        if (deliveringEl) deliveringEl.textContent = deliveringCount;
+        if (completedEl) completedEl.textContent = completedCount;
+
+        // Update badges
+        const pendingBadge = document.getElementById('navPendingBadge');
+        const deliveringBadge = document.getElementById('navDeliveringBadge');
+
+        if (pendingBadge) {
+            pendingBadge.textContent = pendingCount;
+            pendingBadge.style.display = pendingCount > 0 ? 'block' : 'none';
+        }
+        if (deliveringBadge) {
+            deliveringBadge.textContent = deliveringCount;
+            deliveringBadge.style.display = deliveringCount > 0 ? 'block' : 'none';
+        }
+    },
+
+    // Show section
+    showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const section = document.getElementById(`section-${sectionId}`);
+        if (section) {
+            section.classList.add('active');
+        }
+
+        // Update bottom nav
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const navItem = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
+        if (navItem) {
+            navItem.classList.add('active');
+        }
+
+        // Toggle nav visibility
+        const bottomNav = document.getElementById('bottomNav');
+        if (bottomNav) {
+            bottomNav.style.display = sectionId === 'login' ? 'none' : 'flex';
+        }
+
+        // Toggle header elements
+        const logoutBtn = document.getElementById('logoutBtn');
+        const statusToggleWrap = document.getElementById('statusToggleWrap');
+        if (logoutBtn) logoutBtn.style.display = sectionId === 'login' ? 'none' : 'block';
+        if (statusToggleWrap) statusToggleWrap.style.display = sectionId === 'login' ? 'none' : 'flex';
     },
 
     // Filter orders
     filterOrders(filter) {
         this.currentFilter = filter;
-        this.renderOrders();
+
+        if (filter === 'delivering') {
+            this.loadMyDeliveries();
+        } else {
+            this.loadOrders();
+        }
 
         // Update nav
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -340,72 +802,72 @@ const ShipperApp = {
 
     // Show history
     showHistory() {
-        this.currentFilter = 'completed';
-        // Load completed orders
-        this.loadCompletedOrders();
+        this.showSection('history');
+        this.loadHistory();
     },
 
-    // Load completed orders
-    async loadCompletedOrders() {
+    // Load history
+    async loadHistory() {
+        const container = document.getElementById('historyList');
+        if (!container) return;
+
+        container.innerHTML = '<p class="loading">Đang tải lịch sử...</p>';
+
         try {
-            if (!this.isSupabaseReady()) {
-                this.orders = this.getDemoOrders().filter(o => o.status === 'completed');
-                this.renderOrders();
+            if (!this.isSupabaseReady() || !this.currentShipper?.id) {
+                container.innerHTML = '<p class="no-orders">Đăng nhập để xem lịch sử</p>';
                 return;
             }
 
-            const result = await SupabaseService.getOrders();
-            if (!result.error) {
-                this.orders = (result.data || []).filter(order =>
-                    order.order_type === 'delivery' && order.status === 'completed'
-                ).slice(0, 20); // Last 20
-                this.renderOrders();
+            const result = await SupabaseService.getShipperDeliveries(this.currentShipper.id, 'completed');
+            if (result.error) {
+                container.innerHTML = '<p class="no-orders">Lỗi tải lịch sử</p>';
+                return;
             }
+
+            const deliveries = (result.data || []).slice(0, 20);
+            if (deliveries.length === 0) {
+                container.innerHTML = '<p class="no-orders">Chưa có đơn nào hoàn thành</p>';
+                return;
+            }
+
+            container.innerHTML = deliveries.map(d => this.renderHistoryCard(d)).join('');
         } catch (err) {
-            console.error('Shipper: Error loading history', err);
+            console.error('Error loading history', err);
+            container.innerHTML = '<p class="no-orders">Lỗi tải lịch sử</p>';
         }
     },
 
-    // Update dashboard stats
-    updateStats() {
-        const pending = this.orders.filter(o => ['pending', 'confirmed', 'preparing', 'ready'].includes(o.status)).length;
-        const delivering = this.orders.filter(o => o.status === 'delivering').length;
-        const completed = this.orders.filter(o => o.status === 'completed').length;
-
-        const pendingEl = document.getElementById('pendingCount');
-        const deliveringEl = document.getElementById('deliveringCount');
-        const completedEl = document.getElementById('completedCount');
-
-        if (pendingEl) pendingEl.textContent = pending;
-        if (deliveringEl) deliveringEl.textContent = delivering;
-        if (completedEl) completedEl.textContent = completed;
-
-        // Update badges
-        const pendingBadge = document.getElementById('navPendingBadge');
-        const deliveringBadge = document.getElementById('navDeliveringBadge');
-
-        if (pendingBadge) {
-            pendingBadge.textContent = pending;
-            pendingBadge.style.display = pending > 0 ? 'block' : 'none';
-        }
-        if (deliveringBadge) {
-            deliveringBadge.textContent = delivering;
-            deliveringBadge.style.display = delivering > 0 ? 'block' : 'none';
-        }
-
-        // Calculate earnings (placeholder)
-        const earnings = completed * 15000; // 15k per delivery
-        const earningsEl = document.getElementById('todayEarnings');
-        if (earningsEl) earningsEl.textContent = this.formatPrice(earnings);
+    // Render history card
+    renderHistoryCard(delivery) {
+        const order = delivery.order || {};
+        return `
+            <div class="history-card">
+                <div class="history-header">
+                    <span class="history-id">#${order.order_number || order.id?.substring(0, 8)}</span>
+                    <span class="history-date">${this.formatDate(delivery.delivered_at)}</span>
+                </div>
+                <div class="history-details">
+                    <span class="history-customer">👤 ${order.customer_name || 'Khách hàng'}</span>
+                    <span class="history-total">${this.formatPrice(order.total)}</span>
+                </div>
+                <div class="history-commission">
+                    💰 Hoa hồng: <strong>${this.formatPrice(delivery.commission || 15000)}</strong>
+                    ${delivery.customer_rating ? `<span class="history-rating">⭐ ${delivery.customer_rating}</span>` : ''}
+                </div>
+            </div>
+        `;
     },
 
     // Refresh orders
     refreshOrders() {
         this.showToast('Đang làm mới...');
         this.loadOrders();
+        this.loadMyDeliveries();
     },
 
-    // Demo orders for testing
+    // ==================== DEMO DATA ====================
+
     getDemoOrders() {
         return [
             {
@@ -433,27 +895,32 @@ const ShipperApp = {
                     { name: 'Phở bò', qty: 1 }
                 ]),
                 total: 55000,
-                status: 'delivering',
+                status: 'ready',
                 order_type: 'delivery',
                 created_at: new Date(Date.now() - 600000).toISOString()
             }
         ];
     },
 
-    // Utility: Format time
+    // ==================== UTILITIES ====================
+
     formatTime(dateString) {
         if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     },
 
-    // Utility: Format price
+    formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    },
+
     formatPrice(amount) {
         if (!amount) return '0đ';
         return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     },
 
-    // Utility: Show toast
     showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
         if (!container) return;
@@ -469,12 +936,32 @@ const ShipperApp = {
         }, 3000);
     },
 
-    // Play notification sound
     playNotificationSound() {
         try {
-            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleVE4PnmSl4Z4a11bZ3p+dmNUTVFcbXh3bGVjbnh9d29mYl9kbm9qaGNhY2ZoZmFdW1tdXl1XU09RU1NRTUpISkxMSUdFREVFRkRDQkJCQkJBQD8/Pz8/Pj09PT09PDw7Ozs7Ojo5OTk5OTg4Nzc3NzY2NjU1NTU0NDQzMzMzMjIyMTExMTAwMC8vLy8uLi4tLS0sLCwrKysrKiopKSkoKCgnJycnJiYmJSUlJCQkJCMjIyIiIiEhISEgICAf');
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2OteVE4PnmSl4Z4a11bZ3p+dmNUTVFcbXh3bGVjbnh9d29mYl9kbm9qaGNhY2ZoZmFdW1tdXl1XU09RU1NRTUpISkxMSUdFREVFRkRDQkJCQkJBQD8/Pz8/Pj09PT09PDw7Ozs7Ojo5OTk5OTg4Nzc3NzY2NjU1NTU0NDQzMzMzMjIyMTExMTAwMC8vLy8uLi4tLS0sLCwrKysrKiopKSkoKCgnJycnJiYmJSUlJCQkJCMjIyIiIiEhISEgICAf');
             audio.volume = 0.5;
             audio.play().catch(() => { });
+        } catch (e) { }
+    },
+
+    playSuccessSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 600;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.3;
+
+            oscillator.start();
+            setTimeout(() => {
+                oscillator.frequency.value = 800;
+            }, 150);
+            oscillator.stop(audioContext.currentTime + 0.3);
         } catch (e) { }
     }
 };

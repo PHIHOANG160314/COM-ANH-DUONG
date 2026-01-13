@@ -314,40 +314,84 @@ const OrderManagement = {
         }
     },
 
-    showAssignShipperModal(order) {
+    async showAssignShipperModal(order) {
+        // Load shippers from database
+        let shippersHtml = '<option value="">-- Chọn Shipper --</option>';
+
+        if (typeof SupabaseService !== 'undefined' && typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            try {
+                const result = await SupabaseService.getActiveShippers();
+                if (result.data && result.data.length > 0) {
+                    shippersHtml += result.data.map(s =>
+                        `<option value="${s.id}" data-name="${s.name}">
+                            ${s.name} ${s.status === 'online' ? '🟢' : s.status === 'busy' ? '🟡' : '⚪'} 
+                            (⭐${s.rating?.toFixed(1) || '5.0'} | ${s.total_deliveries || 0} đơn)
+                        </option>`
+                    ).join('');
+                } else {
+                    shippersHtml += '<option value="" disabled>Chưa có shipper nào</option>';
+                }
+            } catch (err) {
+                console.error('Failed to load shippers:', err);
+                shippersHtml += '<option value="" disabled>Lỗi tải danh sách</option>';
+            }
+        } else {
+            // Fallback to demo shippers
+            shippersHtml += `
+                <option value="demo-shipper1" data-name="Nguyễn Văn Shipper A">Nguyễn Văn Shipper A 🟢</option>
+                <option value="demo-shipper2" data-name="Trần Văn Shipper B">Trần Văn Shipper B 🟢</option>
+            `;
+        }
+
         modal.open('Chọn người giao hàng', `
             <div class="form-group">
                 <label>Đơn hàng: #${order.id}</label>
-                <div style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">${order.address}</div>
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">${order.customer} - ${order.phone}</div>
+                <div style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">📍 ${order.address}</div>
             </div>
             <div class="form-group">
                 <label>Chọn Shipper *</label>
                 <select id="assignShipper" class="full-width" style="padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
-                    <option value="">-- Chọn Shipper --</option>
-                    <option value="Nguyễn Văn Shipper A">Nguyễn Văn Shipper A</option>
-                    <option value="Trần Văn Shipper B">Trần Văn Shipper B</option>
-                    <option value="Lê Văn Shipper C">Lê Văn Shipper C</option>
+                    ${shippersHtml}
                 </select>
             </div>
         `, `
             <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="OrderManagement.confirmAssign('${order.id}')">Xác nhận giao hàng</button>
+            <button class="btn-primary" onclick="OrderManagement.confirmAssign('${order.id}', '${order.supabaseId || ''}')">Xác nhận giao hàng</button>
         `);
     },
 
-    confirmAssign(orderId) {
-        const shipper = document.getElementById('assignShipper').value;
-        if (!shipper) {
+    async confirmAssign(orderId, supabaseOrderId) {
+        const select = document.getElementById('assignShipper');
+        const shipperId = select.value;
+        const shipperName = select.options[select.selectedIndex]?.dataset?.name || select.options[select.selectedIndex]?.text || 'Shipper';
+
+        if (!shipperId) {
             toast.warning('Vui lòng chọn shipper');
             return;
         }
 
         const order = this.orders.find(o => o.id === orderId);
-        if (order) {
-            order.assignee = shipper;
-            this.updateStatus(orderId, 'delivering');
-            modal.close();
+        if (!order) return;
+
+        // Assign shipper in database
+        if (supabaseOrderId && typeof SupabaseService !== 'undefined' && typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            try {
+                const result = await SupabaseService.assignShipperToDelivery(supabaseOrderId, shipperId);
+                if (result.error) {
+                    toast.error('Lỗi gán shipper: ' + result.error);
+                    return;
+                }
+            } catch (err) {
+                console.error('Failed to assign shipper:', err);
+            }
         }
+
+        order.assignee = shipperName.split(' 🟢')[0].split(' 🟡')[0].split(' ⚪')[0].trim();
+        order.shipperId = shipperId;
+        this.updateStatus(orderId, 'delivering');
+        modal.close();
+        toast.success('Đã gán shipper: ' + order.assignee);
     },
 
     showDeliveryProofModal(order) {
