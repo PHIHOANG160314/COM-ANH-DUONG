@@ -652,29 +652,30 @@ const SupabaseService = {
 
     // ==================== SHIPPER SERVICE ====================
 
-    // Login shipper by phone + PIN
+    // Login shipper by phone + PIN (SECURE - uses bcrypt RPC)
     async loginShipper(phone, pin) {
         return withRetry(async () => {
             const supabase = await getSupabase();
             if (!supabase) return createErrorResponse('Not configured', 'loginShipper');
 
-            const { data, error } = await supabase
-                .from('shippers')
-                .select('*')
-                .eq('phone', phone)
-                .eq('pin', pin)
-                .eq('is_active', true)
-                .single();
+            // Use secure RPC function that verifies PIN with bcrypt
+            const { data, error } = await supabase.rpc('verify_shipper_pin', {
+                p_phone: phone,
+                p_pin: pin
+            });
 
             if (error) {
-                if (error.code === 'PGRST116') {
-                    return createErrorResponse('Số điện thoại hoặc mã PIN không đúng', 'loginShipper');
-                }
                 return createErrorResponse(error, 'loginShipper');
             }
 
-            if (window.Debug) Debug.info('🛵 Shipper logged in:', data?.name);
-            return createSuccessResponse(data);
+            // RPC returns empty array if PIN incorrect
+            if (!data || data.length === 0) {
+                return createErrorResponse('Số điện thoại hoặc mã PIN không đúng', 'loginShipper');
+            }
+
+            const shipper = data[0];
+            if (window.Debug) Debug.info('🛵 Shipper logged in:', shipper?.name);
+            return createSuccessResponse(shipper);
         }, 'loginShipper');
     },
 

@@ -137,15 +137,21 @@ CREATE TRIGGER update_staff_updated_at
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- =====================================================
--- INSERT DEFAULT STAFF (with hashed PINs)
+-- ⚠️ STAFF CREATION - PRODUCTION GUIDELINES
 -- =====================================================
-INSERT INTO staff (name, role, pin, phone) VALUES
-('Admin', 'admin', crypt('1234', gen_salt('bf', 8)), '0917076061'),
-('Quản lý 1', 'manager', crypt('2345', gen_salt('bf', 8)), ''),
-('Thu ngân 1', 'cashier', crypt('3456', gen_salt('bf', 8)), ''),
-('Phục vụ 1', 'waiter', crypt('4567', gen_salt('bf', 8)), ''),
-('Bếp trưởng', 'chef', crypt('5678', gen_salt('bf', 8)), '')
-ON CONFLICT DO NOTHING;
+-- DO NOT insert default staff here with known PINs!
+-- 
+-- Production workflow:
+-- 1. Deploy schema without demo data
+-- 2. Create first admin via Supabase Dashboard with secure PIN:
+--    INSERT INTO staff (name, role, pin, phone) VALUES
+--    ('Admin Name', 'admin', crypt('YOUR_SECURE_PIN', gen_salt('bf', 8)), 'phone');
+-- 3. Use Admin Portal to create remaining staff
+--
+-- For DEVELOPMENT only (remove in production):
+-- INSERT INTO staff (name, role, pin, phone) VALUES
+-- ('Dev Admin', 'admin', crypt('9999', gen_salt('bf', 8)), '')
+-- ON CONFLICT DO NOTHING;
 
 -- =====================================================
 -- ENABLE REALTIME

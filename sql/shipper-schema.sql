@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS shippers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     phone VARCHAR(20) UNIQUE NOT NULL,
-    pin VARCHAR(10) NOT NULL,
+    pin VARCHAR(60) NOT NULL,  -- Hashed PIN (bcrypt)
     status VARCHAR(20) DEFAULT 'offline', -- online, offline, busy
     current_location JSONB, -- {lat, lng, updated_at}
     rating DECIMAL(2,1) DEFAULT 5.0,
@@ -129,17 +129,63 @@ CREATE TRIGGER on_delivery_completed
     FOR EACH ROW EXECUTE FUNCTION update_shipper_stats();
 
 -- =====================================================
+-- SECURE PIN VERIFICATION FUNCTION
+-- =====================================================
+
+-- Function to verify shipper PIN (uses bcrypt)
+CREATE OR REPLACE FUNCTION verify_shipper_pin(p_phone TEXT, p_pin TEXT)
+RETURNS TABLE(
+    id UUID,
+    name TEXT,
+    phone TEXT,
+    status TEXT,
+    rating DECIMAL,
+    total_deliveries INTEGER
+) AS $$
+DECLARE
+    v_shipper RECORD;
+BEGIN
+    -- Find shipper by phone
+    SELECT * INTO v_shipper FROM shippers s
+    WHERE s.phone = p_phone AND s.is_active = true;
+    
+    IF v_shipper IS NULL THEN
+        RETURN; -- Shipper not found
+    END IF;
+    
+    -- Verify PIN using bcrypt
+    IF v_shipper.pin = crypt(p_pin, v_shipper.pin) THEN
+        -- Update last activity
+        UPDATE shippers SET updated_at = NOW() WHERE shippers.id = v_shipper.id;
+        
+        -- Return shipper data (without PIN)
+        RETURN QUERY SELECT 
+            v_shipper.id,
+            v_shipper.name::TEXT,
+            v_shipper.phone::TEXT,
+            v_shipper.status::TEXT,
+            v_shipper.rating,
+            v_shipper.total_deliveries;
+    END IF;
+    
+    -- PIN incorrect - return nothing
+    RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
 -- ENABLE REALTIME
 -- =====================================================
 ALTER PUBLICATION supabase_realtime ADD TABLE shippers;
 ALTER PUBLICATION supabase_realtime ADD TABLE delivery_assignments;
 
 -- =====================================================
--- INSERT SAMPLE SHIPPERS (for testing)
+-- INSERT SAMPLE SHIPPERS (for development only)
+-- ⚠️ PRODUCTION: Remove these or change PINs!
 -- =====================================================
 INSERT INTO shippers (name, phone, pin, status, commission_rate) VALUES
-('Shipper Demo', '0901234567', '1234', 'offline', 15000),
-('Nguyễn Văn Shipper', '0909876543', '5678', 'offline', 15000)
+('Shipper Demo', '0901234567', crypt('1234', gen_salt('bf', 8)), 'offline', 15000),
+('Nguyễn Văn Shipper', '0909876543', crypt('5678', gen_salt('bf', 8)), 'offline', 15000)
 ON CONFLICT (phone) DO NOTHING;
 
 -- =====================================================
