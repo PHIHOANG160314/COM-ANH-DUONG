@@ -17,7 +17,8 @@ const ArticlesManager = {
     // Render initial empty state or loading
     renderPlaceholder() {
         const container = document.getElementById('page-articles');
-        if (container && container.innerHTML.trim() === '') {
+        // Check if already rendered (look for header)
+        if (container && !container.querySelector('.card-header')) {
             container.innerHTML = `
                 <div class="card-header">
                     <h2>Quản Lý Bài Viết</h2>
