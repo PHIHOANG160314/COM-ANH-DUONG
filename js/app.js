@@ -113,7 +113,8 @@ const App = {
             kitchen: 'Màn Hình Bếp',
             staff: 'Quản Lý Nhân Viên',
             customers: 'Khách Hàng Thân Thiết',
-            sops: 'SOPs - Quy Trình'
+            sops: 'SOPs - Quy Trình',
+            articles: 'Quản Lý Bài Viết'
         };
         document.getElementById('pageTitle').textContent = titles[page] || page;
 
@@ -142,6 +143,7 @@ const App = {
         KitchenDisplay.init();
         StaffManagement.init();
         CustomerLoyalty.init();
+        if (window.ArticlesManager) ArticlesManager.init();
         if (window.i18n) i18n.init();
         this.setupThemeToggle();
     },
