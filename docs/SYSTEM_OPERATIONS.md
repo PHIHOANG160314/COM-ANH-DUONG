@@ -50,6 +50,7 @@ graph TB
 | `orders` | Đơn hàng + items (JSONB) | Insert public, read auth |
 | `customers` | Thành viên + điểm tích lũy | Auth only |
 | `combos` | Combo khuyến mãi | Public read |
+| `articles` | Tin tức & Sự kiện | Public read, Staff write |
 
 ### Kết nối
 ```bash
@@ -108,6 +109,7 @@ CAD/
 | Customers | `customers.js` | CRM, loyalty |
 | PWA | `pwa-utils.js`, `sw.js` | Offline, install |
 | i18n | `i18n.js` | Đa ngôn ngữ VI/EN |
+| Articles | `articles-manager.js` | Quản lý tin tức trang chủ |
 
 ---
 
@@ -120,6 +122,11 @@ CAD/
 ### Theo dõi đơn
 - **Bếp:** Màn hình Kitchen hiển thị realtime
 - **Phục vụ:** POS để tạo đơn + thu tiền
+
+### Quản Lý Tin Tức
+- **Truy cập:** Admin Portal > Menu trái > Tin tức
+- **Thao tác:** Thêm/Sửa/Xóa bài viết hiển thị trên trang chủ
+- **Lưu ý:** Dùng Emoji làm icon để hiển thị đẹp mắt
 
 ### Backup
 - Supabase tự động backup hàng ngày
