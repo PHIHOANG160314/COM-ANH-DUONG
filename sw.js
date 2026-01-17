@@ -3,7 +3,7 @@
 // PWA Offline Support (v6.0 - IndexedDB)
 // ========================================
 
-const CACHE_VERSION = 'v6.1';
+const CACHE_VERSION = 'v6.2';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
@@ -58,6 +58,7 @@ const STATIC_FILES = [
     '/js/offline-manager.js',
     '/js/supabase-client.js',
     '/logo.jpg',
+    '/logo-landing.png',
     '/manifest.json'
 ];
 
