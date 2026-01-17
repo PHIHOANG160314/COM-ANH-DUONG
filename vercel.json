@@ -41,6 +41,14 @@
         {
             "source": "/admin/",
             "destination": "/admin.html"
+        },
+        {
+            "source": "/shipper",
+            "destination": "/shipper.html"
+        },
+        {
+            "source": "/shipper/",
+            "destination": "/shipper.html"
         }
     ],
     "headers": [
