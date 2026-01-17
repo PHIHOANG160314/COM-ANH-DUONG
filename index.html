@@ -128,7 +128,7 @@
             </div>
             <div class="hero-stats">
                 <div class="stat-item">
-                    <span class="stat-number">5+</span>
+                    <span class="stat-number" id="exp-years">5+</span>
                     <span class="stat-label">Năm kinh nghiệm</span>
                 </div>
                 <div class="stat-item">
@@ -574,6 +574,22 @@
         // Observe elements for animation
         document.querySelectorAll('.section-header, .about-content, .specialty-card, .gallery-item, .article-card, .contact-card').forEach(el => {
             observer.observe(el);
+        });
+    </script>
+    <!-- Auto update experience years -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startYear = 2018;
+            const startMonth = 8; // September (0-indexed)
+            const now = new Date();
+            let years = now.getFullYear() - startYear;
+            if (now.getMonth() < startMonth) {
+                years--;
+            }
+            const expElement = document.getElementById('exp-years');
+            if (expElement) {
+                expElement.innerText = years + '+';
+            }
         });
     </script>
 </body>
