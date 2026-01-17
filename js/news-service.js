@@ -81,10 +81,17 @@ const NewsService = {
             container.style.opacity = '0';
             setTimeout(() => {
                 container.innerHTML = html;
-                container.style.opacity = '1';
 
-                // Re-apply animations if needed
-                // (Assuming CSS handles it via class)
+                // IMPORTANT: Add animate-in class to make articles visible
+                // (IntersectionObserver only watches initial DOM elements)
+                const cards = container.querySelectorAll('.article-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate-in');
+                    }, index * 100); // Stagger animation
+                });
+
+                container.style.opacity = '1';
             }, 300);
         } else {
             // If fetch fails or no data, we keep the static fallback content intact
