@@ -719,9 +719,17 @@ const ArticlesManager = {
                     <div class="modal-body">
                         <form id="articleForm" onsubmit="event.preventDefault(); ArticlesManager.saveArticle();">
                             <div class="form-group">
-                                <label>Tiêu đề *</label>
-                                <input type="text" id="aTitle" class="md-input" value="${article.title}" required>
+                                <label>Tiêu đề * <small style="color: var(--text-secondary);">(Tối đa 60 ký tự)</small></label>
+                                <input type="text" 
+                                       id="aTitle" 
+                                       class="md-input" 
+                                       value="${article.title}" 
+                                       placeholder="Ví dụ: Khuyến mãi đầu năm - Giảm 20% toàn bộ thực đơn"
+                                       maxlength="100"
+                                       required>
+                                <small class="field-hint">💡 Tiêu đề ngắn gọn, hấp dẫn sẽ thu hút khách hàng đọc tiếp</small>
                             </div>
+                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Danh mục</label>
@@ -731,39 +739,78 @@ const ArticlesManager = {
                                         <option value="Sự kiện" ${article.category === 'Sự kiện' ? 'selected' : ''}>🎉 Sự kiện</option>
                                         <option value="Ẩm thực" ${article.category === 'Ẩm thực' ? 'selected' : ''}>🍜 Ẩm thực</option>
                                     </select>
+                                    <small class="field-hint">Giúp phân loại bài viết dễ dàng</small>
                                 </div>
                                 <div class="form-group">
-                                    <label>Icon (Emoji)</label>
-                                    <input type="text" id="aIcon" class="md-input" value="${article.icon}" placeholder="📰">
+                                    <label>Icon (Emoji) <small style="color: var(--text-secondary);">- Tùy chọn</small></label>
+                                    <input type="text" 
+                                           id="aIcon" 
+                                           class="md-input" 
+                                           value="${article.icon}" 
+                                           placeholder="🎊"
+                                           maxlength="4">
+                                    <small class="field-hint">
+                                        💡 <a href="https://emojipedia.org" target="_blank" style="color: var(--primary);">Chọn emoji tại đây</a>
+                                        <br>Gợi ý: 🎊🔥💯🎁📢✨🌟
+                                    </small>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <label>Mô tả ngắn</label>
-                                <textarea id="aExcerpt" class="md-input" rows="3">${article.excerpt || ''}</textarea>
+                                <label>Mô tả ngắn <small style="color: var(--text-secondary);">(100-150 ký tự)</small></label>
+                                <textarea id="aExcerpt" 
+                                          class="md-input" 
+                                          rows="3" 
+                                          placeholder="Ví dụ: Chào mừng năm mới, Cơm Ánh Dương xin gửi tặng quý khách ưu đãi giảm 20% toàn bộ thực đơn từ nay đến hết tháng 1..."
+                                          maxlength="250">${article.excerpt || ''}</textarea>
+                                <small class="field-hint">
+                                    💡 Tóm tắt nội dung chính. Khách hàng sẽ đọc phần này trước khi click
+                                    <br><span id="excerptCount">0</span>/250 ký tự
+                                </small>
                             </div>
+                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Link Đích (URL)</label>
-                                    <input type="text" id="aLink" class="md-input" value="${article.link_url || ''}">
+                                    <input type="text" 
+                                           id="aLink" 
+                                           class="md-input" 
+                                           value="${article.link_url || ''}"
+                                           placeholder="/customer">
+                                    <small class="field-hint">💡 Mặc định: /customer (trang đặt món)</small>
                                 </div>
                                 <div class="form-group">
                                     <label>Tên nút bấm</label>
-                                    <input type="text" id="aBtnText" class="md-input" value="${article.link_text || ''}">
+                                    <input type="text" 
+                                           id="aBtnText" 
+                                           class="md-input" 
+                                           value="${article.link_text || ''}"
+                                           placeholder="Đặt món ngay →">
+                                    <small class="field-hint">💡 Gợi ý: "Đặt món ngay →", "Xem chi tiết →"</small>
                                 </div>
                             </div>
+                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Ngày đăng</label>
-                                    <input type="date" id="aDate" class="md-input" value="${new Date(article.published_at).toISOString().split('T')[0]}">
+                                    <input type="date" 
+                                           id="aDate" 
+                                           class="md-input" 
+                                           value="${new Date(article.published_at).toISOString().split('T')[0]}">
+                                    <small class="field-hint">Bài viết mới hơn sẽ hiển thị trước trên trang chủ</small>
                                 </div>
-                                <div class="form-group" style="display: flex; align-items: center; margin-top: 24px;">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="aActive" ${article.is_active ? 'checked' : ''}>
-                                        <span class="slider"></span>
+                                <div class="form-group" style="display: flex; flex-direction: column; margin-top: 24px;">
+                                    <label style="margin-bottom: 8px;">
+                                        <input type="checkbox" 
+                                               id="aActive" 
+                                               ${article.is_active ? 'checked' : ''}
+                                               style="margin-right: 8px;">
+                                        Hiển thị trên trang chủ
                                     </label>
-                                    <span style="margin-left: 10px;">Hiển thị trên trang chủ</span>
+                                    <small class="field-hint">✅ Bật để khách hàng thấy bài viết ngay</small>
                                 </div>
                             </div>
+                            
                             <div class="modal-footer">
                                 <button type="button" class="md-button" onclick="document.getElementById('articleModal').remove()">Hủy</button>
                                 <button type="submit" class="md-button md-button-filled">💾 Lưu</button>
@@ -772,6 +819,50 @@ const ArticlesManager = {
                     </div>
                 </div>
             </div>
+            
+            <style>
+                .field-hint {
+                    display: block;
+                    margin-top: 6px;
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    line-height: 1.4;
+                }
+                .field-hint a {
+                    text-decoration: none;
+                }
+                .field-hint a:hover {
+                    text-decoration: underline;
+                }
+                .form-group {
+                    margin-bottom: 20px;
+                }
+                .form-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                }
+                @media (max-width: 768px) {
+                    .form-row {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+            
+            <script>
+                // Character counter for excerpt
+                document.getElementById('aExcerpt').addEventListener('input', function() {
+                    const count = this.value.length;
+                    document.getElementById('excerptCount').textContent = count;
+                });
+                // Initialize counter
+                setTimeout(() => {
+                    const excerptEl = document.getElementById('aExcerpt');
+                    if (excerptEl) {
+                        document.getElementById('excerptCount').textContent = excerptEl.value.length;
+                    }
+                }, 100);
+            </script>
         `;
 
         document.body.insertAdjacentHTML('beforeend', modalHtml);
