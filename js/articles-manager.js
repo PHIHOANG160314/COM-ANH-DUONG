@@ -772,12 +772,19 @@ const ArticlesManager = {
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Link Đích (URL)</label>
+                                    <select id="aLink" class="md-input">
+                                        <option value="/customer" ${(article.link_url === '/customer' || !article.link_url) ? 'selected' : ''}>🛒 Trang đặt món</option>
+                                        <option value="/customer#menu" ${article.link_url === '/customer#menu' ? 'selected' : ''}>📋 Xem menu</option>
+                                        <option value="/customer#about" ${article.link_url === '/customer#about' ? 'selected' : ''}>ℹ️ Giới thiệu</option>
+                                        <option value="/customer#contact" ${article.link_url === '/customer#contact' ? 'selected' : ''}>📞 Liên hệ</option>
+                                        <option value="custom">✏️ Nhập tùy chọn...</option>
+                                    </select>
                                     <input type="text" 
-                                           id="aLink" 
+                                           id="aLinkCustom" 
                                            class="md-input" 
-                                           value="${article.link_url || ''}"
-                                           placeholder="/customer">
-                                    <small class="field-hint">💡 Mặc định: /customer (trang đặt món)</small>
+                                           placeholder="https://..."
+                                           style="display: none; margin-top: 8px;">
+                                    <small class="field-hint">💡 Chọn trang đích hoặc nhập link tùy chỉnh</small>
                                 </div>
                                 <div class="form-group">
                                     <label>Tên nút bấm</label>
@@ -855,6 +862,19 @@ const ArticlesManager = {
                     const count = this.value.length;
                     document.getElementById('excerptCount').textContent = count;
                 });
+                
+                // Toggle custom link input
+                document.getElementById('aLink').addEventListener('change', function() {
+                    const customInput = document.getElementById('aLinkCustom');
+                    if (this.value === 'custom') {
+                        customInput.style.display = 'block';
+                        customInput.required = true;
+                    } else {
+                        customInput.style.display = 'none';
+                        customInput.required = false;
+                    }
+                });
+                
                 // Initialize counter
                 setTimeout(() => {
                     const excerptEl = document.getElementById('aExcerpt');
@@ -870,12 +890,19 @@ const ArticlesManager = {
 
     async saveArticle() {
         const id = this.state.currentEdit ? this.state.currentEdit.id : undefined;
+
+        // Get link URL (from dropdown or custom input)
+        const linkSelect = document.getElementById('aLink');
+        const linkUrl = linkSelect.value === 'custom'
+            ? document.getElementById('aLinkCustom').value
+            : linkSelect.value;
+
         const data = {
             title: document.getElementById('aTitle').value,
             category: document.getElementById('aCategory').value,
             icon: document.getElementById('aIcon').value,
             excerpt: document.getElementById('aExcerpt').value,
-            link_url: document.getElementById('aLink').value,
+            link_url: linkUrl,
             link_text: document.getElementById('aBtnText').value,
             published_at: document.getElementById('aDate').value ? new Date(document.getElementById('aDate').value).toISOString() : new Date().toISOString(),
             is_active: document.getElementById('aActive').checked
