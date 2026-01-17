@@ -4,7 +4,11 @@
     "rewrites": [
         {
             "source": "/",
-            "destination": "/index.html"
+            "destination": "/landing.html"
+        },
+        {
+            "source": "/home",
+            "destination": "/landing.html"
         },
         {
             "source": "/customer",

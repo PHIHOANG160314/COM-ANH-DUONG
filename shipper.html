@@ -14,7 +14,7 @@
 
     <!-- SEO -->
     <meta name="description"
-        content="Shipper Portal - Ánh Dương F&B. Quản lý đơn giao hàng, theo dõi thu nhập và đánh giá.">
+        content="Shipper Portal - Ánh Dương F&amp;B. Quản lý đơn giao hàng, theo dõi thu nhập và đánh giá.">
 
     <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -23,6 +23,19 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/m3-design-system.css">
     <link rel="stylesheet" href="css/shipper.css">
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: blob: https:;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
 </head>
 
 <body>
@@ -33,7 +46,7 @@
                 <img src="logo.jpg" alt="Ánh Dương" class="logo-img">
                 <div class="header-title">
                     <h1>Shipper</h1>
-                    <span class="header-subtitle" id="shipperName">Ánh Dương F&B</span>
+                    <span class="header-subtitle" id="shipperName">Ánh Dương F&amp;B</span>
                 </div>
             </div>
             <div class="header-right">
@@ -253,6 +266,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/env.js"></script>
+    <script src="js/secure-storage.js"></script>
     <script src="js/debug.js"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/shipper.js"></script>

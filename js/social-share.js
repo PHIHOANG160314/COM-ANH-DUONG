@@ -262,188 +262,20 @@ const SocialShare = {
     },
 
     injectStyles() {
+        // Styles now loaded from external CSS file: css/social-share.css
+        // This function is kept for backward compatibility
         if (document.getElementById('socialShareStyles')) return;
 
-        const style = document.createElement('style');
-        style.id = 'socialShareStyles';
-        style.textContent = `
-            .share-modal, .review-modal {
-                position: fixed;
-                inset: 0;
-                z-index: 2000;
-                display: flex;
-                align-items: flex-end;
-            }
+        // Check if external CSS is already loaded
+        const existingLink = document.querySelector('link[href*="social-share.css"]');
+        if (existingLink) return;
 
-            .share-modal-overlay, .review-modal-overlay {
-                position: absolute;
-                inset: 0;
-                background: rgba(0,0,0,0.5);
-            }
-
-            .share-modal-content, .review-modal-content {
-                position: relative;
-                width: 100%;
-                background: var(--bg-card, #1e1e3a);
-                border-radius: 24px 24px 0 0;
-                padding: 20px;
-                padding-bottom: calc(20px + env(safe-area-inset-bottom));
-                animation: slideUp 0.3s ease;
-            }
-
-            .share-modal-header, .review-modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-
-            .share-modal-header h3, .review-modal-header h3 {
-                font-size: 1.1rem;
-                margin: 0;
-            }
-
-            .share-close-btn, .review-close-btn {
-                width: 36px;
-                height: 36px;
-                border: none;
-                background: rgba(255,255,255,0.1);
-                color: white;
-                border-radius: 50%;
-                font-size: 1rem;
-                cursor: pointer;
-            }
-
-            .share-buttons {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-
-            .share-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                padding: 16px;
-                border: none;
-                border-radius: 16px;
-                font-size: 0.9rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-
-            .share-btn:active {
-                transform: scale(0.97);
-            }
-
-            .share-btn.facebook { background: #1877f2; color: white; }
-            .share-btn.zalo { background: #0068ff; color: white; }
-            .share-btn.twitter { background: #1da1f2; color: white; }
-            .share-btn.copy { background: rgba(255,255,255,0.1); color: white; }
-
-            .rating-stars-input {
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                font-size: 2.5rem;
-                margin-bottom: 16px;
-            }
-
-            .rating-stars-input .star {
-                cursor: pointer;
-                color: #fbbf24;
-                transition: transform 0.2s;
-            }
-
-            .rating-stars-input .star:hover {
-                transform: scale(1.2);
-            }
-
-            .rating-stars-input .star.active {
-                animation: starPop 0.3s ease;
-            }
-
-            @keyframes starPop {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.3); }
-                100% { transform: scale(1); }
-            }
-
-            #reviewText {
-                width: 100%;
-                padding: 16px;
-                background: rgba(255,255,255,0.05);
-                border: 1px solid rgba(255,255,255,0.1);
-                border-radius: 16px;
-                color: white;
-                font-size: 0.9rem;
-                resize: none;
-                margin-bottom: 16px;
-            }
-
-            .photo-upload {
-                margin-bottom: 16px;
-            }
-
-            .photo-upload-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 12px 20px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 12px;
-                color: white;
-                cursor: pointer;
-            }
-
-            #reviewPhoto {
-                display: none;
-            }
-
-            #photoPreview {
-                position: relative;
-                margin-top: 12px;
-            }
-
-            .photo-preview-img {
-                max-width: 100%;
-                max-height: 150px;
-                border-radius: 12px;
-            }
-
-            .photo-remove-btn {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                width: 28px;
-                height: 28px;
-                border: none;
-                background: rgba(0,0,0,0.7);
-                color: white;
-                border-radius: 50%;
-                cursor: pointer;
-            }
-
-            .submit-review-btn {
-                width: 100%;
-                padding: 16px;
-                background: linear-gradient(135deg, var(--primary, #6366f1), var(--secondary, #10b981));
-                border: none;
-                border-radius: 16px;
-                color: white;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-            }
-
-            @keyframes slideUp {
-                from { transform: translateY(100%); }
-                to { transform: translateY(0); }
-            }
-        `;
-        document.head.appendChild(style);
+        // Dynamically load external CSS if not present
+        const link = document.createElement('link');
+        link.id = 'socialShareStyles';
+        link.rel = 'stylesheet';
+        link.href = 'css/social-share.css';
+        document.head.appendChild(link);
     }
 };
 

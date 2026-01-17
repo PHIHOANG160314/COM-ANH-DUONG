@@ -12,6 +12,11 @@ function formatNumber(num) {
     return num.toLocaleString('vi-VN');
 }
 
+// Format price (consolidated from multiple files)
+function formatPrice(amount) {
+    return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
+}
+
 // Get current date formatted
 function getCurrentDate() {
     const now = new Date();
@@ -181,6 +186,7 @@ function debounce(func, wait) {
 window.utils = {
     formatCurrency,
     formatNumber,
+    formatPrice,
     getCurrentDate,
     getCurrentTime,
     generateId,

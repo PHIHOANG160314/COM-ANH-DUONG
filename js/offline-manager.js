@@ -5,8 +5,9 @@
 
 const OfflineManager = {
     DB_NAME: 'fb-master-offline',
-    DB_VERSION: 1,
+    DB_VERSION: 2, // Increment version for schema change
     db: null,
+    syncInProgress: false,
 
     // ========================================
     // INITIALIZATION
@@ -40,20 +41,18 @@ const OfflineManager = {
                     db.createObjectStore('menu_cache', { keyPath: 'id' });
                 }
 
-                // Store for pending orders (offline orders)
-                if (!db.objectStoreNames.contains('pending_orders')) {
-                    const orderStore = db.createObjectStore('pending_orders', { keyPath: 'id', autoIncrement: true });
-                    orderStore.createIndex('status', 'status', { unique: false });
-                    orderStore.createIndex('createdAt', 'createdAt', { unique: false });
+                // Store for offline actions queue (Generic)
+                if (!db.objectStoreNames.contains('offline_queue')) {
+                    const queueStore = db.createObjectStore('offline_queue', { keyPath: 'id' });
+                    queueStore.createIndex('timestamp', 'timestamp', { unique: false });
                 }
 
-                // Store for order history
-                if (!db.objectStoreNames.contains('order_history')) {
-                    const historyStore = db.createObjectStore('order_history', { keyPath: 'id' });
-                    historyStore.createIndex('createdAt', 'createdAt', { unique: false });
+                // Remove old pending_orders if exists (migration)
+                if (db.objectStoreNames.contains('pending_orders')) {
+                    db.deleteObjectStore('pending_orders');
                 }
 
-                if (window.Debug) Debug.info('IndexedDB schema created');
+                if (window.Debug) Debug.info('IndexedDB schema updated');
             };
         });
     },
@@ -66,9 +65,9 @@ const OfflineManager = {
     setupOnlineListener() {
         window.addEventListener('online', () => {
             this.isOnline = true;
-            if (window.Debug) Debug.info('Online - syncing pending orders...');
+            if (window.Debug) Debug.info('Online - syncing offline queue...');
             this.showStatus('online');
-            this.syncPendingOrders();
+            this.syncQueue();
         });
 
         window.addEventListener('offline', () => {
@@ -82,7 +81,6 @@ const OfflineManager = {
     },
 
     showStatus(status) {
-        // Remove existing indicator
         let indicator = document.getElementById('offlineIndicator');
 
         if (status === 'offline') {
@@ -92,7 +90,7 @@ const OfflineManager = {
                 indicator.className = 'offline-indicator';
                 indicator.innerHTML = `
                     <span class="offline-icon">📴</span>
-                    <span class="offline-text">Offline Mode</span>
+                    <span class="offline-text">Chế độ Offline</span>
                 `;
                 document.body.appendChild(indicator);
             }
@@ -110,236 +108,198 @@ const OfflineManager = {
     // ========================================
     async cacheMenu(menuItems) {
         if (!this.db) return;
-
-        const tx = this.db.transaction('menu_cache', 'readwrite');
-        const store = tx.objectStore('menu_cache');
-
-        // Clear existing cache
-        await store.clear();
-
-        // Add all menu items
-        for (const item of menuItems) {
-            store.put(item);
+        try {
+            const tx = this.db.transaction('menu_cache', 'readwrite');
+            const store = tx.objectStore('menu_cache');
+            await store.clear();
+            for (const item of menuItems) {
+                store.put(item);
+            }
+            if (window.Debug) Debug.info('Cached', menuItems.length, 'menu items');
+        } catch (e) {
+            console.error('Cache menu failed', e);
         }
-
-        if (window.Debug) Debug.info('Cached', menuItems.length, 'menu items');
     },
 
     async getCachedMenu() {
         if (!this.db) return [];
-
         return new Promise((resolve) => {
             const tx = this.db.transaction('menu_cache', 'readonly');
             const store = tx.objectStore('menu_cache');
             const request = store.getAll();
-
-            request.onsuccess = () => {
-                resolve(request.result || []);
-            };
-
-            request.onerror = () => {
-                resolve([]);
-            };
+            request.onsuccess = () => resolve(request.result || []);
+            request.onerror = () => resolve([]);
         });
     },
 
     // ========================================
-    // PENDING ORDERS (OFFLINE QUEUE)
+    // QUEUE MANAGEMENT
     // ========================================
-    async queueOrder(order) {
+
+    // Add action to offline queue
+    async enqueueAction(action, data) {
         if (!this.db) {
-            // Fallback to localStorage
-            const pending = JSON.parse(localStorage.getItem('pending_orders') || '[]');
-            pending.push({ ...order, offlineId: 'OFF-' + Date.now(), status: 'pending_sync' });
-            localStorage.setItem('pending_orders', JSON.stringify(pending));
-            if (window.Debug) Debug.info('Order queued to localStorage (fallback)');
+            console.warn('DB not ready, using localStorage fallback');
+            // Simple fallback
+            this.fallbackEnqueue(action, data);
             return;
         }
 
+        const item = {
+            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+            action,
+            data,
+            timestamp: new Date().toISOString(),
+            retries: 0
+        };
+
         return new Promise((resolve, reject) => {
-            const tx = this.db.transaction('pending_orders', 'readwrite');
-            const store = tx.objectStore('pending_orders');
-
-            const orderData = {
-                ...order,
-                offlineId: 'OFF-' + Date.now(),
-                status: 'pending_sync',
-                createdAt: new Date().toISOString()
-            };
-
-            const request = store.add(orderData);
+            const tx = this.db.transaction('offline_queue', 'readwrite');
+            const store = tx.objectStore('offline_queue');
+            const request = store.add(item);
 
             request.onsuccess = () => {
-                if (window.Debug) Debug.info('Order queued offline:', orderData.offlineId);
+                if (window.Debug) Debug.info('📥 Queued offline action:', action);
                 this.registerBackgroundSync();
-                resolve(orderData);
+                resolve(item);
             };
 
-            request.onerror = () => {
-                reject(request.error);
-            };
+            request.onerror = () => reject(request.error);
         });
     },
 
-    async getPendingOrders() {
-        if (!this.db) {
-            return JSON.parse(localStorage.getItem('pending_orders') || '[]');
-        }
+    // Get all queued items
+    async getQueue() {
+        if (!this.db) return this.fallbackGetQueue();
 
         return new Promise((resolve) => {
-            const tx = this.db.transaction('pending_orders', 'readonly');
-            const store = tx.objectStore('pending_orders');
-            const index = store.index('status');
-            const request = index.getAll('pending_sync');
-
-            request.onsuccess = () => {
-                resolve(request.result || []);
-            };
-
-            request.onerror = () => {
-                resolve([]);
-            };
+            const tx = this.db.transaction('offline_queue', 'readonly');
+            const store = tx.objectStore('offline_queue');
+            const request = store.getAll();
+            request.onsuccess = () => resolve(request.result || []);
+            request.onerror = () => resolve([]);
         });
     },
 
-    async markOrderSynced(orderId) {
+    // Remove item from queue
+    async dequeueItem(id) {
         if (!this.db) return;
-
-        const tx = this.db.transaction('pending_orders', 'readwrite');
-        const store = tx.objectStore('pending_orders');
-
-        const request = store.get(orderId);
-        request.onsuccess = () => {
-            const order = request.result;
-            if (order) {
-                order.status = 'synced';
-                store.put(order);
-                if (window.Debug) Debug.info('Order synced:', orderId);
-            }
-        };
+        const tx = this.db.transaction('offline_queue', 'readwrite');
+        const store = tx.objectStore('offline_queue');
+        store.delete(id);
     },
 
     // ========================================
-    // BACKGROUND SYNC
+    // SYNC LOGIC
+    // ========================================
+    async syncQueue() {
+        if (this.syncInProgress || !this.isOnline) return;
+
+        const queue = await this.getQueue();
+        if (queue.length === 0) return;
+
+        this.syncInProgress = true;
+        if (window.Debug) Debug.info('🔄 Syncing', queue.length, 'offline actions...');
+
+        let successCount = 0;
+
+        for (const item of queue) {
+            try {
+                const result = await this.executeAction(item);
+
+                if (result.success || (result.error && !this.isRetryable(result.error))) {
+                    // Success or fatal error -> remove from queue
+                    await this.dequeueItem(item.id);
+                    successCount++;
+                    if (result.success && window.Debug) Debug.info('✅ Synced action:', item.action);
+                } else {
+                    // Retryable error -> keep in queue, maybe increment retry count
+                    if (window.Debug) Debug.warn('⚠️ Sync failed, keeping in queue:', item.action);
+                }
+            } catch (e) {
+                console.error('Sync execution error:', e);
+            }
+        }
+
+        this.syncInProgress = false;
+
+        if (successCount > 0) {
+            this.showToast(`Đã đồng bộ ${successCount} dữ liệu offline`);
+        }
+    },
+
+    async executeAction(item) {
+        // Need SupabaseService
+        if (typeof SupabaseService === 'undefined') return { success: false, error: 'SupabaseService not found' };
+
+        switch (item.action) {
+            case 'createOrder':
+                return await SupabaseService.createOrder(item.data);
+            case 'updateOrderStatus':
+                return await SupabaseService.updateOrderStatus(item.data.orderId, item.data.status);
+            case 'upsertCustomer':
+                return await SupabaseService.upsertCustomer(item.data);
+            default:
+                console.warn('Unknown offline action:', item.action);
+                return { success: false, error: 'Unknown action' };
+        }
+    },
+
+    isRetryable(error) {
+        // Simple check for network-related errors
+        const msg = typeof error === 'string' ? error : error.message || '';
+        return msg.includes('Network') || msg.includes('Failed to fetch') || msg.includes('connection');
+    },
+
+    // ========================================
+    // BACKGROUND SYNC & UTILS
     // ========================================
     async registerBackgroundSync() {
         if ('serviceWorker' in navigator && 'SyncManager' in window) {
             try {
                 const registration = await navigator.serviceWorker.ready;
-                await registration.sync.register('sync-orders');
-                if (window.Debug) Debug.info('Background sync registered');
+                await registration.sync.register('sync-offline-queue');
             } catch (err) {
-                if (window.Debug) Debug.warn('Background sync not available, will sync manually');
+                // Ignore if not supported
             }
         }
     },
 
-    async syncPendingOrders() {
-        const pendingOrders = await this.getPendingOrders();
-
-        if (pendingOrders.length === 0) {
-            if (window.Debug) Debug.info('No pending orders to sync');
-            return;
-        }
-
-        if (window.Debug) Debug.info('Syncing', pendingOrders.length, 'pending orders...');
-
-        for (const order of pendingOrders) {
-            try {
-                // Check if Supabase is available
-                if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
-                    const result = await SupabaseService.createOrder({
-                        order_number: order.offlineId,
-                        customer_name: order.customerName || 'Khách',
-                        customer_phone: order.customerPhone || '',
-                        items: JSON.stringify(order.items),
-                        subtotal: order.subtotal,
-                        discount: order.discount || 0,
-                        total: order.total,
-                        status: 'pending',
-                        order_type: order.orderType || 'dinein',
-                        notes: order.notes || ''
-                    });
-
-                    if (!result.error) {
-                        await this.markOrderSynced(order.id);
-                        this.showToast(`✅ Đã đồng bộ đơn ${order.offlineId}`);
-                    }
-                } else {
-                    // Local sync - just move to order history
-                    await this.saveToHistory(order);
-                    await this.markOrderSynced(order.id);
-                }
-            } catch (err) {
-                if (window.Debug) Debug.error('Failed to sync order:', order.offlineId, err);
-            }
-        }
-
-        if (window.Debug) Debug.info('Sync completed');
-    },
-
-    // ========================================
-    // ORDER HISTORY
-    // ========================================
-    async saveToHistory(order) {
-        if (!this.db) {
-            const history = JSON.parse(localStorage.getItem('order_history') || '[]');
-            history.unshift(order);
-            localStorage.setItem('order_history', JSON.stringify(history.slice(0, 50)));
-            return;
-        }
-
-        const tx = this.db.transaction('order_history', 'readwrite');
-        const store = tx.objectStore('order_history');
-        store.put(order);
-    },
-
-    async getOrderHistory() {
-        if (!this.db) {
-            return JSON.parse(localStorage.getItem('order_history') || '[]');
-        }
-
-        return new Promise((resolve) => {
-            const tx = this.db.transaction('order_history', 'readonly');
-            const store = tx.objectStore('order_history');
-            const request = store.getAll();
-
-            request.onsuccess = () => {
-                const orders = request.result || [];
-                orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                resolve(orders.slice(0, 50));
-            };
-
-            request.onerror = () => {
-                resolve([]);
-            };
+    fallbackEnqueue(action, data) {
+        const queue = this.fallbackGetQueue();
+        queue.push({
+            id: Date.now(),
+            action,
+            data,
+            timestamp: new Date().toISOString()
         });
+        localStorage.setItem('offline_queue_backup', JSON.stringify(queue));
     },
 
-    // ========================================
-    // UTILITIES
-    // ========================================
-    showToast(message, type = 'success') {
+    fallbackGetQueue() {
+        return JSON.parse(localStorage.getItem('offline_queue_backup') || '[]');
+    },
+
+    showToast(message) {
         if (typeof Toast !== 'undefined') {
-            Toast.show(message, type);
+            Toast.show(message, 'success');
         } else {
-            if (window.Debug) Debug.info(message);
+            console.log(message);
         }
     },
 
-    // Get pending order count
+    // Check pending count
     async getPendingCount() {
-        const pending = await this.getPendingOrders();
-        return pending.length;
+        const queue = await this.getQueue();
+        return queue.length;
     }
 };
 
 // Auto-initialize
 document.addEventListener('DOMContentLoaded', () => {
     OfflineManager.init().then(() => {
-        if (window.Debug) Debug.info('Offline Manager ready');
+        if (window.Debug) Debug.info('Offline Manager ready (v2)');
     });
 });
 
-// Export
 window.OfflineManager = OfflineManager;

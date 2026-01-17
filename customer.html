@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/m3-wow-effects.css">
     <link rel="stylesheet" href="css/customer-mobile-wow.css">
+    <link rel="stylesheet" href="css/social-share.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -52,6 +53,19 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Ánh Dương - Menu &amp; Đặt Hàng Online">
     <meta name="twitter:description" content="Nhà hàng Ánh Dương - Đồ ăn ngon, giao hàng nhanh!">
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: blob: https:;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
 </head>
 
 <body>
@@ -471,20 +485,72 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="js/env.js"></script>
+    <script src="js/secure-storage.js"></script>
     <script src="js/error-tracker.js"></script>
     <script src="js/analytics-tracker.js"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/offline-manager.js"></script>
     <script src="js/api-service.js"></script>
     <script src="js/data.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/menu-hierarchy.js"></script>
     <script src="js/customer-app.js"></script>
     <script src="js/pwa-utils.js"></script>
-    <script src="js/confetti.js"></script>
+    <!-- Non-critical: Lazy loaded -->
     <script src="js/mobile-ux.js"></script>
     <script src="js/mobile-nav.js"></script>
-    <script src="js/loyalty-game.js"></script>
-    <script src="js/social-share.js"></script>
+
+    <!-- Lazy load non-critical modules for better performance -->
+    <script>
+        // Lazy load confetti when needed (checkout success)
+        window.loadConfetti = async function () {
+            if (window.Confetti) return window.Confetti;
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'js/confetti.js';
+                script.onload = () => resolve(window.Confetti);
+                document.head.appendChild(script);
+            });
+        };
+
+        // Lazy load loyalty game when loyalty section is shown
+        window.loadLoyaltyGame = async function () {
+            if (window.LoyaltyGame) return window.LoyaltyGame;
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'js/loyalty-game.js';
+                script.onload = () => resolve(window.LoyaltyGame);
+                document.head.appendChild(script);
+            });
+        };
+
+        // Lazy load social share when share is triggered
+        window.loadSocialShare = async function () {
+            if (window.SocialShare) return window.SocialShare;
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'js/social-share.js';
+                script.onload = () => resolve(window.SocialShare);
+                document.head.appendChild(script);
+            });
+        };
+
+        // Load modules after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                // Preload these modules in idle time
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => loadConfetti());
+                    requestIdleCallback(() => loadLoyaltyGame());
+                    requestIdleCallback(() => loadSocialShare());
+                } else {
+                    setTimeout(() => loadConfetti(), 2000);
+                    setTimeout(() => loadLoyaltyGame(), 2500);
+                    setTimeout(() => loadSocialShare(), 3000);
+                }
+            }, 1000);
+        });
+    </script>
     <script src="js/table-reservation.js"></script>
     <script src="js/push-notifications.js"></script>
     <script src="js/theme-manager.js"></script>
@@ -493,7 +559,6 @@
     <script src="js/admin-dashboard.js"></script>
     <script src="js/mobile-pagination-enhanced.js"></script>
     <script src="js/performance-optimizer.js"></script>
-    <script src="js/offline-manager.js"></script>
 
     <!-- Service Worker Registration -->
     <script>

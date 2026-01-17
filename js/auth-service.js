@@ -1,6 +1,7 @@
 // =====================================================
 // AUTH SERVICE - ÁNH DƯƠNG F&B
 // Unified authentication with rate limiting & sessions
+// Integrated with SecureStorage for encrypted sessions
 // =====================================================
 
 const AuthService = {
@@ -9,6 +10,9 @@ const AuthService = {
     SESSION_DURATION: 8 * 60 * 60 * 1000, // 8 hours
     MAX_ATTEMPTS: 5,
     LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
+
+    // Enable SecureStorage if available
+    _useSecureStorage: true,
 
     // Rate limiting storage
     _attempts: {},
@@ -63,10 +67,22 @@ const AuthService = {
     },
 
     // =====================================================
-    // SESSION MANAGEMENT
+    // SESSION MANAGEMENT (SecureStorage Integrated)
     // =====================================================
 
-    createSession(user, portal = 'admin') {
+    /**
+     * Check if SecureStorage is available and ready
+     */
+    _isSecureStorageReady() {
+        return this._useSecureStorage &&
+            typeof SecureStorage !== 'undefined' &&
+            SecureStorage._initialized;
+    },
+
+    /**
+     * Create encrypted session
+     */
+    async createSession(user, portal = 'admin') {
         const session = {
             user: {
                 id: user.id,
@@ -80,14 +96,63 @@ const AuthService = {
             token: this._generateToken()
         };
 
-        localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+        // Try SecureStorage first, fallback to localStorage
+        if (this._isSecureStorageReady()) {
+            await SecureStorage.setItem(this.SESSION_KEY, session);
+            if (window.Debug) Debug.info('🔐 Secure session created for:', user.name);
+        } else {
+            localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+            if (window.Debug) Debug.info('🔐 Session created for:', user.name);
+        }
 
-        if (window.Debug) Debug.info('🔐 Session created for:', user.name);
         return session;
     },
 
+    /**
+     * Get session (async - supports SecureStorage)
+     */
+    async getSessionAsync() {
+        try {
+            // Try SecureStorage first
+            if (this._isSecureStorageReady()) {
+                const session = await SecureStorage.getItem(this.SESSION_KEY);
+                if (session) return session;
+            }
+
+            // Fallback to plain localStorage (for migration)
+            const data = localStorage.getItem(this.SESSION_KEY);
+            if (data) {
+                const session = JSON.parse(data);
+
+                // Auto-migrate to SecureStorage
+                if (this._isSecureStorageReady()) {
+                    await SecureStorage.setItem(this.SESSION_KEY, session);
+                    localStorage.removeItem(this.SESSION_KEY);
+                    if (window.Debug) Debug.info('🔐 Session migrated to SecureStorage');
+                }
+
+                return session;
+            }
+
+            return null;
+        } catch (err) {
+            if (window.Debug) Debug.warn('getSessionAsync error:', err);
+            return null;
+        }
+    },
+
+    /**
+     * Synchronous session getter (for backward compatibility)
+     * Note: Cannot decrypt SecureStorage synchronously
+     */
     getSession() {
         try {
+            // Check for cached session (set during validation)
+            if (this._cachedSession && Date.now() < this._cachedSession.expiresAt) {
+                return this._cachedSession;
+            }
+
+            // Try plain localStorage (backward compatible)
             const data = localStorage.getItem(this.SESSION_KEY);
             return data ? JSON.parse(data) : null;
         } catch {
@@ -95,6 +160,29 @@ const AuthService = {
         }
     },
 
+    /**
+     * Validate session (async)
+     */
+    async validateSessionAsync() {
+        const session = await this.getSessionAsync();
+
+        if (!session) return null;
+
+        // Check expiration
+        if (Date.now() > session.expiresAt) {
+            await this.logoutAsync();
+            return null;
+        }
+
+        // Cache for synchronous access
+        this._cachedSession = session;
+
+        return session;
+    },
+
+    /**
+     * Synchronous validation (backward compatible)
+     */
     validateSession() {
         const session = this.getSession();
 
@@ -109,6 +197,23 @@ const AuthService = {
         return session;
     },
 
+    /**
+     * Refresh session expiration
+     */
+    async refreshSessionAsync() {
+        const session = await this.validateSessionAsync();
+        if (session) {
+            session.expiresAt = Date.now() + this.SESSION_DURATION;
+
+            if (this._isSecureStorageReady()) {
+                await SecureStorage.setItem(this.SESSION_KEY, session);
+            } else {
+                localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+            }
+        }
+        return session;
+    },
+
     refreshSession() {
         const session = this.validateSession();
         if (session) {
@@ -118,8 +223,24 @@ const AuthService = {
         return session;
     },
 
+    /**
+     * Logout and clear session
+     */
+    async logoutAsync() {
+        if (this._isSecureStorageReady()) {
+            SecureStorage.removeItem(this.SESSION_KEY);
+        }
+        localStorage.removeItem(this.SESSION_KEY);
+        this._cachedSession = null;
+        if (window.Debug) Debug.info('🔓 Session cleared');
+    },
+
     logout() {
         localStorage.removeItem(this.SESSION_KEY);
+        if (SecureStorage && typeof SecureStorage.removeItem === 'function') {
+            SecureStorage.removeItem(this.SESSION_KEY);
+        }
+        this._cachedSession = null;
         if (window.Debug) Debug.info('🔓 Session cleared');
     },
 

@@ -14,10 +14,8 @@ const APIService = {
         'default': 'Đã có lỗi xảy ra'
     },
 
-    // Request queue for offline mode
-    offlineQueue: [],
+    // Request queue for offline mode (Delegated to OfflineManager)
     isOnline: navigator.onLine,
-    syncInProgress: false,
 
     // =====================================================
     // INITIALIZATION
@@ -28,12 +26,10 @@ const APIService = {
         window.addEventListener('online', () => this.handleOnline());
         window.addEventListener('offline', () => this.handleOffline());
 
-        // Load offline queue from storage
-        this.loadOfflineQueue();
-
         // Sync if online
         if (this.isOnline) {
-            this.syncOfflineQueue();
+            // Delay slightly to ensure OfflineManager is ready
+            setTimeout(() => this.syncOfflineQueue(), 1000);
         }
 
         if (window.Debug) Debug.info('APIService initialized');
@@ -53,124 +49,27 @@ const APIService = {
     },
 
     showConnectionStatus(online) {
-        // Show/hide offline indicator
-        let indicator = document.getElementById('connection-status');
-        if (!indicator) {
-            indicator = document.createElement('div');
-            indicator.id = 'connection-status';
-            indicator.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                padding: 8px;
-                text-align: center;
-                font-size: 14px;
-                font-weight: 500;
-                z-index: 10000;
-                transition: transform 0.3s;
-            `;
-            document.body.appendChild(indicator);
-        }
-
-        if (online) {
-            indicator.textContent = '✅ Đã kết nối lại';
-            indicator.style.background = '#10b981';
-            indicator.style.color = 'white';
-            indicator.style.transform = 'translateY(0)';
-            setTimeout(() => {
-                indicator.style.transform = 'translateY(-100%)';
-            }, 2000);
-        } else {
-            indicator.textContent = '📴 Chế độ offline - Dữ liệu sẽ đồng bộ khi có mạng';
-            indicator.style.background = '#f59e0b';
-            indicator.style.color = 'white';
-            indicator.style.transform = 'translateY(0)';
+        // Delegate UI to OfflineManager if available, or keep simple fallback
+        if (typeof OfflineManager !== 'undefined') {
+            OfflineManager.showStatus(online ? 'online' : 'offline');
         }
     },
 
     // =====================================================
-    // OFFLINE QUEUE MANAGEMENT
+    // OFFLINE QUEUE MANAGEMENT (Delegated to OfflineManager)
     // =====================================================
-
-    loadOfflineQueue() {
-        try {
-            const saved = localStorage.getItem('api_offline_queue');
-            this.offlineQueue = saved ? JSON.parse(saved) : [];
-        } catch (e) {
-            this.offlineQueue = [];
-        }
-    },
-
-    saveOfflineQueue() {
-        try {
-            localStorage.setItem('api_offline_queue', JSON.stringify(this.offlineQueue));
-        } catch (e) {
-            if (window.Debug) Debug.error('Failed to save offline queue');
-        }
-    },
 
     addToQueue(action, data) {
-        this.offlineQueue.push({
-            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-            action,
-            data,
-            timestamp: new Date().toISOString(),
-            retries: 0
-        });
-        this.saveOfflineQueue();
-        if (window.Debug) Debug.info('📥 Added to offline queue:', action);
+        if (typeof OfflineManager !== 'undefined') {
+            OfflineManager.enqueueAction(action, data);
+        } else {
+            console.error('OfflineManager not loaded');
+        }
     },
 
     async syncOfflineQueue() {
-        if (!this.isOnline || this.syncInProgress || this.offlineQueue.length === 0) {
-            return;
-        }
-
-        this.syncInProgress = true;
-        if (window.Debug) Debug.info('🔄 Syncing offline queue:', this.offlineQueue.length, 'items');
-
-        const failedItems = [];
-
-        for (const item of this.offlineQueue) {
-            try {
-                const result = await this.executeQueuedAction(item);
-                if (!result.success) {
-                    item.retries++;
-                    if (item.retries < 3) {
-                        failedItems.push(item);
-                    } else {
-                        if (window.Debug) Debug.error('Queue item failed after 3 retries:', item.action);
-                    }
-                }
-            } catch (e) {
-                item.retries++;
-                if (item.retries < 3) {
-                    failedItems.push(item);
-                }
-            }
-        }
-
-        this.offlineQueue = failedItems;
-        this.saveOfflineQueue();
-        this.syncInProgress = false;
-
-        if (failedItems.length === 0 && this.offlineQueue.length === 0) {
-            if (window.Debug) Debug.info('✅ Offline queue synced successfully');
-            this.showToast('Đã đồng bộ dữ liệu thành công!', 'success');
-        }
-    },
-
-    async executeQueuedAction(item) {
-        switch (item.action) {
-            case 'createOrder':
-                return await SupabaseService.createOrder(item.data);
-            case 'updateOrderStatus':
-                return await SupabaseService.updateOrderStatus(item.data.orderId, item.data.status);
-            case 'upsertCustomer':
-                return await SupabaseService.upsertCustomer(item.data);
-            default:
-                return { success: false, error: 'Unknown action' };
+        if (typeof OfflineManager !== 'undefined') {
+            await OfflineManager.syncQueue();
         }
     },
 
