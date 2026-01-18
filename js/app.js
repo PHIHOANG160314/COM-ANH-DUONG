@@ -114,7 +114,8 @@ const App = {
             staff: 'Quản Lý Nhân Viên',
             customers: 'Khách Hàng Thân Thiết',
             sops: 'SOPs - Quy Trình',
-            articles: 'Quản Lý Bài Viết'
+            articles: 'Quản Lý Bài Viết',
+            shippers: 'Quản Lý Shipper'
         };
         document.getElementById('pageTitle').textContent = titles[page] || page;
 
@@ -144,6 +145,7 @@ const App = {
         StaffManagement.init();
         CustomerLoyalty.init();
         if (window.ArticlesManager) ArticlesManager.init();
+        if (window.ShipperManager) ShipperManager.init();
         if (window.i18n) i18n.init();
         this.setupThemeToggle();
     },
