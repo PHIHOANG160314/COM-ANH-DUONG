@@ -30,6 +30,38 @@ const ShipperManager = {
                 </button>
             </div>
 
+            <!-- Stats Dashboard -->
+            <div class="shipper-stats-grid" id="shipperStats">
+                <div class="shipper-stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="statTotalShippers">0</span>
+                        <span class="stat-label">Tổng shipper</span>
+                    </div>
+                </div>
+                <div class="shipper-stat-card online">
+                    <div class="stat-icon">🟢</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="statOnlineShippers">0</span>
+                        <span class="stat-label">Đang online</span>
+                    </div>
+                </div>
+                <div class="shipper-stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="statTotalDeliveries">0</span>
+                        <span class="stat-label">Tổng đơn giao</span>
+                    </div>
+                </div>
+                <div class="shipper-stat-card earnings">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="statTotalEarnings">0đ</span>
+                        <span class="stat-label">Tổng hoa hồng</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="shippers-table-wrapper">
                 <table class="shippers-table">
                     <thead>
@@ -106,6 +138,60 @@ const ShipperManager = {
                 }
                 .active-yes { background: #e8f5e9; color: #2e7d32; }
                 .active-no { background: #ffebee; color: #c62828; }
+                
+                /* Stats Grid */
+                .shipper-stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 16px;
+                    margin-bottom: 24px;
+                }
+                .shipper-stat-card {
+                    background: var(--bg-card);
+                    border-radius: 16px;
+                    padding: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    border: 1px solid var(--border);
+                    transition: transform 0.2s, box-shadow 0.2s;
+                }
+                .shipper-stat-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+                }
+                .shipper-stat-card .stat-icon {
+                    font-size: 2rem;
+                    width: 56px;
+                    height: 56px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: var(--bg-surface);
+                    border-radius: 12px;
+                }
+                .shipper-stat-card.online .stat-icon { background: #e8f5e9; }
+                .shipper-stat-card.earnings .stat-icon { background: #fff8e1; }
+                .shipper-stat-card .stat-content {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .shipper-stat-card .stat-value {
+                    font-size: 1.75rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                }
+                .shipper-stat-card .stat-label {
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    margin-top: 2px;
+                }
+                @media (max-width: 900px) {
+                    .shipper-stats-grid { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 500px) {
+                    .shipper-stats-grid { grid-template-columns: 1fr; }
+                }
             </style>
         `;
     },
@@ -151,6 +237,28 @@ const ShipperManager = {
 
         this.state.shippers = shippers || [];
         this.renderTable();
+        this.updateStats();
+    },
+
+    updateStats() {
+        const shippers = this.state.shippers;
+
+        // Calculate totals
+        const totalShippers = shippers.length;
+        const onlineShippers = shippers.filter(s => s.status === 'online' || s.status === 'busy').length;
+        const totalDeliveries = shippers.reduce((sum, s) => sum + (s.total_deliveries || 0), 0);
+        const totalEarnings = shippers.reduce((sum, s) => sum + (s.total_earnings || 0), 0);
+
+        // Update UI
+        const el = (id, val) => {
+            const elem = document.getElementById(id);
+            if (elem) elem.textContent = val;
+        };
+
+        el('statTotalShippers', totalShippers);
+        el('statOnlineShippers', onlineShippers);
+        el('statTotalDeliveries', totalDeliveries);
+        el('statTotalEarnings', totalEarnings.toLocaleString('vi-VN') + 'đ');
     },
 
     renderTable() {
