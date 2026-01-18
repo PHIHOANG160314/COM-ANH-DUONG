@@ -26,14 +26,23 @@ const ShipperApp = {
     init() {
         console.log('🛵 Shipper Portal v2.0 initializing...');
 
-        // Check existing login
-        const savedShipper = localStorage.getItem('shipper_session');
-        if (savedShipper) {
-            try {
-                this.currentShipper = JSON.parse(savedShipper);
+        // Check existing login from ShipperAuth
+        if (typeof ShipperAuth !== 'undefined') {
+            const session = ShipperAuth.getSession();
+            if (session) {
+                this.currentShipper = session;
                 this.onLoginSuccess();
-            } catch (e) {
-                localStorage.removeItem('shipper_session');
+            }
+        } else {
+            // Fallback to old localStorage method
+            const savedShipper = localStorage.getItem('shipper_session');
+            if (savedShipper) {
+                try {
+                    this.currentShipper = JSON.parse(savedShipper);
+                    this.onLoginSuccess();
+                } catch (e) {
+                    localStorage.removeItem('shipper_session');
+                }
             }
         }
 
@@ -88,8 +97,18 @@ const ShipperApp = {
         }
 
         try {
-            if (!this.isSupabaseReady()) {
-                // Demo mode - use hardcoded shippers
+            // Use ShipperAuth service with device lock and working hours
+            if (typeof ShipperAuth !== 'undefined' && this.isSupabaseReady()) {
+                const result = await ShipperAuth.login(phone, pin);
+
+                if (result.success) {
+                    this.currentShipper = result.shipper;
+                    this.onLoginSuccess();
+                } else {
+                    this.showToast(result.error || 'Đăng nhập thất bại', 'error');
+                }
+            } else if (!this.isSupabaseReady()) {
+                // Demo mode - use hardcoded shippers (for development only)
                 const demoShippers = {
                     '0901234567': { id: 'demo1', name: 'Shipper Demo', phone: '0901234567', pin: '1234', status: 'online', rating: 4.8, total_deliveries: 125, commission_rate: 15000 },
                     '0909876543': { id: 'demo2', name: 'Nguyễn Văn Shipper', phone: '0909876543', pin: '5678', status: 'online', rating: 4.5, total_deliveries: 89, commission_rate: 15000 }
@@ -104,15 +123,7 @@ const ShipperApp = {
                     this.showToast('Số điện thoại hoặc mã PIN không đúng', 'error');
                 }
             } else {
-                // Real login via Supabase
-                const result = await SupabaseService.loginShipper(phone, pin);
-                if (result.error) {
-                    this.showToast(result.error, 'error');
-                } else {
-                    this.currentShipper = result.data;
-                    localStorage.setItem('shipper_session', JSON.stringify(result.data));
-                    this.onLoginSuccess();
-                }
+                this.showToast('Lỗi kết nối, vui lòng thử lại', 'error');
             }
         } catch (err) {
             console.error('Login error:', err);
@@ -154,6 +165,11 @@ const ShipperApp = {
 
         this.stopLocationTracking();
         this.currentShipper = null;
+
+        // Clear both auth systems
+        if (typeof ShipperAuth !== 'undefined') {
+            ShipperAuth.logout();
+        }
         localStorage.removeItem('shipper_session');
 
         // Unsubscribe from realtime
