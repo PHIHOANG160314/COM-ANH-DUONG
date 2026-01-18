@@ -112,7 +112,9 @@ const ShipperManager = {
 
     async loadShippers() {
         const supabase = await getSupabase();
-        const { data, error } = await supabase
+
+        // Load shippers
+        const { data: shippers, error } = await supabase
             .from('shippers')
             .select('*')
             .order('created_at', { ascending: false });
@@ -122,7 +124,32 @@ const ShipperManager = {
             return;
         }
 
-        this.state.shippers = data || [];
+        // Load delivery stats for each shipper
+        const { data: stats, error: statsError } = await supabase
+            .from('delivery_assignments')
+            .select('shipper_id, status, commission')
+            .eq('status', 'delivered');
+
+        if (!statsError && stats) {
+            // Aggregate stats by shipper
+            const shipperStats = {};
+            stats.forEach(d => {
+                if (!shipperStats[d.shipper_id]) {
+                    shipperStats[d.shipper_id] = { count: 0, earnings: 0 };
+                }
+                shipperStats[d.shipper_id].count++;
+                shipperStats[d.shipper_id].earnings += (d.commission || 15000);
+            });
+
+            // Merge stats into shippers
+            shippers.forEach(s => {
+                const stat = shipperStats[s.id] || { count: 0, earnings: 0 };
+                s.total_deliveries = stat.count;
+                s.total_earnings = stat.earnings;
+            });
+        }
+
+        this.state.shippers = shippers || [];
         this.renderTable();
     },
 
