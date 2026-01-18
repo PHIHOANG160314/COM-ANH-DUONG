@@ -25,9 +25,14 @@ const ShipperManager = {
                     <h2>🚚 Quản Lý Shipper</h2>
                     <span class="shipper-count" id="shipperCount">0 shipper</span>
                 </div>
-                <button class="btn-primary btn-icon-text" onclick="ShipperManager.openModal()">
-                    <span>+</span> Thêm Shipper
-                </button>
+                <div class="header-actions">
+                    <button class="btn-secondary btn-icon-text" onclick="ShipperManager.openReport()">
+                        📊 Báo Cáo
+                    </button>
+                    <button class="btn-primary btn-icon-text" onclick="ShipperManager.openModal()">
+                        <span>+</span> Thêm Shipper
+                    </button>
+                </div>
             </div>
 
             <!-- Stats Dashboard -->
@@ -977,6 +982,276 @@ const ShipperManager = {
 
         toast.success('🗑️ Đã xóa shipper');
         this.loadShippers();
+    },
+
+    // ==================== REPORT ====================
+
+    openReport() {
+        // Default date range: current month
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+
+        const modalHtml = `
+            <div class="modal-overlay active" id="reportModal">
+                <div class="modal-container report-modal">
+                    <div class="modal-header">
+                        <h3>📊 Báo Cáo Shipper</h3>
+                        <button class="btn-close" onclick="document.getElementById('reportModal').remove()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="report-filters">
+                            <div class="filter-group">
+                                <label>Từ ngày</label>
+                                <input type="date" id="reportDateFrom" value="${firstDay}">
+                            </div>
+                            <div class="filter-group">
+                                <label>Đến ngày</label>
+                                <input type="date" id="reportDateTo" value="${lastDay}">
+                            </div>
+                            <button class="btn-primary" onclick="ShipperManager.loadReport()">
+                                🔍 Xem báo cáo
+                            </button>
+                        </div>
+                        
+                        <div class="report-content" id="reportContent">
+                            <p class="report-placeholder">Chọn khoảng thời gian và bấm "Xem báo cáo"</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" onclick="ShipperManager.exportReport()">
+                            📥 Xuất Excel
+                        </button>
+                        <button class="md-button" onclick="document.getElementById('reportModal').remove()">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+                .report-modal { max-width: 800px; width: 95%; }
+                .report-filters {
+                    display: flex;
+                    gap: 16px;
+                    align-items: flex-end;
+                    margin-bottom: 20px;
+                    padding: 16px;
+                    background: var(--bg-surface);
+                    border-radius: 12px;
+                }
+                .filter-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                }
+                .filter-group label { font-size: 0.85rem; color: var(--text-secondary); }
+                .filter-group input {
+                    padding: 10px 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
+                    background: var(--bg-card);
+                    color: var(--text-primary);
+                }
+                .report-content {
+                    max-height: 400px;
+                    overflow-y: auto;
+                }
+                .report-placeholder {
+                    text-align: center;
+                    color: var(--text-secondary);
+                    padding: 40px;
+                }
+                .report-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .report-table th, .report-table td {
+                    padding: 12px;
+                    border-bottom: 1px solid var(--border);
+                    text-align: left;
+                }
+                .report-table th {
+                    background: var(--bg-surface);
+                    font-weight: 600;
+                }
+                .report-table tr:hover { background: var(--bg-hover); }
+                .report-table tfoot tr {
+                    background: var(--bg-surface);
+                    font-weight: 700;
+                }
+                .report-summary {
+                    display: flex;
+                    gap: 20px;
+                    margin-bottom: 16px;
+                    padding: 16px;
+                    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+                    border-radius: 12px;
+                    color: white;
+                }
+                .summary-item {
+                    text-align: center;
+                    flex: 1;
+                }
+                .summary-value { font-size: 1.5rem; font-weight: 700; }
+                .summary-label { font-size: 0.8rem; opacity: 0.9; }
+            </style>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    },
+
+    async loadReport() {
+        const dateFrom = document.getElementById('reportDateFrom').value;
+        const dateTo = document.getElementById('reportDateTo').value;
+        const content = document.getElementById('reportContent');
+
+        if (!dateFrom || !dateTo) {
+            toast.error('Vui lòng chọn khoảng thời gian');
+            return;
+        }
+
+        content.innerHTML = '<p class="report-placeholder">⏳ Đang tải...</p>';
+
+        try {
+            const supabase = await getSupabase();
+
+            // Get deliveries in date range
+            const { data: deliveries, error } = await supabase
+                .from('delivery_assignments')
+                .select('shipper_id, commission, delivered_at, status')
+                .eq('status', 'delivered')
+                .gte('delivered_at', dateFrom + 'T00:00:00')
+                .lte('delivered_at', dateTo + 'T23:59:59');
+
+            if (error) throw error;
+
+            // Aggregate by shipper
+            const shipperData = {};
+            (deliveries || []).forEach(d => {
+                if (!shipperData[d.shipper_id]) {
+                    shipperData[d.shipper_id] = { count: 0, earnings: 0 };
+                }
+                shipperData[d.shipper_id].count++;
+                shipperData[d.shipper_id].earnings += (d.commission || 15000);
+            });
+
+            // Get shipper names
+            const shipperIds = Object.keys(shipperData);
+            let shippersInfo = {};
+
+            if (shipperIds.length > 0) {
+                const { data: shippers } = await supabase
+                    .from('shippers')
+                    .select('id, name, phone, commission_rate')
+                    .in('id', shipperIds);
+
+                (shippers || []).forEach(s => {
+                    shippersInfo[s.id] = s;
+                });
+            }
+
+            // Calculate totals
+            let totalOrders = 0;
+            let totalEarnings = 0;
+            const rows = shipperIds.map(id => {
+                const stat = shipperData[id];
+                const info = shippersInfo[id] || { name: 'Unknown', phone: '', commission_rate: 15000 };
+                totalOrders += stat.count;
+                totalEarnings += stat.earnings;
+                return { ...info, ...stat };
+            }).sort((a, b) => b.count - a.count);
+
+            // Render
+            if (rows.length === 0) {
+                content.innerHTML = '<p class="report-placeholder">📭 Không có dữ liệu trong khoảng thời gian này</p>';
+                return;
+            }
+
+            content.innerHTML = `
+                <div class="report-summary">
+                    <div class="summary-item">
+                        <div class="summary-value">${rows.length}</div>
+                        <div class="summary-label">Shipper</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value">${totalOrders}</div>
+                        <div class="summary-label">Đơn giao</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value">${totalEarnings.toLocaleString('vi-VN')}đ</div>
+                        <div class="summary-label">Tổng hoa hồng</div>
+                    </div>
+                </div>
+                
+                <table class="report-table" id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Shipper</th>
+                            <th>SĐT</th>
+                            <th>Đơn giao</th>
+                            <th>Hoa hồng/đơn</th>
+                            <th>Tổng hoa hồng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map((r, i) => `
+                            <tr>
+                                <td>${i + 1}</td>
+                                <td><strong>${r.name}</strong></td>
+                                <td>${r.phone}</td>
+                                <td>${r.count}</td>
+                                <td>${(r.commission_rate || 15000).toLocaleString('vi-VN')}đ</td>
+                                <td><strong>${r.earnings.toLocaleString('vi-VN')}đ</strong></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">TỔNG CỘNG</td>
+                            <td>${totalOrders}</td>
+                            <td>-</td>
+                            <td>${totalEarnings.toLocaleString('vi-VN')}đ</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
+
+            // Store for export
+            this.reportData = { rows, totalOrders, totalEarnings, dateFrom, dateTo };
+
+        } catch (err) {
+            console.error('Report error:', err);
+            content.innerHTML = '<p class="report-placeholder">⚠️ Lỗi tải báo cáo</p>';
+        }
+    },
+
+    exportReport() {
+        if (!this.reportData || !this.reportData.rows.length) {
+            toast.error('Chưa có dữ liệu để xuất');
+            return;
+        }
+
+        const { rows, totalOrders, totalEarnings, dateFrom, dateTo } = this.reportData;
+
+        // Create CSV content
+        let csv = 'STT,Shipper,SĐT,Đơn giao,Hoa hồng/đơn,Tổng hoa hồng\n';
+        rows.forEach((r, i) => {
+            csv += `${i + 1},"${r.name}","${r.phone}",${r.count},${r.commission_rate || 15000},${r.earnings}\n`;
+        });
+        csv += `TỔNG,,,"${totalOrders}",,${totalEarnings}\n`;
+
+        // Download
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `BaoCao_Shipper_${dateFrom}_${dateTo}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        toast.success('📥 Đã xuất file CSV');
     }
 };
 
