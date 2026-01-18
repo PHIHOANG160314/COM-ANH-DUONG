@@ -209,44 +209,50 @@ const ShipperManager = {
                                 <label>Tên Shipper *</label>
                                 <input type="text" id="sName" class="md-input" 
                                        value="${shipper.name}" 
-                                       placeholder="Nguyễn Văn A"
+                                       placeholder="Ví dụ: Nguyễn Hữu Cần"
                                        required>
+                                <small class="field-hint">💡 Họ tên đầy đủ của shipper để dễ nhận diện</small>
                             </div>
                             
                             <div class="form-group">
-                                <label>Số điện thoại *</label>
+                                <label>Số điện thoại * <small>(dùng để đăng nhập)</small></label>
                                 <input type="tel" id="sPhone" class="md-input" 
                                        value="${shipper.phone}" 
                                        placeholder="0901234567"
                                        pattern="[0-9]{10}"
                                        ${shipperId ? 'disabled' : ''}
                                        required>
-                                <small class="field-hint">10 chữ số, không có khoảng trắng</small>
+                                <small class="field-hint">📱 10 chữ số, không dấu cách. Shipper dùng SĐT này để đăng nhập</small>
                             </div>
 
                             ${!shipperId ? `
                             <div class="form-group">
-                                <label>Mã PIN (4 chữ số) *</label>
+                                <label>Mã PIN * <small>(4 chữ số bí mật)</small></label>
                                 <div style="display: flex; gap: 8px;">
                                     <input type="text" id="sPin" class="md-input" 
-                                           placeholder="0000" 
+                                           placeholder="1234" 
                                            pattern="[0-9]{4}"
                                            maxlength="4"
+                                           style="letter-spacing: 8px; font-weight: bold; font-size: 1.2rem;"
                                            required>
                                     <button type="button" class="btn-secondary" onclick="ShipperManager.generatePin()">
                                         🎲 Tạo ngẫu nhiên
                                     </button>
                                 </div>
-                                <small class="field-hint">⚠️ Lưu lại PIN để gửi cho shipper. Không thể xem lại!</small>
+                                <small class="field-hint" style="color: #f57c00;">
+                                    ⚠️ <strong>QUAN TRỌNG:</strong> Ghi lại PIN này để gửi cho shipper!<br>
+                                    PIN sẽ KHÔNG hiển thị lại sau khi tạo tài khoản.
+                                </small>
                             </div>
                             ` : ''}
 
                             <div class="form-group">
-                                <label>Hoa hồng/đơn (VNĐ)</label>
+                                <label>Hoa hồng mỗi đơn giao (VNĐ)</label>
                                 <input type="number" id="sCommission" class="md-input" 
                                        value="${shipper.commission_rate || 15000}" 
-                                       min="0" step="1000">
-                                <small class="field-hint">Mặc định: 15,000đ/đơn</small>
+                                       min="0" step="1000"
+                                       placeholder="15000">
+                                <small class="field-hint">💰 Mặc định: 15,000đ/đơn. Số tiền shipper nhận được mỗi khi giao hàng thành công</small>
                             </div>
 
                             <div class="modal-footer">
