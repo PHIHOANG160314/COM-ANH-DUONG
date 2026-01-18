@@ -291,6 +291,8 @@ const ShipperApp = {
 
     // Load available orders from Supabase
     async loadOrders() {
+        const container = document.getElementById('ordersList');
+
         try {
             console.log('🛵 Loading orders...');
 
@@ -305,6 +307,11 @@ const ShipperApp = {
             const result = await SupabaseService.getPendingDeliveryOrders();
             if (result.error) {
                 console.error('Failed to load orders', result.error);
+                this.orders = [];
+                if (container) {
+                    container.innerHTML = '<p class="no-orders">⚠️ Lỗi tải đơn hàng. Kéo xuống để thử lại.</p>';
+                }
+                this.updateStats();
                 return;
             }
 
@@ -315,6 +322,11 @@ const ShipperApp = {
 
         } catch (err) {
             console.error('Error loading orders', err);
+            this.orders = [];
+            if (container) {
+                container.innerHTML = '<p class="no-orders">⚠️ Không thể tải đơn hàng</p>';
+            }
+            this.updateStats();
         }
     },
 
