@@ -235,6 +235,146 @@ const SupabaseService = {
         }, 'updateOrderStatus');
     },
 
+    // ==================== SHIPPER ====================
+
+    // Get orders available for delivery (ready status, order_type = delivery)
+    async getPendingDeliveryOrders() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getPendingDeliveryOrders');
+
+            const { data, error } = await supabase
+                .from('orders')
+                .select('*')
+                .eq('order_type', 'delivery')
+                .in('status', ['pending', 'confirmed', 'preparing', 'ready'])
+                .order('created_at', { ascending: false });
+
+            if (error) return createErrorResponse(error, 'getPendingDeliveryOrders');
+            return createSuccessResponse(data || []);
+        }, 'getPendingDeliveryOrders');
+    },
+
+    // Update shipper status (online/offline/busy)
+    async updateShipperStatus(shipperId, status) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateShipperStatus');
+
+            const { data, error } = await supabase
+                .from('shippers')
+                .update({ status })
+                .eq('id', shipperId)
+                .select();
+
+            if (error) return createErrorResponse(error, 'updateShipperStatus');
+            return createSuccessResponse(data?.[0]);
+        }, 'updateShipperStatus');
+    },
+
+    // Get shipper's active deliveries
+    async getShipperDeliveries(shipperId, statuses = ['assigned', 'picked_up', 'delivering']) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getShipperDeliveries');
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .select('*, order:orders(*)')
+                .eq('shipper_id', shipperId)
+                .in('status', statuses)
+                .order('assigned_at', { ascending: false });
+
+            if (error) return createErrorResponse(error, 'getShipperDeliveries');
+            return createSuccessResponse(data || []);
+        }, 'getShipperDeliveries');
+    },
+
+    // Assign shipper to order
+    async assignShipperToDelivery(orderId, shipperId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'assignShipperToDelivery');
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .insert({
+                    order_id: orderId,
+                    shipper_id: shipperId,
+                    status: 'assigned',
+                    assigned_at: new Date().toISOString()
+                })
+                .select();
+
+            if (error) return createErrorResponse(error, 'assignShipperToDelivery');
+            return createSuccessResponse(data?.[0]);
+        }, 'assignShipperToDelivery');
+    },
+
+    // Update delivery status
+    async updateDeliveryStatus(assignmentId, status) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'updateDeliveryStatus');
+
+            const updateData = { status };
+            if (status === 'picked_up') updateData.picked_up_at = new Date().toISOString();
+            if (status === 'delivered') updateData.delivered_at = new Date().toISOString();
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .update(updateData)
+                .eq('id', assignmentId)
+                .select();
+
+            if (error) return createErrorResponse(error, 'updateDeliveryStatus');
+            return createSuccessResponse(data?.[0]);
+        }, 'updateDeliveryStatus');
+    },
+
+    // Complete delivery
+    async completeDelivery(assignmentId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'completeDelivery');
+
+            const { data, error } = await supabase
+                .from('delivery_assignments')
+                .update({
+                    status: 'delivered',
+                    delivered_at: new Date().toISOString()
+                })
+                .eq('id', assignmentId)
+                .select();
+
+            if (error) return createErrorResponse(error, 'completeDelivery');
+            return createSuccessResponse(data?.[0]);
+        }, 'completeDelivery');
+    },
+
+    // Subscribe to shipper assignments
+    subscribeToShipperAssignments(shipperId, callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return;
+
+            const channelName = `shipper-${shipperId}`;
+            if (this._subscriptions[channelName]) return;
+
+            const channel = supabase.channel(channelName)
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'delivery_assignments',
+                    filter: `shipper_id=eq.${shipperId}`
+                }, (payload) => {
+                    callback(payload);
+                })
+                .subscribe();
+
+            this._subscriptions[channelName] = channel;
+        });
+    },
+
     // ==================== CUSTOMERS ====================
 
     async getCustomerByPhone(phone) {
