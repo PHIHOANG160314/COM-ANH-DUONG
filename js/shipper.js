@@ -26,25 +26,18 @@ const ShipperApp = {
     init() {
         console.log('🛵 Shipper Portal v2.0 initializing...');
 
-        // Check existing login from ShipperAuth
+        // Clear old legacy sessions (force re-login with new secure auth)
+        localStorage.removeItem('shipper_session');
+
+        // Check existing login from ShipperAuth ONLY
         if (typeof ShipperAuth !== 'undefined') {
             const session = ShipperAuth.getSession();
             if (session) {
                 this.currentShipper = session;
                 this.onLoginSuccess();
             }
-        } else {
-            // Fallback to old localStorage method
-            const savedShipper = localStorage.getItem('shipper_session');
-            if (savedShipper) {
-                try {
-                    this.currentShipper = JSON.parse(savedShipper);
-                    this.onLoginSuccess();
-                } catch (e) {
-                    localStorage.removeItem('shipper_session');
-                }
-            }
         }
+        // No fallback - must use ShipperAuth
 
         // Setup PIN inputs
         this.setupLoginForm();
