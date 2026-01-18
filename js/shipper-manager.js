@@ -197,76 +197,517 @@ const ShipperManager = {
         this.state.currentEdit = shipperId ? shipper : null;
 
         const modalHtml = `
-            <div class="modal-overlay active" id="shipperModal">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <h3>${shipperId ? '✏️ Sửa thông tin Shipper' : '➕ Thêm Shipper mới'}</h3>
-                        <button class="btn-close" onclick="document.getElementById('shipperModal').remove()">×</button>
+            <div class="modal-overlay active shipper-modal-overlay" id="shipperModal">
+                <div class="shipper-modal">
+                    <!-- Premium Header with Gradient -->
+                    <div class="shipper-modal-header">
+                        <div class="shipper-modal-icon">
+                            ${shipperId ? '✏️' : '🚚'}
+                        </div>
+                        <div class="shipper-modal-title">
+                            <h3>${shipperId ? 'Cập nhật thông tin' : 'Tạo tài khoản Shipper'}</h3>
+                            <p>${shipperId ? 'Chỉnh sửa thông tin shipper hiện tại' : 'Thêm shipper mới vào hệ thống'}</p>
+                        </div>
+                        <button class="shipper-modal-close" onclick="document.getElementById('shipperModal').remove()">
+                            <span>×</span>
+                        </button>
                     </div>
-                    <div class="modal-body">
-                        <form id="shipperForm" onsubmit="event.preventDefault(); ShipperManager.saveShipper();">
-                            <div class="form-group">
-                                <label>Tên Shipper *</label>
-                                <input type="text" id="sName" class="md-input" 
+                    
+                    <!-- Form Body -->
+                    <form id="shipperForm" onsubmit="event.preventDefault(); ShipperManager.saveShipper();">
+                        <div class="shipper-modal-body">
+                            <!-- Name Field -->
+                            <div class="shipper-form-group">
+                                <div class="shipper-field-header">
+                                    <span class="shipper-field-icon">👤</span>
+                                    <label>Họ và tên đầy đủ</label>
+                                    <span class="shipper-required">*</span>
+                                </div>
+                                <input type="text" id="sName" class="shipper-input" 
                                        value="${shipper.name}" 
                                        placeholder="Ví dụ: Nguyễn Hữu Cần"
                                        required>
-                                <small class="field-hint">💡 Họ tên đầy đủ của shipper để dễ nhận diện</small>
+                                <div class="shipper-field-hint">
+                                    <span class="hint-icon">💡</span>
+                                    Tên đầy đủ giúp khách hàng nhận diện shipper
+                                </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label>Số điện thoại * <small>(dùng để đăng nhập)</small></label>
-                                <input type="tel" id="sPhone" class="md-input" 
+                            <!-- Phone Field -->
+                            <div class="shipper-form-group">
+                                <div class="shipper-field-header">
+                                    <span class="shipper-field-icon">📱</span>
+                                    <label>Số điện thoại</label>
+                                    <span class="shipper-required">*</span>
+                                    <span class="shipper-badge">Đăng nhập</span>
+                                </div>
+                                <input type="tel" id="sPhone" class="shipper-input" 
                                        value="${shipper.phone}" 
                                        placeholder="0901234567"
                                        pattern="[0-9]{10}"
                                        ${shipperId ? 'disabled' : ''}
                                        required>
-                                <small class="field-hint">📱 10 chữ số, không dấu cách. Shipper dùng SĐT này để đăng nhập</small>
+                                <div class="shipper-field-hint">
+                                    <span class="hint-icon">ℹ️</span>
+                                    10 chữ số • Shipper dùng SĐT này để đăng nhập app
+                                </div>
                             </div>
 
                             ${!shipperId ? `
-                            <div class="form-group">
-                                <label>Mã PIN * <small>(4 chữ số bí mật)</small></label>
-                                <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="sPin" class="md-input" 
-                                           placeholder="1234" 
+                            <!-- PIN Field - Only for new shipper -->
+                            <div class="shipper-form-group shipper-pin-group">
+                                <div class="shipper-field-header">
+                                    <span class="shipper-field-icon">🔐</span>
+                                    <label>Mã PIN bí mật</label>
+                                    <span class="shipper-required">*</span>
+                                </div>
+                                <div class="shipper-pin-wrapper">
+                                    <input type="text" id="sPin" class="shipper-pin-input" 
+                                           placeholder="• • • •" 
                                            pattern="[0-9]{4}"
                                            maxlength="4"
-                                           style="letter-spacing: 8px; font-weight: bold; font-size: 1.2rem;"
                                            required>
-                                    <button type="button" class="btn-secondary" onclick="ShipperManager.generatePin()">
-                                        🎲 Tạo ngẫu nhiên
+                                    <button type="button" class="shipper-pin-generate" onclick="ShipperManager.generatePin()">
+                                        <span class="pin-icon">🎲</span>
+                                        <span class="pin-text">Tạo ngẫu nhiên</span>
                                     </button>
                                 </div>
-                                <small class="field-hint" style="color: #f57c00;">
-                                    ⚠️ <strong>QUAN TRỌNG:</strong> Ghi lại PIN này để gửi cho shipper!<br>
-                                    PIN sẽ KHÔNG hiển thị lại sau khi tạo tài khoản.
-                                </small>
+                                <div class="shipper-pin-warning">
+                                    <div class="warning-icon">⚠️</div>
+                                    <div class="warning-text">
+                                        <strong>QUAN TRỌNG</strong>
+                                        <span>Ghi lại PIN để gửi cho shipper. Không thể xem lại sau khi tạo!</span>
+                                    </div>
+                                </div>
                             </div>
                             ` : ''}
 
-                            <div class="form-group">
-                                <label>Hoa hồng mỗi đơn giao (VNĐ)</label>
-                                <input type="number" id="sCommission" class="md-input" 
-                                       value="${shipper.commission_rate || 15000}" 
-                                       min="0" step="1000"
-                                       placeholder="15000">
-                                <small class="field-hint">💰 Mặc định: 15,000đ/đơn. Số tiền shipper nhận được mỗi khi giao hàng thành công</small>
+                            <!-- Commission Field -->
+                            <div class="shipper-form-group">
+                                <div class="shipper-field-header">
+                                    <span class="shipper-field-icon">💰</span>
+                                    <label>Hoa hồng mỗi đơn</label>
+                                </div>
+                                <div class="shipper-commission-wrapper">
+                                    <input type="number" id="sCommission" class="shipper-input" 
+                                           value="${shipper.commission_rate || 15000}" 
+                                           min="0" step="1000">
+                                    <span class="shipper-currency">VNĐ</span>
+                                </div>
+                                <div class="shipper-field-hint">
+                                    <span class="hint-icon">💡</span>
+                                    Số tiền shipper nhận khi giao hàng thành công
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="md-button" onclick="document.getElementById('shipperModal').remove()">
-                                    Hủy
-                                </button>
-                                <button type="submit" class="md-button md-button-filled">
-                                    💾 ${shipperId ? 'Cập nhật' : 'Tạo tài khoản'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Footer Actions -->
+                        <div class="shipper-modal-footer">
+                            <button type="button" class="shipper-btn-cancel" onclick="document.getElementById('shipperModal').remove()">
+                                Hủy bỏ
+                            </button>
+                            <button type="submit" class="shipper-btn-submit">
+                                <span class="btn-icon">${shipperId ? '💾' : '✨'}</span>
+                                <span>${shipperId ? 'Lưu thay đổi' : 'Tạo tài khoản'}</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+            
+            <style>
+                /* Modal Overlay */
+                .shipper-modal-overlay {
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(8px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                    animation: fadeIn 0.3s ease;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                
+                /* Modal Container */
+                .shipper-modal {
+                    background: linear-gradient(145deg, rgba(30, 30, 35, 0.95), rgba(25, 25, 30, 0.98));
+                    border-radius: 24px;
+                    width: 95%;
+                    max-width: 480px;
+                    max-height: 90vh;
+                    overflow: hidden;
+                    box-shadow: 
+                        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                
+                @keyframes slideUp {
+                    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+                    to { transform: translateY(0) scale(1); opacity: 1; }
+                }
+                
+                /* Premium Header */
+                .shipper-modal-header {
+                    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 50%, #43a047 100%);
+                    padding: 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .shipper-modal-header::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+                    opacity: 0.5;
+                }
+                
+                .shipper-modal-icon {
+                    width: 56px;
+                    height: 56px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 28px;
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    animation: pulse 2s infinite;
+                }
+                
+                @keyframes pulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+                
+                .shipper-modal-title {
+                    flex: 1;
+                    z-index: 1;
+                }
+                
+                .shipper-modal-title h3 {
+                    margin: 0;
+                    font-size: 1.35rem;
+                    font-weight: 700;
+                    color: white;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                }
+                
+                .shipper-modal-title p {
+                    margin: 4px 0 0;
+                    font-size: 0.9rem;
+                    color: rgba(255, 255, 255, 0.8);
+                }
+                
+                .shipper-modal-close {
+                    width: 36px;
+                    height: 36px;
+                    border: none;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
+                    color: white;
+                    font-size: 24px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s;
+                    z-index: 1;
+                }
+                
+                .shipper-modal-close:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    transform: rotate(90deg);
+                }
+                
+                /* Form Body */
+                .shipper-modal-body {
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    max-height: 55vh;
+                    overflow-y: auto;
+                }
+                
+                /* Form Groups */
+                .shipper-form-group {
+                    background: rgba(255, 255, 255, 0.03);
+                    border-radius: 16px;
+                    padding: 16px;
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                    transition: all 0.3s;
+                }
+                
+                .shipper-form-group:hover, .shipper-form-group:focus-within {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-color: rgba(76, 175, 80, 0.3);
+                    box-shadow: 0 0 20px rgba(76, 175, 80, 0.1);
+                }
+                
+                .shipper-field-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 10px;
+                }
+                
+                .shipper-field-icon {
+                    font-size: 18px;
+                }
+                
+                .shipper-field-header label {
+                    font-weight: 600;
+                    color: #e0e0e0;
+                    font-size: 0.95rem;
+                }
+                
+                .shipper-required {
+                    color: #ef5350;
+                    font-weight: 700;
+                }
+                
+                .shipper-badge {
+                    margin-left: auto;
+                    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+                    color: white;
+                    padding: 3px 10px;
+                    border-radius: 20px;
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+                
+                /* Input Styling */
+                .shipper-input {
+                    width: 100%;
+                    padding: 14px 16px;
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 12px;
+                    color: white;
+                    font-size: 1rem;
+                    transition: all 0.3s;
+                }
+                
+                .shipper-input:focus {
+                    outline: none;
+                    border-color: #4CAF50;
+                    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15);
+                }
+                
+                .shipper-input::placeholder {
+                    color: rgba(255, 255, 255, 0.3);
+                }
+                
+                .shipper-input:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+                
+                /* Field Hints */
+                .shipper-field-hint {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-top: 10px;
+                    font-size: 0.8rem;
+                    color: rgba(255, 255, 255, 0.5);
+                }
+                
+                .hint-icon {
+                    font-size: 14px;
+                }
+                
+                /* PIN Special Styling */
+                .shipper-pin-wrapper {
+                    display: flex;
+                    gap: 12px;
+                }
+                
+                .shipper-pin-input {
+                    flex: 1;
+                    padding: 18px;
+                    background: rgba(0, 0, 0, 0.4);
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 12px;
+                    color: white;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    letter-spacing: 12px;
+                    text-align: center;
+                    font-family: 'Monaco', 'Consolas', monospace;
+                }
+                
+                .shipper-pin-input:focus {
+                    outline: none;
+                    border-color: #FF9800;
+                    box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.2);
+                }
+                
+                .shipper-pin-generate {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 0 20px;
+                    background: linear-gradient(135deg, #FF9800, #F57C00);
+                    border: none;
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: 600;
+                    cursor: pointer;
+                    white-space: nowrap;
+                    transition: all 0.3s;
+                }
+                
+                .shipper-pin-generate:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+                }
+                
+                .pin-icon {
+                    font-size: 20px;
+                }
+                
+                /* PIN Warning */
+                .shipper-pin-warning {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 12px;
+                    margin-top: 12px;
+                    padding: 12px 16px;
+                    background: rgba(255, 152, 0, 0.15);
+                    border-radius: 12px;
+                    border-left: 4px solid #FF9800;
+                }
+                
+                .warning-icon {
+                    font-size: 24px;
+                    animation: shake 0.5s ease-in-out infinite alternate;
+                }
+                
+                @keyframes shake {
+                    0% { transform: rotate(-5deg); }
+                    100% { transform: rotate(5deg); }
+                }
+                
+                .warning-text {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                }
+                
+                .warning-text strong {
+                    color: #FF9800;
+                    font-size: 0.85rem;
+                }
+                
+                .warning-text span {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 0.8rem;
+                }
+                
+                /* Commission Wrapper */
+                .shipper-commission-wrapper {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                .shipper-commission-wrapper .shipper-input {
+                    text-align: right;
+                    font-weight: 600;
+                }
+                
+                .shipper-currency {
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 0.9rem;
+                    white-space: nowrap;
+                }
+                
+                /* Footer */
+                .shipper-modal-footer {
+                    display: flex;
+                    gap: 12px;
+                    padding: 20px 24px;
+                    background: rgba(0, 0, 0, 0.2);
+                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                }
+                
+                .shipper-btn-cancel {
+                    flex: 1;
+                    padding: 14px 24px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 12px;
+                    color: rgba(255, 255, 255, 0.8);
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+                
+                .shipper-btn-cancel:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                }
+                
+                .shipper-btn-submit {
+                    flex: 1.5;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    padding: 14px 24px;
+                    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+                    border: none;
+                    border-radius: 12px;
+                    color: white;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+                }
+                
+                .shipper-btn-submit:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+                }
+                
+                .btn-icon {
+                    font-size: 18px;
+                }
+                
+                /* Responsive */
+                @media (max-width: 500px) {
+                    .shipper-modal {
+                        border-radius: 20px 20px 0 0;
+                        max-height: 95vh;
+                    }
+                    
+                    .shipper-pin-wrapper {
+                        flex-direction: column;
+                    }
+                    
+                    .shipper-pin-generate {
+                        justify-content: center;
+                        padding: 14px;
+                    }
+                }
+            </style>
         `;
 
         document.body.insertAdjacentHTML('beforeend', modalHtml);
