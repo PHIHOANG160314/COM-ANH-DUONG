@@ -469,7 +469,141 @@
 </head>
 
 <body>
-    <div class="kitchen-page">
+    <!-- Login Section -->
+    <section class="kitchen-login-section" id="section-login">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <img src="logo-landing.png" alt="Ánh Dương" class="login-logo">
+                    <h1>👨‍🍳 Màn Hình Bếp</h1>
+                    <p>Đăng nhập để xem đơn hàng</p>
+                </div>
+                <form class="login-form" onsubmit="KitchenPage.login(event)">
+                    <div class="form-group">
+                        <label>Tên tài khoản</label>
+                        <input type="text" id="kitchenName" placeholder="VD: Bếp Chính" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Mã PIN</label>
+                        <input type="password" id="kitchenPin" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •"
+                            inputmode="numeric" autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn-login">🔓 Đăng Nhập</button>
+                </form>
+                <p class="login-help">📞 Liên hệ quản lý để nhận tài khoản</p>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .kitchen-login-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .kitchen-login-section.hidden {
+            display: none;
+        }
+
+        .login-container {
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+        }
+
+        .login-header h1 {
+            margin: 0 0 8px;
+            font-size: 1.5rem;
+            color: #4ade80;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0 0 24px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #4ade80;
+            outline: none;
+        }
+
+        #kitchenPin {
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 8px;
+        }
+
+        .btn-login {
+            padding: 16px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-help {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+    </style>
+
+    <div class="kitchen-page hidden" id="kitchen-main">
         <!-- Header -->
         <header class="kitchen-header">
             <div class="kitchen-header-left">
@@ -501,6 +635,10 @@
                 <button type="button" class="nav-btn" onclick="KitchenDisplay.showReadyOrders()">
                     🔔 Đơn sẵn sàng
                     <span id="notificationBadge" class="notification-badge">0</span>
+                </button>
+                <button type="button" class="nav-btn" onclick="KitchenPage.logout()"
+                    style="background: rgba(239, 68, 68, 0.2);">
+                    🚪 Đăng xuất
                 </button>
             </nav>
         </header>
@@ -555,6 +693,7 @@
     <script src="js/api-service.js"></script>
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/kitchen-auth.js"></script>
     <script src="js/kitchen.js"></script>
 
     <script>
@@ -563,6 +702,55 @@
             currentFilter: 'all',
 
             init() {
+                // Check authentication
+                if (typeof KitchenAuth !== 'undefined' && KitchenAuth.isAuthenticated()) {
+                    this.onLoginSuccess();
+                } else {
+                    document.getElementById('section-login').classList.remove('hidden');
+                    document.getElementById('kitchen-main').classList.add('hidden');
+                }
+            },
+
+            async login(event) {
+                event.preventDefault();
+                const name = document.getElementById('kitchenName').value.trim();
+                const pin = document.getElementById('kitchenPin').value.trim();
+
+                if (!name || !pin) {
+                    alert('Vui lòng nhập đầy đủ thông tin');
+                    return;
+                }
+
+                const btn = document.querySelector('.btn-login');
+                btn.disabled = true;
+                btn.textContent = 'Đang đăng nhập...';
+
+                if (typeof KitchenAuth !== 'undefined') {
+                    const result = await KitchenAuth.login(name, pin);
+                    if (result.success) {
+                        this.onLoginSuccess();
+                    } else {
+                        alert(result.error || 'Đăng nhập thất bại');
+                    }
+                } else {
+                    // Demo mode
+                    if (name.toLowerCase() === 'bếp chính' && pin === '1234') {
+                        localStorage.setItem('kitchen_demo_session', 'true');
+                        this.onLoginSuccess();
+                    } else {
+                        alert('Tên hoặc PIN không đúng');
+                    }
+                }
+
+                btn.disabled = false;
+                btn.textContent = '🔓 Đăng Nhập';
+                document.getElementById('kitchenPin').value = '';
+            },
+
+            onLoginSuccess() {
+                document.getElementById('section-login').classList.add('hidden');
+                document.getElementById('kitchen-main').classList.remove('hidden');
+
                 // Update date/time
                 this.updateDateTime();
                 setInterval(() => this.updateDateTime(), 1000);
@@ -574,6 +762,14 @@
 
                 // Update counters periodically
                 setInterval(() => this.updateCounters(), 5000);
+            },
+
+            logout() {
+                if (typeof KitchenAuth !== 'undefined') {
+                    KitchenAuth.logout();
+                }
+                localStorage.removeItem('kitchen_demo_session');
+                location.reload();
             },
 
             updateDateTime() {
