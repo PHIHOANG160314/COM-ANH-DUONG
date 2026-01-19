@@ -61,6 +61,10 @@ const KitchenAuth = {
         const demoAccounts = {
             'bếp chính': '1234',
             'bep chinh': '1234',
+            'bếp': '1234',
+            'bep': '1234',
+            'kitchen': '1234',
+            'admin': '0000',
             'bếp 1': '1111',
             'bếp 2': '2222'
         };
