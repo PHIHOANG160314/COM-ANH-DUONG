@@ -65,6 +65,15 @@
                         <input type="tel" id="pinInput" maxlength="4" placeholder="••••" class="pin-input"
                             inputmode="numeric" pattern="[0-9]*">
                     </div>
+                    <div class="work-code-group" id="workCodeGroup" style="display: none;">
+                        <label>Mã làm việc (từ quản lý)</label>
+                        <input type="text" id="workCodeInput" maxlength="7" placeholder="ABC-DEF"
+                            class="work-code-input" style="text-transform: uppercase;">
+                        <small
+                            style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 4px; display: block;">
+                            Nhập mã 6 ký tự hiển thị trên màn hình quản lý
+                        </small>
+                    </div>
                     <button type="button" class="btn-login" onclick="StaffApp.login()">Đăng nhập</button>
                     <div class="login-help">
                         <p>Quên mã PIN? Liên hệ quản lý</p>
@@ -84,6 +93,23 @@
                         <span class="action-label">Check-in</span>
                         <span class="action-time" id="checkinTime">--:--</span>
                     </button>
+
+                    <!-- Work Code Card (Only for Admin/Manager) -->
+                    <div class="action-card work-code-card" id="workCodeCard"
+                        style="display: none; flex-direction: column; align-items: center; padding: 15px;">
+                        <span class="action-icon">🔑</span>
+                        <span class="action-label" style="font-size: 0.75rem; margin-bottom: 8px;">Mã làm việc</span>
+                        <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; font-family: monospace;"
+                            id="workCodeDisplay">
+                            ---
+                        </div>
+                        <button type="button"
+                            style="margin-top: 8px; padding: 4px 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 4px; color: white; font-size: 0.7rem; cursor: pointer;"
+                            onclick="StaffApp.resetWorkCode()">
+                            🔄 Tạo mới
+                        </button>
+                    </div>
+
                     <button type="button" class="action-card kitchen" onclick="StaffApp.showSection('kitchen')">
                         <span class="action-icon">👨‍🍳</span>
                         <span class="action-label">Bếp</span>
@@ -200,6 +226,7 @@
     <script src="js/api-service.js"></script>
     <script src="js/data.js"></script>
     <script src="js/access-control.js"></script>
+    <script src="js/work-session.js"></script>
     <script src="js/admin-credentials.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/staff-mobile.js"></script>

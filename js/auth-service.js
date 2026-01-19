@@ -254,7 +254,7 @@ const AuthService = {
     // AUTHENTICATION
     // =====================================================
 
-    async login(pin, portal = 'admin') {
+    async login(pin, portal = 'admin', workCode = null) {
         const identifier = `${portal}_login`;
 
         // Check rate limit
@@ -276,9 +276,15 @@ const AuthService = {
         // Try database authentication first
         if (typeof SupabaseService !== 'undefined' && typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
             try {
-                const result = await this._authenticateDatabase(pin, portal);
+                const result = await this._authenticateDatabase(pin, portal, workCode);
                 if (result.success) {
                     this.recordLoginAttempt(identifier, true);
+
+                    // Create work session for admin
+                    if (result.user.role === 'admin' && typeof WorkSessionService !== 'undefined') {
+                        WorkSessionService.createSession(result.user);
+                    }
+
                     return result;
                 }
             } catch (err) {
@@ -287,11 +293,22 @@ const AuthService = {
         }
 
         // Fallback to local AdminCredentials
-        const user = this._authenticateLocal(pin);
+        const user = this._authenticateLocal(pin, workCode);
+
+        // Check if user object has error (work code issue)
+        if (user && user.error) {
+            return { success: false, error: user.message, needsCode: user.error === 'requires_code' };
+        }
 
         if (user) {
             this.recordLoginAttempt(identifier, true);
-            const session = this.createSession(user, portal);
+            const session = await this.createSession(user, portal);
+
+            // Create work session for admin
+            if (user.role === 'admin' && typeof WorkSessionService !== 'undefined') {
+                WorkSessionService.createSession(user);
+            }
+
             return { success: true, user, session };
         }
 
@@ -323,9 +340,9 @@ const AuthService = {
         return { success: false };
     },
 
-    _authenticateLocal(pin) {
+    _authenticateLocal(pin, workCode = null) {
         if (typeof AdminCredentials !== 'undefined') {
-            return AdminCredentials.authenticateByPin(pin);
+            return AdminCredentials.authenticateByPin(pin, workCode);
         }
         return null;
     },

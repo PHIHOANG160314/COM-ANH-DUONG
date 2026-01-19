@@ -46,9 +46,10 @@ const AdminCredentials = {
         return [];
     },
 
-    // Authenticate by PIN - With demo fallback
-    // Returns user object if PIN matches, null otherwise
-    authenticateByPin(pin) {
+    // Authenticate by PIN - With work session code for staff/waiter
+    // Returns user object if PIN matches and code valid (for non-admin)
+    // workCode parameter is optional - only required for manager/waiter
+    authenticateByPin(pin, workCode = null) {
         // Demo accounts for testing (TEMPORARY until Supabase RPC works)
         const demoAccounts = {
             '1818': { id: 'demo-manager', name: 'Thu Ngân', role: 'manager', phone: '' },
@@ -58,13 +59,31 @@ const AdminCredentials = {
             '1814': { id: 'demo-waiter4', name: 'Phục Vụ 4', role: 'waiter', phone: '' }
         };
 
-        if (demoAccounts[pin]) {
-            console.info('✅ Demo PIN matched:', demoAccounts[pin].name);
-            return demoAccounts[pin];
+        const user = demoAccounts[pin];
+        if (!user) {
+            console.warn('⚠️ PIN not found in demo accounts');
+            return null;
         }
 
-        console.warn('⚠️ PIN not found in demo accounts');
-        return null;
+        // Check work session code for manager/waiter
+        if (typeof WorkSessionService !== 'undefined' && WorkSessionService.requiresCode(user.role)) {
+            if (!workCode) {
+                console.warn('⚠️ Work code required for', user.role);
+                return { error: 'requires_code', message: 'Vui lòng nhập mã làm việc' };
+            }
+
+            const validation = WorkSessionService.validateCode(workCode);
+            if (!validation.valid) {
+                console.warn('⚠️ Invalid work code');
+                return { error: 'invalid_code', message: validation.error };
+            }
+
+            // Track usage
+            WorkSessionService.recordUsage(user.name, user.id);
+        }
+
+        console.info('✅ Demo PIN matched:', user.name);
+        return user;
     },
 
     // Cache staff from Supabase (without PIN - never store PINs locally)

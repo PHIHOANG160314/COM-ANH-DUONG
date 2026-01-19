@@ -112,6 +112,9 @@ const StaffApp = {
 
     login() {
         const pinInput = document.getElementById('pinInput');
+        const workCodeInput = document.getElementById('workCodeInput');
+        const workCodeGroup = document.getElementById('workCodeGroup');
+
         const pin = pinInput?.value;
 
         if (!pin || pin.length !== 4) {
@@ -119,15 +122,37 @@ const StaffApp = {
             return;
         }
 
+        // Get work code if visible
+        const workCode = workCodeGroup?.style.display !== 'none' ?
+            workCodeInput?.value.replace('-', '').toUpperCase() : null;
+
         // Use centralized AdminCredentials for authentication
         let staff = null;
         if (typeof AdminCredentials !== 'undefined') {
-            staff = AdminCredentials.authenticateByPin(pin);
+            staff = AdminCredentials.authenticateByPin(pin, workCode);
+
+            // Check if work code is required but not provided
+            if (staff && staff.error === 'requires_code') {
+                workCodeGroup.style.display = 'block';
+                workCodeInput.focus();
+                this.showToast('Nhập mã làm việc từ quản lý', 'info');
+                return;
+            }
+
+            // Check if work code is invalid
+            if (staff && staff.error === 'invalid_code') {
+                this.showToast(staff.message, 'error');
+                workCodeInput.value = '';
+                workCodeInput.focus();
+                return;
+            }
+
             // Map role names for compatibility
-            if (staff) {
+            if (staff && !staff.error) {
                 const roleMapping = {
                     'admin': 'Quản lý',
                     'manager': 'Thu ngân',
+                    'waiter': 'Phục vụ',
                     'staff': 'Phục vụ'
                 };
                 staff = {
@@ -137,11 +162,14 @@ const StaffApp = {
             }
         }
 
-        if (staff) {
+        if (staff && !staff.error) {
             this.currentStaff = staff;
             this.saveSession();
             this.onLoginSuccess();
             this.showToast(`Xin chào, ${staff.name}!`);
+
+            // Hide work code input after successful login
+            if (workCodeGroup) workCodeGroup.style.display = 'none';
         } else {
             this.showToast('Mã PIN không đúng', 'error');
             pinInput.value = '';
@@ -155,12 +183,46 @@ const StaffApp = {
         // Apply role-based permissions to UI
         this.applyRolePermissions();
 
+        // Show work code for admin/manager
+        this.updateWorkCodeDisplay();
+
         this.showSection('dashboard');
         this.updateDashboard();
         this.updateCheckinUI();
 
         // Subscribe to realtime orders
         this.subscribeToOrders();
+    },
+
+    // Update work code display
+    updateWorkCodeDisplay() {
+        const workCodeCard = document.getElementById('workCodeCard');
+        const workCodeDisplay = document.getElementById('workCodeDisplay');
+
+        // Only show for admins (who create work sessions)
+        // Staff/waiters don't see the code card
+        const isAdmin = this.currentStaff && this.currentStaff.role === 'Quản lý';
+
+        if (isAdmin && workCodeCard && typeof WorkSessionService !== 'undefined') {
+            workCodeCard.style.display = 'flex';
+            const code = WorkSessionService.getDisplayCode();
+            if (code) {
+                workCodeDisplay.textContent = code;
+            } else {
+                workCodeDisplay.textContent = '---';
+            }
+        } else if (workCodeCard) {
+            workCodeCard.style.display = 'none';
+        }
+    },
+
+    // Reset work code (admin only)
+    resetWorkCode() {
+        if (this.currentStaff && this.currentStaff.role === 'Quản lý' && typeof WorkSessionService !== 'undefined') {
+            const session = WorkSessionService.resetSession(this.currentStaff);
+            this.updateWorkCodeDisplay();
+            this.showToast('✅ Đã tạo mã mới: ' + session.code.slice(0, 3) + '-' + session.code.slice(3), 'success');
+        }
     },
 
     // Apply role-based UI visibility
