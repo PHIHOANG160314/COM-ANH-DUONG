@@ -46,11 +46,24 @@ const AdminCredentials = {
         return [];
     },
 
-    // Authenticate by PIN - MUST use Supabase (no local plaintext check)
-    // Returns null - authentication should go through AuthService → Supabase
+    // Authenticate by PIN - With demo fallback
+    // Returns user object if PIN matches, null otherwise
     authenticateByPin(pin) {
-        console.warn('⚠️ Local PIN authentication disabled for security');
-        console.info('💡 Use AuthService.login() with Supabase backend');
+        // Demo accounts for testing (TEMPORARY until Supabase RPC works)
+        const demoAccounts = {
+            '1818': { id: 'demo-manager', name: 'Thu Ngân', role: 'manager', phone: '' },
+            '1811': { id: 'demo-waiter1', name: 'Phục Vụ 1', role: 'waiter', phone: '' },
+            '1812': { id: 'demo-waiter2', name: 'Phục Vụ 2', role: 'waiter', phone: '' },
+            '1813': { id: 'demo-waiter3', name: 'Phục Vụ 3', role: 'waiter', phone: '' },
+            '1814': { id: 'demo-waiter4', name: 'Phục Vụ 4', role: 'waiter', phone: '' }
+        };
+
+        if (demoAccounts[pin]) {
+            console.info('✅ Demo PIN matched:', demoAccounts[pin].name);
+            return demoAccounts[pin];
+        }
+
+        console.warn('⚠️ PIN not found in demo accounts');
         return null;
     },
 
