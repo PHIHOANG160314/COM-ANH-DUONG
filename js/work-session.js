@@ -139,10 +139,8 @@ const WorkSessionService = {
     },
 
     // Check if user needs code (not admin)
-    // TEMPORARILY DISABLED for testing
     requiresCode(role) {
-        return false; // TODO: Re-enable after Supabase setup
-        // return role === 'manager' || role === 'waiter' || role === 'chef';
+        return role === 'manager' || role === 'waiter' || role === 'chef';
     }
 };
 
