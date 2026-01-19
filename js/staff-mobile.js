@@ -94,6 +94,13 @@ const StaffApp = {
         if (saved) {
             const session = JSON.parse(saved);
 
+            // Check for corrupted session (undefined staff or name)
+            if (!session.staff || !session.staff.name) {
+                console.warn('⚠️ Corrupted session, clearing...');
+                localStorage.removeItem('staff_session');
+                return;
+            }
+
             // Session timeout check (8 hours)
             const MAX_SESSION_AGE = 8 * 60 * 60 * 1000;
             const loginTime = new Date(session.loginTime || session.checkinTime).getTime();
