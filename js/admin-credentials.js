@@ -49,7 +49,7 @@ const AdminCredentials = {
     // Authenticate by PIN - With work session code for staff/waiter
     // Returns user object if PIN matches and code valid (for non-admin)
     // workCode parameter is optional - only required for manager/waiter
-    authenticateByPin(pin, workCode = null) {
+    async authenticateByPin(pin, workCode = null) {
         // Demo accounts for testing (TEMPORARY until Supabase RPC works)
         const demoAccounts = {
             '0000': { id: 'demo-admin', name: 'Admin', role: 'admin', phone: '0123456789' },
@@ -73,14 +73,14 @@ const AdminCredentials = {
                 return { error: 'requires_code', message: 'Vui lòng nhập mã làm việc' };
             }
 
-            const validation = WorkSessionService.validateCode(workCode);
+            const validation = await WorkSessionService.validateCode(workCode);
             if (!validation.valid) {
                 console.warn('⚠️ Invalid work code');
                 return { error: 'invalid_code', message: validation.error };
             }
 
             // Track usage
-            WorkSessionService.recordUsage(user.name, user.id);
+            await WorkSessionService.recordUsage(user.name, user.id);
         }
 
         console.info('✅ Demo PIN matched:', user.name);

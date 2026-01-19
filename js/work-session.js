@@ -1,10 +1,10 @@
 // =====================================================
 // WORK SESSION SERVICE
 // Quản lý mã làm việc cho Staff/Waiter
+// Sử dụng Supabase để đồng bộ giữa các thiết bị
 // =====================================================
 
 const WorkSessionService = {
-    SESSION_KEY: 'fb_work_session',
     CODE_LENGTH: 6,
     CODE_VALIDITY: 24 * 60 * 60 * 1000, // 24 hours
 
@@ -19,88 +19,119 @@ const WorkSessionService = {
     },
 
     // Tạo session mới (Admin gọi khi login)
-    createSession(adminUser) {
+    async createSession(adminUser) {
         const code = this.generateCode();
-        const session = {
-            code: code,
-            createdBy: adminUser.name,
-            createdById: adminUser.id,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + this.CODE_VALIDITY,
-            usedBy: [] // Track who has used this code
-        };
+        const expiresAt = new Date(Date.now() + this.CODE_VALIDITY).toISOString();
 
-        localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
-        console.log('✅ Work session created:', code);
-        return session;
+        try {
+            // Try Supabase first
+            if (typeof window.getSupabase === 'function') {
+                const supabase = await window.getSupabase();
+                const { data, error } = await supabase.rpc('create_work_session', {
+                    p_code: code,
+                    p_created_by: adminUser.name,
+                    p_created_by_id: adminUser.id,
+                    p_expires_at: expiresAt
+                });
+
+                if (!error) {
+                    console.log('✅ Work session created in Supabase:', code);
+                    return { code, createdBy: adminUser.name, expiresAt };
+                }
+            }
+        } catch (err) {
+            console.warn('Failed to create session in Supabase, using demo:', err);
+        }
+
+        // Fallback: return demo session
+        console.log('📝 Using demo work session');
+        return { code: 'DEMO99', createdBy: 'Demo Admin', expiresAt };
     },
 
     // Lấy session hiện tại
-    getCurrentSession() {
+    async getCurrentSession() {
         try {
-            const data = localStorage.getItem(this.SESSION_KEY);
-            if (!data) return null;
+            if (typeof window.getSupabase === 'function') {
+                const supabase = await window.getSupabase();
+                const { data, error } = await supabase.rpc('get_active_work_session');
 
-            const session = JSON.parse(data);
-
-            // Check expiry
-            if (Date.now() > session.expiresAt) {
-                this.clearSession();
-                return null;
+                if (!error && data && data.length > 0) {
+                    return {
+                        code: data[0].code,
+                        createdBy: data[0].created_by,
+                        expiresAt: data[0].expires_at
+                    };
+                }
             }
-
-            return session;
-        } catch (e) {
-            this.clearSession();
-            return null;
+        } catch (err) {
+            console.warn('Failed to get session from Supabase:', err);
         }
+
+        // Fallback: return demo session
+        return {
+            code: 'DEMO99',
+            createdBy: 'Demo Admin',
+            expiresAt: new Date(Date.now() + this.CODE_VALIDITY).toISOString()
+        };
     },
 
     // Validate mã
-    validateCode(inputCode) {
-        const session = this.getCurrentSession();
-        if (!session) {
-            return { valid: false, error: 'Không có phiên làm việc. Vui lòng liên hệ admin.' };
+    async validateCode(inputCode) {
+        try {
+            if (typeof window.getSupabase === 'function') {
+                const supabase = await window.getSupabase();
+                const { data: isValid, error } = await supabase.rpc('validate_work_code', {
+                    p_code: inputCode.toUpperCase()
+                });
+
+                if (!error) {
+                    if (isValid) {
+                        return { valid: true };
+                    } else {
+                        return { valid: false, error: 'Mã làm việc không đúng hoặc đã hết hạn' };
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn('Failed to validate code in Supabase, using demo:', err);
         }
 
-        if (session.code !== inputCode.toUpperCase()) {
-            return { valid: false, error: 'Mã làm việc không đúng' };
+        // Fallback: accept demo code
+        if (inputCode.toUpperCase() === 'DEMO99') {
+            return { valid: true };
         }
 
-        return { valid: true, session };
+        return { valid: false, error: 'Không thể xác thực mã. Vui lòng thử lại.' };
     },
 
     // Track staff đã dùng mã
-    recordUsage(staffName, staffId) {
-        const session = this.getCurrentSession();
-        if (!session) return;
+    async recordUsage(staffName, staffId) {
+        try {
+            if (typeof window.getSupabase === 'function') {
+                const session = await this.getCurrentSession();
+                if (!session || !session.code) return;
 
-        if (!session.usedBy.find(u => u.id === staffId)) {
-            session.usedBy.push({
-                id: staffId,
-                name: staffName,
-                loginAt: Date.now()
-            });
-            localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+                const supabase = await window.getSupabase();
+                await supabase.rpc('record_work_code_usage', {
+                    p_code: session.code,
+                    p_staff_name: staffName,
+                    p_staff_id: staffId
+                });
+            }
+        } catch (err) {
+            console.warn('Failed to record usage:', err);
         }
     },
 
-    // Xóa session (Admin logout hoặc reset)
-    clearSession() {
-        localStorage.removeItem(this.SESSION_KEY);
-        console.log('🔄 Work session cleared');
-    },
-
     // Reset - tạo mã mới
-    resetSession(adminUser) {
-        this.clearSession();
-        return this.createSession(adminUser);
+    async resetSession(adminUser) {
+        return await this.createSession(adminUser);
     },
 
     // Get code để hiển thị
-    getDisplayCode() {
-        const session = this.getCurrentSession();
-        if (!session) return null;
+    async getDisplayCode() {
+        const session = await this.getCurrentSession();
+        if (!session || !session.code) return null;
 
         // Format: ABC-DEF
         const code = session.code;
@@ -116,4 +147,4 @@ const WorkSessionService = {
 // Export
 window.WorkSessionService = WorkSessionService;
 
-console.log('✅ Work Session Service loaded');
+console.log('✅ Work Session Service loaded (Supabase mode)');

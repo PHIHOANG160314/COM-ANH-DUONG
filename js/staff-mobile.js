@@ -110,7 +110,7 @@ const StaffApp = {
         }
     },
 
-    login() {
+    async login() {
         const pinInput = document.getElementById('pinInput');
         const workCodeInput = document.getElementById('workCodeInput');
         const workCodeGroup = document.getElementById('workCodeGroup');
@@ -129,7 +129,7 @@ const StaffApp = {
         // Use centralized AdminCredentials for authentication
         let staff = null;
         if (typeof AdminCredentials !== 'undefined') {
-            staff = AdminCredentials.authenticateByPin(pin, workCode);
+            staff = await AdminCredentials.authenticateByPin(pin, workCode);
 
             // Check if work code is required but not provided
             if (staff && staff.error === 'requires_code') {
@@ -195,7 +195,7 @@ const StaffApp = {
     },
 
     // Update work code display
-    updateWorkCodeDisplay() {
+    async updateWorkCodeDisplay() {
         const workCodeCard = document.getElementById('workCodeCard');
         const workCodeDisplay = document.getElementById('workCodeDisplay');
 
@@ -205,7 +205,7 @@ const StaffApp = {
 
         if (isAdmin && workCodeCard && typeof WorkSessionService !== 'undefined') {
             workCodeCard.style.display = 'flex';
-            const code = WorkSessionService.getDisplayCode();
+            const code = await WorkSessionService.getDisplayCode();
             if (code) {
                 workCodeDisplay.textContent = code;
             } else {
