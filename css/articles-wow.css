@@ -1,10 +1,34 @@
 /* =====================================================
    ARTICLES MANAGER - WOW STYLES
    Premium glassmorphism design for news/articles module
+   Only targets #articleModal - not other modals
    ===================================================== */
 
-/* Modal Overlay - Dark blur background */
-.modal-overlay {
+/* Animation keyframes */
+@keyframes articleFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes articleSlideUp {
+    from {
+        transform: translateY(30px) scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Article Modal Overlay */
+#articleModal {
     position: fixed;
     top: 0;
     left: 0;
@@ -18,21 +42,11 @@
     justify-content: center;
     z-index: 9999;
     padding: 20px;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    animation: articleFadeIn 0.3s ease;
 }
 
 /* Modal Container - Glassmorphism */
-.modal-overlay .modal-container {
+#articleModal .modal-container {
     background: linear-gradient(145deg,
             rgba(255, 255, 255, 0.95) 0%,
             rgba(248, 250, 252, 0.98) 100%);
@@ -45,24 +59,12 @@
     width: 100%;
     max-height: 90vh;
     overflow: hidden;
-    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: articleSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-@keyframes slideUp {
-    from {
-        transform: translateY(30px) scale(0.95);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-}
-
-/* Modal Header - Gradient accent */
-.modal-overlay .modal-header {
+/* Modal Header */
+#articleModal .modal-header {
     background: linear-gradient(135deg,
             var(--primary, #2e7d32) 0%,
             #43a047 50%,
@@ -71,44 +73,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-    overflow: hidden;
 }
 
-.modal-overlay .modal-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-.modal-overlay .modal-header h3 {
+#articleModal .modal-header h3 {
     margin: 0;
     color: white;
     font-size: 1.25rem;
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-.modal-overlay .btn-close {
+#articleModal .btn-close {
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -121,59 +96,35 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    z-index: 1;
-    backdrop-filter: blur(4px);
 }
 
-.modal-overlay .btn-close:hover {
+#articleModal .btn-close:hover {
     background: rgba(255, 255, 255, 0.35);
     transform: rotate(90deg) scale(1.1);
 }
 
 /* Modal Body */
-.modal-overlay .modal-body {
+#articleModal .modal-body {
     padding: 28px;
     max-height: 60vh;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-}
-
-.modal-overlay .modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-overlay .modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.modal-overlay .modal-body::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
 }
 
 /* Form Groups */
-.modal-overlay .form-group {
+#articleModal .form-group {
     margin-bottom: 24px;
-    position: relative;
 }
 
-.modal-overlay .form-group label {
+#articleModal .form-group label {
     display: block;
     font-weight: 600;
     color: #1a1a2e;
     margin-bottom: 8px;
     font-size: 0.9rem;
-    letter-spacing: 0.01em;
-}
-
-.modal-overlay .form-group label small {
-    font-weight: 400;
-    color: #64748b !important;
 }
 
 /* Premium Input Styles */
-.modal-overlay .md-input {
+#articleModal .md-input {
     width: 100%;
     padding: 14px 18px;
     border: 2px solid #e2e8f0;
@@ -181,39 +132,32 @@
     font-size: 1rem;
     background: #f8fafc;
     color: #1a1a2e;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
-.modal-overlay .md-input:hover {
+#articleModal .md-input:hover {
     border-color: #cbd5e1;
     background: #fff;
 }
 
-.modal-overlay .md-input:focus {
+#articleModal .md-input:focus {
     outline: none;
     border-color: var(--primary, #2e7d32);
     background: #fff;
-    box-shadow:
-        0 0 0 4px rgba(46, 125, 50, 0.1),
-        0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.modal-overlay .md-input::placeholder {
-    color: #94a3b8;
+    box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
 }
 
 /* Textarea */
-.modal-overlay textarea.md-input {
+#articleModal textarea.md-input {
     resize: vertical;
     min-height: 100px;
-    line-height: 1.6;
 }
 
 /* Select dropdown */
-.modal-overlay select.md-input {
+#articleModal select.md-input {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
     background-size: 18px;
@@ -221,56 +165,21 @@
     cursor: pointer;
 }
 
-/* Field hints with animation */
-.modal-overlay .field-hint {
-    display: block;
-    margin-top: 8px;
-    font-size: 0.8rem;
-    color: #64748b;
-    line-height: 1.5;
-    padding-left: 4px;
-    transition: all 0.3s ease;
-}
-
-.modal-overlay .form-group:focus-within .field-hint {
-    color: var(--primary, #2e7d32);
-}
-
-.modal-overlay .field-hint a {
-    color: var(--primary, #2e7d32);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.modal-overlay .field-hint a:hover {
-    text-decoration: underline;
-}
-
-/* Form Row - Grid layout */
-.modal-overlay .form-row {
+/* Form Row */
+#articleModal .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
 @media (max-width: 640px) {
-    .modal-overlay .form-row {
+    #articleModal .form-row {
         grid-template-columns: 1fr;
     }
 }
 
-/* Checkbox styling */
-.modal-overlay input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--primary, #2e7d32);
-    cursor: pointer;
-    border-radius: 4px;
-}
-
 /* Modal Footer */
-.modal-overlay .modal-footer {
+#articleModal .modal-footer {
     padding: 20px 28px;
     background: linear-gradient(to top, #f1f5f9, transparent);
     display: flex;
@@ -280,118 +189,33 @@
 }
 
 /* Button styles */
-.modal-overlay .md-button {
+#articleModal .md-button {
     padding: 12px 24px;
     border-radius: 12px;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     border: 2px solid #e2e8f0;
     background: white;
     color: #475569;
 }
 
-.modal-overlay .md-button:hover {
+#articleModal .md-button:hover {
     background: #f8fafc;
-    border-color: #cbd5e1;
     transform: translateY(-1px);
 }
 
-.modal-overlay .md-button-filled {
+#articleModal .md-button-filled {
     background: linear-gradient(135deg,
             var(--primary, #2e7d32) 0%,
             #43a047 100%);
     color: white;
     border: none;
-    box-shadow:
-        0 4px 14px rgba(46, 125, 50, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
 }
 
-.modal-overlay .md-button-filled:hover {
+#articleModal .md-button-filled:hover {
     transform: translateY(-2px);
-    box-shadow:
-        0 8px 20px rgba(46, 125, 50, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.modal-overlay .md-button-filled:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
-}
-
-/* Icon emoji in input */
-.modal-overlay input[maxlength="4"] {
-    font-size: 1.5rem;
-    text-align: center;
-    max-width: 80px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-    .modal-overlay {
-        padding: 12px;
-    }
-
-    .modal-overlay .modal-container {
-        border-radius: 20px;
-    }
-
-    .modal-overlay .modal-header {
-        padding: 16px 20px;
-    }
-
-    .modal-overlay .modal-body {
-        padding: 20px;
-        max-height: 55vh;
-    }
-
-    .modal-overlay .modal-footer {
-        padding: 16px 20px;
-    }
-
-    .modal-overlay .md-button {
-        padding: 10px 18px;
-        font-size: 0.9rem;
-    }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .modal-overlay .modal-container {
-        background: linear-gradient(145deg,
-                rgba(30, 41, 59, 0.98) 0%,
-                rgba(15, 23, 42, 0.98) 100%);
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .modal-overlay .form-group label {
-        color: #f1f5f9;
-    }
-
-    .modal-overlay .md-input {
-        background: #1e293b;
-        border-color: #334155;
-        color: #f1f5f9;
-    }
-
-    .modal-overlay .md-input:focus {
-        border-color: #4ade80;
-        box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.1);
-    }
-
-    .modal-overlay .field-hint {
-        color: #94a3b8;
-    }
-
-    .modal-overlay .modal-footer {
-        background: linear-gradient(to top, #0f172a, transparent);
-    }
-
-    .modal-overlay .md-button {
-        background: #334155;
-        border-color: #475569;
-        color: #f1f5f9;
-    }
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
 }
