@@ -52,6 +52,7 @@ const AdminCredentials = {
     authenticateByPin(pin, workCode = null) {
         // Demo accounts for testing (TEMPORARY until Supabase RPC works)
         const demoAccounts = {
+            '0000': { id: 'demo-admin', name: 'Admin', role: 'admin', phone: '0123456789' },
             '1818': { id: 'demo-manager', name: 'Thu Ngân', role: 'manager', phone: '' },
             '1811': { id: 'demo-waiter1', name: 'Phục Vụ 1', role: 'waiter', phone: '' },
             '1812': { id: 'demo-waiter2', name: 'Phục Vụ 2', role: 'waiter', phone: '' },
