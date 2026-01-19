@@ -176,12 +176,18 @@ const StaffApp = {
         }
     },
 
-    onLoginSuccess() {
+    async onLoginSuccess() {
         document.getElementById('staffName').textContent = this.currentStaff.name;
         document.getElementById('bottomNav').classList.add('show');
 
         // Apply role-based permissions to UI
         this.applyRolePermissions();
+
+        // Create work session for admin
+        const isAdmin = this.currentStaff.role === 'Quản lý';
+        if (isAdmin && typeof WorkSessionService !== 'undefined') {
+            await WorkSessionService.createSession(this.currentStaff);
+        }
 
         // Show work code for admin/manager
         this.updateWorkCodeDisplay();
