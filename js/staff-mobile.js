@@ -92,28 +92,33 @@ const StaffApp = {
     checkSession() {
         const saved = localStorage.getItem('staff_session');
         if (saved) {
-            const session = JSON.parse(saved);
+            try {
+                const session = JSON.parse(saved);
 
-            // Check for corrupted session (undefined staff or name)
-            if (!session.staff || !session.staff.name) {
-                console.warn('⚠️ Corrupted session, clearing...');
+                // Integrate check for valid staff data
+                if (!session.staff || !session.staff.name || session.staff.name === 'undefined') {
+                    console.warn('⚠️ Invalid session data, clearing...');
+                    localStorage.removeItem('staff_session');
+                    return;
+                }
+
+                // Session timeout check (8 hours)
+                const MAX_SESSION_AGE = 8 * 60 * 60 * 1000;
+                const loginTime = new Date(session.loginTime || session.checkinTime).getTime();
+                if (Date.now() - loginTime > MAX_SESSION_AGE) {
+                    if (window.Debug) Debug.info('Session expired, logging out');
+                    localStorage.removeItem('staff_session');
+                    return;
+                }
+
+                this.currentStaff = session.staff;
+                this.isCheckedIn = session.isCheckedIn;
+                this.checkinTime = session.checkinTime;
+                this.onLoginSuccess();
+            } catch (e) {
+                console.error('Session parse error:', e);
                 localStorage.removeItem('staff_session');
-                return;
             }
-
-            // Session timeout check (8 hours)
-            const MAX_SESSION_AGE = 8 * 60 * 60 * 1000;
-            const loginTime = new Date(session.loginTime || session.checkinTime).getTime();
-            if (Date.now() - loginTime > MAX_SESSION_AGE) {
-                if (window.Debug) Debug.info('Session expired, logging out');
-                localStorage.removeItem('staff_session');
-                return;
-            }
-
-            this.currentStaff = session.staff;
-            this.isCheckedIn = session.isCheckedIn;
-            this.checkinTime = session.checkinTime;
-            this.onLoginSuccess();
         }
     },
 
@@ -170,6 +175,13 @@ const StaffApp = {
         }
 
         if (staff && !staff.error) {
+            // Validate staff object has required fields
+            if (!staff.name || staff.name === 'undefined') {
+                console.error('Login returned invalid staff object:', staff);
+                this.showToast('Lỗi dữ liệu nhân viên. Vui lòng thử lại.', 'error');
+                return;
+            }
+
             this.currentStaff = staff;
             this.saveSession();
             this.onLoginSuccess();
