@@ -77,31 +77,35 @@ const WorkSessionService = {
 
     // Validate mã
     async validateCode(inputCode) {
+        const cleanCode = inputCode.toUpperCase().replace('-', '');
+
         try {
             if (typeof window.getSupabase === 'function') {
                 const supabase = await window.getSupabase();
                 const { data: isValid, error } = await supabase.rpc('validate_work_code', {
-                    p_code: inputCode.toUpperCase()
+                    p_code: cleanCode
                 });
 
-                if (!error) {
-                    if (isValid) {
-                        return { valid: true };
-                    } else {
-                        return { valid: false, error: 'Mã làm việc không đúng hoặc đã hết hạn' };
-                    }
+                if (!error && isValid) {
+                    console.log('✅ Work code validated via Supabase');
+                    return { valid: true };
                 }
             }
         } catch (err) {
-            console.warn('Failed to validate code in Supabase, using demo:', err);
+            console.warn('Failed to validate code in Supabase:', err);
         }
 
-        // Fallback: accept demo code
-        if (inputCode.toUpperCase() === 'DEMO99') {
-            return { valid: true };
+        // Fallback: Check against current session (including demo)
+        const session = await this.getCurrentSession();
+        if (session && session.code) {
+            const sessionCode = session.code.toUpperCase().replace('-', '');
+            if (sessionCode === cleanCode) {
+                console.log('✅ Work code validated via session fallback');
+                return { valid: true };
+            }
         }
 
-        return { valid: false, error: 'Không thể xác thực mã. Vui lòng thử lại.' };
+        return { valid: false, error: 'Mã làm việc không đúng hoặc đã hết hạn' };
     },
 
     // Track staff đã dùng mã
