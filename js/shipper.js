@@ -24,7 +24,7 @@ const ShipperApp = {
 
     // Initialize the app
     init() {
-        console.log('🛵 Shipper Portal v2.0 initializing...');
+        if (window.Debug) Debug.info('🛵 Shipper Portal v2.0 initializing...');
 
         // Clear old legacy sessions (force re-login with new secure auth)
         localStorage.removeItem('shipper_session');
@@ -42,7 +42,7 @@ const ShipperApp = {
         // Setup PIN inputs
         this.setupLoginForm();
 
-        console.log('🛵 Shipper Portal ready!');
+        if (window.Debug) Debug.info('🛵 Shipper Portal ready!');
     },
 
     // Setup login form events
@@ -924,37 +924,38 @@ const ShipperApp = {
     },
 
     // ==================== UTILITIES ====================
+    // Use centralized utils.js functions with fallback
 
     formatTime(dateString) {
         if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        return new Date(dateString).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     },
 
     formatDate(dateString) {
         if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return new Date(dateString).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     },
 
     formatPrice(amount) {
-        if (!amount) return '0đ';
-        return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        // Use centralized utils if available
+        if (window.utils?.formatPrice) return window.utils.formatPrice(amount);
+        return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
     },
 
     showToast(message, type = 'info') {
+        // Use centralized toast if available
+        if (window.utils?.toast) {
+            window.utils.toast.show(message, type);
+            return;
+        }
+        // Fallback
         const container = document.getElementById('toastContainer');
         if (!container) return;
-
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
-
         container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
+        setTimeout(() => toast.remove(), 3000);
     },
 
     playNotificationSound() {

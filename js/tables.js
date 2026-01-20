@@ -215,7 +215,7 @@ const TableManagement = {
         window.dispatchEvent(new CustomEvent('tables-updated', {
             detail: { tables: this.tables }
         }));
-        console.log('Tables: Dropdowns synced');
+        if (window.Debug) Debug.log('Tables: Dropdowns synced');
     },
 
     // ========================================
@@ -227,7 +227,7 @@ const TableManagement = {
         if (typeof SupabaseService === 'undefined' ||
             typeof isSupabaseConfigured === 'undefined' ||
             !isSupabaseConfigured()) {
-            console.log('Tables: Supabase not configured, skipping sync');
+            if (window.Debug) Debug.log('Tables: Supabase not configured, skipping sync');
             return;
         }
 
@@ -280,7 +280,7 @@ const TableManagement = {
 
         this.saveTables();
         this.render();
-        console.log('Tables: Synced with orders, active orders:', activeOrders.length);
+        if (window.Debug) Debug.log('Tables: Synced with orders, active orders:', activeOrders.length);
     },
 
     extractTableNumber(order) {
@@ -341,7 +341,7 @@ const TableManagement = {
             this.handleOrderChange(payload);
         }, 'TableManagement');
 
-        console.log('Tables: Realtime subscription active');
+        if (window.Debug) Debug.info('Tables: Realtime subscription active');
     },
 
     handleOrderChange(payload) {

@@ -777,9 +777,10 @@ const StaffApp = {
     },
 
     // ========================================
-    // UTILITIES
+    // UTILITIES - Use centralized utils.js
     // ========================================
     formatPrice(amount) {
+        if (window.utils?.formatPrice) return window.utils.formatPrice(amount);
         return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
     },
 
@@ -788,9 +789,7 @@ const StaffApp = {
     },
 
     getWaitTime(dateStr) {
-        const start = new Date(dateStr);
-        const now = new Date();
-        return Math.floor((now - start) / 1000 / 60);
+        return Math.floor((new Date() - new Date(dateStr)) / 1000 / 60);
     },
 
     getStatusLabel(status) {
@@ -806,14 +805,16 @@ const StaffApp = {
     },
 
     showToast(message, type = 'success') {
+        if (window.utils?.toast) {
+            window.utils.toast.show(message, type);
+            return;
+        }
         const container = document.getElementById('toastContainer');
         if (!container) return;
-
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
         container.appendChild(toast);
-
         setTimeout(() => toast.remove(), 3000);
     }
 };

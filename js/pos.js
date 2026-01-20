@@ -60,7 +60,7 @@ const POS = {
         optionsHTML += '<option value="takeaway">Mang đi</option>';
 
         select.innerHTML = optionsHTML;
-        console.log('POS: Populated', tables.length, 'tables');
+        if (window.Debug) Debug.log('POS: Populated', tables.length, 'tables');
     },
 
     setupEventListeners() {
@@ -278,7 +278,7 @@ const POS = {
 
     // Sync order to Supabase for realtime updates
     async syncOrderToSupabase(order) {
-        console.log('🔄 POS syncOrderToSupabase called:', order.id);
+        if (window.Debug) Debug.log('🔄 POS syncOrderToSupabase called:', order.id);
 
         const isConfigured = typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured();
         if (!isConfigured || typeof SupabaseService === 'undefined') {
@@ -306,12 +306,12 @@ const POS = {
                 notes: ''
             });
 
-            console.log('🔄 Supabase createOrder result:', result);
+            if (window.Debug) Debug.log('🔄 Supabase createOrder result:', result);
 
             if (result.error) {
                 console.error('❌ Failed to sync order:', result.error);
             } else {
-                console.log('✅ Order synced to Supabase:', result.data?.id);
+                if (window.Debug) Debug.log('✅ Order synced to Supabase:', result.data?.id);
             }
         } catch (err) {
             console.error('❌ Supabase sync error:', err);

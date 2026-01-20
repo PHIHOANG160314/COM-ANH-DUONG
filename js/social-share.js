@@ -246,11 +246,13 @@ const SocialShare = {
     },
 
     // ========================================
-    // UTILITIES
+    // UTILITIES - Use centralized utils.js
     // ========================================
 
     showToast(message) {
-        if (typeof CustomerApp !== 'undefined' && CustomerApp.showToast) {
+        if (window.utils?.toast) {
+            window.utils.toast.show(message, 'success');
+        } else if (typeof CustomerApp !== 'undefined' && CustomerApp.showToast) {
             CustomerApp.showToast(message);
         } else {
             alert(message);
@@ -258,7 +260,8 @@ const SocialShare = {
     },
 
     formatPrice(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        if (window.utils?.formatPrice) return window.utils.formatPrice(amount);
+        return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
     },
 
     injectStyles() {

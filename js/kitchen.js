@@ -4,45 +4,55 @@
 
 const KitchenDisplay = {
     orders: [],
+    refreshInterval: null,
+    audioContext: null,
 
     async init() {
         await this.loadOrders();
-        this.render();
+
         // Auto-refresh every 30 seconds
-        setInterval(() => this.loadOrders(), 30000);
+        this.startAutoRefresh();
 
         // Subscribe to realtime if available
         this.subscribeToRealtime();
     },
 
+    startAutoRefresh() {
+        if (this.refreshInterval) clearInterval(this.refreshInterval);
+        this.refreshInterval = setInterval(() => this.loadOrders(), 30000);
+    },
+
     async loadOrders() {
         // Try Supabase first
-        if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
+        if (this.isSupabaseAvailable()) {
             try {
                 const result = await SupabaseService.getOrders();
                 if (!result.error && result.data) {
-                    this.orders = result.data
-                        .filter(o => o.status === 'pending' || o.status === 'preparing')
-                        .map(o => this._convertOrder(o))
-                        .sort((a, b) => new Date(a.time) - new Date(b.time));
-
-                    // Debug: Log loaded orders with their supabaseIds
-                    console.log('🍳 Kitchen loaded orders:', this.orders.map(o => ({ id: o.id, supabaseId: o.supabaseId, status: o.status })));
-
+                    this.orders = this.processOrders(result.data, true);
+                    this.log('log', '🍳 Kitchen loaded orders:', this.orders.map(o => ({ id: o.id, supabaseId: o.supabaseId, status: o.status })));
                     this.render();
                     return;
                 }
             } catch (err) {
-                if (window.Debug) Debug.warn('Kitchen: Failed to load from Supabase, using localStorage');
+                this.log('warn', 'Kitchen: Failed to load from Supabase, using localStorage');
             }
         }
 
         // Fallback to localStorage
         const allOrders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
-        this.orders = allOrders.filter(o =>
-            o.status === 'pending' || o.status === 'preparing'
-        ).sort((a, b) => new Date(a.time) - new Date(b.time));
+        this.orders = this.processOrders(allOrders, false);
         this.render();
+    },
+
+    processOrders(orders, isSupabase) {
+        return orders
+            .filter(o => ['pending', 'preparing'].includes(o.status))
+            .map(o => isSupabase ? this._convertOrder(o) : o)
+            .sort((a, b) => new Date(a.time) - new Date(b.time));
+    },
+
+    isSupabaseAvailable() {
+        return typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.();
     },
 
     // Convert Supabase order format to display format
@@ -71,7 +81,7 @@ const KitchenDisplay = {
 
     // Subscribe to realtime order updates
     subscribeToRealtime() {
-        if (typeof SupabaseService !== 'undefined' && window.isSupabaseConfigured?.()) {
+        if (this.isSupabaseAvailable()) {
             SupabaseService.subscribeToOrders((payload) => {
                 if (payload.eventType === 'INSERT') {
                     // New order! Reload and notify
@@ -87,7 +97,7 @@ const KitchenDisplay = {
                     this.loadOrders();
                 }
             }, 'KitchenDisplay'); // Named listener
-            if (window.Debug) Debug.info('KitchenDisplay subscribed to realtime orders');
+            this.log('info', 'KitchenDisplay subscribed to realtime orders');
         }
     },
 
@@ -96,16 +106,41 @@ const KitchenDisplay = {
         if (!container) return;
 
         if (this.orders.length === 0) {
-            container.innerHTML = `
-                <div class="kitchen-empty">
-                    <span class="empty-icon">👨‍🍳</span>
-                    <p>Không có đơn hàng đang chờ</p>
-                </div>
-            `;
+            container.innerHTML = this.getEmptyStateHTML();
             return;
         }
 
-        container.innerHTML = this.orders.map(order => `
+        container.innerHTML = this.orders.map(order => this.getOrderCardHTML(order)).join('');
+
+        // Update counter
+        const counter = document.getElementById('kitchenOrderCount');
+        if (counter) counter.textContent = this.orders.length;
+    },
+
+    getEmptyStateHTML() {
+        return `
+            <div class="kitchen-empty">
+                <span class="empty-icon">👨‍🍳</span>
+                <p>Không có đơn hàng đang chờ</p>
+            </div>
+        `;
+    },
+
+    getOrderCardHTML(order) {
+        const itemsHtml = this.getOrderItemsHTML(order);
+        const actionButton = order.status === 'pending'
+            ? `
+                <button class="btn-warning" onclick="KitchenDisplay.startPreparing('${order.id}')">
+                    🍳 Bắt đầu làm
+                </button>
+            `
+            : `
+                <button class="btn-success" onclick="KitchenDisplay.markReady('${order.id}')">
+                    ✅ Hoàn thành
+                </button>
+            `;
+
+        return `
             <div class="kitchen-order-card ${order.status}">
                 <div class="kitchen-order-header">
                     <span class="order-id">${order.id}</span>
@@ -113,53 +148,41 @@ const KitchenDisplay = {
                     <span class="order-time">${order.time}</span>
                 </div>
                 <div class="kitchen-order-items">
-                    ${(() => {
-                if (window.Debug) console.log('Rendering items for order:', order.id, order.itemsDetail);
-                return '';
-            })()}
-                    ${order.itemsDetail ? order.itemsDetail.map(item => `
-                        <div class="kitchen-item">
-                            <span class="item-icon">${item.icon || '🍽️'}</span>
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-qty">x${item.qty ?? item.quantity ?? item.count ?? 1}</span>
-                        </div>
-                    `).join('') : order.items.split(', ').map(item => `
-                        <div class="kitchen-item">
-                            <span class="item-name">${item}</span>
-                        </div>
-                    `).join('')}
+                    ${itemsHtml}
                 </div>
                 <div class="kitchen-order-actions">
-                    ${order.status === 'pending' ? `
-                        <button class="btn-warning" onclick="KitchenDisplay.startPreparing('${order.id}')">
-                            🍳 Bắt đầu làm
-                        </button>
-                    ` : `
-                        <button class="btn-success" onclick="KitchenDisplay.markReady('${order.id}')">
-                            ✅ Hoàn thành
-                        </button>
-                    `}
+                    ${actionButton}
                 </div>
             </div>
-        `).join('');
+        `;
+    },
 
-        // Update counter
-        const counter = document.getElementById('kitchenOrderCount');
-        if (counter) counter.textContent = this.orders.length;
+    getOrderItemsHTML(order) {
+        if (order.itemsDetail && order.itemsDetail.length > 0) {
+            return order.itemsDetail.map(item => `
+                <div class="kitchen-item">
+                    <span class="item-icon">${item.icon || '🍽️'}</span>
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-qty">x${item.qty ?? item.quantity ?? item.count ?? 1}</span>
+                </div>
+            `).join('');
+        }
+
+        // Fallback for string items
+        return order.items.split(', ').map(item => `
+            <div class="kitchen-item">
+                <span class="item-name">${item}</span>
+            </div>
+        `).join('');
     },
 
     async startPreparing(orderId) {
-        console.log('🍳 startPreparing called with:', orderId);
-        console.log('🍳 Current orders:', this.orders.map(o => ({ id: o.id, supabaseId: o.supabaseId })));
+        this.log('log', '🍳 startPreparing called with:', orderId);
 
         const order = this.orders.find(o => o.id === orderId);
-        console.log('🍳 Found order:', order);
-
         if (!order) {
-            console.error('❌ Order not found:', orderId);
-            if (typeof Toast !== 'undefined') {
-                Toast.show(`Không tìm thấy đơn hàng ${orderId}`, 'error');
-            }
+            this.log('error', '❌ Order not found:', orderId);
+            if (typeof Toast !== 'undefined') Toast.show(`Không tìm thấy đơn hàng ${orderId}`, 'error');
             return;
         }
 
@@ -167,30 +190,22 @@ const KitchenDisplay = {
         order.status = 'preparing';
         this.render();
 
-        // Show toast
-        if (typeof Toast !== 'undefined') {
-            Toast.show(`👨‍🍳 Bắt đầu làm đơn ${orderId}`, 'info');
-        }
+        if (typeof Toast !== 'undefined') Toast.show(`👨‍🍳 Bắt đầu làm đơn ${orderId}`, 'info');
 
         // Call API to sync with server
         if (typeof APIService !== 'undefined') {
             try {
                 const targetId = order.supabaseId || orderId;
-                console.log('🔄 Kitchen API call:', { orderId, supabaseId: order.supabaseId, targetId, newStatus: 'preparing' });
-
                 const result = await APIService.orders.updateStatus(targetId, 'preparing');
-                console.log('🔄 Kitchen API result:', result);
 
                 if (!result.success) {
-                    console.error('❌ Failed to update status:', result.error);
+                    this.log('error', '❌ Failed to update status:', result.error);
                 } else {
-                    console.log('✅ Status updated successfully in DB');
+                    this.log('log', '✅ Status updated successfully in DB');
                 }
             } catch (e) {
-                console.error('❌ API Error:', e);
+                this.log('error', '❌ API Error:', e);
             }
-        } else {
-            console.warn('⚠️ APIService not found');
         }
     },
 
@@ -220,62 +235,78 @@ const KitchenDisplay = {
         }
     },
 
+    getAudioContext() {
+        if (!this.audioContext) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                this.audioContext = new AudioContext();
+            }
+        }
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+            this.audioContext.resume().catch(e => this.log('warn', 'Could not resume audio context:', e));
+        }
+        return this.audioContext;
+    },
+
     playNotificationSound() {
-        // Create audio context for notification bell
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+            const ctx = this.getAudioContext();
+            if (!ctx) return;
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            const playTone = (freq, startTime) => {
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
 
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            gainNode.gain.value = 0.3;
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
 
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.3);
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.3;
 
-            // Second beep
-            setTimeout(() => {
-                const osc2 = audioContext.createOscillator();
-                osc2.connect(gainNode);
-                osc2.frequency.value = 1000;
-                osc2.type = 'sine';
-                osc2.start();
-                osc2.stop(audioContext.currentTime + 0.3);
-            }, 200);
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 0.3);
+            };
+
+            const now = ctx.currentTime;
+            playTone(800, now);
+            playTone(1000, now + 0.2); // Second beep
         } catch (e) {
-            if (window.Debug) Debug.log('Audio not supported');
+            this.log('log', 'Audio not supported');
         }
     },
 
     notifyStaff(order) {
+        // Remove existing notification if any
+        document.getElementById('kitchenNotification')?.remove();
+
         // Create notification overlay
         const notification = document.createElement('div');
         notification.id = 'kitchenNotification';
-        notification.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 2rem 3rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            z-index: 10000;
-            text-align: center;
-            animation: pulse 0.5s ease;
-        `;
+
+        // Use class if possible, but inline styles for now as we don't edit CSS
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'linear-gradient(135deg, #10b981, #059669)',
+            color: 'white',
+            padding: '2rem 3rem',
+            borderRadius: '16px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+            zIndex: '10000',
+            textAlign: 'center',
+            animation: 'pulse 0.5s ease'
+        });
+
         notification.innerHTML = `
             <div style="font-size: 4rem; margin-bottom: 1rem;">🔔</div>
             <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">ĐƠN HÀNG SẴN SÀNG!</h2>
             <p style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">${order.id}</p>
             <p style="font-size: 1.2rem; opacity: 0.9;">${order.table}</p>
             <p style="font-size: 1rem; margin-top: 1rem; opacity: 0.8;">${order.items}</p>
-            <button onclick="this.parentElement.remove()" style="
+            <button id="kitchenNotificationClose" style="
                 margin-top: 1.5rem;
                 padding: 0.75rem 2rem;
                 background: white;
@@ -288,12 +319,17 @@ const KitchenDisplay = {
             ">✅ Đã nhận</button>
         `;
 
-        // Remove existing notification if any
-        document.getElementById('kitchenNotification')?.remove();
         document.body.appendChild(notification);
 
+        // Add event listener to button
+        document.getElementById('kitchenNotificationClose').addEventListener('click', () => notification.remove());
+
         // Auto dismiss after 10 seconds
-        setTimeout(() => notification.remove(), 10000);
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                notification.remove();
+            }
+        }, 10000);
     },
 
     updateReadyCounter() {
@@ -317,33 +353,52 @@ const KitchenDisplay = {
         const readyOrders = this.getReadyOrders();
 
         if (readyOrders.length === 0) {
-            modal.open('🔔 Đơn Sẵn Sàng', `
-                <div style="text-align: center; padding: 2rem;">
-                    <div style="font-size: 3rem;">✅</div>
-                    <p style="margin-top: 1rem;">Không có đơn hàng sẵn sàng!</p>
-                </div>
-            `, `<button class="btn-primary" onclick="modal.close()">Đóng</button>`);
+            if (typeof modal !== 'undefined') {
+                modal.open('🔔 Đơn Sẵn Sàng', `
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem;">✅</div>
+                        <p style="margin-top: 1rem;">Không có đơn hàng sẵn sàng!</p>
+                    </div>
+                `, `<button class="btn-primary" onclick="modal.close()">Đóng</button>`);
+            }
             return;
         }
 
-        modal.open(`🔔 Đơn Sẵn Sàng (${readyOrders.length})`, `
-            <div style="max-height: 400px; overflow-y: auto;">
-                ${readyOrders.map(o => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; margin-bottom: 0.5rem; background: var(--bg-input); border-radius: 8px;">
-                        <div>
-                            <strong>${o.id}</strong> - ${o.table}<br>
-                            <small style="color: var(--text-muted);">${o.items}</small>
-                        </div>
-                        <button class="btn-success" onclick="KitchenDisplay.markServed('${o.id}')">🍽️ Đã phục vụ</button>
-                    </div>
-                `).join('')}
+        const ordersHtml = readyOrders.map(o => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; margin-bottom: 0.5rem; background: var(--bg-input); border-radius: 8px;">
+                <div>
+                    <strong>${o.id}</strong> - ${o.table}<br>
+                    <small style="color: var(--text-muted);">${o.items}</small>
+                </div>
+                <button class="btn-success" onclick="KitchenDisplay.markServed('${o.id}')">🍽️ Đã phục vụ</button>
             </div>
-        `, `<button class="btn-secondary" onclick="modal.close()">Đóng</button>`);
+        `).join('');
+
+        if (typeof modal !== 'undefined') {
+            modal.open(`🔔 Đơn Sẵn Sàng (${readyOrders.length})`, `
+                <div style="max-height: 400px; overflow-y: auto;">
+                    ${ordersHtml}
+                </div>
+            `, `<button class="btn-secondary" onclick="modal.close()">Đóng</button>`);
+        }
     },
 
     async markServed(orderId) {
         // Optimistic update from ready orders list
-        await APIService.orders.updateStatus(orderId, 'served');
+        if (typeof APIService !== 'undefined') {
+            await APIService.orders.updateStatus(orderId, 'served');
+        }
+
+        // We also need to update localStorage for getReadyOrders to work correctly if it relies on it?
+        // But getReadyOrders reads from localStorage 'fb_orders'.
+        // The original code didn't seem to update 'fb_orders' in localStorage explicitly in markServed,
+        // relying on APIService to update backend and then maybe a reload?
+        // But APIService usually syncs.
+        // For safety, let's update localStorage if it's there.
+        const orders = JSON.parse(localStorage.getItem('fb_orders') || '[]');
+        const updatedOrders = orders.map(o => o.id === orderId ? { ...o, status: 'served' } : o);
+        localStorage.setItem('fb_orders', JSON.stringify(updatedOrders));
+
         this.updateReadyCounter();
 
         if (typeof modal !== 'undefined') modal.close();
@@ -351,6 +406,18 @@ const KitchenDisplay = {
 
         // Reload to sync
         this.loadOrders();
+    },
+
+    log(level, ...args) {
+        if (window.Debug) {
+             // Access console via bracket notation to be safe, though console is global
+             const consoleObj = console;
+             if (consoleObj && typeof consoleObj[level] === 'function') {
+                 consoleObj[level](...args);
+             } else {
+                 console.log(...args);
+             }
+        }
     }
 };
 

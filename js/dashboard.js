@@ -8,7 +8,7 @@ const Dashboard = {
     useSupabase: false,
 
     async init() {
-        console.log('📊 Dashboard initializing...');
+        if (window.Debug) Debug.info('📊 Dashboard initializing...');
 
         // Check if Supabase is available
         this.useSupabase = typeof isSupabaseConfigured !== 'undefined' && isSupabaseConfigured();
@@ -22,7 +22,7 @@ const Dashboard = {
 
         this.renderKPIs();
         this.renderRecentOrders();
-        console.log('📊 Dashboard ready!', this.useSupabase ? '(Supabase)' : '(Local)');
+        if (window.Debug) Debug.info('📊 Dashboard ready!', this.useSupabase ? '(Supabase)' : '(Local)');
     },
 
     // ========================================
@@ -43,7 +43,7 @@ const Dashboard = {
                     time: this.formatTime(o.created_at),
                     createdAt: o.created_at
                 }));
-                console.log('📊 Loaded', this.orders.length, 'orders from Supabase');
+                if (window.Debug) Debug.info('📊 Loaded', this.orders.length, 'orders from Supabase');
             }
         } catch (err) {
             console.error('Dashboard: Failed to load from Supabase:', err);
@@ -105,7 +105,7 @@ const Dashboard = {
         if (typeof SupabaseService === 'undefined') return;
 
         SupabaseService.subscribeToOrders((payload) => {
-            console.log('📊 Dashboard realtime event:', payload.eventType);
+            if (window.Debug) Debug.log('📊 Dashboard realtime event:', payload.eventType);
 
             if (payload.eventType === 'INSERT') {
                 // Add new order
@@ -141,7 +141,7 @@ const Dashboard = {
             }
         }, 'Dashboard');
 
-        console.log('📊 Dashboard subscribed to realtime');
+        if (window.Debug) Debug.info('📊 Dashboard subscribed to realtime');
     },
 
     // ========================================

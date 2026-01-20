@@ -2,27 +2,64 @@
 // F&B MASTER - MAIN APP
 // ========================================
 
-document.addEventListener('DOMContentLoaded', function () {
+const PAGE_TITLES = {
+    dashboard: 'Tổng quan',
+    pos: 'Bán hàng',
+    foodcost: 'Tính Giá Thành',
+    inventory: 'Quản Lý Kho',
+    recipes: 'Công Thức',
+    menu: 'Menu',
+    orders: 'Quản Lý Đơn Hàng',
+    tables: 'Quản Lý Bàn',
+    kitchen: 'Màn Hình Bếp',
+    staff: 'Quản Lý Nhân Viên',
+    customers: 'Khách Hàng Thân Thiết',
+    sops: 'SOPs - Quy Trình',
+    articles: 'Quản Lý Bài Viết',
+    shippers: 'Quản Lý Shipper'
+};
+
+const THEME_STORAGE_KEY = 'fb_theme';
+
+document.addEventListener('DOMContentLoaded', () => {
     App.init();
 });
 
 const App = {
     currentPage: 'pos',
 
+    // Cache DOM elements that are accessed frequently
+    elements: {},
+
     init() {
+        this.cacheElements();
         this.setupNavigation();
         this.updateDate();
         this.initModules();
 
-        // Initialize modal
-        modal.init();
-        toast.init();
+        // Initialize global components
+        if (window.modal) modal.init();
+        if (window.toast) toast.init();
 
         console.log('🍽️ F&B Master initialized successfully!');
     },
 
+    cacheElements() {
+        this.elements = {
+            pageTitle: document.getElementById('pageTitle'),
+            sidebar: document.getElementById('sidebar'),
+            sidebarOverlay: document.getElementById('sidebarOverlay'),
+            sidebarToggle: document.getElementById('sidebarToggle'),
+            currentDate: document.getElementById('currentDate'),
+            themeToggleBtn: document.getElementById('themeToggleBtn'),
+            themeIcon: document.getElementById('themeIcon'),
+            body: document.body
+        };
+    },
+
     setupNavigation() {
-        document.querySelectorAll('.nav-item, .view-all').forEach(link => {
+        // Main navigation links
+        document.querySelectorAll('.nav-item, .view-all, .mobile-nav-item').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const page = e.currentTarget.dataset.page;
@@ -30,37 +67,26 @@ const App = {
             });
         });
 
-        // Mobile bottom navigation
-        document.querySelectorAll('.mobile-nav-item').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = e.currentTarget.dataset.page;
-                if (page) this.navigateTo(page);
-            });
-        });
-
-        // Sidebar toggle for mobile
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                sidebarOverlay.classList.toggle('active');
-            });
+        // Sidebar interactions
+        if (this.elements.sidebarToggle) {
+            this.elements.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
         }
 
-        // Close sidebar when clicking overlay
-        if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
-            });
+        if (this.elements.sidebarOverlay) {
+            this.elements.sidebarOverlay.addEventListener('click', () => this.closeSidebar());
         }
 
-        // Mobile POS cart expand/collapse
         this.setupMobileCart();
+    },
+
+    toggleSidebar() {
+        this.elements.sidebar.classList.toggle('active');
+        this.elements.sidebarOverlay.classList.toggle('active');
+    },
+
+    closeSidebar() {
+        this.elements.sidebar.classList.remove('active');
+        this.elements.sidebarOverlay.classList.remove('active');
     },
 
     setupMobileCart() {
@@ -77,95 +103,77 @@ const App = {
     },
 
     navigateTo(page) {
-        // Update sidebar nav items
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.page === page) {
-                item.classList.add('active');
-            }
-        });
+        // Update active states for navigation items
+        const updateActiveState = (selector) => {
+            document.querySelectorAll(selector).forEach(item => {
+                item.classList.toggle('active', item.dataset.page === page);
+            });
+        };
 
-        // Update mobile nav items
-        document.querySelectorAll('.mobile-nav-item').forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.page === page) {
-                item.classList.add('active');
-            }
-        });
+        updateActiveState('.nav-item');
+        updateActiveState('.mobile-nav-item');
 
-        // Update pages
+        // Switch page views
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const pageEl = document.getElementById(`page-${page}`);
-        if (pageEl) {
-            pageEl.classList.add('active');
+        const targetPage = document.getElementById(`page-${page}`);
+        if (targetPage) {
+            targetPage.classList.add('active');
         }
 
-        // Update title
-        const titles = {
-            dashboard: 'Tổng quan',
-            pos: 'Bán hàng',
-            foodcost: 'Tính Giá Thành',
-            inventory: 'Quản Lý Kho',
-            recipes: 'Công Thức',
-            menu: 'Menu',
-            orders: 'Quản Lý Đơn Hàng',
-            tables: 'Quản Lý Bàn',
-            kitchen: 'Màn Hình Bếp',
-            staff: 'Quản Lý Nhân Viên',
-            customers: 'Khách Hàng Thân Thiết',
-            sops: 'SOPs - Quy Trình',
-            articles: 'Quản Lý Bài Viết',
-            shippers: 'Quản Lý Shipper'
-        };
-        document.getElementById('pageTitle').textContent = titles[page] || page;
+        // Update page title
+        if (this.elements.pageTitle) {
+            this.elements.pageTitle.textContent = PAGE_TITLES[page] || page;
+        }
 
         this.currentPage = page;
-
-        // Close sidebar on mobile
-        document.getElementById('sidebar').classList.remove('active');
+        this.closeSidebar();
     },
 
     updateDate() {
-        document.getElementById('currentDate').textContent = getCurrentDate();
+        if (this.elements.currentDate && typeof getCurrentDate === 'function') {
+            this.elements.currentDate.textContent = getCurrentDate();
+        }
     },
 
     initModules() {
-        // Initialize all modules
-        Dashboard.init();
-        POS.init();
-        FoodCost.init();
-        Inventory.init();
-        Recipes.init();
-        MenuManagement.init();
-        OrderManagement.init();
-        SOPs.init();
-        Analytics.init();
-        TableManagement.init();
-        KitchenDisplay.init();
-        StaffManagement.init();
-        CustomerLoyalty.init();
-        if (window.ArticlesManager) ArticlesManager.init();
-        if (window.ShipperManager) ShipperManager.init();
-        if (window.i18n) i18n.init();
+        // List of modules to initialize
+        const modules = [
+            'Dashboard', 'POS', 'FoodCost', 'Inventory', 'Recipes',
+            'MenuManagement', 'OrderManagement', 'SOPs', 'Analytics',
+            'TableManagement', 'KitchenDisplay', 'StaffManagement',
+            'CustomerLoyalty', 'ArticlesManager', 'ShipperManager', 'i18n'
+        ];
+
+        modules.forEach(moduleName => {
+            const module = window[moduleName];
+            if (module && typeof module.init === 'function') {
+                module.init();
+            }
+        });
+
         this.setupThemeToggle();
     },
 
     setupThemeToggle() {
-        const toggleBtn = document.getElementById('themeToggleBtn');
-        const themeIcon = document.getElementById('themeIcon');
-        const savedTheme = localStorage.getItem('fb_theme') || 'dark';
+        const { themeToggleBtn, themeIcon, body } = this.elements;
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
 
-        // Apply saved theme
-        document.body.classList.toggle('light-mode', savedTheme === 'light');
-        themeIcon.textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        const applyTheme = (isLight) => {
+            body.classList.toggle('light-mode', isLight);
+            if (themeIcon) themeIcon.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem(THEME_STORAGE_KEY, isLight ? 'light' : 'dark');
+        };
 
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                document.body.classList.toggle('light-mode');
-                const isLight = document.body.classList.contains('light-mode');
-                themeIcon.textContent = isLight ? '☀️' : '🌙';
-                localStorage.setItem('fb_theme', isLight ? 'light' : 'dark');
-                toast.info(isLight ? '🌞 Chế độ sáng' : '🌙 Chế độ tối');
+        // Initial application
+        applyTheme(savedTheme === 'light');
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const isLight = !body.classList.contains('light-mode');
+                applyTheme(isLight);
+                if (window.toast) {
+                    toast.info(isLight ? '🌞 Chế độ sáng' : '🌙 Chế độ tối');
+                }
             });
         }
     }

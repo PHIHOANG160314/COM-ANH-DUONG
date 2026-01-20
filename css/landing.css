@@ -8,7 +8,7 @@
    ===================================================== */
 
 .landing-page {
-    font-family: 'Inter', 'Google Sans Text', 'Roboto', sans-serif;
+    font-family: var(--m3-font-family, 'Roboto'), 'Inter', sans-serif;
     background: var(--md-sys-color-background);
     color: var(--md-sys-color-on-background);
     overflow-x: hidden;
@@ -412,9 +412,14 @@
 
 .title-highlight {
     display: block;
-    font-size: clamp(48px, 10vw, 80px);
-    font-weight: 800;
-    line-height: 1.1;
+    font-size: clamp(45px, 10vw, 57px);
+    /* M3 Display Large */
+    font-weight: 400;
+    /* M3: Display uses Regular weight */
+    line-height: 1.12;
+    /* M3: 64px/57px ratio */
+    letter-spacing: -0.25px;
+    /* M3 tracking tight */
     background: linear-gradient(135deg, #fff 0%, #A8F0A0 50%, #fff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -590,8 +595,13 @@ section {
 }
 
 .section-title {
-    font-size: clamp(28px, 5vw, 40px);
-    font-weight: 700;
+    font-size: clamp(28px, 5vw, 45px);
+    /* M3 Display Medium */
+    font-weight: 400;
+    /* M3: Display uses Regular weight */
+    line-height: 1.16;
+    /* M3 ratio */
+    letter-spacing: -0.25px;
     color: var(--md-sys-color-on-surface);
     margin: 0 0 12px;
 }
