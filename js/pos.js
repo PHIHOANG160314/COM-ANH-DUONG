@@ -89,11 +89,11 @@ const POS = {
 
         items.forEach(item => {
             const menuItem = document.createElement('div');
-            menuItem.className = 'menu-item';
+            menuItem.className = 'menu-item md-ripple md-focus-ring';
             menuItem.innerHTML = `
                 <div class="menu-item-icon">${item.icon}</div>
                 <div class="menu-item-name">${item.name}</div>
-                <div class="menu-item-price">${formatCurrency(item.price)}</div>
+                <div class="menu-item-price">${window.utils.formatCurrency(item.price)}</div>
             `;
             menuItem.addEventListener('click', () => this.addToCart(item));
             grid.appendChild(menuItem);
@@ -110,7 +110,7 @@ const POS = {
         }
 
         this.updateCart();
-        toast.success(`Đã thêm ${item.name}`);
+        window.utils.toast.success(`Đã thêm ${item.name}`);
     },
 
     removeFromCart(itemId) {
@@ -140,14 +140,14 @@ const POS = {
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.icon} ${item.name}</div>
-                        <div class="cart-item-price">${formatCurrency(item.price)}</div>
+                        <div class="cart-item-price">${window.utils.formatCurrency(item.price)}</div>
                     </div>
                     <div class="cart-item-qty">
-                        <button class="qty-btn" onclick="POS.updateQuantity(${item.id}, -1)">−</button>
+                        <button class="qty-btn md-ripple md-focus-ring" onclick="POS.updateQuantity(${item.id}, -1)">−</button>
                         <span class="qty-value">${item.quantity}</span>
-                        <button class="qty-btn" onclick="POS.updateQuantity(${item.id}, 1)">+</button>
+                        <button class="qty-btn md-ripple md-focus-ring" onclick="POS.updateQuantity(${item.id}, 1)">+</button>
                     </div>
-                    <div class="cart-item-total">${formatCurrency(item.price * item.quantity)}</div>
+                    <div class="cart-item-total">${window.utils.formatCurrency(item.price * item.quantity)}</div>
                 </div>
             `).join('');
         }
@@ -160,9 +160,9 @@ const POS = {
         const vat = subtotal * 0.1;
         const total = subtotal + vat;
 
-        document.getElementById('subtotal').textContent = formatCurrency(subtotal);
-        document.getElementById('vat').textContent = formatCurrency(vat);
-        document.getElementById('total').textContent = formatCurrency(total);
+        document.getElementById('subtotal').textContent = window.utils.formatCurrency(subtotal);
+        document.getElementById('vat').textContent = window.utils.formatCurrency(vat);
+        document.getElementById('total').textContent = window.utils.formatCurrency(total);
     },
 
     clearCart() {
@@ -171,19 +171,19 @@ const POS = {
         if (confirm('Xóa toàn bộ đơn hàng?')) {
             this.cart = [];
             this.updateCart();
-            toast.info('Đã xóa đơn hàng');
+            window.utils.toast.info('Đã xóa đơn hàng');
         }
     },
 
     checkout() {
         if (this.cart.length === 0) {
-            toast.warning('Vui lòng thêm món vào đơn');
+            window.utils.toast.warning('Vui lòng thêm món vào đơn');
             return;
         }
 
         const table = document.getElementById('tableSelect').value;
         if (!table) {
-            toast.warning('Vui lòng chọn bàn');
+            window.utils.toast.warning('Vui lòng chọn bàn');
             return;
         }
 
@@ -192,30 +192,32 @@ const POS = {
         const total = subtotal + vat;
 
         const orderSummary = this.cart.map(item =>
-            `${item.name} x${item.quantity} = ${formatCurrency(item.price * item.quantity)}`
+            `${item.name} x${item.quantity} = ${window.utils.formatCurrency(item.price * item.quantity)}`
         ).join('<br>');
 
-        modal.open('Xác nhận thanh toán', `
-            <div style="margin-bottom: 1rem;">
-                <strong>Bàn:</strong> ${table === 'takeaway' ? 'Mang đi' : 'Bàn ' + table}
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <strong>Chi tiết đơn:</strong><br>
-                ${orderSummary}
-            </div>
-            <hr style="border-color: var(--border-color); margin: 1rem 0;">
-            <div><strong>VAT (10%):</strong> ${formatCurrency(vat)}</div>
-            <div style="font-size: 1.25rem; margin-top: 0.5rem;">
-                <strong>Tổng cộng: ${formatCurrency(total)}</strong>
-            </div>
-        `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="POS.confirmCheckout()">Xác nhận</button>
-        `);
+        if (window.utils.modal) {
+             window.utils.modal.open('Xác nhận thanh toán', `
+                <div style="margin-bottom: 1rem;">
+                    <strong>Bàn:</strong> ${table === 'takeaway' ? 'Mang đi' : 'Bàn ' + table}
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Chi tiết đơn:</strong><br>
+                    ${orderSummary}
+                </div>
+                <hr style="border-color: var(--border-color); margin: 1rem 0;">
+                <div><strong>VAT (10%):</strong> ${window.utils.formatCurrency(vat)}</div>
+                <div style="font-size: 1.25rem; margin-top: 0.5rem;">
+                    <strong>Tổng cộng: ${window.utils.formatCurrency(total)}</strong>
+                </div>
+            `, `
+                <button class="btn-secondary md-ripple" onclick="window.utils.modal.close()">Hủy</button>
+                <button class="btn-primary md-ripple" onclick="POS.confirmCheckout()">Xác nhận</button>
+            `);
+        }
     },
 
     confirmCheckout() {
-        const orderId = generateId('ORD');
+        const orderId = window.utils.generateId('ORD');
         const table = document.getElementById('tableSelect').value;
         const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1;
 
@@ -235,7 +237,7 @@ const POS = {
             itemsDetail: orderItems,
             total: total,
             status: 'pending', // Start as pending for kitchen
-            time: getCurrentTime(),
+            time: window.utils.getCurrentTime(),
             createdAt: new Date().toISOString()
         };
 
@@ -249,13 +251,13 @@ const POS = {
         dashboardData.revenue.today += total;
         dashboardData.orders.today++;
 
-        modal.close();
+        if (window.utils.modal) window.utils.modal.close();
         this.lastOrderItems = [...this.cart]; // Save for printing
         this.cart = [];
         this.updateCart();
         document.getElementById('tableSelect').value = '';
 
-        toast.success(`✅ Đơn ${orderId} đã gửi đến bếp!`);
+        window.utils.toast.success(`✅ Đơn ${orderId} đã gửi đến bếp!`);
 
         // *** SYNC TO SUPABASE FOR REALTIME ***
         this.syncOrderToSupabase(newOrder);
