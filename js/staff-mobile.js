@@ -439,7 +439,7 @@ const StaffApp = {
         }
 
         container.innerHTML = orders.map(order => `
-            <div class="order-card" onclick="StaffApp.viewOrder('${order.id}')">
+            <div class="order-card md-ripple md-focus-ring" onclick="StaffApp.viewOrder('${order.id}')">
                 <div class="order-card-header">
                     <span class="order-card-id">${order.id}</span>
                     <span class="order-card-status ${order.status}">${this.getStatusLabel(order.status)}</span>
@@ -487,8 +487,8 @@ const StaffApp = {
                     </div>
                     <div class="kitchen-order-actions">
                         ${order.status === 'pending'
-                    ? `<button class="btn-kitchen start" onclick="StaffApp.updateOrderStatus('${order.id}', 'preparing')">🔥 Bắt đầu làm</button>`
-                    : `<button class="btn-kitchen complete" onclick="StaffApp.updateOrderStatus('${order.id}', 'completed')">✅ Hoàn thành</button>`
+                    ? `<button class="btn-kitchen start md-ripple md-focus-ring" onclick="StaffApp.updateOrderStatus('${order.id}', 'preparing')">🔥 Bắt đầu làm</button>`
+                    : `<button class="btn-kitchen complete md-ripple md-focus-ring" onclick="StaffApp.updateOrderStatus('${order.id}', 'completed')">✅ Hoàn thành</button>`
                 }
                     </div>
                 </div>
@@ -666,7 +666,7 @@ const StaffApp = {
 
     renderOrderCard(order) {
         return `
-            <div class="order-card">
+            <div class="order-card md-ripple md-focus-ring">
                 <div class="order-card-header">
                     <span class="order-card-id">${order.id}</span>
                     <span class="order-card-status ${order.status}">${this.getStatusLabel(order.status)}</span>

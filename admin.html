@@ -76,55 +76,55 @@
                     <span class="nav-icon">🛒</span>
                     <span class="nav-text" data-i18n="nav_pos">Bán hàng</span>
                 </a>
-                <a href="#" class="nav-item" data-page="orders">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="orders">
                     <span class="nav-icon">📋</span>
                     <span class="nav-text" data-i18n="nav_orders">Đơn hàng</span>
                 </a>
-                <a href="#" class="nav-item" data-page="tables">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="tables">
                     <span class="nav-icon">🍽️</span>
                     <span class="nav-text" data-i18n="nav_tables">Quản lý bàn</span>
                 </a>
-                <a href="#" class="nav-item" data-page="kitchen">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="kitchen">
                     <span class="nav-icon">👨‍🍳</span>
                     <span class="nav-text" data-i18n="nav_kitchen">Màn hình bếp</span>
                 </a>
-                <a href="#" class="nav-item" data-page="dashboard">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="dashboard">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text" data-i18n="nav_dashboard">Tổng quan</span>
                 </a>
-                <a href="#" class="nav-item" data-page="menu">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="menu">
                     <span class="nav-icon">📜</span>
                     <span class="nav-text" data-i18n="nav_menu">Menu</span>
                 </a>
-                <a href="#" class="nav-item" data-page="staff">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="staff">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text" data-i18n="nav_staff">Nhân viên</span>
                 </a>
-                <a href="#" class="nav-item" data-page="customers">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="customers">
                     <span class="nav-icon">💎</span>
                     <span class="nav-text" data-i18n="nav_customers">Khách hàng</span>
                 </a>
-                <a href="#" class="nav-item" data-page="articles">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="articles">
                     <span class="nav-icon">📰</span>
                     <span class="nav-text" data-i18n="nav_articles">Tin tức</span>
                 </a>
-                <a href="#" class="nav-item" data-page="shippers">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="shippers">
                     <span class="nav-icon">🚚</span>
                     <span class="nav-text" data-i18n="nav_shippers">Shipper</span>
                 </a>
-                <a href="#" class="nav-item" data-page="foodcost">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="foodcost">
                     <span class="nav-icon">💰</span>
                     <span class="nav-text" data-i18n="nav_foodcost">Giá thành</span>
                 </a>
-                <a href="#" class="nav-item" data-page="inventory">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="inventory">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text" data-i18n="nav_inventory">Kho hàng</span>
                 </a>
-                <a href="#" class="nav-item" data-page="recipes">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="recipes">
                     <span class="nav-icon">📖</span>
                     <span class="nav-text" data-i18n="nav_recipes">Công thức</span>
                 </a>
-                <a href="#" class="nav-item" data-page="sops">
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="sops">
                     <span class="nav-icon">✅</span>
                     <span class="nav-text" data-i18n="nav_sops">SOPs</span>
                 </a>
@@ -142,7 +142,7 @@
                     <p>📞 0917 076 061</p>
                     <p>📍 91 Hùng Vương, Sa Đéc</p>
                 </div>
-                <button type="button" class="btn-logout" onclick="AuthService.logout(); location.reload();"
+                <button type="button" class="btn-logout md-ripple md-focus-ring" onclick="AuthService.logout(); location.reload();"
                     title="Đăng xuất">
                     🚪 Đăng xuất
                 </button>
@@ -185,7 +185,7 @@
                         <div class="kpi-card md-card md-card-elevated revenue shimmer">
                             <div class="kpi-icon icon-bounce">💵</div>
                             <div class="kpi-content">
-                                <h3 id="totalRevenue">0</h3>
+                                <h3 id="totalRevenue"><span class="md-skeleton md-skeleton-text" style="width: 120px; height: 32px; display: inline-block;"></span></h3>
                                 <p>Doanh thu hôm nay</p>
                                 <span class="kpi-trend up">↑ 12%</span>
                             </div>
@@ -193,7 +193,7 @@
                         <div class="kpi-card md-card md-card-elevated orders shimmer">
                             <div class="kpi-icon icon-bounce">🧾</div>
                             <div class="kpi-content">
-                                <h3 id="totalOrders">0</h3>
+                                <h3 id="totalOrders"><span class="md-skeleton md-skeleton-text" style="width: 60px; height: 32px; display: inline-block;"></span></h3>
                                 <p>Đơn hàng</p>
                                 <span class="kpi-trend up">↑ 8%</span>
                             </div>
@@ -201,7 +201,7 @@
                         <div class="kpi-card md-card md-card-elevated foodcost shimmer">
                             <div class="kpi-icon icon-bounce">📉</div>
                             <div class="kpi-content">
-                                <h3 id="foodCostPercent">0%</h3>
+                                <h3 id="foodCostPercent"><span class="md-skeleton md-skeleton-text" style="width: 80px; height: 32px; display: inline-block;"></span></h3>
                                 <p>Food Cost</p>
                                 <span class="kpi-trend down">↓ 2%</span>
                             </div>
@@ -209,7 +209,7 @@
                         <div class="kpi-card md-card md-card-elevated inventory shimmer">
                             <div class="kpi-icon icon-bounce">⚠️</div>
                             <div class="kpi-content">
-                                <h3 id="lowStockItems">0</h3>
+                                <h3 id="lowStockItems"><span class="md-skeleton md-skeleton-text" style="width: 40px; height: 32px; display: inline-block;"></span></h3>
                                 <p>Nguyên liệu sắp hết</p>
                                 <span class="kpi-trend warning">Cần bổ sung</span>
                             </div>
@@ -233,7 +233,33 @@
                                         <th>Thời gian</th>
                                     </tr>
                                 </thead>
-                                <tbody id="recentOrdersBody"></tbody>
+                                <tbody id="recentOrdersBody">
+                                    <!-- Skeleton Rows -->
+                                    <tr>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 80px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 60px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 150px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 100px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 90px; border-radius: 12px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 70px;"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 80px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 60px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 120px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 100px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 90px; border-radius: 12px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 70px;"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 80px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 60px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 140px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 100px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 90px; border-radius: 12px;"></div></td>
+                                        <td><div class="md-skeleton md-skeleton-text" style="width: 70px;"></div></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -380,10 +406,10 @@
                                 </div>
                             </div>
                             <div class="cart-actions">
-                                <button type="button" class="btn-secondary md-button md-button-outlined"
+                                <button type="button" class="btn-secondary md-button md-button-outlined md-ripple md-focus-ring"
                                     id="clearCartBtn">Xóa
                                     đơn</button>
-                                <button type="button" class="btn-primary md-button md-button-filled"
+                                <button type="button" class="btn-primary md-button md-button-filled md-ripple md-focus-ring"
                                     id="checkoutBtn">Thanh
                                     toán</button>
                             </div>
@@ -443,10 +469,10 @@
                 <section class="page" id="page-inventory">
                     <div class="inventory-header">
                         <div class="inventory-actions">
-                            <button type="button" class="btn-primary md-button md-button-filled" id="addInventoryBtn">+
+                            <button type="button" class="btn-primary md-button md-button-filled md-ripple md-focus-ring" id="addInventoryBtn">+
                                 Nhập
                                 kho</button>
-                            <button type="button" class="btn-secondary md-button md-button-outlined"
+                            <button type="button" class="btn-secondary md-button md-button-outlined md-ripple md-focus-ring"
                                 id="exportInventoryBtn">Xuất
                                 kho</button>
                         </div>
@@ -489,7 +515,7 @@
                 <!-- Recipes Page -->
                 <section class="page" id="page-recipes">
                     <div class="recipes-header">
-                        <button type="button" class="btn-primary" id="addRecipeBtn">+ Thêm công thức</button>
+                        <button type="button" class="btn-primary md-ripple md-focus-ring" id="addRecipeBtn">+ Thêm công thức</button>
                         <input type="text" class="search-input" id="recipeSearch" placeholder="Tìm công thức...">
                     </div>
                     <div class="recipes-grid" id="recipesGrid"></div>
@@ -500,7 +526,7 @@
                     <div class="menu-management">
                         <div class="menu-tabs">
                             <button type="button" class="menu-tab active" data-menu-type="master">📋 Menu Tổng</button>
-                            <button type="button" class="menu-tab" data-menu-type="daily">📅 Menu Hôm Nay</button>
+                            <button type="button" class="menu-tab md-ripple md-focus-ring" data-menu-type="daily">📅 Menu Hôm Nay</button>
                         </div>
 
                         <!-- Master Menu -->
@@ -510,16 +536,16 @@
                                 <div class="menu-header-actions">
                                     <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv"
                                         style="display:none">
-                                    <button type="button" class="btn-info" id="importExcelBtn"
+                                    <button type="button" class="btn-info md-ripple md-focus-ring" id="importExcelBtn"
                                         title="Import từ file Excel">📥
                                         Import</button>
-                                    <button type="button" class="btn-warning" id="exportExcelBtn"
+                                    <button type="button" class="btn-warning md-ripple md-focus-ring" id="exportExcelBtn"
                                         title="Xuất menu ra Excel">📤
                                         Export</button>
-                                    <button type="button" class="btn-success" id="addToDailyBtn">➕ Menu Ngày</button>
-                                    <button type="button" class="btn-secondary" id="resetMenuBtn"
+                                    <button type="button" class="btn-success md-ripple md-focus-ring" id="addToDailyBtn">➕ Menu Ngày</button>
+                                    <button type="button" class="btn-secondary md-ripple md-focus-ring" id="resetMenuBtn"
                                         title="Khôi phục lại menu mẫu đầy đủ">🔄 Nạp Mẫu</button>
-                                    <button type="button" class="btn-primary" id="addMenuItemBtn">+ Thêm món</button>
+                                    <button type="button" class="btn-primary md-ripple md-focus-ring" id="addMenuItemBtn">+ Thêm món</button>
                                 </div>
                             </div>
                             <div class="menu-table-container">
@@ -546,8 +572,8 @@
                             <div class="menu-header">
                                 <h3>📅 Menu Hôm Nay - <span id="todayDate"></span></h3>
                                 <div class="menu-header-actions">
-                                    <button type="button" class="btn-secondary" id="clearDailyBtn">Xóa tất cả</button>
-                                    <button type="button" class="btn-primary" id="copyYesterdayBtn">📋 Copy từ hôm
+                                    <button type="button" class="btn-secondary md-ripple md-focus-ring" id="clearDailyBtn">Xóa tất cả</button>
+                                    <button type="button" class="btn-primary md-ripple md-focus-ring" id="copyYesterdayBtn">📋 Copy từ hôm
                                         qua</button>
                                 </div>
                             </div>
@@ -566,11 +592,11 @@
                             <h3>Danh mục SOP</h3>
                             <div class="sop-categories">
                                 <button type="button" class="sop-cat-btn active" data-sop="opening">🌅 Opening</button>
-                                <button type="button" class="sop-cat-btn" data-sop="closing">🌙 Closing</button>
-                                <button type="button" class="sop-cat-btn" data-sop="service">🍽️ Service</button>
-                                <button type="button" class="sop-cat-btn" data-sop="kitchen">🧑‍🍳 Kitchen</button>
-                                <button type="button" class="sop-cat-btn" data-sop="cleaning">🧹 Cleaning</button>
-                                <button type="button" class="sop-cat-btn" data-sop="safety">🛡️ Food Safety</button>
+                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="closing">🌙 Closing</button>
+                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="service">🍽️ Service</button>
+                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="kitchen">🧑‍🍳 Kitchen</button>
+                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="cleaning">🧹 Cleaning</button>
+                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="safety">🛡️ Food Safety</button>
                             </div>
                         </div>
                         <div class="sops-content">
@@ -585,8 +611,8 @@
                             </div>
                             <div class="sop-checklist" id="sopChecklist"></div>
                             <div class="sop-actions">
-                                <button type="button" class="btn-secondary" id="resetSopBtn">Reset</button>
-                                <button type="button" class="btn-primary" id="completeSopBtn">Hoàn thành</button>
+                                <button type="button" class="btn-secondary md-ripple md-focus-ring" id="resetSopBtn">Reset</button>
+                                <button type="button" class="btn-primary md-ripple md-focus-ring" id="completeSopBtn">Hoàn thành</button>
                             </div>
                         </div>
                     </div>
@@ -613,7 +639,7 @@
                                 <span class="stat-label">Đã giao</span>
                             </div>
                         </div>
-                        <button type="button" class="btn-primary" id="addOrderBtn">+ Tạo đơn mới</button>
+                        <button type="button" class="btn-primary md-ripple md-focus-ring" id="addOrderBtn">+ Tạo đơn mới</button>
                     </div>
                     <div class="orders-kanban">
                         <div class="kanban-column" data-status="new">
@@ -657,7 +683,7 @@
                         <div class="tables-header">
                             <h2>🍽️ Sơ Đồ Bàn</h2>
                             <div id="tableStats" class="table-stats"></div>
-                            <button type="button" class="btn-primary" id="addTableBtn">+ Thêm bàn</button>
+                            <button type="button" class="btn-primary md-ripple md-focus-ring" id="addTableBtn">+ Thêm bàn</button>
                         </div>
                         <div class="tables-grid" id="tablesGrid"></div>
                     </div>
@@ -683,10 +709,10 @@
                             <h2>👥 Quản Lý Nhân Viên</h2>
                             <div id="staffStats" class="staff-stats"></div>
                             <div class="staff-actions">
-                                <button type="button" class="btn-info" id="payrollBtn"
+                                <button type="button" class="btn-info md-ripple md-focus-ring" id="payrollBtn"
                                     onclick="StaffManagement.showPayrollModal()">💰
                                     Bảng lương</button>
-                                <button type="button" class="btn-primary" id="addStaffBtn">+ Thêm nhân viên</button>
+                                <button type="button" class="btn-primary md-ripple md-focus-ring" id="addStaffBtn">+ Thêm nhân viên</button>
                             </div>
                         </div>
                         <div class="staff-table-container">
@@ -734,13 +760,13 @@
                             <h2>💎 Khách Hàng Thân Thiết</h2>
                             <div id="customerStats" class="customer-stats"></div>
                             <div class="customer-actions">
-                                <button type="button" class="btn-success"
+                                <button type="button" class="btn-success md-ripple md-focus-ring"
                                     onclick="CustomerLoyalty.showStoreScanModal()">📲 Quét QR
                                     tích điểm</button>
-                                <button type="button" class="btn-warning"
+                                <button type="button" class="btn-warning md-ripple md-focus-ring"
                                     onclick="CustomerLoyalty.showBulkPromotionModal()">📢 Gửi
                                     khuyến mãi</button>
-                                <button type="button" class="btn-primary" id="addCustomerBtn">+ Thêm khách hàng</button>
+                                <button type="button" class="btn-primary md-ripple md-focus-ring" id="addCustomerBtn">+ Thêm khách hàng</button>
                             </div>
                         </div>
                         <div class="customers-table-container">
@@ -794,19 +820,19 @@
                 <span class="mobile-nav-icon">📊</span>
                 <span class="mobile-nav-label">Dashboard</span>
             </a>
-            <a href="#" class="mobile-nav-item" data-page="pos">
+            <a href="#" class="mobile-nav-item md-ripple md-focus-ring" data-page="pos">
                 <span class="mobile-nav-icon">🛒</span>
                 <span class="mobile-nav-label">POS</span>
             </a>
-            <a href="#" class="mobile-nav-item" data-page="orders">
+            <a href="#" class="mobile-nav-item md-ripple md-focus-ring" data-page="orders">
                 <span class="mobile-nav-icon">📋</span>
                 <span class="mobile-nav-label">Orders</span>
             </a>
-            <a href="#" class="mobile-nav-item" data-page="kitchen">
+            <a href="#" class="mobile-nav-item md-ripple md-focus-ring" data-page="kitchen">
                 <span class="mobile-nav-icon">👨‍🍳</span>
                 <span class="mobile-nav-label">Kitchen</span>
             </a>
-            <a href="#" class="mobile-nav-item" data-page="menu">
+            <a href="#" class="mobile-nav-item md-ripple md-focus-ring" data-page="menu">
                 <span class="mobile-nav-icon">📜</span>
                 <span class="mobile-nav-label">Menu</span>
             </a>

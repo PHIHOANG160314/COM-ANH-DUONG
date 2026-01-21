@@ -200,7 +200,7 @@ const KitchenRealtime = {
             <p style="font-size: 1.2rem; font-weight: bold; margin-top: 1rem; color: #fff;">
                 💰 ${new Intl.NumberFormat('vi-VN').format(order.total || 0)}đ
             </p>
-            <button onclick="this.parentElement.remove()" style="
+            <button onclick="this.parentElement.remove()" class="md-ripple" style="
                 margin-top: 1.5rem;
                 padding: 0.75rem 2rem;
                 background: white;
@@ -512,17 +512,17 @@ const KitchenRealtime = {
                 ` : ''}
                 <div class="order-actions">
                     ${order.status === 'pending' ? `
-                        <button onclick="KitchenRealtime.startPreparation('${order.id}')">
+                        <button class="md-ripple" onclick="KitchenRealtime.startPreparation('${order.id}')">
                             🍳 Bắt đầu
                         </button>
                     ` : ''}
                     ${order.status === 'preparing' ? `
-                        <button onclick="KitchenRealtime.updateOrderProgress('${order.id}', 100)">
+                        <button class="md-ripple" onclick="KitchenRealtime.updateOrderProgress('${order.id}', 100)">
                             ✅ Xong
                         </button>
                     ` : ''}
                     ${order.status === 'ready' ? `
-                        <button onclick="KitchenRealtime.completeOrder('${order.id}')">
+                        <button class="md-ripple" onclick="KitchenRealtime.completeOrder('${order.id}')">
                             📦 Giao
                         </button>
                     ` : ''}

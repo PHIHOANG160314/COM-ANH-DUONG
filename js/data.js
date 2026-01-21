@@ -470,7 +470,9 @@ const sampleCustomers = [
     { id: "C097", name: "Hoàng Văn Tiến", phone: "0934567097", email: "tien.hoang@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567097", createdAt: "2024-12-26" },
     { id: "C098", name: "Võ Thị Út", phone: "0934567098", email: "ut.vo@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567098", createdAt: "2024-12-26" },
     { id: "C099", name: "Đặng Văn Vĩ", phone: "0934567099", email: "vi.dang@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567099", createdAt: "2024-12-26" },
-    { id: "C100", name: "Bùi Thị Xuân", phone: "0934567100", email: "xuan.bui@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567100", createdAt: "2024-12-26" }
+    { id: "C100", name: "Bùi Thị Xuân", phone: "0934567100", email: "xuan.bui@email.com", tier: "Bronze", points: 0, totalSpent: 0, visits: 0, qrCode: "MEMBER-0934567100", createdAt: "2024-12-26" },
+    // TEST ACCOUNT
+    { id: "C101", name: "Test User", phone: "0999888777", email: "gaogavi01@gmail.com", tier: "Gold", points: 5000, totalSpent: 10000000, visits: 50, qrCode: "MEMBER-TEST-01", createdAt: "2026-01-21" }
 ];
 
 // Load sample customers to localStorage if not exists

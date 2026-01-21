@@ -355,7 +355,7 @@ const CustomerApp = {
                 <span class="cat-icon">📋</span> Tất cả
             </div>
             ${categories.map(cat => `
-                <div class="category-pill" data-cat="${cat.id}" onclick="CustomerApp.filterCategory('${cat.id}')">
+                <div class="category-pill md-ripple md-focus-ring" data-cat="${cat.id}" onclick="CustomerApp.filterCategory('${cat.id}')">
                     <span class="cat-icon">${cat.icon}</span> ${cat.name}
                 </div>
             `).join('')}
@@ -414,7 +414,7 @@ const CustomerApp = {
                 Tất cả
             </div>
             ${subcategories.map(sub => `
-                <div class="subcategory-chip" data-sub="${sub.id}" onclick="CustomerApp.filterSubcategory('${sub.id}')">
+                <div class="subcategory-chip md-ripple md-focus-ring" data-sub="${sub.id}" onclick="CustomerApp.filterSubcategory('${sub.id}')">
                     ${sub.icon} ${sub.name}
                 </div>
             `).join('')}
@@ -458,7 +458,7 @@ const CustomerApp = {
         }
 
         grid.innerHTML = combos.map(combo => `
-            <div class="combo-card" onclick="CustomerApp.addComboToCart('${combo.id}')">
+            <div class="combo-card md-ripple md-focus-ring" onclick="CustomerApp.addComboToCart('${combo.id}')">
                 <div class="combo-badge">-${this.formatPrice(combo.savings)}</div>
                 <div class="combo-name">${combo.icon} ${combo.name}</div>
                 <div class="combo-desc">${combo.description}</div>
@@ -511,7 +511,7 @@ const CustomerApp = {
         const featured = this.menuData.filter(item => featuredIds.includes(item.id));
 
         container.innerHTML = featured.map(item => `
-            <div class="featured-card" onclick="CustomerApp.addToCart(${item.id})">
+            <div class="featured-card md-ripple md-focus-ring" onclick="CustomerApp.addToCart(${item.id})">
                 <div class="featured-card-image">${item.icon || '🍽️'}</div>
                 <div class="featured-card-body">
                     <div class="featured-card-name">${item.name}</div>
@@ -548,7 +548,7 @@ const CustomerApp = {
         const items = this.menuData.filter(item => item.category === category);
 
         container.innerHTML = `
-            <button class="subcategory-tab ${this.currentSubcategory === 'all' ? 'active' : ''}" 
+            <button class="subcategory-tab md-ripple ${this.currentSubcategory === 'all' ? 'active' : ''}"
                     onclick="CustomerApp.filterBySubcategory('all')">
                 <span class="tab-icon">🔤</span> Tất cả
                 <span class="tab-count">${items.length}</span>
@@ -556,7 +556,7 @@ const CustomerApp = {
             ${subcats.map(sub => {
             const count = items.filter(item => item.subcategory === sub.id).length;
             return `
-                    <button class="subcategory-tab ${this.currentSubcategory === sub.id ? 'active' : ''}" 
+                    <button class="subcategory-tab md-ripple ${this.currentSubcategory === sub.id ? 'active' : ''}"
                             onclick="CustomerApp.filterBySubcategory('${sub.id}')">
                         <span class="tab-icon">${sub.icon}</span> ${sub.name}
                         <span class="tab-count">${count}</span>
@@ -680,7 +680,7 @@ const CustomerApp = {
                 <div class="menu-card-body">
                     <div class="menu-card-name">${item.name}</div>
                     <div class="menu-card-price">${this.formatPrice(item.price)}</div>
-                    <button class="menu-card-add btn-press hover-glow" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
+                    <button class="menu-card-add md-ripple md-focus-ring btn-press hover-glow" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
                         + Thêm vào giỏ
                     </button>
                 </div>
@@ -1291,7 +1291,7 @@ const CustomerApp = {
 
     renderHistoryCard(order) {
         return `
-            <div class="history-card" onclick="CustomerApp.viewHistoryOrder('${order.id}')">
+            <div class="history-card md-ripple md-focus-ring" onclick="CustomerApp.viewHistoryOrder('${order.id}')">
                 <div class="history-info">
                     <h4>${order.id}</h4>
                     <p>${this.formatDateTime(order.createdAt)} • ${order.items.length} món</p>

@@ -486,10 +486,10 @@ const ShipperApp = {
                 </div>
                 
                 <div class="order-actions">
-                    <button class="btn-action primary" onclick="ShipperApp.pickupOrder('${order.id}')">
+                    <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.pickupOrder('${order.id}')">
                         📦 Nhận đơn
                     </button>
-                    <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
                         🗺️ Chỉ đường
                     </a>
                 </div>
@@ -519,13 +519,13 @@ const ShipperApp = {
         let actionsHtml = '';
         if (delivery.status === 'assigned') {
             actionsHtml = `
-                <button class="btn-action primary" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
+                <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
                     🏃 Đã lấy hàng
                 </button>
             `;
         } else if (delivery.status === 'picked_up' || delivery.status === 'delivering') {
             actionsHtml = `
-                <button class="btn-action success" onclick="ShipperApp.completeDelivery('${delivery.id}')">
+                <button class="btn-action success md-ripple md-focus-ring" onclick="ShipperApp.completeDelivery('${delivery.id}')">
                     ✅ Đã giao xong
                 </button>
             `;
@@ -566,10 +566,10 @@ const ShipperApp = {
                 
                 <div class="order-actions">
                     ${actionsHtml}
-                    <a class="btn-action navigate" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
                         🗺️ Chỉ đường
                     </a>
-                    <a class="btn-action call" href="tel:${order.customer_phone}">
+                    <a class="btn-action call md-ripple md-focus-ring" href="tel:${order.customer_phone}">
                         📞 Gọi
                     </a>
                 </div>

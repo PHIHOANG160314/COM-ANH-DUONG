@@ -130,12 +130,12 @@ const KitchenDisplay = {
         const itemsHtml = this.getOrderItemsHTML(order);
         const actionButton = order.status === 'pending'
             ? `
-                <button class="btn-warning" onclick="KitchenDisplay.startPreparing('${order.id}')">
+                <button class="btn-warning md-ripple md-focus-ring" onclick="KitchenDisplay.startPreparing('${order.id}')">
                     🍳 Bắt đầu làm
                 </button>
             `
             : `
-                <button class="btn-success" onclick="KitchenDisplay.markReady('${order.id}')">
+                <button class="btn-success md-ripple md-focus-ring" onclick="KitchenDisplay.markReady('${order.id}')">
                     ✅ Hoàn thành
                 </button>
             `;
@@ -370,7 +370,7 @@ const KitchenDisplay = {
                     <strong>${o.id}</strong> - ${o.table}<br>
                     <small style="color: var(--text-muted);">${o.items}</small>
                 </div>
-                <button class="btn-success" onclick="KitchenDisplay.markServed('${o.id}')">🍽️ Đã phục vụ</button>
+                <button class="btn-success md-ripple md-focus-ring" onclick="KitchenDisplay.markServed('${o.id}')">🍽️ Đã phục vụ</button>
             </div>
         `).join('');
 

@@ -134,19 +134,19 @@ const AdminDashboard = {
                 <div class="dashboard-body">
                     <!-- Quick Actions -->
                     <div class="quick-actions">
-                        <button class="action-btn" onclick="AdminDashboard.openSection('orders')">
+                        <button class="action-btn md-ripple md-focus-ring" onclick="AdminDashboard.openSection('orders')">
                             <span>📦</span>
                             <span>Đơn hàng</span>
                         </button>
-                        <button class="action-btn" onclick="KitchenRealtime.showKitchenDisplay(); AdminDashboard.close();">
+                        <button class="action-btn md-ripple md-focus-ring" onclick="KitchenRealtime.showKitchenDisplay(); AdminDashboard.close();">
                             <span>👨‍🍳</span>
                             <span>Bếp</span>
                         </button>
-                        <button class="action-btn" onclick="AdminDashboard.openSection('staff')">
+                        <button class="action-btn md-ripple md-focus-ring" onclick="AdminDashboard.openSection('staff')">
                             <span>👥</span>
                             <span>Nhân viên</span>
                         </button>
-                        <button class="action-btn" onclick="AdminDashboard.openSection('stats')">
+                        <button class="action-btn md-ripple md-focus-ring" onclick="AdminDashboard.openSection('stats')">
                             <span>📈</span>
                             <span>Thống kê</span>
                         </button>
@@ -227,13 +227,13 @@ const AdminDashboard = {
                     <!-- Quick Reports -->
                     <div class="section-title">📋 Báo cáo nhanh</div>
                     <div class="quick-reports">
-                        <button class="report-btn" onclick="AdminDashboard.generateReport('daily')">
+                        <button class="report-btn md-ripple md-focus-ring" onclick="AdminDashboard.generateReport('daily')">
                             📊 Báo cáo ngày
                         </button>
-                        <button class="report-btn" onclick="AdminDashboard.generateReport('inventory')">
+                        <button class="report-btn md-ripple md-focus-ring" onclick="AdminDashboard.generateReport('inventory')">
                             📦 Tồn kho
                         </button>
-                        <button class="report-btn" onclick="AdminDashboard.generateReport('staff')">
+                        <button class="report-btn md-ripple md-focus-ring" onclick="AdminDashboard.generateReport('staff')">
                             👥 Chấm công
                         </button>
                     </div>

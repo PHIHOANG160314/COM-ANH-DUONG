@@ -1567,20 +1567,26 @@
    M3 UTILITIES - ADDITIONAL
    ===================================================== */
 
-/* Ripple Effect */
+/* 1. Enhanced Ripple Effect (WOW Effect) */
+/* Creates a centered radial ripple that expands on release */
 .md-ripple {
     position: relative;
     overflow: hidden;
+    transform: translate3d(0, 0, 0); /* Hardware acceleration */
 }
 
 .md-ripple::after {
-    content: '';
+    content: "";
+    display: block;
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    background: radial-gradient(circle, currentColor 10%, transparent 10.01%);
+    pointer-events: none;
+    background-image: radial-gradient(circle, currentColor 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
     transform: scale(10, 10);
     opacity: 0;
     transition: transform 0.5s, opacity 1s;
@@ -1588,14 +1594,90 @@
 
 .md-ripple:active::after {
     transform: scale(0, 0);
-    opacity: 0.2;
+    opacity: 0.12;
     transition: 0s;
 }
 
-/* Focus Ring */
+/* 2. Enhanced Focus Ring (WOW Effect) */
+/* Animated offset for better visibility and feel */
+.md-focus-ring {
+    transition: outline-offset 0.2s cubic-bezier(0.2, 0, 0, 1), outline-color 0.2s linear;
+}
+
 .md-focus-ring:focus-visible {
-    outline: 3px solid var(--md-sys-color-primary);
-    outline-offset: 2px;
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 4px;
+    border-radius: inherit; /* Adapts to button/input shape */
+}
+
+/* 3. Skeleton Loader (WOW Effect) */
+/* Shimmering loading state for better perceived performance */
+@keyframes md-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.md-skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-small);
+    /* Remove existing content styles if applied to real elements */
+    color: transparent !important;
+    border-color: transparent !important;
+    user-select: none;
+    pointer-events: none;
+}
+
+.md-skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: md-shimmer 1.5s infinite;
+}
+
+/* Dark mode adjustment for skeleton shimmer */
+[data-theme="dark"] .md-skeleton::after {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+    );
+}
+
+/* Skeleton Utilities */
+.md-skeleton-text {
+    height: 16px;
+    width: 100%;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.md-skeleton-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.md-skeleton-rect {
+    width: 100%;
+    height: 200px;
+    border-radius: var(--md-sys-shape-corner-medium);
 }
 
 /* Disabled State */
@@ -1603,6 +1685,7 @@
 [disabled] {
     opacity: 0.38;
     pointer-events: none;
+    box-shadow: none !important;
 }
 
 /* Touch Target */

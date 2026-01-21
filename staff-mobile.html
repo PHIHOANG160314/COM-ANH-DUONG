@@ -67,20 +67,20 @@
                     <h2>Xin chào!</h2>
                     <p>Nhập mã PIN để đăng nhập</p>
                     <div class="pin-input-group">
-                        <input type="tel" id="pinInput" maxlength="4" placeholder="••••" class="pin-input"
+                        <input type="tel" id="pinInput" maxlength="4" placeholder="••••" class="pin-input md-focus-ring"
                             inputmode="numeric" pattern="[0-9]*">
                     </div>
                     <div class="work-code-group" id="workCodeGroup" style="display: none;">
                         <label>Mã làm việc (từ quản lý)</label>
                         <input type="text" id="workCodeInput" maxlength="7" placeholder="ABC-DEF"
-                            class="work-code-input" style="text-transform: uppercase;" autocomplete="off"
+                            class="work-code-input md-focus-ring" style="text-transform: uppercase;" autocomplete="off"
                             autocapitalize="characters">
                         <small
                             style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 4px; display: block;">
                             Nhập mã 6 ký tự hiển thị trên màn hình quản lý
                         </small>
                     </div>
-                    <button type="button" class="btn-login" onclick="StaffApp.login()">Đăng nhập</button>
+                    <button type="button" class="btn-login md-ripple md-focus-ring" onclick="StaffApp.login()">Đăng nhập</button>
                     <div class="login-help">
                         <p>Quên mã PIN? Liên hệ quản lý</p>
                     </div>
@@ -93,7 +93,7 @@
             <div class="dashboard-container">
                 <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <button type="button" class="action-card checkin" id="checkinBtn"
+                    <button type="button" class="action-card md-ripple md-focus-ring checkin" id="checkinBtn"
                         onclick="StaffApp.toggleCheckin()">
                         <span class="action-icon">🟢</span>
                         <span class="action-label">Check-in</span>
@@ -101,7 +101,7 @@
                     </button>
 
                     <!-- Work Code Card (Only for Admin/Manager) -->
-                    <div class="action-card work-code-card" id="workCodeCard"
+                    <div class="action-card md-ripple md-focus-ring work-code-card" id="workCodeCard"
                         style="display: none; flex-direction: column; align-items: center; padding: 15px;">
                         <span class="action-icon">🔑</span>
                         <span class="action-label" style="font-size: 0.75rem; margin-bottom: 8px;">Mã làm việc</span>
@@ -116,16 +116,16 @@
                         </button>
                     </div>
 
-                    <button type="button" class="action-card kitchen" onclick="StaffApp.showSection('kitchen')">
+                    <button type="button" class="action-card md-ripple md-focus-ring kitchen" onclick="StaffApp.showSection('kitchen')">
                         <span class="action-icon">👨‍🍳</span>
                         <span class="action-label">Bếp</span>
                         <span class="action-badge" id="kitchenOrderCount">0</span>
                     </button>
-                    <button type="button" class="action-card pos" onclick="window.location='index.html#pos'">
+                    <button type="button" class="action-card md-ripple md-focus-ring pos" onclick="window.location='index.html#pos'">
                         <span class="action-icon">💳</span>
                         <span class="action-label">POS</span>
                     </button>
-                    <button type="button" class="action-card orders" onclick="StaffApp.showSection('orders')">
+                    <button type="button" class="action-card md-ripple md-focus-ring orders" onclick="StaffApp.showSection('orders')">
                         <span class="action-icon">📋</span>
                         <span class="action-label">Đơn hàng</span>
                         <span class="action-badge" id="orderCount">0</span>
@@ -137,15 +137,15 @@
                     <h3>📊 Hôm nay</h3>
                     <div class="summary-grid">
                         <div class="summary-item">
-                            <span class="summary-value" id="todayOrders">0</span>
+                            <span class="summary-value" id="todayOrders"><span class="md-skeleton md-skeleton-text" style="width: 40px; height: 28px; display: inline-block;"></span></span>
                             <span class="summary-label">Đơn hàng</span>
                         </div>
                         <div class="summary-item">
-                            <span class="summary-value" id="todayRevenue">0đ</span>
+                            <span class="summary-value" id="todayRevenue"><span class="md-skeleton md-skeleton-text" style="width: 80px; height: 28px; display: inline-block;"></span></span>
                             <span class="summary-label">Doanh thu</span>
                         </div>
                         <div class="summary-item">
-                            <span class="summary-value" id="todayServed">0</span>
+                            <span class="summary-value" id="todayServed"><span class="md-skeleton md-skeleton-text" style="width: 40px; height: 28px; display: inline-block;"></span></span>
                             <span class="summary-label">Đã phục vụ</span>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
         <section class="section" id="section-kitchen">
             <div class="kitchen-container">
                 <div class="section-header">
-                    <button type="button" class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay
+                    <button type="button" class="btn-back md-ripple md-focus-ring" onclick="StaffApp.showSection('dashboard')">← Quay
                         lại</button>
                     <h2>👨‍🍳 Màn hình bếp</h2>
                 </div>
@@ -179,17 +179,17 @@
         <section class="section" id="section-orders">
             <div class="orders-container">
                 <div class="section-header">
-                    <button type="button" class="btn-back" onclick="StaffApp.showSection('dashboard')">← Quay
+                    <button type="button" class="btn-back md-ripple md-focus-ring" onclick="StaffApp.showSection('dashboard')">← Quay
                         lại</button>
                     <h2>📋 Quản lý đơn</h2>
                 </div>
                 <div class="order-filters">
                     <button type="button" class="filter-btn active" onclick="StaffApp.filterOrders('all')">Tất
                         cả</button>
-                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('pending')">Chờ</button>
-                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('preparing')">Đang
+                    <button type="button" class="filter-btn md-ripple md-focus-ring" onclick="StaffApp.filterOrders('pending')">Chờ</button>
+                    <button type="button" class="filter-btn md-ripple md-focus-ring" onclick="StaffApp.filterOrders('preparing')">Đang
                         làm</button>
-                    <button type="button" class="filter-btn" onclick="StaffApp.filterOrders('completed')">Xong</button>
+                    <button type="button" class="filter-btn md-ripple md-focus-ring" onclick="StaffApp.filterOrders('completed')">Xong</button>
                 </div>
                 <div class="orders-list" id="allOrdersList">
                     <p class="no-orders">Chưa có đơn hàng</p>
@@ -205,15 +205,15 @@
             <span class="nav-icon">🏠</span>
             <span class="nav-label">Trang chủ</span>
         </button>
-        <button type="button" class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')">
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="kitchen" onclick="StaffApp.showSection('kitchen')">
             <span class="nav-icon">👨‍🍳</span>
             <span class="nav-label">Bếp</span>
         </button>
-        <button type="button" class="nav-item" data-section="orders" onclick="StaffApp.showSection('orders')">
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="orders" onclick="StaffApp.showSection('orders')">
             <span class="nav-icon">📋</span>
             <span class="nav-label">Đơn hàng</span>
         </button>
-        <button type="button" class="nav-item" onclick="StaffApp.logout()">
+        <button type="button" class="nav-item md-ripple md-focus-ring" onclick="StaffApp.logout()">
             <span class="nav-icon">🚪</span>
             <span class="nav-label">Đăng xuất</span>
         </button>

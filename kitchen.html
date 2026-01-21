@@ -493,7 +493,7 @@
                         <input type="password" id="kitchenPin" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •"
                             inputmode="numeric" autocomplete="off">
                     </div>
-                    <button type="submit" class="btn-login">🔓 Đăng Nhập</button>
+                    <button type="submit" class="btn-login md-ripple md-focus-ring">🔓 Đăng Nhập</button>
                 </form>
                 <p class="login-help">📞 Liên hệ quản lý để nhận tài khoản</p>
             </div>
@@ -621,27 +621,27 @@
 
             <div class="kitchen-stats">
                 <div class="stat-item pending">
-                    <span class="stat-value" id="pendingCount">0</span>
+                    <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Chờ xử lý</span>
                 </div>
                 <div class="stat-item preparing">
-                    <span class="stat-value" id="preparingCount">0</span>
+                    <span class="stat-value" id="preparingCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Đang làm</span>
                 </div>
                 <div class="stat-item ready">
-                    <span class="stat-value" id="readyCount">0</span>
+                    <span class="stat-value" id="readyCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Sẵn sàng</span>
                 </div>
             </div>
 
             <nav class="kitchen-nav">
-                <a href="staff-mobile.html" class="nav-btn">📱 Staff</a>
-                <a href="index.html" class="nav-btn">🏠 Admin</a>
-                <button type="button" class="nav-btn" onclick="KitchenDisplay.showReadyOrders()">
+                <a href="staff-mobile.html" class="nav-btn md-ripple md-focus-ring">📱 Staff</a>
+                <a href="index.html" class="nav-btn md-ripple md-focus-ring">🏠 Admin</a>
+                <button type="button" class="nav-btn md-ripple md-focus-ring" onclick="KitchenDisplay.showReadyOrders()">
                     🔔 Đơn sẵn sàng
                     <span id="notificationBadge" class="notification-badge">0</span>
                 </button>
-                <button type="button" class="nav-btn" onclick="KitchenPage.logout()"
+                <button type="button" class="nav-btn md-ripple md-focus-ring" onclick="KitchenPage.logout()"
                     style="background: rgba(239, 68, 68, 0.2);">
                     🚪 Đăng xuất
                 </button>
@@ -657,17 +657,17 @@
                     📋 Tất cả
                     <span class="badge" id="allCount">0</span>
                 </button>
-                <button type="button" class="kitchen-tab" data-status="pending"
+                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="pending"
                     onclick="KitchenPage.filterOrders('pending')">
                     ⏳ Chờ xử lý
                     <span class="badge" id="pendingTabCount">0</span>
                 </button>
-                <button type="button" class="kitchen-tab" data-status="preparing"
+                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="preparing"
                     onclick="KitchenPage.filterOrders('preparing')">
                     🍳 Đang làm
                     <span class="badge" id="preparingTabCount">0</span>
                 </button>
-                <button type="button" class="kitchen-tab" data-status="ready"
+                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="ready"
                     onclick="KitchenPage.filterOrders('ready')">
                     ✅ Sẵn sàng
                     <span class="badge" id="readyTabCount">0</span>
