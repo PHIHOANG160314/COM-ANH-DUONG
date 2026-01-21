@@ -329,6 +329,13 @@ const AdminDashboard = {
     // ========================================
 
     formatPrice(amount) {
+        if (window.utils && window.utils.formatPrice) {
+            // Custom handling for millions in dashboard view
+            if (amount >= 1000000) {
+                return (amount / 1000000).toFixed(1) + 'M đ';
+            }
+            return window.utils.formatPrice(amount);
+        }
         if (amount >= 1000000) {
             return (amount / 1000000).toFixed(1) + 'M đ';
         }
@@ -336,6 +343,10 @@ const AdminDashboard = {
     },
 
     showToast(message) {
+        if (window.utils && window.utils.toast) {
+            window.utils.toast.show(message);
+            return;
+        }
         if (typeof CustomerApp !== 'undefined' && CustomerApp.showToast) {
             CustomerApp.showToast(message);
         }

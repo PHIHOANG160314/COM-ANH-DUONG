@@ -927,24 +927,19 @@ const ShipperApp = {
     // Use centralized utils.js functions with fallback
 
     formatTime(dateString) {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        return window.utils ? window.utils.getCurrentTime(new Date(dateString)) : new Date(dateString).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     },
 
     formatDate(dateString) {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return window.utils ? window.utils.getCurrentDate(new Date(dateString)) : new Date(dateString).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     },
 
     formatPrice(amount) {
-        // Use centralized utils if available
-        if (window.utils?.formatPrice) return window.utils.formatPrice(amount);
-        return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
+        return window.utils ? window.utils.formatPrice(amount) : new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
     },
 
     showToast(message, type = 'info') {
-        // Use centralized toast if available
-        if (window.utils?.toast) {
+        if (window.utils && window.utils.toast) {
             window.utils.toast.show(message, type);
             return;
         }

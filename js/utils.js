@@ -18,21 +18,21 @@ function formatPrice(amount) {
 }
 
 // Get current date formatted
-function getCurrentDate() {
-    const now = new Date();
+function getCurrentDate(dateInput = new Date()) {
+    const date = typeof dateInput === 'string' || typeof dateInput === 'number' ? new Date(dateInput) : dateInput;
     const options = {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     };
-    return now.toLocaleDateString('vi-VN', options);
+    return date.toLocaleDateString('vi-VN', options);
 }
 
 // Get current time
-function getCurrentTime() {
-    const now = new Date();
-    return now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+function getCurrentTime(dateInput = new Date()) {
+    const date = typeof dateInput === 'string' || typeof dateInput === 'number' ? new Date(dateInput) : dateInput;
+    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 }
 
 // Generate unique ID

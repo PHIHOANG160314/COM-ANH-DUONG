@@ -1452,11 +1452,14 @@ const CustomerApp = {
     // UTILITIES
     // ========================================
     formatPrice(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        return window.utils ? window.utils.formatPrice(amount) : new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     },
 
     formatDateTime(dateStr) {
         const date = new Date(dateStr);
+        if (window.utils) {
+            return `${window.utils.getCurrentTime(date)}, ${window.utils.getCurrentDate(date)}`;
+        }
         return date.toLocaleString('vi-VN', {
             day: '2-digit',
             month: '2-digit',
@@ -1466,6 +1469,10 @@ const CustomerApp = {
     },
 
     showToast(message, type = 'success') {
+        if (window.utils && window.utils.toast) {
+            window.utils.toast.show(message, type);
+            return;
+        }
         const container = document.getElementById('toastContainer');
         if (!container) return;
 

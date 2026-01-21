@@ -780,12 +780,11 @@ const StaffApp = {
     // UTILITIES - Use centralized utils.js
     // ========================================
     formatPrice(amount) {
-        if (window.utils?.formatPrice) return window.utils.formatPrice(amount);
-        return new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
+        return window.utils ? window.utils.formatPrice(amount) : new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
     },
 
     formatTime(dateStr) {
-        return new Date(dateStr).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        return window.utils ? window.utils.getCurrentTime() : new Date(dateStr).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
     },
 
     getWaitTime(dateStr) {
@@ -805,7 +804,7 @@ const StaffApp = {
     },
 
     showToast(message, type = 'success') {
-        if (window.utils?.toast) {
+        if (window.utils && window.utils.toast) {
             window.utils.toast.show(message, type);
             return;
         }
