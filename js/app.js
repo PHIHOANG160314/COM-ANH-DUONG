@@ -38,8 +38,8 @@ const App = {
         this.initModules();
 
         // Initialize global components
-        if (window.modal) modal.init();
-        if (window.toast) toast.init();
+        if (window.utils && window.utils.modal) window.utils.modal.init();
+        if (window.utils && window.utils.toast) window.utils.toast.init();
 
         console.log('🍽️ F&B Master initialized successfully!');
     },
@@ -130,8 +130,8 @@ const App = {
     },
 
     updateDate() {
-        if (this.elements.currentDate && typeof getCurrentDate === 'function') {
-            this.elements.currentDate.textContent = getCurrentDate();
+        if (this.elements.currentDate) {
+            this.elements.currentDate.textContent = window.utils ? window.utils.getCurrentDate() : new Date().toLocaleDateString('vi-VN');
         }
     },
 
