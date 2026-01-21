@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="css/menu-hierarchy.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/m3-wow-effects.css">
+    <link rel="stylesheet" href="css/ui-2026.css">
     <link rel="stylesheet" href="css/customer-mobile-wow.css">
     <link rel="stylesheet" href="css/social-share.css">
 
@@ -72,7 +73,8 @@
 
 <body>
     <!-- Header -->
-    <header class="customer-header">
+    <header class="customer-header glass-card"
+        style="border-radius: 0 0 24px 24px; margin: 0 10px 10px 10px; width: auto;">
         <div class="header-content">
             <a href="/" class="logo-section" style="text-decoration: none; color: inherit;">
                 <img src="logo-landing.png" alt="Ánh Dương" class="logo-img">
@@ -117,22 +119,25 @@
                 </div>
                 <div class="featured-cards" id="featuredCards">
                     <!-- Skeletons for loading state -->
-                    <div class="featured-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect" style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card">
+                        <div class="featured-card-image md-skeleton md-skeleton-rect"
+                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 80%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 40%;"></div>
                         </div>
                     </div>
-                    <div class="featured-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect" style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card">
+                        <div class="featured-card-image md-skeleton md-skeleton-rect"
+                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 70%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 50%;"></div>
                         </div>
                     </div>
-                    <div class="featured-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect" style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card">
+                        <div class="featured-card-image md-skeleton md-skeleton-rect"
+                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 75%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 45%;"></div>
@@ -154,23 +159,23 @@
                     <span class="group-icon">📋</span>
                     <span>Tất cả</span>
                 </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring" data-group="beverages"
-                    onclick="CustomerApp.filterByGroup('beverages')">
+                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
+                    data-group="beverages" onclick="CustomerApp.filterByGroup('beverages')">
                     <span class="group-icon">🥤</span>
                     <span>Đồ Uống</span>
                 </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring" data-group="food"
-                    onclick="CustomerApp.filterByGroup('food')">
+                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
+                    data-group="food" onclick="CustomerApp.filterByGroup('food')">
                     <span class="group-icon">🍜</span>
                     <span>Thức Ăn</span>
                 </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring" data-group="dessert"
-                    onclick="CustomerApp.filterByGroup('dessert')">
+                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
+                    data-group="dessert" onclick="CustomerApp.filterByGroup('dessert')">
                     <span class="group-icon">🍰</span>
                     <span>Tráng Miệng</span>
                 </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring" data-group="combo"
-                    onclick="CustomerApp.filterByGroup('combo')">
+                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
+                    data-group="combo" onclick="CustomerApp.filterByGroup('combo')">
                     <span class="group-icon">🎁</span>
                     <span>Combo</span>
                 </button>
@@ -187,10 +192,10 @@
 
             <!-- LEVEL 3: Subcategories (Dynamic) -->
             <div class="menu-subcategories" id="menuSubcategories">
-                 <!-- Skeletons -->
-                 <div class="subcategory-chip md-skeleton" style="width: 80px; height: 28px;"></div>
-                 <div class="subcategory-chip md-skeleton" style="width: 100px; height: 28px;"></div>
-                 <div class="subcategory-chip md-skeleton" style="width: 90px; height: 28px;"></div>
+                <!-- Skeletons -->
+                <div class="subcategory-chip md-skeleton" style="width: 80px; height: 28px;"></div>
+                <div class="subcategory-chip md-skeleton" style="width: 100px; height: 28px;"></div>
+                <div class="subcategory-chip md-skeleton" style="width: 90px; height: 28px;"></div>
             </div>
 
             <!-- Menu Grid -->
@@ -295,13 +300,14 @@
                     <div class="promo-code-section">
                         <div class="promo-input-group">
                             <input type="text" id="promoCode" placeholder="Nhập mã giảm giá">
-                            <button type="button" class="btn-apply-promo md-button md-button-tonal md-ripple md-focus-ring"
+                            <button type="button"
+                                class="btn-apply-promo md-button md-button-tonal md-ripple md-focus-ring"
                                 onclick="CustomerApp.applyPromo()">Áp dụng</button>
                         </div>
                         <div id="promoStatus" class="promo-status"></div>
                     </div>
-                    <button type="button" class="btn-checkout md-button md-button-filled md-ripple md-focus-ring" id="checkoutBtn"
-                        onclick="CustomerApp.checkout()">
+                    <button type="button" class="btn-checkout md-button md-button-filled md-ripple md-focus-ring"
+                        id="checkoutBtn" onclick="CustomerApp.checkout()">
                         Xác nhận đặt hàng
                     </button>
                 </div>
@@ -383,8 +389,8 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn-register md-button md-button-filled md-ripple md-focus-ring" id="registerBtn"
-                    onclick="CustomerApp.showRegisterModal()">
+                <button type="button" class="btn-register md-button md-button-filled md-ripple md-focus-ring"
+                    id="registerBtn" onclick="CustomerApp.showRegisterModal()">
                     ✨ Đăng ký thành viên
                 </button>
             </div>
@@ -448,7 +454,8 @@
                 <span>Tổng cộng:</span>
                 <strong id="floatingCartTotal">0đ</strong>
             </div>
-            <button type="button" class="btn-order md-button md-button-filled md-ripple md-focus-ring" onclick="CustomerApp.goToOrder()">Đặt
+            <button type="button" class="btn-order md-button md-button-filled md-ripple md-focus-ring"
+                onclick="CustomerApp.goToOrder()">Đặt
                 hàng
                 ngay</button>
         </div>
