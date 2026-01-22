@@ -284,7 +284,10 @@ const APIService = {
 
     // Get pending queue count
     getPendingCount() {
-        return this.offlineQueue.length;
+        if (typeof OfflineManager !== 'undefined') {
+            return OfflineManager.getPendingCount();
+        }
+        return 0;
     },
 
     // Check if configured
