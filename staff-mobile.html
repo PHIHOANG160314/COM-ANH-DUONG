@@ -23,13 +23,11 @@
     <meta name="theme-color" content="#006400">
     <link rel="manifest" href="manifest.json">
 
-    <!-- Import Map for Material Web (CDN) -->
+    <!-- Import Map for Material Web (Official esm.run CDN) -->
     <script type="importmap">
       {
         "imports": {
-          "@material/web/": "https://esm.sh/@material/web@2.0.0/",
-          "lit": "https://esm.sh/lit@3.1.0",
-          "lit/": "https://esm.sh/lit@3.1.0/"
+          "@material/web/": "https://esm.run/@material/web/"
         }
       }
     </script>
@@ -37,11 +35,11 @@
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.sh;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.run;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.run https://cdn.jsdelivr.net;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
