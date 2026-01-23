@@ -29,14 +29,13 @@
     <meta name="theme-color" content="#006400">
     <link rel="manifest" href="manifest.json">
 
-    <!-- Import Map for Material Web -->
+    <!-- Import Map for Material Web (CDN) -->
     <script type="importmap">
       {
         "imports": {
-          "@material/web/": "./node_modules/@material/web/",
-          "lit": "./node_modules/lit/index.js",
-          "lit/": "./node_modules/lit/",
-          "tslib": "./node_modules/tslib/tslib.es6.js"
+          "@material/web/": "https://esm.sh/@material/web@2.0.0/",
+          "lit": "https://esm.sh/lit@3.1.0",
+          "lit/": "https://esm.sh/lit@3.1.0/"
         }
       }
     </script>
@@ -44,11 +43,11 @@
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.sh;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -497,13 +496,15 @@
                 </div>
                 <form class="login-form" onsubmit="KitchenPage.login(event)">
                     <div class="form-group">
-                        <md-outlined-text-field id="kitchenName" label="Tên tài khoản" placeholder="VD: Bếp Chính" autocomplete="off" style="width: 100%;">
+                        <md-outlined-text-field id="kitchenName" label="Tên tài khoản" placeholder="VD: Bếp Chính"
+                            autocomplete="off" style="width: 100%;">
                             <md-icon slot="leading-icon">person</md-icon>
                         </md-outlined-text-field>
                     </div>
                     <div class="form-group">
-                        <md-outlined-text-field id="kitchenPin" label="Mã PIN" type="password" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •"
-                            inputmode="numeric" autocomplete="off" style="width: 100%; text-align: center;">
+                        <md-outlined-text-field id="kitchenPin" label="Mã PIN" type="password" maxlength="4"
+                            pattern="[0-9]{4}" placeholder="• • • •" inputmode="numeric" autocomplete="off"
+                            style="width: 100%; text-align: center;">
                             <md-icon slot="leading-icon">lock</md-icon>
                         </md-outlined-text-field>
                     </div>
@@ -637,15 +638,18 @@
 
             <div class="kitchen-stats">
                 <div class="stat-item pending">
-                    <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
+                    <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text"
+                            style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Chờ xử lý</span>
                 </div>
                 <div class="stat-item preparing">
-                    <span class="stat-value" id="preparingCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
+                    <span class="stat-value" id="preparingCount"><span class="md-skeleton md-skeleton-text"
+                            style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Đang làm</span>
                 </div>
                 <div class="stat-item ready">
-                    <span class="stat-value" id="readyCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 32px; display: inline-block;"></span></span>
+                    <span class="stat-value" id="readyCount"><span class="md-skeleton md-skeleton-text"
+                            style="width: 30px; height: 32px; display: inline-block;"></span></span>
                     <span class="stat-label">Sẵn sàng</span>
                 </div>
             </div>
@@ -664,7 +668,8 @@
                     Đơn sẵn sàng
                     <span id="notificationBadge" class="notification-badge" style="margin-left: 4px;">0</span>
                 </md-filled-tonal-button>
-                <md-filled-tonal-button onclick="KitchenPage.logout()" style="--md-filled-tonal-button-container-color: rgba(239, 68, 68, 0.2); --md-filled-tonal-button-label-text-color: #fecaca;">
+                <md-filled-tonal-button onclick="KitchenPage.logout()"
+                    style="--md-filled-tonal-button-container-color: rgba(239, 68, 68, 0.2); --md-filled-tonal-button-label-text-color: #fecaca;">
                     <md-icon slot="icon">logout</md-icon>
                     Đăng xuất
                 </md-filled-tonal-button>
@@ -679,10 +684,12 @@
                     <md-filter-chip label="Tất cả" data-status="all" onclick="KitchenPage.filterOrders('all')" selected>
                         <md-icon slot="icon">list</md-icon>
                     </md-filter-chip>
-                    <md-filter-chip label="Chờ xử lý" data-status="pending" onclick="KitchenPage.filterOrders('pending')">
+                    <md-filter-chip label="Chờ xử lý" data-status="pending"
+                        onclick="KitchenPage.filterOrders('pending')">
                         <md-icon slot="icon">hourglass_empty</md-icon>
                     </md-filter-chip>
-                    <md-filter-chip label="Đang làm" data-status="preparing" onclick="KitchenPage.filterOrders('preparing')">
+                    <md-filter-chip label="Đang làm" data-status="preparing"
+                        onclick="KitchenPage.filterOrders('preparing')">
                         <md-icon slot="icon">skillet</md-icon>
                     </md-filter-chip>
                     <md-filter-chip label="Sẵn sàng" data-status="ready" onclick="KitchenPage.filterOrders('ready')">
@@ -842,7 +849,7 @@
                 // Update header stats (using skeletons if needed, or just text)
                 const updateStat = (id, value) => {
                     const el = document.getElementById(id);
-                    if(el) el.textContent = value;
+                    if (el) el.textContent = value;
                 };
 
                 updateStat('pendingCount', pending);

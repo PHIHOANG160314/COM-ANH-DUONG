@@ -23,14 +23,13 @@
     <meta name="theme-color" content="#006400">
     <link rel="manifest" href="manifest.json">
 
-    <!-- Import Map for Material Web -->
+    <!-- Import Map for Material Web (CDN) -->
     <script type="importmap">
       {
         "imports": {
-          "@material/web/": "./node_modules/@material/web/",
-          "lit": "./node_modules/lit/index.js",
-          "lit/": "./node_modules/lit/",
-          "tslib": "./node_modules/tslib/tslib.es6.js"
+          "@material/web/": "https://esm.sh/@material/web@2.0.0/",
+          "lit": "https://esm.sh/lit@3.1.0",
+          "lit/": "https://esm.sh/lit@3.1.0/"
         }
       }
     </script>
@@ -38,11 +37,11 @@
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.sh;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://rnhtfaxqnvikedwufvcd.supabase.co wss://rnhtfaxqnvikedwufvcd.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -110,7 +109,8 @@
             <div class="dashboard-container">
                 <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <div class="action-card checkin" id="checkinBtn" onclick="StaffApp.toggleCheckin()" role="button" tabindex="0">
+                    <div class="action-card checkin" id="checkinBtn" onclick="StaffApp.toggleCheckin()" role="button"
+                        tabindex="0">
                         <md-ripple></md-ripple>
                         <span class="action-icon">🟢</span>
                         <span class="action-label">Check-in</span>
@@ -119,7 +119,8 @@
 
                     <!-- Work Code Card (Only for Admin/Manager) -->
                     <div class="action-card work-code-card" id="workCodeCard"
-                        style="display: none; flex-direction: column; align-items: center; padding: 15px;" role="button" tabindex="0">
+                        style="display: none; flex-direction: column; align-items: center; padding: 15px;" role="button"
+                        tabindex="0">
                         <md-ripple></md-ripple>
                         <span class="action-icon">🔑</span>
                         <span class="action-label" style="font-size: 0.75rem; margin-bottom: 8px;">Mã làm việc</span>
@@ -127,13 +128,15 @@
                             id="workCodeDisplay">
                             ---
                         </div>
-                        <md-text-button onclick="event.stopPropagation(); StaffApp.resetWorkCode()" style="margin-top: 4px; color: white;">
+                        <md-text-button onclick="event.stopPropagation(); StaffApp.resetWorkCode()"
+                            style="margin-top: 4px; color: white;">
                             <md-icon slot="icon">refresh</md-icon>
                             Tạo mới
                         </md-text-button>
                     </div>
 
-                    <div class="action-card kitchen" onclick="StaffApp.showSection('kitchen')" role="button" tabindex="0">
+                    <div class="action-card kitchen" onclick="StaffApp.showSection('kitchen')" role="button"
+                        tabindex="0">
                         <md-ripple></md-ripple>
                         <span class="action-icon">👨‍🍳</span>
                         <span class="action-label">Bếp</span>
@@ -210,10 +213,14 @@
                 </div>
                 <div class="order-filters" style="overflow-x: auto; padding-bottom: 8px;">
                     <md-chip-set>
-                        <md-filter-chip label="Tất cả" data-filter="all" onclick="StaffApp.filterOrders('all')" selected></md-filter-chip>
-                        <md-filter-chip label="Chờ" data-filter="pending" onclick="StaffApp.filterOrders('pending')"></md-filter-chip>
-                        <md-filter-chip label="Đang làm" data-filter="preparing" onclick="StaffApp.filterOrders('preparing')"></md-filter-chip>
-                        <md-filter-chip label="Xong" data-filter="completed" onclick="StaffApp.filterOrders('completed')"></md-filter-chip>
+                        <md-filter-chip label="Tất cả" data-filter="all" onclick="StaffApp.filterOrders('all')"
+                            selected></md-filter-chip>
+                        <md-filter-chip label="Chờ" data-filter="pending"
+                            onclick="StaffApp.filterOrders('pending')"></md-filter-chip>
+                        <md-filter-chip label="Đang làm" data-filter="preparing"
+                            onclick="StaffApp.filterOrders('preparing')"></md-filter-chip>
+                        <md-filter-chip label="Xong" data-filter="completed"
+                            onclick="StaffApp.filterOrders('completed')"></md-filter-chip>
                     </md-chip-set>
                 </div>
                 <div class="orders-list" id="allOrdersList">
@@ -225,12 +232,14 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav" id="bottomNav">
-        <div class="nav-item active" data-section="dashboard" onclick="StaffApp.showSection('dashboard')" role="button" tabindex="0">
+        <div class="nav-item active" data-section="dashboard" onclick="StaffApp.showSection('dashboard')" role="button"
+            tabindex="0">
             <md-ripple></md-ripple>
             <span class="nav-icon">🏠</span>
             <span class="nav-label">Trang chủ</span>
         </div>
-        <div class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')" role="button" tabindex="0">
+        <div class="nav-item" data-section="kitchen" onclick="StaffApp.showSection('kitchen')" role="button"
+            tabindex="0">
             <md-ripple></md-ripple>
             <span class="nav-icon">👨‍🍳</span>
             <span class="nav-label">Bếp</span>

@@ -60,14 +60,13 @@
     <meta name="twitter:title" content="Ánh Dương - Menu &amp; Đặt Hàng Online">
     <meta name="twitter:description" content="Nhà hàng Ánh Dương - Đồ ăn ngon, giao hàng nhanh!">
 
-    <!-- Import Map for Material Web -->
+    <!-- Import Map for Material Web (CDN) -->
     <script type="importmap">
       {
         "imports": {
-          "@material/web/": "./node_modules/@material/web/",
-          "lit": "./node_modules/lit/index.js",
-          "lit/": "./node_modules/lit/",
-          "tslib": "./node_modules/tslib/tslib.es6.js"
+          "@material/web/": "https://esm.sh/@material/web@2.0.0/",
+          "lit": "https://esm.sh/lit@3.1.0",
+          "lit/": "https://esm.sh/lit@3.1.0/"
         }
       }
     </script>
@@ -75,11 +74,11 @@
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.sh;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.sh;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
