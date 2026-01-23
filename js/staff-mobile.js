@@ -487,8 +487,14 @@ const StaffApp = {
                     </div>
                     <div class="kitchen-order-actions">
                         ${order.status === 'pending'
-                    ? `<button class="btn-kitchen start md-ripple md-focus-ring" onclick="StaffApp.updateOrderStatus('${order.id}', 'preparing')">🔥 Bắt đầu làm</button>`
-                    : `<button class="btn-kitchen complete md-ripple md-focus-ring" onclick="StaffApp.updateOrderStatus('${order.id}', 'completed')">✅ Hoàn thành</button>`
+                    ? `<md-filled-tonal-button class="btn-kitchen start" onclick="StaffApp.updateOrderStatus('${order.id}', 'preparing')">
+                         <md-icon slot="icon">local_fire_department</md-icon>
+                         Bắt đầu làm
+                       </md-filled-tonal-button>`
+                    : `<md-filled-button class="btn-kitchen complete" onclick="StaffApp.updateOrderStatus('${order.id}', 'completed')">
+                         <md-icon slot="icon">check</md-icon>
+                         Hoàn thành
+                       </md-filled-button>`
                 }
                     </div>
                 </div>
@@ -694,9 +700,8 @@ const StaffApp = {
 
     filterOrders(status) {
         this.currentFilter = status;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.textContent.toLowerCase().includes(status === 'all' ? 'tất' :
-                status === 'pending' ? 'chờ' : status === 'preparing' ? 'đang' : 'xong'));
+        document.querySelectorAll('.order-filters md-filter-chip').forEach(chip => {
+            chip.selected = chip.dataset.filter === status;
         });
 
         // Refresh pagination with new filter

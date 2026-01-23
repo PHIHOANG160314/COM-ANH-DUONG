@@ -224,21 +224,62 @@ const StaffManagement = {
     // ========================================
     // ATTENDANCE TRACKING
     // ========================================
-    checkIn(id) {
+    // ========================================
+    // ATTENDANCE TRACKING (Realtime)
+    // ========================================
+    async checkIn(id) {
         const s = this.staff.find(x => x.id === id);
         if (!s) return;
 
         const today = new Date().toISOString().slice(0, 10);
-        const now = new Date();
-        const timeStr = now.toTimeString().slice(0, 5);
+        const timeStr = new Date().toTimeString().slice(0, 5);
 
-        // Check if already checked in today
+        // Subapase Logic
+        if (typeof SupabaseService !== 'undefined') {
+            try {
+                const supabase = await window.getSupabase();
+                // Check if already checked in
+                const { data: existing } = await supabase
+                    .from('attendance_log')
+                    .select('*')
+                    .eq('staff_id', id)
+                    .eq('date', today)
+                    .is('check_out', null)
+                    .maybeSingle();
+
+                if (existing) {
+                    toast.warning(`${s.name} đã check-in lúc ${new Date(existing.check_in).toLocaleTimeString('vi-VN')}`);
+                    return;
+                }
+
+                // Insert new check-in
+                const { error } = await supabase
+                    .from('attendance_log')
+                    .insert({
+                        staff_id: id,
+                        date: today,
+                        check_in: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+                toast.success(`✅ ${s.name} check-in thành công`);
+            } catch (err) {
+                console.error('Check-in failed:', err);
+                // Fallback to local
+                this._checkInLocal(id, s, today, timeStr);
+            }
+        } else {
+            this._checkInLocal(id, s, today, timeStr);
+        }
+    },
+
+    _checkInLocal(id, s, today, timeStr) {
+        // ... (Existing local logic)
         const existing = this.attendance.find(a => a.staffId === id && a.date === today && !a.checkOut);
         if (existing) {
             toast.warning(`${s.name} đã check-in lúc ${existing.checkIn}`);
             return;
         }
-
         this.attendance.push({
             id: Date.now(),
             staffId: id,
@@ -250,30 +291,68 @@ const StaffManagement = {
         });
         this.saveAttendance();
         this.renderAttendance();
-        toast.success(`✅ ${s.name} check-in lúc ${timeStr}`);
+        toast.success(`✅ ${s.name} check-in lúc ${timeStr} (Local)`);
     },
 
-    checkOut(id) {
+    async checkOut(id) {
         const s = this.staff.find(x => x.id === id);
         if (!s) return;
 
+        if (typeof SupabaseService !== 'undefined') {
+            try {
+                const supabase = await window.getSupabase();
+                // Find open session
+                const { data: session } = await supabase
+                    .from('attendance_log')
+                    .select('id, check_in')
+                    .eq('staff_id', id)
+                    .is('check_out', null)
+                    .order('check_in', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (!session) {
+                    toast.warning(`${s.name} chưa check-in!`);
+                    return;
+                }
+
+                // Update check-out
+                const now = new Date();
+                const { error } = await supabase
+                    .from('attendance_log')
+                    .update({ check_out: now.toISOString() })
+                    .eq('id', session.id);
+
+                if (error) throw error;
+
+                // Calculate hours for display
+                const hours = (now - new Date(session.check_in)) / (1000 * 60 * 60);
+                toast.success(`👋 ${s.name} check-out (${hours.toFixed(1)}h)`);
+
+            } catch (err) {
+                console.error('Check-out failed:', err);
+                this._checkOutLocal(id, s);
+            }
+        } else {
+            this._checkOutLocal(id, s);
+        }
+    },
+
+    _checkOutLocal(id, s) {
         const today = new Date().toISOString().slice(0, 10);
         const now = new Date();
         const timeStr = now.toTimeString().slice(0, 5);
-
         const record = this.attendance.find(a => a.staffId === id && a.date === today && !a.checkOut);
+
         if (!record) {
             toast.warning(`${s.name} chưa check-in hôm nay!`);
             return;
         }
-
         record.checkOut = timeStr;
-        // Calculate hours
         const [inH, inM] = record.checkIn.split(':').map(Number);
         const [outH, outM] = timeStr.split(':').map(Number);
         record.hours = Math.max(0, ((outH * 60 + outM) - (inH * 60 + inM)) / 60);
         record.hours = Math.round(record.hours * 100) / 100;
-
         this.saveAttendance();
         this.renderAttendance();
         toast.success(`👋 ${s.name} check-out lúc ${timeStr} (${record.hours}h)`);

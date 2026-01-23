@@ -130,14 +130,16 @@ const KitchenDisplay = {
         const itemsHtml = this.getOrderItemsHTML(order);
         const actionButton = order.status === 'pending'
             ? `
-                <button class="btn-warning md-ripple md-focus-ring" onclick="KitchenDisplay.startPreparing('${order.id}')">
-                    🍳 Bắt đầu làm
-                </button>
+                <md-filled-tonal-button class="btn-kitchen start" onclick="KitchenDisplay.startPreparing('${order.id}')">
+                    <md-icon slot="icon">skillet</md-icon>
+                    Bắt đầu làm
+                </md-filled-tonal-button>
             `
             : `
-                <button class="btn-success md-ripple md-focus-ring" onclick="KitchenDisplay.markReady('${order.id}')">
-                    ✅ Hoàn thành
-                </button>
+                <md-filled-button class="btn-kitchen complete" onclick="KitchenDisplay.markReady('${order.id}')">
+                    <md-icon slot="icon">check</md-icon>
+                    Hoàn thành
+                </md-filled-button>
             `;
 
         return `

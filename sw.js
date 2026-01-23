@@ -3,12 +3,12 @@
 // PWA Offline Support (v6.0 - IndexedDB)
 // ========================================
 
-const CACHE_VERSION = 'v6.8';
+const CACHE_VERSION = 'v7.0';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
 const DB_NAME = 'fb-master-offline';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 // Files to cache for offline
 const STATIC_FILES = [
@@ -23,6 +23,7 @@ const STATIC_FILES = [
     '/css/staff-mobile.css',
     '/css/animations.css',
     '/css/customer-premium.css',
+    '/css/ui-2026.css',
     '/js/app.js',
     '/js/data.js',
     '/js/utils.js',
@@ -42,6 +43,7 @@ const STATIC_FILES = [
     '/js/sops.js',
     '/js/i18n.js',
     '/js/customer-app.js',
+    '/js/material-components.js',
     '/js/staff-mobile.js',
     '/js/pwa-utils.js',
     '/js/confetti.js',

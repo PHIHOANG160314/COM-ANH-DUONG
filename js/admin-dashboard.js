@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Only show for admin users (check localStorage)
     const isAdmin = localStorage.getItem('user_role') === 'admin';
-    if (isAdmin || true) { // Show for demo
+    if (isAdmin) { // Show only for admin users
         const btn = document.createElement('button');
         btn.id = 'adminFloatBtn';
         btn.className = 'admin-float-btn';

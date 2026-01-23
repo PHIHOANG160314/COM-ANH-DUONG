@@ -12,6 +12,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Stylesheets (M3 Typography first) -->
     <link rel="stylesheet" href="css/m3-typography.css">
@@ -27,8 +30,8 @@
     <link rel="stylesheet" href="css/menu-hierarchy.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/m3-wow-effects.css">
-    <link rel="stylesheet" href="css/ui-2026.css">
     <link rel="stylesheet" href="css/customer-mobile-wow.css">
+    <link rel="stylesheet" href="css/ui-2026.css">
     <link rel="stylesheet" href="css/social-share.css">
 
     <!-- Favicon -->
@@ -57,6 +60,18 @@
     <meta name="twitter:title" content="Ánh Dương - Menu &amp; Đặt Hàng Online">
     <meta name="twitter:description" content="Nhà hàng Ánh Dương - Đồ ăn ngon, giao hàng nhanh!">
 
+    <!-- Import Map for Material Web -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@material/web/": "./node_modules/@material/web/",
+          "lit": "./node_modules/lit/index.js",
+          "lit/": "./node_modules/lit/",
+          "tslib": "./node_modules/tslib/tslib.es6.js"
+        }
+      }
+    </script>
+
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -74,7 +89,7 @@
 <body>
     <!-- Header -->
     <header class="customer-header glass-card"
-        style="border-radius: 0 0 24px 24px; margin: 0 10px 10px 10px; width: auto;">
+        style="border-radius: 0 0 24px 24px; margin: 0 10px 10px 10px; width: auto; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border);">
         <div class="header-content">
             <a href="/" class="logo-section" style="text-decoration: none; color: inherit;">
                 <img src="logo-landing.png" alt="Ánh Dương" class="logo-img">
@@ -84,32 +99,56 @@
                 </div>
             </a>
             <div class="header-actions">
-                <button type="button" class="btn-cart md-button md-button-tonal md-ripple md-focus-ring" id="cartBtn"
-                    onclick="CustomerApp.toggleCart()">
-                    🛒 <span class="cart-count md-badge" id="cartCount">0</span>
-                </button>
-                <button type="button" class="btn-member md-fab md-fab-small md-ripple md-focus-ring" id="memberBtn"
-                    onclick="CustomerApp.showMemberModal()">
-                    👤
-                </button>
+                <md-filled-tonal-icon-button id="cartBtn" onclick="CustomerApp.toggleCart()">
+                    <md-icon>shopping_cart</md-icon>
+                    <div class="cart-count-badge" id="cartCount"
+                        style="position: absolute; top: -4px; right: -4px; background: var(--md-sys-color-error); color: var(--md-sys-color-on-error); border-radius: 10px; min-width: 18px; height: 18px; padding: 0 4px; font-size: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        0</div>
+                </md-filled-tonal-icon-button>
+                <md-fab size="small" id="memberBtn" onclick="CustomerApp.showMemberModal()"
+                    style="--md-fab-container-color: var(--md-sys-color-primary-container); --md-fab-icon-color: var(--md-sys-color-on-primary-container);">
+                    <md-icon slot="icon">person</md-icon>
+                </md-fab>
             </div>
         </div>
-        <nav class="customer-nav" aria-label="Customer Navigation">
-            <button type="button" class="nav-btn md-chip md-chip-filter active" data-section="menu"
-                onclick="CustomerApp.showSection('menu')">📜 Menu</button>
-            <button type="button" class="nav-btn md-chip md-chip-filter md-ripple md-focus-ring" data-section="order"
-                onclick="CustomerApp.showSection('order')">📦 Đặt hàng</button>
-            <button type="button" class="nav-btn md-chip md-chip-filter md-ripple md-focus-ring" data-section="tracking"
-                onclick="CustomerApp.showSection('tracking')">📍 Theo dõi</button>
-            <button type="button" class="nav-btn md-chip md-chip-filter md-ripple md-focus-ring" data-section="loyalty"
-                onclick="CustomerApp.showSection('loyalty')">🎁 Tích điểm</button>
-            <button type="button" class="nav-btn md-chip md-chip-filter md-ripple md-focus-ring" data-section="contact"
-                onclick="CustomerApp.showSection('contact')">📞 Liên hệ</button>
+        <nav class="customer-nav" aria-label="Customer Navigation" style="overflow-x: auto; padding-bottom: 4px;">
+            <md-chip-set>
+                <md-filter-chip label="Menu" id="nav-menu" onclick="CustomerApp.showSection('menu')" selected>
+                    <md-icon slot="icon">restaurant_menu</md-icon>
+                </md-filter-chip>
+                <md-filter-chip label="Đặt hàng" id="nav-order" onclick="CustomerApp.showSection('order')">
+                    <md-icon slot="icon">shopping_bag</md-icon>
+                </md-filter-chip>
+                <md-filter-chip label="Theo dõi" id="nav-tracking" onclick="CustomerApp.showSection('tracking')">
+                    <md-icon slot="icon">location_on</md-icon>
+                </md-filter-chip>
+                <md-filter-chip label="Tích điểm" id="nav-loyalty" onclick="CustomerApp.showSection('loyalty')">
+                    <md-icon slot="icon">loyalty</md-icon>
+                </md-filter-chip>
+                <md-filter-chip label="Liên hệ" id="nav-contact" onclick="CustomerApp.showSection('contact')">
+                    <md-icon slot="icon">call</md-icon>
+                </md-filter-chip>
+            </md-chip-set>
         </nav>
     </header>
 
     <!-- Main Content -->
     <main class="customer-main">
+        <!-- 2026 Hero Section -->
+        <div class="hero-2026">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop"
+                class="hero-bg-image" alt="Delicious Food" id="heroImage">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="animate-text-stagger">
+                    <div class="ai-chip"><i class="fas fa-sparkles"></i> Gợi ý cho bạn</div>
+                    <h1 class="md-display-medium" style="margin: 8px 0;">Hôm nay ăn gì?</h1>
+                    <p class="md-body-large" style="opacity: 0.9;">Thử ngay món <strong>Phở Bò Đặc Biệt</strong> đang
+                        hot!</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Menu Section -->
         <section class="section active" id="section-menu">
             <!-- Featured Section -->
@@ -119,25 +158,22 @@
                 </div>
                 <div class="featured-cards" id="featuredCards">
                     <!-- Skeletons for loading state -->
-                    <div class="featured-card glass-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect"
-                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card skeleton-2026">
+                        <div class="featured-card-image" style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 80%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 40%;"></div>
                         </div>
                     </div>
-                    <div class="featured-card glass-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect"
-                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card skeleton-2026">
+                        <div class="featured-card-image" style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 70%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 50%;"></div>
                         </div>
                     </div>
-                    <div class="featured-card glass-card">
-                        <div class="featured-card-image md-skeleton md-skeleton-rect"
-                            style="height: 80px; width: 80px; border-radius: 50%;"></div>
+                    <div class="featured-card glass-card skeleton-2026">
+                        <div class="featured-card-image" style="height: 80px; width: 80px; border-radius: 50%;"></div>
                         <div class="featured-card-body" style="width: 100%;">
                             <div class="md-skeleton md-skeleton-text" style="width: 75%; margin-bottom: 4px;"></div>
                             <div class="md-skeleton md-skeleton-text" style="width: 45%;"></div>
@@ -148,37 +184,33 @@
 
             <!-- Search Bar -->
             <div class="search-container">
-                <input type="text" id="menuSearchInput" class="search-input" placeholder="🔍 Tìm kiếm món ăn..."
-                    oninput="CustomerApp.searchMenu(this.value)">
+                <md-outlined-text-field id="menuSearchInput" placeholder="Tìm kiếm món ăn..."
+                    oninput="CustomerApp.searchMenu(this.value)" style="width: 100%;">
+                    <md-icon slot="leading-icon">search</md-icon>
+                </md-outlined-text-field>
             </div>
 
             <!-- LEVEL 1: Menu Groups -->
-            <div class="menu-groups" id="menuGroups">
-                <button type="button" class="menu-group-btn md-chip md-chip-assist active" data-group="all"
-                    onclick="CustomerApp.filterByGroup('all')">
-                    <span class="group-icon">📋</span>
-                    <span>Tất cả</span>
-                </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
-                    data-group="beverages" onclick="CustomerApp.filterByGroup('beverages')">
-                    <span class="group-icon">🥤</span>
-                    <span>Đồ Uống</span>
-                </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
-                    data-group="food" onclick="CustomerApp.filterByGroup('food')">
-                    <span class="group-icon">🍜</span>
-                    <span>Thức Ăn</span>
-                </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
-                    data-group="dessert" onclick="CustomerApp.filterByGroup('dessert')">
-                    <span class="group-icon">🍰</span>
-                    <span>Tráng Miệng</span>
-                </button>
-                <button type="button" class="menu-group-btn md-chip md-chip-assist md-ripple md-focus-ring"
-                    data-group="combo" onclick="CustomerApp.filterByGroup('combo')">
-                    <span class="group-icon">🎁</span>
-                    <span>Combo</span>
-                </button>
+            <div class="menu-groups" id="menuGroups" style="overflow-x: auto; padding-bottom: 4px;">
+                <md-chip-set>
+                    <md-filter-chip label="Tất cả" data-group="all" onclick="CustomerApp.filterByGroup('all')" selected>
+                        <md-icon slot="icon">restaurant</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Đồ Uống" data-group="beverages"
+                        onclick="CustomerApp.filterByGroup('beverages')">
+                        <md-icon slot="icon">local_cafe</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Thức Ăn" data-group="food" onclick="CustomerApp.filterByGroup('food')">
+                        <md-icon slot="icon">restaurant_menu</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Tráng Miệng" data-group="dessert"
+                        onclick="CustomerApp.filterByGroup('dessert')">
+                        <md-icon slot="icon">icecream</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Combo" data-group="combo" onclick="CustomerApp.filterByGroup('combo')">
+                        <md-icon slot="icon">card_giftcard</md-icon>
+                    </md-filter-chip>
+                </md-chip-set>
             </div>
 
             <!-- LEVEL 2: Categories (Dynamic) -->
@@ -235,25 +267,28 @@
         <!-- Order Section -->
         <section class="section" id="section-order">
             <div class="order-container">
-                <div class="order-type-selector">
-                    <button type="button" class="order-type active" data-type="dinein"
-                        onclick="CustomerApp.setOrderType('dinein')">
-                        🪑 Ăn tại quán
-                    </button>
-                    <button type="button" class="order-type" data-type="takeaway"
-                        onclick="CustomerApp.setOrderType('takeaway')">
-                        🥡 Mang đi
-                    </button>
-                    <button type="button" class="order-type" data-type="delivery"
-                        onclick="CustomerApp.setOrderType('delivery')">
-                        🛵 Giao hàng
-                    </button>
+                <div class="order-type-selector" style="margin-bottom: 16px;">
+                    <md-chip-set>
+                        <md-filter-chip label="Ăn tại quán" id="type-dinein" data-type="dinein"
+                            onclick="CustomerApp.setOrderType('dinein')" selected>
+                            <md-icon slot="icon">restaurant</md-icon>
+                        </md-filter-chip>
+                        <md-filter-chip label="Mang đi" id="type-takeaway" data-type="takeaway"
+                            onclick="CustomerApp.setOrderType('takeaway')">
+                            <md-icon slot="icon">takeout_dining</md-icon>
+                        </md-filter-chip>
+                        <md-filter-chip label="Giao hàng" id="type-delivery" data-type="delivery"
+                            onclick="CustomerApp.setOrderType('delivery')">
+                            <md-icon slot="icon">two_wheeler</md-icon>
+                        </md-filter-chip>
+                    </md-chip-set>
                 </div>
 
                 <div class="delivery-info" id="dineinInfo" style="display: block;">
-                    <h3>🪑 Chọn bàn</h3>
+                    <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">🪑 Chọn
+                        bàn</h3>
                     <select id="dineinTable"
-                        style="width: 100%; padding: 12px; border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-sys-shape-corner-small); background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface); font-size: 16px;">
+                        style="width: 100%; padding: 16px; border: 1px solid var(--md-sys-color-outline); border-radius: 4px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-size: 16px;">
                         <option value="">-- Chọn bàn --</option>
                         <option value="1">Bàn 1</option>
                         <option value="2">Bàn 2</option>
@@ -270,12 +305,18 @@
                     </select>
                 </div>
 
-                <div class="delivery-info" id="deliveryInfo" style="display: none;">
-                    <h3>📍 Thông tin giao hàng</h3>
-                    <input type="text" id="deliveryName" placeholder="Họ tên người nhận">
-                    <input type="tel" id="deliveryPhone" placeholder="Số điện thoại">
-                    <textarea id="deliveryAddress" placeholder="Địa chỉ giao hàng"></textarea>
-                    <input type="text" id="deliveryNote" placeholder="Ghi chú (tùy chọn)">
+                <div class="delivery-info" id="deliveryInfo"
+                    style="display: none; gap: 12px; display: flex; flex-direction: column;">
+                    <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">📍 Thông
+                        tin giao hàng</h3>
+                    <md-outlined-text-field id="deliveryName" label="Họ tên người nhận" type="text"
+                        style="width: 100%;"></md-outlined-text-field>
+                    <md-outlined-text-field id="deliveryPhone" label="Số điện thoại" type="tel"
+                        style="width: 100%;"></md-outlined-text-field>
+                    <md-outlined-text-field id="deliveryAddress" label="Địa chỉ giao hàng" type="textarea" rows="3"
+                        style="width: 100%;"></md-outlined-text-field>
+                    <md-outlined-text-field id="deliveryNote" label="Ghi chú (tùy chọn)" type="text"
+                        style="width: 100%;"></md-outlined-text-field>
                 </div>
 
                 <div class="order-summary" id="orderSummary">
@@ -298,18 +339,17 @@
                         </div>
                     </div>
                     <div class="promo-code-section">
-                        <div class="promo-input-group">
-                            <input type="text" id="promoCode" placeholder="Nhập mã giảm giá">
-                            <button type="button"
-                                class="btn-apply-promo md-button md-button-tonal md-ripple md-focus-ring"
-                                onclick="CustomerApp.applyPromo()">Áp dụng</button>
+                        <div class="promo-input-group" style="display: flex; gap: 8px; align-items: center;">
+                            <md-outlined-text-field id="promoCode" label="Mã giảm giá"
+                                style="flex: 1;"></md-outlined-text-field>
+                            <md-filled-tonal-button onclick="CustomerApp.applyPromo()">Áp dụng</md-filled-tonal-button>
                         </div>
                         <div id="promoStatus" class="promo-status"></div>
                     </div>
-                    <button type="button" class="btn-checkout md-button md-button-filled md-ripple md-focus-ring"
-                        id="checkoutBtn" onclick="CustomerApp.checkout()">
+                    <md-filled-button id="checkoutBtn" onclick="CustomerApp.checkout()"
+                        style="width: 100%; margin-top: 16px;">
                         Xác nhận đặt hàng
-                    </button>
+                    </md-filled-button>
                 </div>
             </div>
         </section>
@@ -319,11 +359,13 @@
             <div class="tracking-container">
                 <div class="tracking-header">
                     <h2>📍 Theo dõi đơn hàng</h2>
-                    <div class="tracking-search">
-                        <input type="text" id="trackingOrderId" placeholder="Nhập mã đơn hàng (VD: ORD...)">
-                        <button type="button" class="btn-track md-button md-button-filled md-ripple md-focus-ring"
-                            onclick="CustomerApp.trackOrder()">Tra
-                            cứu</button>
+                    <div class="tracking-search"
+                        style="display: flex; gap: 8px; align-items: center; margin-top: 16px;">
+                        <md-outlined-text-field id="trackingOrderId" label="Nhập mã đơn hàng" placeholder="VD: ORD..."
+                            style="flex: 1;"></md-outlined-text-field>
+                        <md-filled-button onclick="CustomerApp.trackOrder()">
+                            Tra cứu
+                        </md-filled-button>
                     </div>
                 </div>
 
@@ -389,10 +431,10 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn-register md-button md-button-filled md-ripple md-focus-ring"
-                    id="registerBtn" onclick="CustomerApp.showRegisterModal()">
-                    ✨ Đăng ký thành viên
-                </button>
+                <md-filled-button id="registerBtn" onclick="CustomerApp.showRegisterModal()" style="width: 100%;">
+                    <md-icon slot="icon">stars</md-icon>
+                    Đăng ký thành viên
+                </md-filled-button>
             </div>
         </section>
 
@@ -426,9 +468,15 @@
                     </div>
                 </div>
 
-                <div class="social-links">
-                    <a href="#" class="social-btn facebook">📘 Facebook</a>
-                    <a href="#" class="social-btn zalo">💬 Zalo</a>
+                <div class="social-links" style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+                    <md-filled-tonal-button onclick="window.location.href='#'">
+                        <md-icon slot="icon">facebook</md-icon>
+                        Facebook
+                    </md-filled-tonal-button>
+                    <md-filled-tonal-button onclick="window.location.href='#'">
+                        <md-icon slot="icon">chat</md-icon>
+                        Zalo
+                    </md-filled-tonal-button>
                 </div>
 
                 <div class="map-container">
@@ -454,10 +502,9 @@
                 <span>Tổng cộng:</span>
                 <strong id="floatingCartTotal">0đ</strong>
             </div>
-            <button type="button" class="btn-order md-button md-button-filled md-ripple md-focus-ring"
-                onclick="CustomerApp.goToOrder()">Đặt
-                hàng
-                ngay</button>
+            <md-filled-button onclick="CustomerApp.goToOrder()" style="width: 100%;">
+                Đặt hàng ngay
+            </md-filled-button>
         </div>
     </div>
 
@@ -465,15 +512,17 @@
         <div class="modal md-dialog">
             <div class="modal-header">
                 <h3 class="md-dialog-title">👤 Thành viên</h3>
-                <button type="button" class="modal-close md-button md-button-text md-ripple md-focus-ring"
-                    onclick="CustomerApp.closeMemberModal()">×</button>
+                <md-icon-button onclick="CustomerApp.closeMemberModal()">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
             </div>
-            <div class="modal-body md-dialog-content">
-                <div class="member-lookup">
-                    <input type="tel" id="lookupPhone" placeholder="Nhập số điện thoại">
-                    <button type="button" class="btn-lookup md-button md-button-filled md-ripple md-focus-ring"
-                        onclick="CustomerApp.lookupMember()">Tra
-                        cứu</button>
+            <div class="modal-body md-dialog-content" style="gap: 16px; display: flex; flex-direction: column;">
+                <div class="member-lookup" style="display: flex; gap: 8px; align-items: center;">
+                    <md-outlined-text-field id="lookupPhone" label="Nhập số điện thoại" type="tel"
+                        style="flex: 1;"></md-outlined-text-field>
+                    <md-filled-button onclick="CustomerApp.lookupMember()">
+                        Tra cứu
+                    </md-filled-button>
                 </div>
                 <div class="member-result" id="memberResult"></div>
             </div>
@@ -485,47 +534,51 @@
         <div class="modal md-dialog">
             <div class="modal-header">
                 <h3 class="md-dialog-title">✨ Đăng ký thành viên</h3>
-                <button type="button" class="modal-close md-button md-button-text md-ripple md-focus-ring"
-                    onclick="CustomerApp.closeRegisterModal()">×</button>
+                <md-icon-button onclick="CustomerApp.closeRegisterModal()">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
             </div>
-            <div class="modal-body md-dialog-content">
-                <input type="text" id="regName" placeholder="Họ và tên">
-                <input type="tel" id="regPhone" placeholder="Số điện thoại">
-                <input type="email" id="regEmail" placeholder="Email (tùy chọn)">
-                <button type="button" class="btn-register-submit md-button md-button-filled md-ripple md-focus-ring"
-                    onclick="CustomerApp.registerMember()">
+            <div class="modal-body md-dialog-content" style="gap: 12px; display: flex; flex-direction: column;">
+                <md-outlined-text-field id="regName" label="Họ và tên" type="text"></md-outlined-text-field>
+                <md-outlined-text-field id="regPhone" label="Số điện thoại" type="tel"></md-outlined-text-field>
+                <md-outlined-text-field id="regEmail" label="Email (tùy chọn)" type="email"></md-outlined-text-field>
+
+                <md-filled-button onclick="CustomerApp.registerMember()" style="width: 100%; margin-top: 8px;">
                     Đăng ký ngay
-                </button>
+                </md-filled-button>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Bottom Navigation -->
-    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Bottom Navigation">
-        <button type="button" class="bottom-nav-item active" data-section="menu"
+    <!-- Mobile Bottom Navigation (2026 Upgrade) -->
+    <nav class="nav-float-2026" id="mobileBottomNav" aria-label="Mobile Navigation">
+        <a href="javascript:void(0)" class="nav-item-2026 active" data-section="menu"
             onclick="CustomerApp.showSection('menu')">
-            <span class="bottom-nav-icon">📜</span>
-            <span class="bottom-nav-label">Menu</span>
-        </button>
-        <button type="button" class="bottom-nav-item" data-section="tracking"
+            <span style="font-size: 1.2rem;">📜</span>
+            <span>Menu</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item-2026" data-section="tracking"
             onclick="CustomerApp.showSection('tracking')">
-            <span class="bottom-nav-icon">📍</span>
-            <span class="bottom-nav-label">Đơn hàng</span>
-        </button>
-        <button type="button" class="bottom-nav-fab" onclick="CustomerApp.goToOrder()">
-            <span class="bottom-nav-icon">🛒</span>
-            <span class="bottom-nav-badge" id="navCartBadge"></span>
-        </button>
-        <button type="button" class="bottom-nav-item" data-section="loyalty"
+            <span style="font-size: 1.2rem;">📍</span>
+            <span>Đơn hàng</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item-2026" onclick="CustomerApp.goToOrder()">
+            <div style="position: relative;">
+                <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--primary-glow));">🛒</span>
+                <span class="md-badge" id="navCartBadge" style="position: absolute; top: -5px; right: -8px;"></span>
+            </div>
+            <span>Giỏ</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item-2026" data-section="loyalty"
             onclick="CustomerApp.showSection('loyalty')">
-            <span class="bottom-nav-icon">🎁</span>
-            <span class="bottom-nav-label">Tích điểm</span>
-        </button>
-        <button type="button" class="bottom-nav-item" data-section="contact"
+            <span style="font-size: 1.2rem;">🎁</span>
+            <span>Tích điểm</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item-2026" data-section="contact"
             onclick="CustomerApp.showSection('contact')">
-            <span class="bottom-nav-icon">📞</span>
-            <span class="bottom-nav-label">Liên hệ</span>
-        </button>
+            <span style="font-size: 1.2rem;">📞</span>
+            <span>Liên hệ</span>
+        </a>
     </nav>
 
     <!-- Pull to Refresh Indicator -->
@@ -535,13 +588,16 @@
 
     <!-- Install App Prompt -->
     <div class="install-prompt" id="installPrompt">
-        <button type="button" class="install-prompt-close" onclick="MobileNav.hideInstallPrompt()">×</button>
+        <md-icon-button class="install-prompt-close" onclick="MobileNav.hideInstallPrompt()"
+            style="position: absolute; top: 8px; right: 8px;">
+            <md-icon>close</md-icon>
+        </md-icon-button>
         <span class="install-prompt-icon">📱</span>
         <div class="install-prompt-content">
             <div class="install-prompt-title">Cài đặt ứng dụng</div>
             <div class="install-prompt-desc">Thêm vào màn hình chính để truy cập nhanh hơn!</div>
         </div>
-        <button type="button" class="install-prompt-btn" onclick="MobileNav.installApp()">Cài đặt</button>
+        <md-filled-button class="install-prompt-btn" onclick="MobileNav.installApp()">Cài đặt</md-filled-button>
     </div>
 
     <!-- Toast Container -->
@@ -564,6 +620,7 @@
     <!-- Non-critical: Lazy loaded -->
     <script src="js/mobile-ux.js"></script>
     <script src="js/mobile-nav.js"></script>
+    <script type="module" src="js/material-components.js"></script>
 
     <!-- Lazy load non-critical modules for better performance -->
     <script>
@@ -624,6 +681,30 @@
     <script src="js/admin-dashboard.js"></script>
     <script src="js/mobile-pagination-enhanced.js"></script>
     <script src="js/performance-optimizer.js"></script>
+
+    <!-- 2026 UI Enhancements -->
+    <script>
+        // Parallax Effect for Hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.getElementById('heroImage');
+            if (heroImage && scrolled < 500) {
+                heroImage.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+
+        // Active Link Handling for New Nav
+        document.querySelectorAll('.nav-item-2026').forEach(item => {
+            item.addEventListener('click', function () {
+                // Remove active from all
+                document.querySelectorAll('.nav-item-2026').forEach(i => i.classList.remove('active'));
+                // Add to clicked (unless it's cart, which might navigate away or toggle)
+                if (!this.getAttribute('onclick').includes('goToOrder')) {
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
 
     <!-- Service Worker Registration -->
     <script>

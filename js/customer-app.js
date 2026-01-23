@@ -8,7 +8,42 @@ const CustomerApp = {
     orderType: 'dinein',
     currentMember: null,
     menuData: [],
+    originalMenuData: [], // Back up for original data
     searchQuery: '',
+    dailyMenuChannel: null, // BroadcastChannel for realtime sync
+
+    // Filter menu based on "Daily Menu" config
+    filterDailyMenu() {
+        const dailyConfig = localStorage.getItem('daily_menu_config');
+
+        // No config? Show all items
+        if (!dailyConfig) {
+            this.menuData = [...this.originalMenuData];
+            console.log('📅 No daily config, showing all items');
+            return;
+        }
+
+        try {
+            const config = JSON.parse(dailyConfig);
+
+            // Reset to original before filtering
+            this.menuData = [...this.originalMenuData];
+
+            // Check if we have activeItems
+            if (!config || !Array.isArray(config.activeItems)) {
+                console.log('📅 Invalid config, showing all items');
+                return;
+            }
+
+            // Filter to only show active items
+            const activeIds = config.activeItems.map(String);
+            this.menuData = this.menuData.filter(item => activeIds.includes(String(item.id)));
+            console.log(`📅 Daily Menu Active: Showing ${this.menuData.length} / ${this.originalMenuData.length} items`);
+
+        } catch (e) {
+            console.error('Error parsing daily menu config', e);
+        }
+    },
     currentGroup: 'all',      // Level 1: Menu Group
     currentCategory: 'all',   // Level 2: Category  
     currentSubcategory: 'all', // Level 3: Subcategory
@@ -27,21 +62,51 @@ const CustomerApp = {
         console.log('🍽️ Customer Portal initializing...');
 
         // Load menu data from window.menuItems (from data.js)
+        // IMPORTANT: Create a copy, not a reference!
         if (typeof window.menuItems !== 'undefined' && window.menuItems.length > 0) {
-            this.menuData = window.menuItems;
+            this.menuData = [...window.menuItems];
+            this.originalMenuData = [...window.menuItems]; // Save original immediately
             console.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
         } else if (typeof menuItems !== 'undefined' && menuItems.length > 0) {
-            this.menuData = menuItems;
+            this.menuData = [...menuItems];
+            this.originalMenuData = [...menuItems];
             console.log('✅ Loaded', this.menuData.length, 'menu items');
         } else {
             this.menuData = this.getSampleMenu();
+            this.originalMenuData = [...this.menuData];
             console.log('⚠️ Using sample menu data');
+        }
+
+        // Apply "Daily Menu" filter if active
+        this.filterDailyMenu();
+
+        // Listen for storage changes (Real-time updates from OTHER tabs)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'daily_menu_config') {
+                console.log('🔄 Daily menu updated from admin (storage event)');
+                this.filterDailyMenu();
+                this.renderMenu(this.currentCategory);
+                this.renderFeaturedSection();
+            }
+        });
+
+        // Listen for BroadcastChannel (Real-time updates from SAME or OTHER tabs)
+        if (typeof BroadcastChannel !== 'undefined') {
+            this.dailyMenuChannel = new BroadcastChannel('daily_menu_sync');
+            this.dailyMenuChannel.onmessage = (e) => {
+                if (e.data && e.data.type === 'daily_menu_updated') {
+                    console.log('🔄 Daily menu updated from admin (BroadcastChannel)');
+                    this.filterDailyMenu();
+                    this.renderMenu(this.currentCategory);
+                    this.renderFeaturedSection();
+                }
+            };
         }
 
         this.loadCart();
         this.renderFeaturedSection();
         this.renderCategories(this.currentGroup);
-        this.renderSubcategoryTabs();
+        // this.renderSubcategoryTabs(); // Legacy
         this.renderMenu();
         this.updateCartUI();
         this.renderOrderHistory();
@@ -288,8 +353,8 @@ const CustomerApp = {
         this.currentSubcategory = 'all';
 
         // Update active state
-        document.querySelectorAll('.menu-group-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.group === group);
+        document.querySelectorAll('#menuGroups md-filter-chip').forEach(chip => {
+            chip.selected = chip.dataset.group === group;
         });
 
         // Render Level 2 categories
@@ -351,15 +416,30 @@ const CustomerApp = {
         }
 
         container.innerHTML = `
-            <div class="category-pill active" data-cat="all" onclick="CustomerApp.filterCategory('all')">
-                <span class="cat-icon">📋</span> Tất cả
-            </div>
-            ${categories.map(cat => `
-                <div class="category-pill md-ripple md-focus-ring" data-cat="${cat.id}" onclick="CustomerApp.filterCategory('${cat.id}')">
-                    <span class="cat-icon">${cat.icon}</span> ${cat.name}
-                </div>
-            `).join('')}
+            <md-chip-set>
+                <md-filter-chip label="Tất cả" data-cat="all" onclick="CustomerApp.filterCategory('all')" selected>
+                    <md-icon slot="icon">grid_view</md-icon>
+                </md-filter-chip>
+                ${categories.map(cat => `
+                    <md-filter-chip label="${cat.name}" data-cat="${cat.id}" onclick="CustomerApp.filterCategory('${cat.id}')">
+                        <md-icon slot="icon">${this.getMaterialIcon(cat.icon)}</md-icon>
+                    </md-filter-chip>
+                `).join('')}
+            </md-chip-set>
         `;
+    },
+
+    getMaterialIcon(emoji) {
+        // Map emoji to material icon if possible, otherwise return generic
+        // This is a simple helper since we are replacing emojis with icons where appropriate
+        // For dynamic content from data.js which uses emojis, we might just keep using emojis
+        // inside the chip but Material chips expect icons in slot="icon".
+        // We can actually put the emoji in the label or try to map.
+        // For now let's just use a generic icon if it's an emoji we can't easily map,
+        // or just use the emoji as text if the component supports it.
+        // Material Web chips slot="icon" expects an md-icon or svg.
+        // We will just return a generic icon for categories to look clean
+        return 'restaurant';
     },
 
     // ========================================
@@ -370,8 +450,8 @@ const CustomerApp = {
         this.currentSubcategory = 'all';
 
         // Update active state
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.classList.toggle('active', pill.dataset.cat === category);
+        document.querySelectorAll('#menuCategories md-filter-chip').forEach(chip => {
+            chip.selected = chip.dataset.cat === category;
         });
 
         // Render Level 3 subcategories
@@ -410,14 +490,13 @@ const CustomerApp = {
         }
 
         container.innerHTML = `
-            <div class="subcategory-chip active" data-sub="all" onclick="CustomerApp.filterSubcategory('all')">
-                Tất cả
-            </div>
-            ${subcategories.map(sub => `
-                <div class="subcategory-chip md-ripple md-focus-ring" data-sub="${sub.id}" onclick="CustomerApp.filterSubcategory('${sub.id}')">
-                    ${sub.icon} ${sub.name}
-                </div>
-            `).join('')}
+            <md-chip-set>
+                <md-filter-chip label="Tất cả" data-sub="all" onclick="CustomerApp.filterSubcategory('all')" selected></md-filter-chip>
+                ${subcategories.map(sub => `
+                    <md-filter-chip label="${sub.name}" data-sub="${sub.id}" onclick="CustomerApp.filterSubcategory('${sub.id}')">
+                    </md-filter-chip>
+                `).join('')}
+            </md-chip-set>
         `;
     },
 
@@ -428,8 +507,8 @@ const CustomerApp = {
         this.currentSubcategory = subcategory;
 
         // Update active state
-        document.querySelectorAll('.subcategory-chip').forEach(chip => {
-            chip.classList.toggle('active', chip.dataset.sub === subcategory);
+        document.querySelectorAll('#menuSubcategories md-filter-chip').forEach(chip => {
+            chip.selected = chip.dataset.sub === subcategory;
         });
 
         // Render menu
@@ -457,15 +536,17 @@ const CustomerApp = {
             return;
         }
 
-        grid.innerHTML = combos.map(combo => `
-            <div class="combo-card md-ripple md-focus-ring" onclick="CustomerApp.addComboToCart('${combo.id}')">
+        grid.innerHTML = combos.map((combo, index) => `
+            <div class="combo-card glass-card animate-fadeInUp hover-lift md-ripple md-focus-ring"
+                 onclick="CustomerApp.addComboToCart('${combo.id}')"
+                 style="animation-delay: ${index * 100}ms">
                 <div class="combo-badge">-${this.formatPrice(combo.savings)}</div>
-                <div class="combo-name">${combo.icon} ${combo.name}</div>
-                <div class="combo-desc">${combo.description}</div>
-                <div class="combo-pricing">
-                    <span class="combo-original">${this.formatPrice(combo.originalPrice)}</span>
-                    <span class="combo-price">${this.formatPrice(combo.comboPrice)}</span>
-                    <span class="combo-savings">Tiết kiệm ${this.formatPrice(combo.savings)}</span>
+                <div class="combo-name" style="font-weight: 700; font-size: 1.1rem;">${combo.icon} ${combo.name}</div>
+                <div class="combo-desc" style="opacity: 0.8; font-size: 0.9rem;">${combo.description}</div>
+                <div class="combo-pricing" style="margin-top: 12px;">
+                    <span class="combo-original" style="text-decoration: line-through; opacity: 0.5; font-size: 0.9rem;">${this.formatPrice(combo.originalPrice)}</span>
+                    <span class="combo-price" style="color: var(--primary-2026); font-weight: 800; font-size: 1.2rem; display: block;">${this.formatPrice(combo.comboPrice)}</span>
+                    <span class="combo-savings" style="color: var(--accent-neon); font-weight: 600; font-size: 0.85rem;">Tiết kiệm ${this.formatPrice(combo.savings)}</span>
                 </div>
             </div>
         `).join('');
@@ -510,66 +591,17 @@ const CustomerApp = {
         const featuredIds = typeof window.featuredItems !== 'undefined' ? window.featuredItems : [1, 2, 16, 51, 66];
         const featured = this.menuData.filter(item => featuredIds.includes(item.id));
 
-        container.innerHTML = featured.map(item => `
-            <div class="featured-card md-ripple md-focus-ring" onclick="CustomerApp.addToCart(${item.id})">
-                <div class="featured-card-image">${item.icon || '🍽️'}</div>
+        container.innerHTML = featured.map((item, index) => `
+            <div class="featured-card glass-card animate-fadeInUp hover-lift md-ripple md-focus-ring"
+                 onclick="CustomerApp.addToCart(${item.id})"
+                 style="animation-delay: ${index * 100}ms">
+                <div class="featured-card-image micro-scale">${item.icon || '🍽️'}</div>
                 <div class="featured-card-body">
-                    <div class="featured-card-name">${item.name}</div>
-                    <div class="featured-card-price">${this.formatPrice(item.price)}</div>
+                    <div class="featured-card-name" style="font-weight: 600;">${item.name}</div>
+                    <div class="featured-card-price" style="color: var(--primary-2026); font-weight: 700;">${this.formatPrice(item.price)}</div>
                 </div>
             </div>
         `).join('');
-    },
-
-    // ========================================
-    // SUBCATEGORY TABS
-    // ========================================
-    renderSubcategoryTabs(category = 'all') {
-        const container = document.getElementById('subcategoryTabs');
-        if (!container) return;
-
-        // Hide subcategory tabs if 'all' category
-        if (category === 'all') {
-            container.innerHTML = '';
-            return;
-        }
-
-        // Get subcategories for current category
-        const subcats = typeof window.menuSubcategories !== 'undefined'
-            ? window.menuSubcategories[category] || []
-            : [];
-
-        if (subcats.length === 0) {
-            container.innerHTML = '';
-            return;
-        }
-
-        // Count items in each subcategory
-        const items = this.menuData.filter(item => item.category === category);
-
-        container.innerHTML = `
-            <button class="subcategory-tab md-ripple ${this.currentSubcategory === 'all' ? 'active' : ''}"
-                    onclick="CustomerApp.filterBySubcategory('all')">
-                <span class="tab-icon">🔤</span> Tất cả
-                <span class="tab-count">${items.length}</span>
-            </button>
-            ${subcats.map(sub => {
-            const count = items.filter(item => item.subcategory === sub.id).length;
-            return `
-                    <button class="subcategory-tab md-ripple ${this.currentSubcategory === sub.id ? 'active' : ''}"
-                            onclick="CustomerApp.filterBySubcategory('${sub.id}')">
-                        <span class="tab-icon">${sub.icon}</span> ${sub.name}
-                        <span class="tab-count">${count}</span>
-                    </button>
-                `;
-        }).join('')}
-        `;
-    },
-
-    filterBySubcategory(subcategory) {
-        this.currentSubcategory = subcategory;
-        this.renderSubcategoryTabs(this.currentCategory);
-        this.renderMenu(this.currentCategory);
     },
 
     // ========================================
@@ -592,7 +624,7 @@ const CustomerApp = {
         this.currentCategory = category;
 
         // Update subcategory tabs
-        this.renderSubcategoryTabs(category);
+        // this.renderSubcategoryTabs(category); // Legacy
 
         const grid = document.getElementById('customerMenuGrid');
         if (!grid) {
@@ -622,6 +654,40 @@ const CustomerApp = {
         }
 
         if (items.length === 0) {
+            // Check if daily menu is active but empty (Option B)
+            const dailyConfig = localStorage.getItem('daily_menu_config');
+            let isDailyMenuEmpty = false;
+            if (dailyConfig) {
+                try {
+                    const config = JSON.parse(dailyConfig);
+                    if (config && Array.isArray(config.activeItems) && config.activeItems.length === 0) {
+                        isDailyMenuEmpty = true;
+                    }
+                } catch (e) { }
+            }
+
+            if (isDailyMenuEmpty && this.originalMenuData && this.originalMenuData.length > 0) {
+                // Daily menu is empty - show special message (Option B)
+                grid.innerHTML = `
+                    <div class="empty-state-enhanced" style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <div class="empty-icon" style="font-size: 4.5rem; margin-bottom: 20px; animation: float 3s ease-in-out infinite;">🍽️</div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 12px; color: var(--text-primary);">Hôm nay không có món bán</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem;">
+                            Quán chưa cập nhật menu hôm nay.<br>
+                            Vui lòng quay lại sau hoặc liên hệ quán!
+                        </p>
+                        <a href="tel:0909123456" 
+                           style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; 
+                                  background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+                                  color: white; border-radius: 25px; text-decoration: none; font-weight: 500;
+                                  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);">
+                            📞 Gọi ngay
+                        </a>
+                    </div>`;
+                return;
+            }
+
+            // Normal search/filter empty state
             const suggestions = ['drinks', 'food', 'dessert'].filter(c => c !== category);
             const categoryLabels = { drinks: '🥤 Đồ uống', food: '🍜 Món ăn', dessert: '🍰 Tráng miệng' };
 
@@ -674,15 +740,17 @@ const CustomerApp = {
 
     renderMenuCard(item) {
         return `
-            <div class="menu-card animate-fadeInUp hover-lift" data-id="${item.id}" 
-                 onclick="CustomerApp.showItemDetail(${item.id})">
-                <div class="menu-card-image">${item.icon || '🍽️'}</div>
+            <div class="menu-card glass-card animate-fadeInUp hover-lift" data-id="${item.id}"
+                 onclick="CustomerApp.showItemDetail(${item.id})" style="border: 1px solid rgba(255,255,255,0.1);">
+                <div class="menu-card-image micro-scale">${item.icon || '🍽️'}</div>
                 <div class="menu-card-body">
-                    <div class="menu-card-name">${item.name}</div>
-                    <div class="menu-card-price">${this.formatPrice(item.price)}</div>
-                    <button class="menu-card-add md-ripple md-focus-ring btn-press hover-glow" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
-                        + Thêm vào giỏ
-                    </button>
+                    <div class="menu-card-name" style="font-weight: 600;">${item.name}</div>
+                    <div class="menu-card-price" style="color: var(--primary-2026); font-weight: 700;">${this.formatPrice(item.price)}</div>
+                    <md-filled-tonal-button class="menu-card-add"
+                            onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
+                        <md-icon slot="icon">add</md-icon>
+                        Thêm
+                    </md-filled-tonal-button>
                 </div>
             </div>
         `;
@@ -719,13 +787,6 @@ const CustomerApp = {
             { id: 11, name: 'Chè Thái', icon: '🍧', price: 25000, category: 'dessert' },
             { id: 12, name: 'Kem Dừa', icon: '🍦', price: 30000, category: 'dessert' }
         ];
-    },
-
-    filterMenu(category) {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.cat === category);
-        });
-        this.renderMenu(category);
     },
 
     // ========================================
@@ -824,10 +885,14 @@ const CustomerApp = {
                     <div class="order-item-name">${item.icon} ${item.name}</div>
                     <div class="order-item-price">${this.formatPrice(item.price)}</div>
                 </div>
-                <div class="order-item-qty">
-                    <button class="qty-btn" onclick="CustomerApp.updateQty('${item.id}', -1)">-</button>
-                    <span class="qty-value">${item.qty}</span>
-                    <button class="qty-btn" onclick="CustomerApp.updateQty('${item.id}', 1)">+</button>
+                <div class="order-item-qty" style="display: flex; align-items: center; gap: 8px;">
+                    <md-filled-tonal-icon-button onclick="CustomerApp.updateQty('${item.id}', -1)">
+                        <md-icon>remove</md-icon>
+                    </md-filled-tonal-icon-button>
+                    <span class="qty-value" style="font-weight: 600; min-width: 24px; text-align: center;">${item.qty}</span>
+                    <md-filled-tonal-icon-button onclick="CustomerApp.updateQty('${item.id}', 1)">
+                        <md-icon>add</md-icon>
+                    </md-filled-tonal-icon-button>
                 </div>
                 <div class="order-item-total">${this.formatPrice(item.price * item.qty)}</div>
             </div>
@@ -900,8 +965,8 @@ const CustomerApp = {
     setOrderType(type) {
         this.orderType = type;
 
-        document.querySelectorAll('.order-type').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.type === type);
+        document.querySelectorAll('.order-type-selector md-filter-chip').forEach(chip => {
+            chip.selected = chip.dataset.type === type;
         });
 
         const deliveryInfo = document.getElementById('deliveryInfo');
@@ -1437,10 +1502,21 @@ const CustomerApp = {
     // ========================================
     showSection(sectionId) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        // Update Nav Chips
+        const navChips = document.querySelectorAll('.customer-nav md-filter-chip');
+        navChips.forEach(chip => {
+            // Check based on onclick attribute or id since data-section might be missing on custom element if I didn't add it
+            // In HTML I added id="nav-menu", etc.
+            if (chip.id === `nav-${sectionId}`) {
+                chip.selected = true;
+            } else {
+                chip.selected = false;
+            }
+        });
 
         document.getElementById(`section-${sectionId}`)?.classList.add('active');
-        document.querySelector(`[data-section="${sectionId}"]`)?.classList.add('active');
+        // document.querySelector(`[data-section="${sectionId}"]`)?.classList.add('active'); // No longer needed for chips
 
         // Load order history when visiting tracking section
         if (sectionId === 'tracking') {

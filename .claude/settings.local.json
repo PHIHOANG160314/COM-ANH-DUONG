@@ -1,7 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(curl:*)",
+      "Bash(Invoke-RestMethod:*)",
+      "Bash(netstat:*)",
+      "Bash(tasklist:*)",
+      "Bash(grep:*)",
+      "Bash(for file in js/*.js:*)",
+      "Bash(do node --check:*)",
+      "Bash(done)"
     ]
   }
 }

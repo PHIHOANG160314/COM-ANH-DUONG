@@ -202,16 +202,19 @@ const MobileNav = {
         }
 
         // Also sync with header nav (if exists)
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.updateActiveNav(btn.dataset.section);
+        // Handle MD Chips
+        document.querySelectorAll('.customer-nav md-filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                // Extract section from ID (nav-menu -> menu)
+                const sectionId = chip.id.replace('nav-', '');
+                this.updateActiveNav(sectionId);
             });
         });
     },
 
     updateActiveNav(sectionId) {
         // Update bottom nav active state
-        document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        document.querySelectorAll('.nav-item-2026').forEach(item => {
             if (item.dataset.section === sectionId) {
                 item.classList.add('active');
             } else {
@@ -219,12 +222,12 @@ const MobileNav = {
             }
         });
 
-        // Update header nav active state (for desktop)
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if (btn.dataset.section === sectionId) {
-                btn.classList.add('active');
+        // Update header nav active state (MD Chips)
+        document.querySelectorAll('.customer-nav md-filter-chip').forEach(chip => {
+            if (chip.id === `nav-${sectionId}`) {
+                chip.selected = true;
             } else {
-                btn.classList.remove('active');
+                chip.selected = false;
             }
         });
     },
@@ -234,7 +237,7 @@ const MobileNav = {
     // ========================================
     setupHapticFeedback() {
         // Add haptic feedback to all buttons
-        document.querySelectorAll('.bottom-nav-item, .bottom-nav-fab, .btn-feedback').forEach(btn => {
+        document.querySelectorAll('.nav-item-2026, .bottom-nav-fab, .btn-feedback, md-filled-button, md-filled-tonal-button, md-outlined-button, md-text-button, md-elevated-button, md-icon-button, md-filled-tonal-icon-button, md-fab, md-filter-chip').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.hapticFeedback('light');
             });

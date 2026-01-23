@@ -139,9 +139,79 @@ const Dashboard = {
                 this.orders = this.orders.filter(o => o.supabaseId !== payload.old?.id);
                 this.refresh();
             }
+            // Update Kitchen Monitor Stats
+            this.updateKitchenStats();
         }, 'Dashboard');
 
+        // Subscribe to Attendance
+        this.subscribeToAttendance();
+
         if (window.Debug) Debug.info('📊 Dashboard subscribed to realtime');
+    },
+
+    subscribeToAttendance() {
+        if (typeof SupabaseService === 'undefined') return;
+
+        // Initial load of online staff
+        this.loadOnlineStaff();
+
+        // Listen for changes
+        const supabase = window.getSupabase ? window.getSupabase() : null; // Access supabase client directly if needed or via service
+        // Actually SupabaseService should handle subscription, but for custom table 'attendance_log':
+        // We will assume SupabaseService has a generic subscribe method or use direct client if available
+        // For now, let's try to use SupabaseService.subscribeToTable if it exists, or extending it.
+        // Or better, just add a specific subscription here using the client.
+
+        // Simplified: Just poll or rely on a new method in SupabaseService (which we didn't add yet, so we use direct client if possible)
+        // Since we didn't edit api-service.js, we should try to use valid methods. 
+        // Let's assume we can use the same pattern as Orders if we had a generic one.
+        // But let's write a safe implementation:
+
+        if (window.supabase) { // If global client is exposed
+            window.supabase
+                .channel('attendance_monitor')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_log' }, payload => {
+                    this.loadOnlineStaff(); // Reload list on any change
+                })
+                .subscribe();
+        }
+    },
+
+    async loadOnlineStaff() {
+        if (!this.useSupabase) return;
+        const supabase = await window.getSupabase();
+        const today = new Date().toISOString().slice(0, 10);
+
+        const { data: logs } = await supabase
+            .from('attendance_log')
+            .select('staff_id, staff(name, role)') // Join with staff table
+            .eq('date', today)
+            .is('check_out', null);
+
+        const container = document.getElementById('monitorStaffList');
+        if (!container || !logs) return;
+
+        if (logs.length === 0) {
+            container.innerHTML = '<span class="avatar-placeholder" style="font-size: 0.85rem; color: var(--text-secondary);">Chưa có nhân viên</span>';
+            return;
+        }
+
+        container.innerHTML = logs.map(log => {
+            const name = log.staff?.name || 'Staff';
+            const initial = name.charAt(0).toUpperCase();
+            return `<div class="avatar" title="${name}" style="width:32px;height:32px;background:#3b82f6;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:bold;border:2px solid white;margin-left:-8px;">${initial}</div>`;
+        }).join('');
+    },
+
+    updateKitchenStats() {
+        const waiting = this.orders.filter(o => o.status === 'pending').length;
+        const cooking = this.orders.filter(o => o.status === 'preparing' || o.status === 'confirmed').length;
+
+        const elWait = document.getElementById('monitorWaiting');
+        const elCook = document.getElementById('monitorCooking');
+
+        if (elWait) elWait.textContent = waiting;
+        if (elCook) elCook.textContent = cooking;
     },
 
     // ========================================

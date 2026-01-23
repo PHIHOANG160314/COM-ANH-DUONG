@@ -45,20 +45,20 @@ body::before {
     background: linear-gradient(135deg,
             rgba(0, 77, 0, 0.95) 0%,
             rgba(0, 100, 0, 0.92) 50%,
-            rgba(30, 120, 30, 0.9) 100%) !important;
+            rgba(30, 120, 30, 0.9) 100%);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow:
         0 4px 30px rgba(0, 100, 0, 0.3),
-        0 1px 0 rgba(255, 255, 255, 0.1) inset !important;
+        0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
 /* Logo glow effect */
 .logo-img {
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(255, 255, 255, 0.1) !important;
+        0 0 20px rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -69,10 +69,10 @@ body::before {
 /* Header buttons - glass effect */
 .btn-cart,
 .btn-member {
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -80,7 +80,7 @@ body::before {
 .btn-cart:active,
 .btn-member:active {
     transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* Cart badge - pulsing animation */
@@ -147,13 +147,13 @@ body::before {
 }
 
 .menu-card {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -222,23 +222,23 @@ body::before {
 
 /* Add to cart button - vibrant */
 .menu-card-add {
-    margin: 10px 12px 12px !important;
-    padding: 14px !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    border-radius: 16px !important;
-    background: linear-gradient(145deg, #006400, #008000) !important;
+    margin: 10px 12px 12px;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #006400, #008000);
     box-shadow:
         0 4px 15px rgba(0, 100, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .menu-card-add:active {
-    transform: scale(0.95) !important;
-    box-shadow: 0 2px 8px rgba(0, 100, 0, 0.4) !important;
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 100, 0, 0.4);
 }
 
 /* ========================================

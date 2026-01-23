@@ -2,5 +2,8 @@
   "devDependencies": {
     "clean-css-cli": "^5.6.3",
     "terser": "^5.46.0"
+  },
+  "dependencies": {
+    "@material/web": "^2.4.1"
   }
 }

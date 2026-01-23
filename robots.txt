@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /kitchen
+Disallow: /shipper
+Disallow: /staff
+
+Sitemap: https://www.comanhduong.com/sitemap.xml

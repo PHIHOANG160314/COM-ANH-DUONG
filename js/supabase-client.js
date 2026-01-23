@@ -1206,6 +1206,107 @@ const SupabaseService = {
             this._subscriptions[channelName] = channel;
             return channel;
         });
+    },
+
+    // ==================== ATTENDANCE (REALTIME) ====================
+
+    // Check in staff
+    async checkIn(staffId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'checkIn');
+
+            const { data, error } = await supabase
+                .from('attendance_log')
+                .insert({
+                    staff_id: staffId,
+                    check_in: new Date().toISOString(),
+                    date: new Date().toISOString().split('T')[0]
+                })
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'checkIn');
+            return createSuccessResponse(data);
+        }, 'checkIn');
+    },
+
+    // Check out staff
+    async checkOut(staffId) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'checkOut');
+
+            const today = new Date().toISOString().split('T')[0];
+
+            // Find latest active check-in
+            const { data: latest, error: findError } = await supabase
+                .from('attendance_log')
+                .select('id')
+                .eq('staff_id', staffId)
+                .eq('date', today)
+                .is('check_out', null)
+                .order('check_in', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (findError) return createErrorResponse(findError, 'checkOut - find');
+            if (!latest) return createErrorResponse('No active check-in found', 'checkOut');
+
+            const { data, error } = await supabase
+                .from('attendance_log')
+                .update({
+                    check_out: new Date().toISOString()
+                })
+                .eq('id', latest.id)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'checkOut');
+            return createSuccessResponse(data);
+        }, 'checkOut');
+    },
+
+    // Get active attendance
+    async getActiveAttendance() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', 'getActiveAttendance');
+
+            const today = new Date().toISOString().split('T')[0];
+
+            const { data, error } = await supabase
+                .from('attendance_log')
+                .select('*, staff:staff(*)') // Assuming relationship exists or will be ignored if not
+                .eq('date', today)
+                .is('check_out', null);
+
+            if (error) return createErrorResponse(error, 'getActiveAttendance');
+            return createSuccessResponse(data || []);
+        }, 'getActiveAttendance');
+    },
+
+    // Subscribe to attendance updates
+    subscribeToAttendance(callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return;
+
+            const channelName = 'attendance-realtime';
+            if (this._subscriptions[channelName]) return;
+
+            const channel = supabase
+                .channel(channelName)
+                .on('postgres_changes',
+                    { event: '*', schema: 'public', table: 'attendance_log' },
+                    (payload) => {
+                        if (window.Debug) Debug.info('⏱️ Attendance update:', payload.eventType);
+                        callback(payload);
+                    }
+                )
+                .subscribe();
+
+            this._subscriptions[channelName] = channel;
+        });
     }
 };
 

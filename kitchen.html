@@ -29,6 +29,18 @@
     <meta name="theme-color" content="#006400">
     <link rel="manifest" href="manifest.json">
 
+    <!-- Import Map for Material Web -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@material/web/": "./node_modules/@material/web/",
+          "lit": "./node_modules/lit/index.js",
+          "lit/": "./node_modules/lit/",
+          "tslib": "./node_modules/tslib/tslib.es6.js"
+        }
+      }
+    </script>
+
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -485,15 +497,19 @@
                 </div>
                 <form class="login-form" onsubmit="KitchenPage.login(event)">
                     <div class="form-group">
-                        <label>Tên tài khoản</label>
-                        <input type="text" id="kitchenName" placeholder="VD: Bếp Chính" autocomplete="off">
+                        <md-outlined-text-field id="kitchenName" label="Tên tài khoản" placeholder="VD: Bếp Chính" autocomplete="off" style="width: 100%;">
+                            <md-icon slot="leading-icon">person</md-icon>
+                        </md-outlined-text-field>
                     </div>
                     <div class="form-group">
-                        <label>Mã PIN</label>
-                        <input type="password" id="kitchenPin" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •"
-                            inputmode="numeric" autocomplete="off">
+                        <md-outlined-text-field id="kitchenPin" label="Mã PIN" type="password" maxlength="4" pattern="[0-9]{4}" placeholder="• • • •"
+                            inputmode="numeric" autocomplete="off" style="width: 100%; text-align: center;">
+                            <md-icon slot="leading-icon">lock</md-icon>
+                        </md-outlined-text-field>
                     </div>
-                    <button type="submit" class="btn-login md-ripple md-focus-ring">🔓 Đăng Nhập</button>
+                    <md-filled-button type="submit" class="btn-login" style="width: 100%; margin-top: 16px;">
+                        🔓 Đăng Nhập
+                    </md-filled-button>
                 </form>
                 <p class="login-help">📞 Liên hệ quản lý để nhận tài khoản</p>
             </div>
@@ -635,43 +651,44 @@
             </div>
 
             <nav class="kitchen-nav">
-                <a href="staff-mobile.html" class="nav-btn md-ripple md-focus-ring">📱 Staff</a>
-                <a href="index.html" class="nav-btn md-ripple md-focus-ring">🏠 Admin</a>
-                <button type="button" class="nav-btn md-ripple md-focus-ring" onclick="KitchenDisplay.showReadyOrders()">
-                    🔔 Đơn sẵn sàng
-                    <span id="notificationBadge" class="notification-badge">0</span>
-                </button>
-                <button type="button" class="nav-btn md-ripple md-focus-ring" onclick="KitchenPage.logout()"
-                    style="background: rgba(239, 68, 68, 0.2);">
-                    🚪 Đăng xuất
-                </button>
+                <md-filled-tonal-button href="staff-mobile.html" tag="a">
+                    <md-icon slot="icon">smartphone</md-icon>
+                    Staff
+                </md-filled-tonal-button>
+                <md-filled-tonal-button href="index.html" tag="a">
+                    <md-icon slot="icon">home</md-icon>
+                    Admin
+                </md-filled-tonal-button>
+                <md-filled-tonal-button onclick="KitchenDisplay.showReadyOrders()">
+                    <md-icon slot="icon">notifications</md-icon>
+                    Đơn sẵn sàng
+                    <span id="notificationBadge" class="notification-badge" style="margin-left: 4px;">0</span>
+                </md-filled-tonal-button>
+                <md-filled-tonal-button onclick="KitchenPage.logout()" style="--md-filled-tonal-button-container-color: rgba(239, 68, 68, 0.2); --md-filled-tonal-button-label-text-color: #fecaca;">
+                    <md-icon slot="icon">logout</md-icon>
+                    Đăng xuất
+                </md-filled-tonal-button>
             </nav>
         </header>
 
         <!-- Main Content -->
         <main class="kitchen-main">
             <!-- Tabs -->
-            <div class="kitchen-tabs">
-                <button type="button" class="kitchen-tab active" data-status="all"
-                    onclick="KitchenPage.filterOrders('all')">
-                    📋 Tất cả
-                    <span class="badge" id="allCount">0</span>
-                </button>
-                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="pending"
-                    onclick="KitchenPage.filterOrders('pending')">
-                    ⏳ Chờ xử lý
-                    <span class="badge" id="pendingTabCount">0</span>
-                </button>
-                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="preparing"
-                    onclick="KitchenPage.filterOrders('preparing')">
-                    🍳 Đang làm
-                    <span class="badge" id="preparingTabCount">0</span>
-                </button>
-                <button type="button" class="kitchen-tab md-ripple md-focus-ring" data-status="ready"
-                    onclick="KitchenPage.filterOrders('ready')">
-                    ✅ Sẵn sàng
-                    <span class="badge" id="readyTabCount">0</span>
-                </button>
+            <div class="kitchen-tabs" style="background: transparent; padding: 0; margin-bottom: 16px;">
+                <md-chip-set>
+                    <md-filter-chip label="Tất cả" data-status="all" onclick="KitchenPage.filterOrders('all')" selected>
+                        <md-icon slot="icon">list</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Chờ xử lý" data-status="pending" onclick="KitchenPage.filterOrders('pending')">
+                        <md-icon slot="icon">hourglass_empty</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Đang làm" data-status="preparing" onclick="KitchenPage.filterOrders('preparing')">
+                        <md-icon slot="icon">skillet</md-icon>
+                    </md-filter-chip>
+                    <md-filter-chip label="Sẵn sàng" data-status="ready" onclick="KitchenPage.filterOrders('ready')">
+                        <md-icon slot="icon">check_circle</md-icon>
+                    </md-filter-chip>
+                </md-chip-set>
             </div>
 
             <!-- Orders Grid -->
@@ -688,6 +705,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Scripts -->
+    <script type="module" src="js/material-components.js"></script>
     <script src="js/env.js"></script>
     <script src="js/secure-storage.js"></script>
     <script src="js/error-tracker.js"></script>
@@ -794,9 +812,9 @@
             filterOrders(status) {
                 this.currentFilter = status;
 
-                // Update active tab
-                document.querySelectorAll('.kitchen-tab').forEach(tab => {
-                    tab.classList.toggle('active', tab.dataset.status === status);
+                // Update active tab (MD Chips)
+                document.querySelectorAll('.kitchen-tabs md-filter-chip').forEach(chip => {
+                    chip.selected = chip.dataset.status === status;
                 });
 
                 // Filter displayed orders
@@ -819,21 +837,34 @@
                 const pending = orders.filter(o => o.status === 'pending').length;
                 const preparing = orders.filter(o => o.status === 'preparing').length;
                 const ready = allOrders.filter(o => o.status === 'ready').length;
-                const total = pending + preparing;
+                const total = pending + preparing; // Only active orders in kitchen
 
-                // Update header stats
-                document.getElementById('pendingCount').textContent = pending;
-                document.getElementById('preparingCount').textContent = preparing;
-                document.getElementById('readyCount').textContent = ready;
+                // Update header stats (using skeletons if needed, or just text)
+                const updateStat = (id, value) => {
+                    const el = document.getElementById(id);
+                    if(el) el.textContent = value;
+                };
 
-                // Update tab badges
-                document.getElementById('allCount').textContent = total;
-                document.getElementById('pendingTabCount').textContent = pending;
-                document.getElementById('preparingTabCount').textContent = preparing;
-                document.getElementById('readyTabCount').textContent = ready;
+                updateStat('pendingCount', pending);
+                updateStat('preparingCount', preparing);
+                updateStat('readyCount', ready);
+
+                // Update tab labels with counts
+                const updateChipLabel = (status, baseLabel, count) => {
+                    const chip = document.querySelector(`.kitchen-tabs md-filter-chip[data-status="${status}"]`);
+                    if (chip) {
+                        chip.label = `${baseLabel} (${count})`;
+                    }
+                };
+
+                updateChipLabel('all', 'Tất cả', total);
+                updateChipLabel('pending', 'Chờ xử lý', pending);
+                updateChipLabel('preparing', 'Đang làm', preparing);
+                updateChipLabel('ready', 'Sẵn sàng', ready);
 
                 // Update notification badge
-                document.getElementById('notificationBadge').textContent = ready;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) badge.textContent = ready;
             }
         };
 
