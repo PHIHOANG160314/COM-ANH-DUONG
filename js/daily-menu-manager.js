@@ -15,7 +15,7 @@ const DailyMenuManager = {
     // Cache
     masterItems: [],
 
-    init() {
+    async init() {
         console.log('📅 DailyMenuManager initializing...');
 
         // Load master data
@@ -25,8 +25,8 @@ const DailyMenuManager = {
             this.masterItems = menuItems;
         }
 
-        // Load current config
-        this.loadConfig();
+        // Load current config (async)
+        await this.loadConfig();
 
         // Setup Event Listeners
         this.setupEventListeners();
@@ -38,22 +38,25 @@ const DailyMenuManager = {
         console.log('✅ DailyMenuManager ready');
     },
 
-    loadConfig() {
-        const saved = localStorage.getItem('daily_menu_config');
-        if (saved) {
+    async loadConfig() {
+        // Try to load from Supabase first, fallback to localStorage
+        if (typeof DailyMenuService !== 'undefined') {
             try {
-                this.config = JSON.parse(saved);
+                const result = await DailyMenuService.getConfig();
+                if (result.success && result.data) {
+                    this.config.activeItems = result.data.active_items || [];
+                    this.config.active = true;
+                    console.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
+                } else {
+                    // Fallback to localStorage
+                    this._loadFromLocalStorage();
+                }
             } catch (e) {
-                console.error('Error parsing daily config', e);
+                console.error('Error loading from Supabase, using localStorage', e);
+                this._loadFromLocalStorage();
             }
         } else {
-            // Default: All items active if no config exists? 
-            // Or empty? Let's default to empty to force setup, or all?
-            // User request implies "Daily Menu" is a subset.
-            // Let's start with empty or copy from master if first run.
-            // For safety, let's start with ALL active to avoid empty menu on first load
-            this.config.activeItems = this.masterItems.map(i => i.id);
-            this.saveConfig(false); // Save default but don't toggle flag yet
+            this._loadFromLocalStorage();
         }
 
         // Update UI date
@@ -63,20 +66,38 @@ const DailyMenuManager = {
         }
     },
 
-    saveConfig(notify = true) {
+    _loadFromLocalStorage() {
+        const saved = localStorage.getItem('daily_menu_config');
+        if (saved) {
+            try {
+                this.config = JSON.parse(saved);
+            } catch (e) {
+                console.error('Error parsing daily config', e);
+            }
+        } else {
+            // Default: All items active to avoid empty menu on first load
+            this.config.activeItems = this.masterItems.map(i => i.id);
+            this.saveConfig(false);
+        }
+    },
+
+    async saveConfig(notify = true) {
         this.config.lastUpdated = new Date().toISOString();
-        localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
+
+        // Save to Supabase (also handles localStorage fallback internally)
+        if (typeof DailyMenuService !== 'undefined') {
+            try {
+                await DailyMenuService.saveConfig(this.config.activeItems);
+            } catch (e) {
+                console.error('Error saving to Supabase:', e);
+                // Fallback to localStorage only
+                localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
+            }
+        } else {
+            localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
+        }
 
         if (notify) {
-            // Broadcast to other tabs/windows using BroadcastChannel
-            if (typeof BroadcastChannel !== 'undefined') {
-                const channel = new BroadcastChannel('daily_menu_sync');
-                channel.postMessage({ type: 'daily_menu_updated', config: this.config });
-                channel.close();
-            }
-
-            // Trigger storage event for other tabs
-            // Also logic to notify Supabase if we were using it
             if (window.AdminDashboard && window.AdminDashboard.showToast) {
                 window.AdminDashboard.showToast('✅ Đã cập nhật Menu Hôm Nay');
             }

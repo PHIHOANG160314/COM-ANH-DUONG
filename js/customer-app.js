@@ -58,7 +58,7 @@ const CustomerApp = {
         'VIP50K': { discount: 50000, type: 'fixed', minOrder: 200000, description: 'Giảm 50K' }
     },
 
-    init() {
+    async init() {
         console.log('🍽️ Customer Portal initializing...');
 
         // Load menu data from window.menuItems (from data.js)
@@ -77,10 +77,46 @@ const CustomerApp = {
             console.log('⚠️ Using sample menu data');
         }
 
+        // Load daily menu config from Supabase (if available)
+        if (typeof DailyMenuService !== 'undefined') {
+            try {
+                const result = await DailyMenuService.getConfig();
+                if (result.success && result.data && result.data.active_items) {
+                    // Save to localStorage for consistency
+                    const localConfig = {
+                        active: true,
+                        activeItems: result.data.active_items,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+                }
+            } catch (e) {
+                console.warn('Could not load daily menu from Supabase:', e);
+            }
+        }
+
         // Apply "Daily Menu" filter if active
         this.filterDailyMenu();
 
-        // Listen for storage changes (Real-time updates from OTHER tabs)
+        // Subscribe to DailyMenuService for cross-device realtime updates
+        if (typeof DailyMenuService !== 'undefined') {
+            DailyMenuService.subscribe((config) => {
+                console.log('🔄 Daily menu updated from Supabase Realtime');
+                // Update localStorage
+                const localConfig = {
+                    active: true,
+                    activeItems: config.activeItems || [],
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+                // Refilter and rerender
+                this.filterDailyMenu();
+                this.renderMenu(this.currentCategory);
+                this.renderFeaturedSection();
+            });
+        }
+
+        // Fallback: Listen for storage changes (Real-time updates from OTHER tabs)
         window.addEventListener('storage', (e) => {
             if (e.key === 'daily_menu_config') {
                 console.log('🔄 Daily menu updated from admin (storage event)');
@@ -89,19 +125,6 @@ const CustomerApp = {
                 this.renderFeaturedSection();
             }
         });
-
-        // Listen for BroadcastChannel (Real-time updates from SAME or OTHER tabs)
-        if (typeof BroadcastChannel !== 'undefined') {
-            this.dailyMenuChannel = new BroadcastChannel('daily_menu_sync');
-            this.dailyMenuChannel.onmessage = (e) => {
-                if (e.data && e.data.type === 'daily_menu_updated') {
-                    console.log('🔄 Daily menu updated from admin (BroadcastChannel)');
-                    this.filterDailyMenu();
-                    this.renderMenu(this.currentCategory);
-                    this.renderFeaturedSection();
-                }
-            };
-        }
 
         this.loadCart();
         this.renderFeaturedSection();

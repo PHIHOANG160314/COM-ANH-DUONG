@@ -1310,9 +1310,169 @@ const SupabaseService = {
     }
 };
 
+// =====================================================
+// DAILY MENU SERVICE - REALTIME SYNC
+// =====================================================
+
+const DailyMenuService = {
+    _subscription: null,
+    _callbacks: [],
+
+    // Get today's daily menu config
+    async getConfig() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) {
+                // Fallback to localStorage
+                const local = localStorage.getItem('daily_menu_config');
+                if (local) {
+                    try {
+                        const config = JSON.parse(local);
+                        return createSuccessResponse({ active_items: config.activeItems || [] });
+                    } catch (e) { }
+                }
+                return createSuccessResponse({ active_items: [] });
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const { data, error } = await supabase
+                .from('daily_menu_config')
+                .select('*')
+                .eq('active_date', today)
+                .single();
+
+            if (error && error.code === 'PGRST116') {
+                // No row found for today, return empty
+                return createSuccessResponse({ active_items: [] });
+            }
+            if (error) return createErrorResponse(error, 'DailyMenuService.getConfig');
+            return createSuccessResponse(data);
+        }, 'DailyMenuService.getConfig');
+    },
+
+    // Save daily menu config
+    async saveConfig(activeItems) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+
+            // Always save to localStorage as fallback
+            const localConfig = {
+                active: true,
+                activeItems: activeItems,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+
+            // Also broadcast via BroadcastChannel for same-browser tabs
+            if (typeof BroadcastChannel !== 'undefined') {
+                const channel = new BroadcastChannel('daily_menu_sync');
+                channel.postMessage({ type: 'daily_menu_updated', config: localConfig });
+                channel.close();
+            }
+
+            if (!supabase) {
+                return createSuccessResponse({ active_items: activeItems, source: 'localStorage' });
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const { data, error } = await supabase
+                .from('daily_menu_config')
+                .upsert({
+                    active_date: today,
+                    active_items: activeItems,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'active_date' })
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'DailyMenuService.saveConfig');
+            if (window.Debug) Debug.info('📅 Daily menu saved:', activeItems.length, 'items');
+            return createSuccessResponse(data);
+        }, 'DailyMenuService.saveConfig');
+    },
+
+    // Subscribe to realtime changes
+    subscribe(callback) {
+        this._callbacks.push(callback);
+
+        // Setup Supabase realtime if available
+        getSupabase().then(supabase => {
+            if (!supabase) {
+                if (window.Debug) Debug.warn('📅 DailyMenuService: Using localStorage fallback');
+                return;
+            }
+
+            if (this._subscription) return; // Already subscribed
+
+            const channelName = 'daily-menu-realtime';
+            const today = new Date().toISOString().split('T')[0];
+
+            const channel = supabase
+                .channel(channelName)
+                .on('postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'daily_menu_config',
+                        filter: `active_date=eq.${today}`
+                    },
+                    (payload) => {
+                        if (window.Debug) Debug.info('📅 Daily menu realtime update:', payload.eventType);
+                        const config = payload.new;
+                        // Notify all callbacks
+                        this._callbacks.forEach(cb => {
+                            try {
+                                cb({ activeItems: config.active_items || [] });
+                            } catch (e) {
+                                if (window.Debug) Debug.error('Callback error:', e);
+                            }
+                        });
+                    }
+                )
+                .subscribe((status) => {
+                    if (window.Debug) Debug.info('📅 Daily menu subscription:', status);
+                });
+
+            this._subscription = channel;
+        });
+
+        // Also listen to BroadcastChannel for same-browser updates
+        if (typeof BroadcastChannel !== 'undefined' && !this._broadcastChannel) {
+            this._broadcastChannel = new BroadcastChannel('daily_menu_sync');
+            this._broadcastChannel.onmessage = (e) => {
+                if (e.data && e.data.type === 'daily_menu_updated') {
+                    if (window.Debug) Debug.info('📅 Daily menu broadcast update');
+                    this._callbacks.forEach(cb => {
+                        try {
+                            cb({ activeItems: e.data.config.activeItems || [] });
+                        } catch (err) {
+                            if (window.Debug) Debug.error('Callback error:', err);
+                        }
+                    });
+                }
+            };
+        }
+    },
+
+    // Unsubscribe
+    unsubscribe() {
+        if (this._subscription) {
+            this._subscription.unsubscribe();
+            this._subscription = null;
+        }
+        if (this._broadcastChannel) {
+            this._broadcastChannel.close();
+            this._broadcastChannel = null;
+        }
+        this._callbacks = [];
+    }
+};
+
 // Export to window
 window.SupabaseService = SupabaseService;
+window.DailyMenuService = DailyMenuService;
 window.isSupabaseConfigured = isSupabaseConfigured;
 window.getSupabase = getSupabase;
 
 if (window.Debug) Debug.info('Supabase Service loaded', isSupabaseConfigured() ? '(Configured)' : '(Using local data)');
+
