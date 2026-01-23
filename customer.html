@@ -84,48 +84,192 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="customer-header glass-card"
-        style="border-radius: 0 0 24px 24px; margin: 0 10px 10px 10px; width: auto; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border);">
-        <div class="header-content">
-            <a href="/" class="logo-section" style="text-decoration: none; color: inherit;">
-                <img src="logo-landing.png" alt="Ánh Dương" class="logo-img">
-                <div class="logo-text">
+    <!-- M3 Icon Fix CSS -->
+    <style>
+        md-icon {
+            font-family: 'Material Symbols Outlined', 'Material Icons', sans-serif;
+            font-size: 24px;
+            font-weight: normal;
+            font-style: normal;
+            display: inline-flex;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* WOW Header Styles */
+        .customer-header-2026 {
+            background: linear-gradient(135deg, #1a4d1a 0%, #2d6a2d 50%, #1a4d1a 100%);
+            padding: 12px 16px;
+            border-radius: 0 0 24px 24px;
+            margin: 0 8px 8px 8px;
+            box-shadow: 0 8px 32px rgba(0, 100, 0, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo-section-2026 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-section-2026 img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-section-2026 h1 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+        }
+
+        .logo-section-2026 p {
+            font-size: 0.75rem;
+            margin: 0;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn-2026 {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            color: white;
+        }
+
+        .icon-btn-2026:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* WOW Nav Tabs */
+        .nav-tabs-2026 {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs-2026::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: #052e05;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+            border-color: transparent;
+        }
+
+        .nav-tab .tab-icon {
+            font-size: 1rem;
+        }
+    </style>
+
+    <!-- Header WOW 2026 -->
+    <header class="customer-header-2026">
+        <div class="header-top">
+            <a href="/" class="logo-section-2026" style="text-decoration: none;">
+                <img src="logo-landing.png" alt="Ánh Dương">
+                <div>
                     <h1>Ánh Dương</h1>
-                    <p>Nhà hàng &amp; Quán ăn</p>
+                    <p>Nhà hàng & Quán ăn</p>
                 </div>
             </a>
-            <div class="header-actions">
-                <md-filled-tonal-icon-button id="cartBtn" onclick="CustomerApp.toggleCart()">
-                    <md-icon>shopping_cart</md-icon>
-                    <div class="cart-count-badge" id="cartCount"
-                        style="position: absolute; top: -4px; right: -4px; background: var(--md-sys-color-error); color: var(--md-sys-color-on-error); border-radius: 10px; min-width: 18px; height: 18px; padding: 0 4px; font-size: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                        0</div>
-                </md-filled-tonal-icon-button>
-                <md-fab size="small" id="memberBtn" onclick="CustomerApp.showMemberModal()"
-                    style="--md-fab-container-color: var(--md-sys-color-primary-container); --md-fab-icon-color: var(--md-sys-color-on-primary-container);">
-                    <md-icon slot="icon">person</md-icon>
-                </md-fab>
+            <div class="header-icons">
+                <button class="icon-btn-2026" id="cartBtn" onclick="CustomerApp.toggleCart()">
+                    🛒
+                    <span class="cart-badge" id="cartCount">0</span>
+                </button>
+                <button class="icon-btn-2026" id="memberBtn" onclick="CustomerApp.showMemberModal()">
+                    👤
+                </button>
             </div>
         </div>
-        <nav class="customer-nav" aria-label="Customer Navigation" style="overflow-x: auto; padding-bottom: 4px;">
-            <md-chip-set>
-                <md-filter-chip label="Menu" id="nav-menu" onclick="CustomerApp.showSection('menu')" selected>
-                    <md-icon slot="icon">restaurant_menu</md-icon>
-                </md-filter-chip>
-                <md-filter-chip label="Đặt hàng" id="nav-order" onclick="CustomerApp.showSection('order')">
-                    <md-icon slot="icon">shopping_bag</md-icon>
-                </md-filter-chip>
-                <md-filter-chip label="Theo dõi" id="nav-tracking" onclick="CustomerApp.showSection('tracking')">
-                    <md-icon slot="icon">location_on</md-icon>
-                </md-filter-chip>
-                <md-filter-chip label="Tích điểm" id="nav-loyalty" onclick="CustomerApp.showSection('loyalty')">
-                    <md-icon slot="icon">loyalty</md-icon>
-                </md-filter-chip>
-                <md-filter-chip label="Liên hệ" id="nav-contact" onclick="CustomerApp.showSection('contact')">
-                    <md-icon slot="icon">call</md-icon>
-                </md-filter-chip>
-            </md-chip-set>
+        <nav class="nav-tabs-2026" aria-label="Customer Navigation">
+            <div class="nav-tab active" id="nav-menu" onclick="CustomerApp.showSection('menu')">
+                <span class="tab-icon">🍽️</span> Menu
+            </div>
+            <div class="nav-tab" id="nav-order" onclick="CustomerApp.showSection('order')">
+                <span class="tab-icon">🛍️</span> Đặt hàng
+            </div>
+            <div class="nav-tab" id="nav-tracking" onclick="CustomerApp.showSection('tracking')">
+                <span class="tab-icon">📍</span> Theo dõi
+            </div>
+            <div class="nav-tab" id="nav-loyalty" onclick="CustomerApp.showSection('loyalty')">
+                <span class="tab-icon">🎁</span> Tích điểm
+            </div>
+            <div class="nav-tab" id="nav-contact" onclick="CustomerApp.showSection('contact')">
+                <span class="tab-icon">📞</span> Liên hệ
+            </div>
         </nav>
     </header>
 
