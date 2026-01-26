@@ -796,10 +796,10 @@ body {
     width: 100%;
     padding: 16px 16px;
     font-size: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    border: 1px solid var(--md-sys-color-outline);
     border-radius: 8px;
-    color: white;
+    color: var(--md-sys-color-on-surface);
     outline: none;
     transition: all 0.2s ease;
     height: 56px;
@@ -810,8 +810,7 @@ body {
 
 .custom-input:focus {
     border-color: var(--md-sys-color-primary);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 2px rgba(var(--md-sys-color-primary-rgb), 0.2);
+    box-shadow: 0 0 0 1px var(--md-sys-color-primary);
 }
 
 .custom-label {
@@ -819,7 +818,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--md-sys-color-on-surface-variant);
     pointer-events: none;
     transition: all 0.2s ease;
     font-size: 16px;
@@ -832,8 +831,7 @@ body {
 .custom-input:not(:placeholder-shown)~.custom-label {
     top: 0;
     transform: translate(-50%, -50%) scale(0.85);
-    background: #004d00;
-    /* Match card background to hide line */
+    background: var(--md-sys-color-surface-container-low);
     color: var(--md-sys-color-primary);
     font-weight: 500;
 }
