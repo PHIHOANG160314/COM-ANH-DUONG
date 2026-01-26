@@ -50,8 +50,52 @@ const AdminCredentials = {
     // Authenticate by PIN - With work session code for staff/waiter
     // Returns user object if PIN matches and code valid (for non-admin)
     // workCode parameter is optional - only required for manager/waiter
+    // Authenticate by PIN - With work session code for staff/waiter
+    // Returns user object if PIN matches and code valid (for non-admin)
     async authenticateByPin(pin, workCode = null) {
-        // Demo accounts for testing (TEMPORARY until Supabase RPC works)
+        // 1. Try Supabase RPC first (Secure Mode)
+        if (typeof SupabaseService !== 'undefined') {
+            try {
+                const supabase = await window.getSupabase();
+                // Pass empty role to search all roles, or specific role if needed
+                const { data, error } = await supabase.rpc('verify_staff_pin_with_claims', {
+                    p_role: '', // Empty string = any role
+                    p_pin: pin
+                });
+
+                if (!error && data && data.length > 0) {
+                    const user = data[0];
+                    if (window.Debug) Debug.info('✅ Authenticated via RPC:', user.name);
+
+                    // Normalize user object format
+                    const normalizedUser = {
+                        id: user.id || user.worker_id, // handle different return fields
+                        name: user.name,
+                        role: user.role,
+                        phone: user.phone || '',
+                        active: true
+                    };
+
+                    // Check work session code for manager/waiter
+                    if (typeof WorkSessionService !== 'undefined' && WorkSessionService.requiresCode(normalizedUser.role)) {
+                        if (!workCode) {
+                            return { error: 'requires_code', message: 'Vui lòng nhập mã làm việc' };
+                        }
+                        const validation = await WorkSessionService.validateCode(workCode);
+                        if (!validation.valid) {
+                            return { error: 'invalid_code', message: validation.error };
+                        }
+                        await WorkSessionService.recordUsage(normalizedUser.name, normalizedUser.id);
+                    }
+
+                    return normalizedUser;
+                }
+            } catch (rpcError) {
+                console.warn('⚠️ RPC Auth failed, falling back to demo:', rpcError);
+            }
+        }
+
+        // 2. Demo accounts Fallback (for testing or offline)
         const demoAccounts = {
             '0000': { id: 'demo-admin', name: 'Admin', role: 'admin', phone: '0123456789' },
             '1818': { id: 'demo-manager', name: 'Thu Ngân', role: 'manager', phone: '' },
@@ -63,11 +107,11 @@ const AdminCredentials = {
 
         const user = demoAccounts[pin];
         if (!user) {
-            console.warn('⚠️ PIN not found in demo accounts');
+            console.warn('⚠️ PIN not found');
             return null;
         }
 
-        // Check work session code for manager/waiter
+        // Check work session code for manager/waiter in Demo mode
         if (typeof WorkSessionService !== 'undefined' && WorkSessionService.requiresCode(user.role)) {
             if (!workCode) {
                 console.warn('⚠️ Work code required for', user.role);

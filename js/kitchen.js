@@ -30,9 +30,18 @@ const KitchenDisplay = {
             try {
                 const result = await SupabaseService.getOrders();
                 if (!result.error && result.data) {
+                    // Sync to localStorage for other components (counters, ready list)
+                    const convertedOrders = result.data.map(o => this._convertOrder(o));
+                    localStorage.setItem('fb_orders', JSON.stringify(convertedOrders));
+
                     this.orders = this.processOrders(result.data, true);
-                    this.log('log', '🍳 Kitchen loaded orders:', this.orders.map(o => ({ id: o.id, supabaseId: o.supabaseId, status: o.status })));
+                    this.log('log', '🍳 Kitchen loaded orders:', this.orders.length);
                     this.render();
+
+                    // Trigger counter update on page
+                    if (typeof KitchenPage !== 'undefined' && KitchenPage.updateCounters) {
+                        KitchenPage.updateCounters();
+                    }
                     return;
                 }
             } catch (err) {
@@ -414,13 +423,13 @@ const KitchenDisplay = {
 
     log(level, ...args) {
         if (window.Debug) {
-             // Access console via bracket notation to be safe, though console is global
-             const consoleObj = console;
-             if (consoleObj && typeof consoleObj[level] === 'function') {
-                 consoleObj[level](...args);
-             } else {
-                 console.log(...args);
-             }
+            // Access console via bracket notation to be safe, though console is global
+            const consoleObj = console;
+            if (consoleObj && typeof consoleObj[level] === 'function') {
+                consoleObj[level](...args);
+            } else {
+                console.log(...args);
+            }
         }
     }
 };

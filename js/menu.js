@@ -567,6 +567,59 @@ const MenuManagement = {
         const today = new Date().toISOString().slice(0, 10);
         XLSX.writeFile(wb, `menu_${today}.xlsx`);
         toast.success(`📤 Đã xuất ${data.length} món ra file Excel!`);
+    },
+
+    // Download Template with Instructions
+    downloadTemplate() {
+        const wb = XLSX.utils.book_new();
+
+        // Sheet 1: Data Template
+        const templateData = [
+            { 'Tên món': 'Cà Phê Đen Đá', 'Loại': 'Đồ uống', 'Giá bán': 20000, 'Giá vốn': 4000 },
+            { 'Tên món': 'Cà Phê Sữa Đá', 'Loại': 'Đồ uống', 'Giá bán': 25000, 'Giá vốn': 6000 },
+            { 'Tên món': 'Cơm Tấm Sườn', 'Loại': 'Món chính', 'Giá bán': 45000, 'Giá vốn': 15000 },
+            { 'Tên món': 'Phở Bò', 'Loại': 'Món chính', 'Giá bán': 55000, 'Giá vốn': 18000 },
+            { 'Tên món': 'Chè Thái', 'Loại': 'Tráng miệng', 'Giá bán': 25000, 'Giá vốn': 8000 }
+        ];
+        const wsData = XLSX.utils.json_to_sheet(templateData);
+        wsData['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 12 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, wsData, 'Menu Mau');
+
+        // Sheet 2: Instructions
+        const instructions = [
+            ['📋 HƯỚNG DẪN IMPORT MENU'],
+            [''],
+            ['Bước 1: Chuẩn bị dữ liệu'],
+            ['- Điền thông tin món ăn vào sheet "Menu Mau"'],
+            ['- Bắt buộc: Cột "Tên món" và "Giá bán"'],
+            ['- Tùy chọn: Cột "Loại" và "Giá vốn"'],
+            [''],
+            ['Bước 2: Kiểu dữ liệu'],
+            ['- Tên món: Văn bản (VD: Cơm Tấm Sườn Bì Chả)'],
+            ['- Loại: Một trong các giá trị: "Món chính", "Đồ uống", "Tráng miệng"'],
+            ['- Giá bán: Số nguyên, chỉ nhập số (VD: 45000)'],
+            ['- Giá vốn: Số nguyên, chỉ nhập số (VD: 15000)'],
+            [''],
+            ['Bước 3: Import'],
+            ['- Vào Admin → Menu → Menu Tổng'],
+            ['- Nhấn nút "📥 Import"'],
+            ['- Chọn file Excel đã điền dữ liệu'],
+            ['- Xác nhận ánh xạ cột (tự động nhận diện)'],
+            ['- Nhấn "Import" để hoàn tất'],
+            [''],
+            ['⚠️ LƯU Ý:'],
+            ['- Dữ liệu import sẽ THÊM VÀO menu hiện tại'],
+            ['- Không ghi đè dữ liệu cũ'],
+            ['- Kiểm tra kỹ trước khi import'],
+            [''],
+            ['✅ Liên hệ hỗ trợ: 0389 017 360']
+        ];
+        const wsInstructions = XLSX.utils.aoa_to_sheet(instructions);
+        wsInstructions['!cols'] = [{ wch: 60 }];
+        XLSX.utils.book_append_sheet(wb, wsInstructions, 'Huong Dan');
+
+        XLSX.writeFile(wb, 'menu_template_huong_dan.xlsx');
+        toast.success('📥 Đã tải file mẫu có hướng dẫn!');
     }
 };
 

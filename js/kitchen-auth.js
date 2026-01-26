@@ -24,30 +24,47 @@ const KitchenAuth = {
                 return this._demoLogin(name, pin);
             }
 
-            const { data, error } = await supabase.rpc('verify_kitchen_pin', {
-                p_name: name,
+            // Use new secure RPC from phase2-security-combined.sql
+            const { data, error } = await supabase.rpc('verify_staff_pin_with_claims', {
+                p_role: '', // Allow any role, we check later
                 p_pin: pin
             });
 
             if (error) {
-                console.warn('Kitchen RPC not available, using demo mode:', error.message);
+                console.warn('Kitchen RPC error, using demo mode:', error.message);
                 // Fallback to demo mode if RPC doesn't exist
                 return this._demoLogin(name, pin);
             }
 
-            if (!data.success) {
-                return { success: false, error: data.error || 'Đăng nhập thất bại' };
+            if (!data || data.length === 0) {
+                return { success: false, error: 'Mã PIN không đúng' };
             }
+
+            const staff = data[0];
+
+            // Validate Role
+            // Kitchen allowed roles: Bếp, chef, admin, Quản lý
+            const validRoles = ['Bếp', 'chef', 'admin', 'Quản lý', 'manager'];
+            if (!validRoles.includes(staff.role)) {
+                return { success: false, error: 'Tài khoản không có quyền truy cập Bếp' };
+            }
+
+            // Allow name update if it differs
+            const account = {
+                id: staff.id,
+                name: staff.name,
+                role: staff.role
+            };
 
             // Save session
             const session = {
-                account: data.account,
+                account: account,
                 loginTime: Date.now(),
                 expiresAt: Date.now() + this.SESSION_DURATION
             };
 
             localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
-            return { success: true, account: data.account };
+            return { success: true, account: account };
 
         } catch (err) {
             console.error('Kitchen login error:', err);
