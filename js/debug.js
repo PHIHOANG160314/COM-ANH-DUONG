@@ -1,7 +1,8 @@
-// =====================================================
-// DEBUG UTILITY - ÁNH DƯƠNG F&B
-// Production-ready logging with debug mode toggle
-// =====================================================
+/**
+ * F&B Master - Debug Utility
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Production-ready logging utility with environment detection.
+ */
 
 const Debug = {
     // Set to false in production

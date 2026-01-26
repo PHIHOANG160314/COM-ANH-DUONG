@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - CUSTOMER APP
-// Enhanced Mobile Customer Portal
-// ========================================
+/**
+ * F&B Master - Customer App
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Client-facing ordering portal, digital menu, and loyalty tracking.
+ */
 
 const CustomerApp = {
     cart: [],
@@ -59,22 +60,22 @@ const CustomerApp = {
     },
 
     async init() {
-        console.log('🍽️ Customer Portal initializing...');
+        if (window.Debug) Debug.log('🍽️ Customer Portal initializing...');
 
         // Load menu data from window.menuItems (from data.js)
         // IMPORTANT: Create a copy, not a reference!
         if (typeof window.menuItems !== 'undefined' && window.menuItems.length > 0) {
             this.menuData = [...window.menuItems];
             this.originalMenuData = [...window.menuItems]; // Save original immediately
-            console.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
+            if (window.Debug) Debug.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
         } else if (typeof menuItems !== 'undefined' && menuItems.length > 0) {
             this.menuData = [...menuItems];
             this.originalMenuData = [...menuItems];
-            console.log('✅ Loaded', this.menuData.length, 'menu items');
+            if (window.Debug) Debug.log('✅ Loaded', this.menuData.length, 'menu items');
         } else {
             this.menuData = this.getSampleMenu();
             this.originalMenuData = [...this.menuData];
-            console.log('⚠️ Using sample menu data');
+            if (window.Debug) Debug.warn('⚠️ Using sample menu data');
         }
 
         // Load daily menu config from Supabase (if available)
@@ -112,7 +113,15 @@ const CustomerApp = {
                 // Refilter and rerender
                 this.filterDailyMenu();
                 this.renderMenu(this.currentCategory);
-                this.renderFeaturedSection();
+                this.loadFeaturedItems();
+            });
+        }
+
+        // Subscribe to FeaturedItemsService for realtime featured items updates
+        if (typeof FeaturedItemsService !== 'undefined') {
+            FeaturedItemsService.subscribe((config) => {
+                console.log('🔥 Featured items updated from realtime');
+                this.loadFeaturedItems();
             });
         }
 
@@ -122,12 +131,16 @@ const CustomerApp = {
                 console.log('🔄 Daily menu updated from admin (storage event)');
                 this.filterDailyMenu();
                 this.renderMenu(this.currentCategory);
-                this.renderFeaturedSection();
+                this.loadFeaturedItems();
+            }
+            if (e.key === 'featured_items_config') {
+                console.log('🔥 Featured items updated from admin (storage event)');
+                this.loadFeaturedItems();
             }
         });
 
         this.loadCart();
-        this.renderFeaturedSection();
+        this.loadFeaturedItems(); // Use async featured items loader
         this.renderCategories(this.currentGroup);
         // this.renderSubcategoryTabs(); // Legacy
         this.renderMenu();
@@ -139,7 +152,7 @@ const CustomerApp = {
         // Initialize realtime order tracking
         this.initRealtimeOrderTracking();
 
-        console.log('🍽️ Customer Portal ready!');
+        if (window.Debug) Debug.log('🍽️ Customer Portal ready!');
     },
 
     // ========================================
@@ -604,15 +617,45 @@ const CustomerApp = {
     },
 
     // ========================================
-    // FEATURED SECTION
+    // FEATURED SECTION - with FeaturedItemsService support
     // ========================================
-    renderFeaturedSection() {
+    async loadFeaturedItems() {
         const container = document.getElementById('featuredCards');
         if (!container) return;
 
-        // Get featured items (top 5 sellers)
-        const featuredIds = typeof window.featuredItems !== 'undefined' ? window.featuredItems : [1, 2, 16, 51, 66];
-        const featured = this.menuData.filter(item => featuredIds.includes(item.id));
+        let featured = [];
+
+        // Try to get featured items from FeaturedItemsService
+        if (typeof FeaturedItemsService !== 'undefined') {
+            try {
+                const result = await FeaturedItemsService.getFeaturedItems();
+                if (result.success && result.data && result.data.length > 0) {
+                    featured = result.data;
+                    console.log('🔥 Loaded', featured.length, 'featured items from FeaturedItemsService');
+                }
+            } catch (e) {
+                console.warn('Could not load featured items from service:', e);
+            }
+        }
+
+        // Fallback to default featured items
+        if (featured.length === 0) {
+            const featuredIds = typeof window.featuredItems !== 'undefined' ? window.featuredItems : [1, 2, 16, 51, 66];
+            featured = this.menuData.filter(item => featuredIds.includes(item.id));
+        }
+
+        // Render featured cards
+        this.renderFeaturedCards(featured);
+    },
+
+    renderFeaturedCards(featured) {
+        const container = document.getElementById('featuredCards');
+        if (!container) return;
+
+        if (featured.length === 0) {
+            container.innerHTML = '<p class="text-muted" style="text-align: center; padding: 20px;">Không có món bán chạy</p>';
+            return;
+        }
 
         container.innerHTML = featured.map((item, index) => `
             <div class="featured-card glass-card animate-fadeInUp hover-lift md-ripple md-focus-ring"
@@ -625,6 +668,11 @@ const CustomerApp = {
                 </div>
             </div>
         `).join('');
+    },
+
+    // Legacy wrapper for backwards compatibility
+    renderFeaturedSection() {
+        this.loadFeaturedItems();
     },
 
     // ========================================

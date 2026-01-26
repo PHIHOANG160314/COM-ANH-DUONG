@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - PWA UTILITIES
-// Install prompts, offline queue, share API
-// ========================================
+/**
+ * F&B Master - PWA Utilities
+ * Author: Google DeepMind / Antigravity Team
+ * Description: PWA install prompts, offline queue management, and service worker updates.
+ */
 
 const PWAUtils = {
     deferredPrompt: null,

@@ -1,7 +1,8 @@
-// =====================================================
-// SENTRY ERROR TRACKING - ÁNH DƯƠNG F&B
-// =====================================================
-// To enable Sentry, create a project at sentry.io and add your DSN
+/**
+ * F&B Master - Error Tracker
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Centralized error handling and Sentry integration.
+ */
 
 (function () {
     'use strict';
@@ -22,7 +23,7 @@
     // Initialize Sentry (lazy load from CDN)
     const initSentry = async () => {
         if (!isSentryConfigured()) {
-            console.log('ℹ️ Sentry not configured. Error tracking disabled.');
+            if (window.Debug) Debug.log('ℹ️ Sentry not configured. Error tracking disabled.');
             return;
         }
 
@@ -53,7 +54,7 @@
                             return event;
                         }
                     });
-                    console.log('✅ Sentry initialized');
+                    if (window.Debug) Debug.info('✅ Sentry initialized');
                 }
             };
 
@@ -96,7 +97,7 @@
 
         // Capture message
         captureMessage: (message, level = 'info') => {
-            console.log(`📝 [${level}]`, message);
+            if (window.Debug) Debug.log(`📝 [${level}]`, message);
 
             if (window.Sentry) {
                 window.Sentry.captureMessage(message, level);
@@ -160,5 +161,5 @@
         initSentry();
     }
 
-    console.log('✅ Error Tracker loaded');
+    if (window.Debug) Debug.info('✅ Error Tracker loaded');
 })();

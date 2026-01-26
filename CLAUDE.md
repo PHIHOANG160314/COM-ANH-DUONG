@@ -6,6 +6,7 @@ Khi thực hiện task, hãy:
 1. **Tự mở terminal** và chạy lệnh cần thiết
 2. **Tự kiểm soát real-time** - không cần hỏi xác nhận cho các lệnh an toàn
 3. **Tự verify kết quả** sau khi thực hiện
+4. **ƯU TIÊN TUYỆT ĐỐI:** Agent nên giao việc lập trình chi tiết cho CLI khi có thể (Delegate Mode).
 
 ## Proxy Configuration
 

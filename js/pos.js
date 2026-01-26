@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - POS MODULE
-// ========================================
+/**
+ * F&B Master - POS Module
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Point of Sale system, cart management, and checkout logic.
+ */
 
 const POS = {
     cart: [],

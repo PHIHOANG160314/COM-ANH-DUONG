@@ -1,7 +1,8 @@
-// =====================================================
-// ADMIN CREDENTIALS - ÁNH DƯƠNG F&B
-// Staff session management (no plaintext credentials)
-// =====================================================
+/**
+ * F&B Master - Admin Credentials
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Staff session management and authentication handling.
+ */
 
 const AdminCredentials = {
     // NOTE: Staff credentials are stored in Supabase with hashed PINs
@@ -30,7 +31,7 @@ const AdminCredentials = {
             localStorage.setItem('fb_staff_version', this.STAFF_VERSION);
         }
 
-        console.log('✅ Admin Credentials v3.0 (Secure Mode)');
+        if (window.Debug) Debug.info('✅ Admin Credentials v3.0 (Secure Mode)');
     },
 
     // Get staff from localStorage cache (synced from Supabase)
@@ -83,7 +84,7 @@ const AdminCredentials = {
             await WorkSessionService.recordUsage(user.name, user.id);
         }
 
-        console.info('✅ Demo PIN matched:', user.name);
+        if (window.Debug) Debug.info('✅ Demo PIN matched:', user.name);
         return user;
     },
 
@@ -99,7 +100,7 @@ const AdminCredentials = {
         }));
         localStorage.setItem('fb_staff', JSON.stringify(safeStaff));
         localStorage.setItem('fb_staff_version', this.STAFF_VERSION);
-        console.log('✅ Staff list cached (without credentials)');
+        if (window.Debug) Debug.log('✅ Staff list cached (without credentials)');
     },
 
     // Add new staff - via Supabase only
@@ -213,5 +214,5 @@ AdminCredentials.init();
 // Export
 window.AdminCredentials = AdminCredentials;
 
-console.log('✅ Admin Credentials module loaded (Secure Mode)');
+if (window.Debug) Debug.log('✅ Admin Credentials module loaded (Secure Mode)');
 

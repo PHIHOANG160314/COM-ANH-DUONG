@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - DASHBOARD MODULE
-// Enhanced with Supabase Realtime
-// ========================================
+/**
+ * F&B Master - Admin Dashboard
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Analytics, KPIs, and real-time monitoring dashboard.
+ */
 
 const Dashboard = {
     orders: [],
@@ -104,6 +105,7 @@ const Dashboard = {
     subscribeToRealtime() {
         if (typeof SupabaseService === 'undefined') return;
 
+        // Subscribe to Orders
         SupabaseService.subscribeToOrders((payload) => {
             if (window.Debug) Debug.log('📊 Dashboard realtime event:', payload.eventType);
 
@@ -139,79 +141,65 @@ const Dashboard = {
                 this.orders = this.orders.filter(o => o.supabaseId !== payload.old?.id);
                 this.refresh();
             }
-            // Update Kitchen Monitor Stats
-            this.updateKitchenStats();
+            // Update Kitchen Load on any order change
+            this.updateKitchenLoad();
         }, 'Dashboard');
 
         // Subscribe to Attendance
-        this.subscribeToAttendance();
+        SupabaseService.client
+            .channel('attendance_monitor')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_log' }, (payload) => {
+                this.updateActiveStaff();
+            })
+            .subscribe();
+
+        // Initial Stats Load
+        this.updateActiveStaff();
+        this.updateKitchenLoad();
 
         if (window.Debug) Debug.info('📊 Dashboard subscribed to realtime');
     },
 
-    subscribeToAttendance() {
-        if (typeof SupabaseService === 'undefined') return;
-
-        // Initial load of online staff
-        this.loadOnlineStaff();
-
-        // Listen for changes
-        const supabase = window.getSupabase ? window.getSupabase() : null; // Access supabase client directly if needed or via service
-        // Actually SupabaseService should handle subscription, but for custom table 'attendance_log':
-        // We will assume SupabaseService has a generic subscribe method or use direct client if available
-        // For now, let's try to use SupabaseService.subscribeToTable if it exists, or extending it.
-        // Or better, just add a specific subscription here using the client.
-
-        // Simplified: Just poll or rely on a new method in SupabaseService (which we didn't add yet, so we use direct client if possible)
-        // Since we didn't edit api-service.js, we should try to use valid methods. 
-        // Let's assume we can use the same pattern as Orders if we had a generic one.
-        // But let's write a safe implementation:
-
-        if (window.supabase) { // If global client is exposed
-            window.supabase
-                .channel('attendance_monitor')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_log' }, payload => {
-                    this.loadOnlineStaff(); // Reload list on any change
-                })
-                .subscribe();
-        }
-    },
-
-    async loadOnlineStaff() {
+    async updateActiveStaff() {
         if (!this.useSupabase) return;
-        const supabase = await window.getSupabase();
-        const today = new Date().toISOString().slice(0, 10);
+        try {
+            const today = new Date().toISOString().slice(0, 10);
+            const { count, error } = await SupabaseService.client
+                .from('attendance_log')
+                .select('*', { count: 'exact', head: true })
+                .eq('date', today)
+                .is('check_out', null);
 
-        const { data: logs } = await supabase
-            .from('attendance_log')
-            .select('staff_id, staff(name, role)') // Join with staff table
-            .eq('date', today)
-            .is('check_out', null);
-
-        const container = document.getElementById('monitorStaffList');
-        if (!container || !logs) return;
-
-        if (logs.length === 0) {
-            container.innerHTML = '<span class="avatar-placeholder" style="font-size: 0.85rem; color: var(--text-secondary);">Chưa có nhân viên</span>';
-            return;
+            if (!error) {
+                const el = document.getElementById('activeStaffCount');
+                if (el) el.textContent = count;
+            }
+        } catch (e) {
+            console.error('Error fetching active staff:', e);
         }
-
-        container.innerHTML = logs.map(log => {
-            const name = log.staff?.name || 'Staff';
-            const initial = name.charAt(0).toUpperCase();
-            return `<div class="avatar" title="${name}" style="width:32px;height:32px;background:#3b82f6;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:bold;border:2px solid white;margin-left:-8px;">${initial}</div>`;
-        }).join('');
     },
 
-    updateKitchenStats() {
-        const waiting = this.orders.filter(o => o.status === 'pending').length;
-        const cooking = this.orders.filter(o => o.status === 'preparing' || o.status === 'confirmed').length;
+    updateKitchenLoad() {
+        // Count orders that are preparing or pending
+        const load = this.orders.filter(o => o.status === 'preparing' || o.status === 'pending').length;
 
-        const elWait = document.getElementById('monitorWaiting');
-        const elCook = document.getElementById('monitorCooking');
+        const el = document.getElementById('kitchenLoadCount');
+        const statusEl = document.getElementById('kitchenLoadStatus');
 
-        if (elWait) elWait.textContent = waiting;
-        if (elCook) elCook.textContent = cooking;
+        if (el) el.textContent = load;
+
+        if (statusEl) {
+            if (load > 10) {
+                statusEl.textContent = 'Quá tải';
+                statusEl.className = 'kpi-trend down'; // Red
+            } else if (load > 5) {
+                statusEl.textContent = 'Cao';
+                statusEl.className = 'kpi-trend warning'; // Orange
+            } else {
+                statusEl.textContent = 'Bình thường';
+                statusEl.className = 'kpi-trend up'; // Green
+            }
+        }
     },
 
     // ========================================

@@ -1,7 +1,7 @@
 /**
- * Shipper Portal Application - Enhanced Version
- * Handles shipper authentication, GPS tracking, delivery management, and realtime updates
- * @version 2.0
+ * F&B Master - Shipper Portal
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Delivery management, order pickup, and location tracking for shippers.
  */
 
 const ShipperApp = {

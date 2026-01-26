@@ -14,5 +14,5 @@ if (typescaleStyles?.styleSheet) {
     document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
 }
 
-console.log('✅ Material Web Components loaded (all.js bundle)');
+if (window.Debug) Debug.log('✅ Material Web Components loaded (all.js bundle)');
 

@@ -1,7 +1,8 @@
-// =====================================================
-// SECURE STORAGE - ÁNH DƯƠNG F&B
-// Encrypted localStorage using Web Crypto API
-// =====================================================
+/**
+ * F&B Master - Secure Storage
+ * Author: Google DeepMind / Antigravity Team
+ * Description: AES-GCM encrypted local storage with device fingerprinting.
+ */
 
 const SecureStorage = {
     // Configuration
@@ -367,4 +368,4 @@ SecureStorage.init().catch(console.error);
 // Export to window
 window.SecureStorage = SecureStorage;
 
-console.log('✅ SecureStorage module loaded');
+if (window.Debug) Debug.log('✅ SecureStorage module loaded');

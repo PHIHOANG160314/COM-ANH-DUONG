@@ -1,23 +1,21 @@
--- ATTENDANCE LOG TABLE (REALTIME)
+-- Attendance Log Table
 CREATE TABLE IF NOT EXISTS attendance_log (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    staff_id BIGINT, -- Using BIGINT to match staff.id based on previous file reads, referencing managed by logic if FK fails
+    staff_id TEXT NOT NULL,
+    staff_name TEXT,
     check_in TIMESTAMPTZ DEFAULT NOW(),
     check_out TIMESTAMPTZ,
-    date DATE DEFAULT CURRENT_DATE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    date TEXT, -- YYYY-MM-DD
+    total_hours NUMERIC
 );
 
 -- Enable Realtime
 ALTER TABLE attendance_log REPLICA IDENTITY FULL;
 
--- Create publication if it doesn't exist, or add table to it
+-- Add to publication safely
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
-        CREATE PUBLICATION supabase_realtime FOR TABLE attendance_log;
-    ELSE
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'attendance_log') THEN
         ALTER PUBLICATION supabase_realtime ADD TABLE attendance_log;
     END IF;
-END
-$$;
+END $$;

@@ -1,7 +1,8 @@
-// =====================================================
-// ARTICLE MANAGER - ADMIN MODULE (Enhanced)
-// Manage news and articles with professional features
-// =====================================================
+/**
+ * F&B Master - Articles Manager
+ * Author: Google DeepMind / Antigravity Team
+ * Description: CMS for news, promotions, and events management.
+ */
 
 const ArticlesManager = {
     state: {
@@ -23,7 +24,7 @@ const ArticlesManager = {
     },
 
     init() {
-        console.log('📰 Articles Manager Initialized (Enhanced)');
+        if (window.Debug) Debug.info('📰 Articles Manager Initialized (Enhanced)');
         this.renderUI();
         this.loadArticles();
     },

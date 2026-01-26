@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - MAIN APP
-// ========================================
+/**
+ * F&B Master - Main Application Entry
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Central application logic, initialization, and navigation.
+ */
 
 const PAGE_TITLES = {
     dashboard: 'Tổng quan',
@@ -16,7 +18,8 @@ const PAGE_TITLES = {
     customers: 'Khách Hàng Thân Thiết',
     sops: 'SOPs - Quy Trình',
     articles: 'Quản Lý Bài Viết',
-    shippers: 'Quản Lý Shipper'
+    shippers: 'Quản Lý Shipper',
+    featured: 'Món Bán Chạy'
 };
 
 const THEME_STORAGE_KEY = 'fb_theme';
@@ -41,7 +44,7 @@ const App = {
         if (window.utils && window.utils.modal) window.utils.modal.init();
         if (window.utils && window.utils.toast) window.utils.toast.init();
 
-        console.log('🍽️ F&B Master initialized successfully!');
+        if (window.Debug) Debug.info('🍽️ F&B Master initialized successfully!');
     },
 
     cacheElements() {
@@ -141,7 +144,7 @@ const App = {
             'Dashboard', 'POS', 'FoodCost', 'Inventory', 'Recipes',
             'MenuManagement', 'OrderManagement', 'SOPs', 'Analytics',
             'TableManagement', 'KitchenDisplay', 'StaffManagement',
-            'CustomerLoyalty', 'ArticlesManager', 'ShipperManager', 'i18n'
+            'CustomerLoyalty', 'ArticlesManager', 'ShipperManager', 'FeaturedManager', 'i18n'
         ];
 
         modules.forEach(moduleName => {

@@ -128,6 +128,10 @@
                     <span class="nav-icon">✅</span>
                     <span class="nav-text" data-i18n="nav_sops">SOPs</span>
                 </a>
+                <a href="#" class="nav-item md-ripple md-focus-ring" data-page="featured">
+                    <span class="nav-icon">🔥</span>
+                    <span class="nav-text" data-i18n="nav_featured">Món bán chạy</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -177,47 +181,31 @@
                 </div>
             </header>
 
-            <!-- Realtime Monitor Widget (New) -->
-            <div class="monitor-widget-grid"
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 1rem 0 1rem;">
-                <!-- Kitchen Load -->
-                <div class="monitor-card kitchen-monitor"
-                    style="background: var(--surface); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; box-shadow: var(--elevation-1);">
-                    <div class="monitor-icon"
-                        style="font-size: 2rem; background: #fff7ed; padding: 0.5rem; border-radius: 50%;">🔥</div>
-                    <div class="monitor-info">
-                        <h4 style="margin: 0 0 0.25rem 0;">Bếp Realtime</h4>
-                        <div class="monitor-stats" style="display: flex; gap: 0.5rem;">
-                            <span class="stat-tag waiting"
-                                style="background: #ffedd5; color: #c2410c; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem;">⏳
-                                <b id="monitorWaiting">0</b> Chờ</span>
-                            <span class="stat-tag cooking"
-                                style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem;">🍳
-                                <b id="monitorCooking">0</b> Nấu</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Staff Presence -->
-                <div class="monitor-card staff-monitor"
-                    style="background: var(--surface); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; box-shadow: var(--elevation-1);">
-                    <div class="monitor-icon"
-                        style="font-size: 2rem; background: #f0fdf4; padding: 0.5rem; border-radius: 50%;">👥</div>
-                    <div class="monitor-info" style="flex: 1;">
-                        <h4 style="margin: 0 0 0.25rem 0;">Nhân sự Online</h4>
-                        <div class="avatars-list" id="monitorStaffList"
-                            style="display: flex; gap: -8px; overflow-x: auto;">
-                            <span class="avatar-placeholder"
-                                style="font-size: 0.85rem; color: var(--text-secondary);">--</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Page Content -->
             <div class="page-content">
                 <!-- Dashboard Page -->
                 <section class="page active" id="page-dashboard">
                     <div class="kpi-grid">
+                        <!-- Live Monitoring Widgets -->
+                        <div class="kpi-card md-card md-card-elevated active-staff shimmer"
+                            style="border-left: 4px solid #10b981;">
+                            <div class="kpi-icon icon-bounce" style="background: #d1fae5; color: #10b981;">👥</div>
+                            <div class="kpi-content">
+                                <h3 id="activeStaffCount">0</h3>
+                                <p>Nhân sự Online</p>
+                                <span class="kpi-trend" style="color: #10b981;">● Realtime</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card md-card md-card-elevated kitchen-load shimmer"
+                            style="border-left: 4px solid #f59e0b;">
+                            <div class="kpi-icon icon-bounce" style="background: #fef3c7; color: #f59e0b;">🔥</div>
+                            <div class="kpi-content">
+                                <h3 id="kitchenLoadCount">0</h3>
+                                <p>Kitchen Load</p>
+                                <span class="kpi-trend warning" id="kitchenLoadStatus">Bình thường</span>
+                            </div>
+                        </div>
+
                         <div class="kpi-card md-card md-card-elevated revenue shimmer">
                             <div class="kpi-icon icon-bounce">💵</div>
                             <div class="kpi-content">
@@ -714,6 +702,106 @@
                     </div>
                 </section>
 
+                <!-- Featured Items Management Page -->
+                <section class="page" id="page-featured">
+                    <div class="featured-management">
+                        <div class="featured-header">
+                            <h2>🔥 Quản Lý Món Bán Chạy</h2>
+                            <p class="text-muted">Cấu hình mục "Món bán chạy" hiển thị trên trang khách hàng</p>
+                        </div>
+
+                        <!-- Mode Toggle -->
+                        <div class="featured-mode-card card">
+                            <div class="mode-toggle-row">
+                                <div class="mode-info">
+                                    <h3>Chế độ hiển thị</h3>
+                                    <p id="currentModeText">Tự động - Dựa trên thống kê bán hàng realtime</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="featuredModeToggle">
+                                    <span class="toggle-slider"></span>
+                                    <span class="toggle-labels">
+                                        <span class="label-auto">Auto</span>
+                                        <span class="label-manual">Manual</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Auto Mode Section -->
+                        <div class="featured-section card" id="featuredAutoSection">
+                            <h3>⚡ Cấu hình Auto Mode</h3>
+                            <div class="auto-config">
+                                <div class="config-row">
+                                    <label>Số lượng món hiển thị:</label>
+                                    <select id="featuredAutoCount">
+                                        <option value="3">3 món</option>
+                                        <option value="4">4 món</option>
+                                        <option value="5">5 món</option>
+                                        <option value="6" selected>6 món</option>
+                                        <option value="8">8 món</option>
+                                        <option value="10">10 món</option>
+                                    </select>
+                                </div>
+                                <div class="config-info">
+                                    <span class="info-icon">ℹ️</span>
+                                    <span>Dữ liệu được lấy từ thống kê bán hàng 7 ngày gần nhất và cập nhật
+                                        realtime</span>
+                                </div>
+                            </div>
+                            <div class="preview-section">
+                                <h4>Preview món bán chạy:</h4>
+                                <div class="featured-preview" id="featuredAutoPreview">
+                                    <p class="text-muted">Đang tải dữ liệu...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Mode Section -->
+                        <div class="featured-section card" id="featuredManualSection" style="display: none;">
+                            <div class="manual-header">
+                                <h3>✋ Cấu hình Manual Mode</h3>
+                                <button type="button" class="btn-primary md-ripple" id="addFeaturedBtn">+ Thêm
+                                    món</button>
+                            </div>
+                            <div class="manual-list" id="featuredManualList">
+                                <p class="text-muted">Chưa có món nào. Nhấn "Thêm món" để bắt đầu.</p>
+                            </div>
+                            <div class="manual-tip">
+                                <span class="tip-icon">💡</span>
+                                <span>Kéo thả để sắp xếp thứ tự hiển thị</span>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="featured-actions">
+                            <button type="button" class="btn-primary md-button md-button-filled md-ripple"
+                                id="saveFeaturedBtn" onclick="FeaturedManager.saveConfig()">
+                                💾 Lưu cấu hình
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Featured Item Modal -->
+                <div class="modal-overlay" id="addFeaturedModal" style="display: none;">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3>Chọn món để thêm</h3>
+                            <button type="button" class="modal-close"
+                                onclick="FeaturedManager.hideAddItemModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="search-input" id="featuredItemSearch"
+                                placeholder="Tìm kiếm món..."
+                                oninput="FeaturedManager.filterAvailableItems(this.value)">
+                            <div class="available-items-list" id="availableItemsList">
+                                <p class="text-muted">Đang tải...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Order Management Page -->
                 <section class="page" id="page-orders">
                     <div class="orders-header">
@@ -976,7 +1064,7 @@
     <script src="js/i18n.js"></script>
     <script src="js/articles-manager.js"></script>
     <script src="js/shipper-manager.js"></script>
-    <script src="js/daily-menu-manager.js"></script>
+    <script src="js/featured-manager.js"></script>
     <script src="js/app.js"></script>
 
     <!-- Service Worker Registration -->

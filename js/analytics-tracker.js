@@ -1,7 +1,8 @@
-// =====================================================
-// ANALYTICS - ÁNH DƯƠNG F&B
-// Google Analytics 4 / Plausible Integration
-// =====================================================
+/**
+ * F&B Master - Analytics Tracker
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Event tracking, GA4/Plausible integration, and user behavior analysis.
+ */
 
 const Analytics = {
     // Configuration
@@ -27,12 +28,12 @@ const Analytics = {
         }
         // Fallback to console logging
         else {
-            console.log('📊 Analytics not configured. Using local tracking.');
+            if (window.Debug) Debug.log('📊 Analytics not configured. Using local tracking.');
         }
 
         this.setupAutoTracking();
         this.initialized = true;
-        console.log('✅ Analytics module loaded');
+        if (window.Debug) Debug.info('✅ Analytics module loaded');
     },
 
     // Initialize Google Analytics 4
@@ -52,7 +53,7 @@ const Analytics = {
             send_page_view: true
         });
 
-        console.log('✅ GA4 initialized:', this.config.ga4Id);
+        if (window.Debug) Debug.info('✅ GA4 initialized:', this.config.ga4Id);
     },
 
     // Initialize Plausible Analytics
@@ -63,7 +64,7 @@ const Analytics = {
         script.src = 'https://plausible.io/js/script.js';
         document.head.appendChild(script);
 
-        console.log('✅ Plausible initialized:', this.config.plausibleDomain);
+        if (window.Debug) Debug.info('✅ Plausible initialized:', this.config.plausibleDomain);
     },
 
     // ========================================
@@ -260,8 +261,8 @@ const Analytics = {
     // ========================================
 
     log(type, data) {
-        if (this.config.debug) {
-            console.log(`📊 [${type}]`, data);
+        if (this.config.debug && window.Debug) {
+            Debug.log(`📊 [${type}]`, data);
         }
 
         // Store locally for dashboard

@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - TABLE MANAGEMENT MODULE
-// ========================================
+/**
+ * F&B Master - Table Management
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Table layout, status tracking (occupied/reserved), and order association.
+ */
 
 const TableManagement = {
     tables: [],

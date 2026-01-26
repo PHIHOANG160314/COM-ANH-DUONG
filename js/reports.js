@@ -1,7 +1,8 @@
-// =====================================================
-// REPORTS MANAGER - ÁNH DƯƠNG F&B
-// Báo cáo với Excel Export và Phân quyền Admin/Staff
-// =====================================================
+/**
+ * F&B Master - Reports Manager
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Generates sales reports, visualizes data, and handles Excel exports.
+ */
 
 const ReportsManager = {
     // State
@@ -601,7 +602,7 @@ const ReportsManager = {
         if (typeof Toast !== 'undefined') {
             Toast.show(message, type);
         } else {
-            console.log(`[${type.toUpperCase()}] ${message}`);
+            if (window.Debug) Debug.log(`[${type.toUpperCase()}] ${message}`);
         }
     },
 

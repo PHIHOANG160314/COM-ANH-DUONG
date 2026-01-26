@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - KITCHEN DISPLAY MODULE
-// ========================================
+/**
+ * F&B Master - Kitchen Display System
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Real-time kitchen order management, status tracking, and notifications.
+ */
 
 const KitchenDisplay = {
     orders: [],

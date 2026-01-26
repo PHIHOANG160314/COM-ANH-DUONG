@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - ORDER MANAGEMENT MODULE
-// Enhanced with Supabase Integration
-// ========================================
+/**
+ * F&B Master - Order Management
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Order tracking, status updates, and Supabase synchronization.
+ */
 
 const OrderManagement = {
     orders: [],

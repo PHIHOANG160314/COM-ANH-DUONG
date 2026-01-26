@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - MENU MANAGEMENT MODULE
-// ========================================
+/**
+ * F&B Master - Menu Management
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Master menu CRUD, daily menu planning, and Excel import/export.
+ */
 
 // Store original menu data ONCE at load time to prevent circular reference
 const ORIGINAL_MENU_DATA = (typeof menuItems !== 'undefined') ? [...menuItems] : [];

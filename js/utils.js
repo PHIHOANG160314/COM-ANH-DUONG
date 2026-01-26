@@ -1,6 +1,8 @@
-// ========================================
-// F&B MASTER - UTILITIES
-// ========================================
+/**
+ * F&B Master - Utilities
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Helper functions, formatting tools, and local storage wrappers.
+ */
 
 // Format currency
 function formatCurrency(amount) {

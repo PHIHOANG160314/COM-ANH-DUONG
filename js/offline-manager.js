@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - OFFLINE MANAGER
-// IndexedDB + Background Sync
-// ========================================
+/**
+ * F&B Master - Offline Manager
+ * Author: Google DeepMind / Antigravity Team
+ * Description: IndexedDB wrapper for offline data persistence and background sync.
+ */
 
 const OfflineManager = {
     DB_NAME: 'fb-master-offline',

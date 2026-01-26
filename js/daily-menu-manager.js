@@ -1,7 +1,7 @@
 /**
- * DAILY MENU MANAGER
- * Handles the "Daily Menu" section in Admin Dashboard
- * Syncs with CustomerApp via localStorage 'daily_menu_config'
+ * F&B Master - Daily Menu Manager
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Management logic for daily menu selection and synchronization.
  */
 
 const DailyMenuManager = {
@@ -16,7 +16,7 @@ const DailyMenuManager = {
     masterItems: [],
 
     async init() {
-        console.log('📅 DailyMenuManager initializing...');
+        if (window.Debug) Debug.info('📅 DailyMenuManager initializing...');
 
         // Load master data
         if (typeof window.menuItems !== 'undefined') {
@@ -35,7 +35,7 @@ const DailyMenuManager = {
         this.renderMasterTable();
         this.renderDailyGrid();
 
-        console.log('✅ DailyMenuManager ready');
+        if (window.Debug) Debug.info('✅ DailyMenuManager ready');
     },
 
     async loadConfig() {
@@ -46,7 +46,7 @@ const DailyMenuManager = {
                 if (result.success && result.data) {
                     this.config.activeItems = result.data.active_items || [];
                     this.config.active = true;
-                    console.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
+                    if (window.Debug) Debug.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
                 } else {
                     // Fallback to localStorage
                     this._loadFromLocalStorage();

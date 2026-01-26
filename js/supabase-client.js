@@ -1,7 +1,8 @@
-// =====================================================
-// SUPABASE CLIENT - ÁNH DƯƠNG F&B
-// Enhanced with retry logic and standardized error handling
-// =====================================================
+/**
+ * F&B Master - Supabase Client
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Supabase client wrapper with retry logic, offline handling, and realtime subscriptions.
+ */
 
 // Config - Load from environment or use defaults
 const SUPABASE_CONFIG = {
@@ -122,6 +123,45 @@ const createErrorResponse = (error, context = '') => {
 // =====================================================
 
 const SupabaseService = {
+
+    // ==================== GENERIC HELPERS ====================
+
+    get client() {
+        return supabaseClient;
+    },
+
+    async insert(table, record) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', `insert ${table}`);
+
+            const { data, error } = await supabase
+                .from(table)
+                .insert(record)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, `insert ${table}`);
+            return createSuccessResponse(data);
+        }, `insert ${table}`);
+    },
+
+    async update(table, id, updates) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) return createErrorResponse('Not configured', `update ${table}`);
+
+            const { data, error } = await supabase
+                .from(table)
+                .update(updates)
+                .eq('id', id)
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, `update ${table}`);
+            return createSuccessResponse(data);
+        }, `update ${table}`);
+    },
 
     // ==================== MENU ====================
 
@@ -1468,11 +1508,192 @@ const DailyMenuService = {
     }
 };
 
+// =====================================================
+// FEATURED ITEMS SERVICE - MÓN BÁN CHẠY
+// =====================================================
+
+const FeaturedItemsService = {
+    _subscription: null,
+    _cachedItems: null,
+    _cacheTime: null,
+
+    // Get featured items config
+    async getConfig() {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) {
+                const local = localStorage.getItem('featured_items_config');
+                if (local) {
+                    try {
+                        return createSuccessResponse(JSON.parse(local));
+                    } catch (e) { }
+                }
+                return createSuccessResponse({ mode: 'auto', auto_count: 6, manual_items: [] });
+            }
+
+            const { data, error } = await supabase
+                .from('featured_items_config')
+                .select('*')
+                .single();
+
+            if (error && error.code === 'PGRST116') {
+                return createSuccessResponse({ mode: 'auto', auto_count: 6, manual_items: [] });
+            }
+            if (error) return createErrorResponse(error, 'FeaturedItemsService.getConfig');
+
+            // Cache to localStorage
+            localStorage.setItem('featured_items_config', JSON.stringify(data));
+            return createSuccessResponse(data);
+        }, 'FeaturedItemsService.getConfig');
+    },
+
+    // Save config
+    async saveConfig(config) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+
+            // Save to localStorage
+            localStorage.setItem('featured_items_config', JSON.stringify(config));
+
+            // Broadcast update
+            if (typeof BroadcastChannel !== 'undefined') {
+                const channel = new BroadcastChannel('featured_items_sync');
+                channel.postMessage({ type: 'featured_updated', config });
+                channel.close();
+            }
+
+            if (!supabase) {
+                return createSuccessResponse({ ...config, source: 'localStorage' });
+            }
+
+            const { data, error } = await supabase
+                .from('featured_items_config')
+                .upsert({
+                    id: 1,
+                    ...config,
+                    updated_at: new Date().toISOString()
+                })
+                .select()
+                .single();
+
+            if (error) return createErrorResponse(error, 'FeaturedItemsService.saveConfig');
+            if (window.Debug) Debug.info('🔥 Featured items saved:', config.mode);
+            return createSuccessResponse(data);
+        }, 'FeaturedItemsService.saveConfig');
+    },
+
+    // Get top selling items (for auto mode)
+    async getTopSellers(limit = 6) {
+        return withRetry(async () => {
+            const supabase = await getSupabase();
+            if (!supabase) {
+                // Fallback: return sample items
+                if (typeof window.menuItems !== 'undefined') {
+                    return createSuccessResponse(window.menuItems.slice(0, limit));
+                }
+                return createSuccessResponse([]);
+            }
+
+            // Check cache (1 hour)
+            if (this._cachedItems && this._cacheTime) {
+                const hourAgo = Date.now() - (60 * 60 * 1000);
+                if (this._cacheTime > hourAgo) {
+                    return createSuccessResponse(this._cachedItems);
+                }
+            }
+
+            // Query top sellers from view
+            const { data, error } = await supabase
+                .from('top_selling_items')
+                .select('*')
+                .limit(limit);
+
+            if (error) {
+                // View might not exist, fallback to menuItems
+                if (window.Debug) Debug.warn('top_selling_items view not found, using fallback');
+                if (typeof window.menuItems !== 'undefined') {
+                    return createSuccessResponse(window.menuItems.slice(0, limit));
+                }
+                return createErrorResponse(error, 'FeaturedItemsService.getTopSellers');
+            }
+
+            // Map to menu items
+            const itemIds = data.map(d => d.item_id);
+            let featuredItems = [];
+
+            if (typeof window.menuItems !== 'undefined') {
+                featuredItems = window.menuItems.filter(item => itemIds.includes(item.id));
+            }
+
+            // Cache results
+            this._cachedItems = featuredItems.length > 0 ? featuredItems : window.menuItems?.slice(0, limit) || [];
+            this._cacheTime = Date.now();
+
+            return createSuccessResponse(this._cachedItems);
+        }, 'FeaturedItemsService.getTopSellers');
+    },
+
+    // Get featured items based on config
+    async getFeaturedItems() {
+        const configResult = await this.getConfig();
+        if (!configResult.success) return configResult;
+
+        const config = configResult.data;
+
+        if (config.mode === 'manual' && config.manual_items?.length > 0) {
+            // Manual mode: return items by IDs in order
+            if (typeof window.menuItems !== 'undefined') {
+                const items = config.manual_items
+                    .map(id => window.menuItems.find(item => item.id === id))
+                    .filter(Boolean);
+                return createSuccessResponse(items);
+            }
+        }
+
+        // Auto mode
+        return this.getTopSellers(config.auto_count || 6);
+    },
+
+    // Subscribe to realtime updates
+    subscribe(callback) {
+        getSupabase().then(supabase => {
+            if (!supabase) return;
+
+            if (this._subscription) return;
+
+            const channel = supabase
+                .channel('featured-items-realtime')
+                .on('postgres_changes',
+                    { event: '*', schema: 'public', table: 'featured_items_config' },
+                    (payload) => {
+                        if (window.Debug) Debug.info('🔥 Featured items realtime update');
+                        callback(payload.new);
+                    }
+                )
+                .subscribe();
+
+            this._subscription = channel;
+        });
+
+        // Also listen to BroadcastChannel
+        if (typeof BroadcastChannel !== 'undefined') {
+            const bc = new BroadcastChannel('featured_items_sync');
+            bc.onmessage = (e) => {
+                if (e.data?.type === 'featured_updated') {
+                    callback(e.data.config);
+                }
+            };
+        }
+    }
+};
+
 // Export to window
 window.SupabaseService = SupabaseService;
 window.DailyMenuService = DailyMenuService;
+window.FeaturedItemsService = FeaturedItemsService;
 window.isSupabaseConfigured = isSupabaseConfigured;
 window.getSupabase = getSupabase;
 
 if (window.Debug) Debug.info('Supabase Service loaded', isSupabaseConfigured() ? '(Configured)' : '(Using local data)');
+
 

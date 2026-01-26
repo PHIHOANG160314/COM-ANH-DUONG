@@ -1,7 +1,8 @@
-// =====================================================
-// SHIPPER MANAGER - ADMIN MODULE
-// Manage shipper accounts, PINs, and permissions
-// =====================================================
+/**
+ * F&B Master - Shipper Manager
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Admin interface for managing shipper accounts and commissions.
+ */
 
 const ShipperManager = {
     state: {
@@ -10,7 +11,7 @@ const ShipperManager = {
     },
 
     async init() {
-        console.log('🚚 Shipper Manager Initialized');
+        if (window.Debug) Debug.log('🚚 Shipper Manager Initialized');
         const container = document.getElementById('page-shippers');
         if (!container || container.querySelector('.shippers-header')) return;
 

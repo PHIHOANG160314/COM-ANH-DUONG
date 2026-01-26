@@ -1,8 +1,8 @@
-// =====================================================
-// WORK SESSION SERVICE
-// Quản lý mã làm việc cho Staff/Waiter
-// Sử dụng Supabase để đồng bộ giữa các thiết bị
-// =====================================================
+/**
+ * F&B Master - Work Session Service
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Manages temporary work codes for staff authentication.
+ */
 
 const WorkSessionService = {
     CODE_LENGTH: 6,
@@ -35,7 +35,7 @@ const WorkSessionService = {
                 });
 
                 if (!error) {
-                    console.log('✅ Work session created in Supabase:', code);
+                    if (window.Debug) Debug.log('✅ Work session created in Supabase:', code);
                     return { code, createdBy: adminUser.name, expiresAt };
                 }
             }
@@ -44,7 +44,7 @@ const WorkSessionService = {
         }
 
         // Fallback: return demo session
-        console.log('📝 Using demo work session');
+        if (window.Debug) Debug.log('📝 Using demo work session');
         return { code: 'DEMO99', createdBy: 'Demo Admin', expiresAt };
     },
 
@@ -87,7 +87,7 @@ const WorkSessionService = {
                 });
 
                 if (!error && isValid) {
-                    console.log('✅ Work code validated via Supabase');
+                    if (window.Debug) Debug.log('✅ Work code validated via Supabase');
                     return { valid: true };
                 }
             }
@@ -100,7 +100,7 @@ const WorkSessionService = {
         if (session && session.code) {
             const sessionCode = session.code.toUpperCase().replace('-', '');
             if (sessionCode === cleanCode) {
-                console.log('✅ Work code validated via session fallback');
+                if (window.Debug) Debug.log('✅ Work code validated via session fallback');
                 return { valid: true };
             }
         }
@@ -151,4 +151,4 @@ const WorkSessionService = {
 // Export
 window.WorkSessionService = WorkSessionService;
 
-console.log('✅ Work Session Service loaded (Supabase mode)');
+if (window.Debug) Debug.log('✅ Work Session Service loaded (Supabase mode)');

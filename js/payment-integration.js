@@ -1,7 +1,8 @@
-// ========================================
-// F&B MASTER - PAYMENT INTEGRATION
-// MoMo, VNPay, ZaloPay UI
-// ========================================
+/**
+ * F&B Master - Payment Integration
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Payment gateway simulation (MoMo, VNPay, ZaloPay) and cash handling.
+ */
 
 const PaymentIntegration = {
     methods: [

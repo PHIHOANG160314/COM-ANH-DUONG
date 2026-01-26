@@ -1,8 +1,8 @@
-// =====================================================
-// UNIFIED API SERVICE - ÁNH DƯƠNG F&B
-// Unified API layer for Admin, Customer, Staff portals
-// Wraps SupabaseService with standardized handling
-// =====================================================
+/**
+ * F&B Master - API Service
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Unified API layer abstraction over Supabase and local storage.
+ */
 
 const APIService = {
     // Vietnamese error messages

@@ -1,8 +1,8 @@
-// =====================================================
-// AUTH SERVICE - ÁNH DƯƠNG F&B
-// Unified authentication with rate limiting & sessions
-// Integrated with SecureStorage for encrypted sessions
-// =====================================================
+/**
+ * F&B Master - Authentication Service
+ * Author: Google DeepMind / Antigravity Team
+ * Description: Centralized auth, session management, and role-based access control.
+ */
 
 const AuthService = {
     // Configuration
