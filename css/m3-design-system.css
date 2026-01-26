@@ -1572,7 +1572,8 @@
 .md-ripple {
     position: relative;
     overflow: hidden;
-    transform: translate3d(0, 0, 0); /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    /* Hardware acceleration */
 }
 
 .md-ripple::after {
@@ -1607,7 +1608,8 @@
 .md-focus-ring:focus-visible {
     outline: 2px solid var(--md-sys-color-primary);
     outline-offset: 4px;
-    border-radius: inherit; /* Adapts to button/input shape */
+    border-radius: inherit;
+    /* Adapts to button/input shape */
 }
 
 /* 3. Skeleton Loader (WOW Effect) */
@@ -1616,6 +1618,7 @@
     0% {
         transform: translateX(-100%);
     }
+
     100% {
         transform: translateX(100%);
     }
@@ -1640,24 +1643,20 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        transparent 100%
-    );
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            transparent 100%);
     transform: translateX(-100%);
     animation: md-shimmer 1.5s infinite;
 }
 
 /* Dark mode adjustment for skeleton shimmer */
 [data-theme="dark"] .md-skeleton::after {
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%
-    );
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%);
 }
 
 /* Skeleton Utilities */
@@ -1701,4 +1700,121 @@
     transform: translate(-50%, -50%);
     min-width: 48px;
     min-height: 48px;
+}
+
+/* =====================================================
+   ÁNH DƯƠNG LOGO BADGE - M3 Shared Component
+   Premium logo badge styling with M3 design tokens
+   ===================================================== */
+
+.ad-logo-badge {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: linear-gradient(145deg, #ffffff 0%, var(--md-sys-color-primary-container) 100%);
+    padding: 2px;
+    border: 2px solid var(--md-sys-color-primary);
+    box-shadow:
+        0 0 0 2px rgba(168, 240, 160, 0.4),
+        var(--md-sys-elevation-level2),
+        0 0 20px rgba(168, 240, 160, 0.3);
+    transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ad-logo-badge::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: var(--md-sys-shape-corner-large);
+    background: radial-gradient(circle, rgba(168, 240, 160, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.ad-logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--md-sys-shape-corner-medium) - 2px);
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Size variants */
+.ad-logo-badge--small {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-sys-shape-corner-small);
+}
+
+.ad-logo-badge--large {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--md-sys-shape-corner-large);
+}
+
+.ad-logo-badge--xlarge {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+}
+
+/* Hover effect */
+.ad-logo-badge:hover,
+a:hover .ad-logo-badge,
+button:hover .ad-logo-badge {
+    transform: scale(1.08) translateY(-2px);
+    border-color: var(--md-ref-palette-primary50);
+    box-shadow:
+        0 0 0 3px rgba(168, 240, 160, 0.6),
+        var(--md-sys-elevation-level4),
+        0 0 40px rgba(168, 240, 160, 0.5);
+}
+
+/* Animated variant (for landing/hero sections) */
+.ad-logo-badge--animated {
+    animation: adLogoPulse 3s ease-in-out infinite;
+}
+
+@keyframes adLogoPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 2px rgba(168, 240, 160, 0.4),
+            var(--md-sys-elevation-level2),
+            0 0 20px rgba(168, 240, 160, 0.3);
+        border-color: var(--md-sys-color-primary);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 4px rgba(168, 240, 160, 0.5),
+            var(--md-sys-elevation-level3),
+            0 0 35px rgba(168, 240, 160, 0.4);
+        border-color: var(--md-ref-palette-primary60);
+    }
+}
+
+/* ===== LOGO TEXT M3 ===== */
+.ad-logo-text {
+    font-size: var(--md-sys-typescale-title-large-size);
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    letter-spacing: -0.5px;
+    transition: color var(--md-sys-motion-duration-short4);
+}
+
+.ad-logo-text--gradient {
+    background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-ref-palette-primary50) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ad-logo-text--light {
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
