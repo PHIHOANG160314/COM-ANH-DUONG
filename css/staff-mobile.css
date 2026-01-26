@@ -782,3 +782,58 @@ body {
     padding: 24px;
     font-size: var(--md-sys-typescale-body-large-size);
 }
+
+/* ========================================
+   CUSTOM INPUT STYLES (Fix for MD Web issues)
+   ======================================== */
+.custom-input-container {
+    position: relative;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 16px 16px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: all 0.2s ease;
+    height: 56px;
+    box-sizing: border-box;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.custom-input:focus {
+    border-color: var(--md-sys-color-primary);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(var(--md-sys-color-primary-rgb), 0.2);
+}
+
+.custom-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    background: transparent;
+    padding: 0 4px;
+}
+
+/* Floating label effect */
+.custom-input:focus~.custom-label,
+.custom-input:not(:placeholder-shown)~.custom-label {
+    top: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+    background: #004d00;
+    /* Match card background to hide line */
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+}

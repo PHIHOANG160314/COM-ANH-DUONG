@@ -78,15 +78,17 @@
                     <div class="login-icon">👨‍🍳</div>
                     <h2>Xin chào!</h2>
                     <p>Nhập mã PIN để đăng nhập</p>
-                    <div class="pin-input-group" style="margin-bottom: 16px;">
-                        <md-outlined-text-field id="pinInput" label="Mã PIN" type="password" maxlength="4"
-                            style="width: 100%; text-align: center;" inputmode="numeric">
-                        </md-outlined-text-field>
+                    <div class="custom-input-container">
+                        <input type="password" id="pinInput" placeholder=" " maxlength="4" inputmode="numeric"
+                            class="custom-input" autocomplete="off">
+                        <label for="pinInput" class="custom-label">Mã PIN</label>
                     </div>
                     <div class="work-code-group" id="workCodeGroup" style="display: none; margin-bottom: 16px;">
-                        <md-outlined-text-field id="workCodeInput" label="Mã làm việc" maxlength="7"
-                            style="width: 100%; text-transform: uppercase;" autocomplete="off">
-                        </md-outlined-text-field>
+                        <div class="custom-input-container">
+                            <input type="text" id="workCodeInput" placeholder=" " maxlength="7" class="custom-input"
+                                style="text-transform: uppercase;" autocomplete="off">
+                            <label for="workCodeInput" class="custom-label">Mã làm việc</label>
+                        </div>
                         <small
                             style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 4px; display: block;">
                             Nhập mã 6 ký tự hiển thị trên màn hình quản lý
