@@ -50,7 +50,9 @@
         <div class="header-content">
             <a href="/" class="header-left"
                 style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
-                <img src="logo-landing.png" alt="Ánh Dương" class="logo-img">
+                <div class="ad-logo-badge ad-logo-badge--small">
+                    <img src="logo-landing.png" alt="Ánh Dương">
+                </div>
                 <div class="header-title">
                     <h1>Shipper</h1>
                     <span class="header-subtitle" id="shipperName">Ánh Dương F&amp;B</span>
@@ -68,8 +70,8 @@
                 <!-- Rating -->
                 <span class="shipper-rating" id="shipperRating">⭐ 5.0</span>
                 <!-- Logout -->
-                <button type="button" class="btn-logout md-ripple md-focus-ring" id="logoutBtn" onclick="ShipperApp.logout()"
-                    style="display: none;">
+                <button type="button" class="btn-logout md-ripple md-focus-ring" id="logoutBtn"
+                    onclick="ShipperApp.logout()" style="display: none;">
                     Đăng xuất
                 </button>
             </div>
@@ -92,8 +94,9 @@
                         </div>
                         <div class="form-group">
                             <label for="shipperPin">Mã PIN</label>
-                            <input type="password" id="shipperPin" maxlength="6" placeholder="••••" class="pin-input md-focus-ring"
-                                inputmode="numeric" pattern="[0-9]*" autocomplete="current-password">
+                            <input type="password" id="shipperPin" maxlength="6" placeholder="••••"
+                                class="pin-input md-focus-ring" inputmode="numeric" pattern="[0-9]*"
+                                autocomplete="current-password">
                         </div>
                         <button type="button" class="btn-login md-ripple md-focus-ring" onclick="ShipperApp.login()">
                             Đăng nhập
@@ -115,28 +118,32 @@
                     <div class="stat-card pending">
                         <span class="stat-icon">📦</span>
                         <div class="stat-info">
-                            <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 24px; display: inline-block;"></span></span>
+                            <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text"
+                                    style="width: 30px; height: 24px; display: inline-block;"></span></span>
                             <span class="stat-label">Chờ nhận</span>
                         </div>
                     </div>
                     <div class="stat-card delivering">
                         <span class="stat-icon">🚀</span>
                         <div class="stat-info">
-                            <span class="stat-value" id="deliveringCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 24px; display: inline-block;"></span></span>
+                            <span class="stat-value" id="deliveringCount"><span class="md-skeleton md-skeleton-text"
+                                    style="width: 30px; height: 24px; display: inline-block;"></span></span>
                             <span class="stat-label">Đang giao</span>
                         </div>
                     </div>
                     <div class="stat-card completed">
                         <span class="stat-icon">✅</span>
                         <div class="stat-info">
-                            <span class="stat-value" id="completedCount"><span class="md-skeleton md-skeleton-text" style="width: 30px; height: 24px; display: inline-block;"></span></span>
+                            <span class="stat-value" id="completedCount"><span class="md-skeleton md-skeleton-text"
+                                    style="width: 30px; height: 24px; display: inline-block;"></span></span>
                             <span class="stat-label">Tổng đơn</span>
                         </div>
                     </div>
                     <div class="stat-card earnings">
                         <span class="stat-icon">💰</span>
                         <div class="stat-info">
-                            <span class="stat-value" id="todayEarnings"><span class="md-skeleton md-skeleton-text" style="width: 60px; height: 24px; display: inline-block;"></span></span>
+                            <span class="stat-value" id="todayEarnings"><span class="md-skeleton md-skeleton-text"
+                                    style="width: 60px; height: 24px; display: inline-block;"></span></span>
                             <span class="stat-label">Hôm nay</span>
                         </div>
                     </div>
@@ -156,7 +163,8 @@
                 <div class="orders-section">
                     <div class="section-header">
                         <h2>📋 Đơn hàng mới</h2>
-                        <button type="button" class="btn-refresh md-ripple md-focus-ring" onclick="ShipperApp.refreshOrders()">
+                        <button type="button" class="btn-refresh md-ripple md-focus-ring"
+                            onclick="ShipperApp.refreshOrders()">
                             🔄 Làm mới
                         </button>
                     </div>
@@ -227,7 +235,8 @@
         <section class="section" id="section-order-detail">
             <div class="order-detail-container">
                 <div class="section-header">
-                    <button type="button" class="btn-back md-ripple md-focus-ring" onclick="ShipperApp.showSection('dashboard')">
+                    <button type="button" class="btn-back md-ripple md-focus-ring"
+                        onclick="ShipperApp.showSection('dashboard')">
                         ← Quay lại
                     </button>
                     <h2>Chi tiết đơn hàng</h2>
@@ -246,7 +255,8 @@
             <span class="nav-icon">🏠</span>
             <span class="nav-label">Trang chủ</span>
         </button>
-        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="pending" onclick="ShipperApp.filterOrders('pending')">
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="pending"
+            onclick="ShipperApp.filterOrders('pending')">
             <span class="nav-icon">📦</span>
             <span class="nav-label">Chờ nhận</span>
             <span class="nav-badge" id="navPendingBadge">0</span>
@@ -257,11 +267,13 @@
             <span class="nav-label">Đang giao</span>
             <span class="nav-badge" id="navDeliveringBadge">0</span>
         </button>
-        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="earnings" onclick="ShipperApp.showSection('earnings')">
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="earnings"
+            onclick="ShipperApp.showSection('earnings')">
             <span class="nav-icon">💰</span>
             <span class="nav-label">Thu nhập</span>
         </button>
-        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="history" onclick="ShipperApp.showHistory()">
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="history"
+            onclick="ShipperApp.showHistory()">
             <span class="nav-icon">📊</span>
             <span class="nav-label">Lịch sử</span>
         </button>
