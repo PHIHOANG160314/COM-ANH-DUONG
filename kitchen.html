@@ -479,6 +479,54 @@
             border-radius: 10px;
             font-weight: 700;
         }
+
+        /* Custom Input Fix */
+        .custom-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 16px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .custom-input:focus {
+            border-color: #4ade80;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            transition: all 0.2s;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        .custom-input:focus~.custom-label,
+        .custom-input:not(:placeholder-shown)~.custom-label {
+            top: 0;
+            left: 12px;
+            font-size: 12px;
+            background: #1a202c;
+            /* Matches login card bg */
+            padding: 0 4px;
+            color: #4ade80;
+        }
     </style>
 </head>
 
@@ -497,17 +545,18 @@
                 </div>
                 <form class="login-form" onsubmit="KitchenPage.login(event)">
                     <div class="form-group">
-                        <md-outlined-text-field id="kitchenName" label="Tên tài khoản" placeholder="VD: Bếp Chính"
-                            autocomplete="off" style="width: 100%;">
-                            <md-icon slot="leading-icon">person</md-icon>
-                        </md-outlined-text-field>
+                        <div class="custom-input-container">
+                            <input type="text" id="kitchenName" placeholder=" " class="custom-input" autocomplete="off">
+                            <label for="kitchenName" class="custom-label">Tên tài khoản</label>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <md-outlined-text-field id="kitchenPin" label="Mã PIN" type="password" maxlength="4"
-                            pattern="[0-9]{4}" placeholder="• • • •" inputmode="numeric" autocomplete="off"
-                            style="width: 100%; text-align: center;">
-                            <md-icon slot="leading-icon">lock</md-icon>
-                        </md-outlined-text-field>
+                        <div class="custom-input-container">
+                            <input type="password" id="kitchenPin" placeholder=" " maxlength="4" inputmode="numeric"
+                                class="custom-input" autocomplete="off"
+                                style="text-align: center; letter-spacing: 4px;">
+                            <label for="kitchenPin" class="custom-label">Mã PIN</label>
+                        </div>
                     </div>
                     <md-filled-button type="submit" class="btn-login" style="width: 100%; margin-top: 16px;">
                         🔓 Đăng Nhập
