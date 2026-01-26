@@ -933,6 +933,12 @@ const CustomerApp = {
         const floatingTotal = document.getElementById('floatingCartTotal');
         if (floatingTotal) floatingTotal.textContent = this.formatPrice(total);
 
+        // Update FAB cart badge (M3 bottom nav)
+        const fabBadge = document.getElementById('fabCartBadge');
+        if (fabBadge) {
+            fabBadge.textContent = count > 0 ? count : '';
+        }
+
         // Render cart items
         this.renderCartItems('floatingCartItems');
         this.renderCartItems('orderItems');

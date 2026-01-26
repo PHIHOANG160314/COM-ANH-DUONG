@@ -691,34 +691,34 @@
         </div>
     </div>
 
-    <!-- Mobile Bottom Navigation (2026 Upgrade) -->
-    <nav class="nav-float-2026" id="mobileBottomNav" aria-label="Mobile Navigation">
-        <a href="javascript:void(0)" class="nav-item-2026 active" data-section="menu"
+    <!-- Mobile Bottom Navigation (M3 Design with Order FAB) -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+        <a href="javascript:void(0)" class="bottom-nav-item active" data-section="menu"
             onclick="CustomerApp.showSection('menu')">
-            <span style="font-size: 1.2rem;">📜</span>
-            <span>Menu</span>
+            <span class="material-symbols-outlined bottom-nav-icon">restaurant_menu</span>
+            <span class="bottom-nav-label">Menu</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item-2026" data-section="tracking"
+        <a href="javascript:void(0)" class="bottom-nav-item" data-section="tracking"
             onclick="CustomerApp.showSection('tracking')">
-            <span style="font-size: 1.2rem;">📍</span>
-            <span>Đơn hàng</span>
+            <span class="material-symbols-outlined bottom-nav-icon">receipt_long</span>
+            <span class="bottom-nav-label">Đơn hàng</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item-2026" onclick="CustomerApp.goToOrder()">
-            <div style="position: relative;">
-                <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px var(--primary-glow));">🛒</span>
-                <span class="md-badge" id="navCartBadge" style="position: absolute; top: -5px; right: -8px;"></span>
-            </div>
-            <span>Giỏ</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item-2026" data-section="loyalty"
+
+        <!-- FAB Order Button - Centered & Prominent -->
+        <button class="bottom-nav-fab" onclick="CustomerApp.goToOrder()" aria-label="Đặt hàng">
+            <span class="material-symbols-outlined">shopping_cart_checkout</span>
+            <span class="bottom-nav-badge" id="fabCartBadge"></span>
+        </button>
+
+        <a href="javascript:void(0)" class="bottom-nav-item" data-section="loyalty"
             onclick="CustomerApp.showSection('loyalty')">
-            <span style="font-size: 1.2rem;">🎁</span>
-            <span>Tích điểm</span>
+            <span class="material-symbols-outlined bottom-nav-icon">card_giftcard</span>
+            <span class="bottom-nav-label">Tích điểm</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item-2026" data-section="contact"
+        <a href="javascript:void(0)" class="bottom-nav-item" data-section="contact"
             onclick="CustomerApp.showSection('contact')">
-            <span style="font-size: 1.2rem;">📞</span>
-            <span>Liên hệ</span>
+            <span class="material-symbols-outlined bottom-nav-icon">call</span>
+            <span class="bottom-nav-label">Liên hệ</span>
         </a>
     </nav>
 
