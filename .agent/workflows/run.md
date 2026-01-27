@@ -2,35 +2,34 @@
 description: Tự động chạy Claude Code CLI với proxy và thực hiện task
 ---
 
-# Auto-Run Claude Code CLI
+# 🚀 Workflow: Run Claude Code CLI
 
-Workflow này tự động khởi động proxy và chạy Claude Code CLI để thực thi các task.
+Quy trình chuẩn để giao việc cho Claude Code CLI (với Proxy) và tự động xác nhận.
 
-## Bước thực hiện
+## Các bước thực hiện
 
-// turbo-all
+### 1. Khởi động Task
+// turbo
+Chạy lệnh PowerShell để gọi script wrapper. Thay thế `[TASK_DESCRIPTION]` bằng mô tả công việc cụ thể.
 
-1. Kiểm tra proxy có đang chạy không:
 ```powershell
-$health = Invoke-RestMethod -Uri "http://localhost:8080/health" -Method GET -ErrorAction SilentlyContinue
-if ($health.status -ne "ok") {
-    Write-Host "Proxy not running, starting..."
-    Start-Process wscript -ArgumentList '"d:\COM ANH DUONG\CAD\scripts\start-proxy-hidden.vbs"' -WindowStyle Hidden
-    Start-Sleep 5
-}
+$Task = "[TASK_DESCRIPTION]"
+& "d:\COM ANH DUONG\CAD\scripts\run-claude-task.ps1" -Task $Task
 ```
 
-2. Khởi động Claude Code CLI với proxy:
-```powershell
-$env:ANTHROPIC_BASE_URL = "http://localhost:8080"
-$env:ANTHROPIC_API_KEY = "dummy"
-$env:ANTHROPIC_MODEL = "gemini-3-pro-high[1m]"
-claude
-```
+### 2. Gửi lệnh Enter (Auto-Confirm)
+// turbo
+Ngay sau khi lệnh trên chạy và trả về `CommandId`, sử dụng tool `send_command_input` để gửi phím Enter.
 
-3. Sau khi Claude Code khởi động, gõ task cần thực hiện trực tiếp vào CLI.
+**Tham số:**
+- `CommandId`: (ID từ bước 1)
+- `Input`: `"\n"`
+- `WaitMs`: 5000
 
-## Lưu ý
-- Proxy sử dụng **Round-Robin strategy** để phân bổ quota đều giữa các accounts
-- Tất cả lệnh trong workflow này sẽ tự động chạy (turbo-all)
-- Để dừng proxy: `taskkill /F /IM node.exe`
+### 3. Giám sát & Tương tác
+- Sử dụng `read_terminal` hoặc `command_status` để theo dõi output.
+- Nếu Claude Code hỏi thêm (Yes/No), sử dụng `send_command_input` để phản hồi.
+
+## Ví dụ sử dụng
+- `/run dọn rác project`
+- `/run migrate shipper.html to m3`
