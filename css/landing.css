@@ -650,18 +650,64 @@ section {
 
 .about-image {
     position: relative;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    overflow: hidden;
+    box-shadow: var(--md-sys-elevation-level3);
+    /* aspect-ratio: 4/3; Optional: enforce aspect ratio to prevent layout shift */
+}
+
+.carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .about-img {
     width: 100%;
-    border-radius: var(--md-sys-shape-corner-extra-large);
-    box-shadow: var(--md-sys-elevation-level3);
+    height: auto; /* Allow height to adapt */
+    display: block;
+    transition: opacity 0.8s ease-in-out;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.about-img.active {
+    opacity: 1;
+    position: relative; /* Keep one relative to set container height */
+    z-index: 2;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.carousel-dots .dot {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dots .dot.active {
+    background-color: #fff;
+    transform: scale(1.2);
 }
 
 .about-image-badge {
     position: absolute;
-    bottom: -20px;
-    right: -20px;
+    bottom: 20px;
+    right: 20px;
     background: var(--md-sys-color-primary);
     color: #fff;
     padding: 16px 24px;
@@ -670,6 +716,7 @@ section {
     align-items: center;
     gap: 12px;
     box-shadow: var(--md-sys-elevation-level3);
+    z-index: 20; /* Ensure badge is above images */
 }
 
 .about-image-badge .badge-icon {

@@ -488,3 +488,41 @@ window.recipesData = recipesData;
 window.sopsData = sopsData;
 window.sampleCustomers = sampleCustomers;
 
+
+// ========================================
+// CMS CONFIGURATION (About Us)
+// ========================================
+const defaultAboutUsConfig = {
+    autoPlay: true,
+    interval: 3000,
+    images: [
+        'logo.jpg',
+        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop'
+    ],
+    activeImageIndex: 0
+};
+
+// Load from localStorage or use default
+let loadedConfig;
+try {
+    loadedConfig = JSON.parse(localStorage.getItem('cad_cms_config'));
+} catch (e) {
+    console.error('Error loading CMS config', e);
+}
+
+window.AboutUsConfig = loadedConfig || defaultAboutUsConfig;
+
+// Save if not exists
+if (!loadedConfig) {
+    localStorage.setItem('cad_cms_config', JSON.stringify(defaultAboutUsConfig));
+}
+
+window.saveAboutUsConfig = function(newConfig) {
+    window.AboutUsConfig = newConfig;
+    localStorage.setItem('cad_cms_config', JSON.stringify(newConfig));
+    // Dispatch event for realtime updates if needed
+    window.dispatchEvent(new CustomEvent('cms-config-updated', { detail: newConfig }));
+};
+
+

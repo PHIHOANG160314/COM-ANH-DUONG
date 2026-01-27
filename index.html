@@ -156,11 +156,18 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Về chúng tôi</span>
-                <h2 class="section-title">Câu Chuyện Ánh Dương</h2>
+                <h2 class="section-title">Cơm Ngon Tròn Vị - Gắn Kết Yêu Thương</h2>
             </div>
             <div class="about-content">
-                <div class="about-image">
-                    <img src="logo.jpg" alt="Không gian Cơm Ánh Dương" class="about-img">
+                <div class="about-image" id="aboutCarousel">
+                    <div class="carousel-inner" id="aboutCarouselInner">
+                        <!-- Default Static Image (Fallback) -->
+                        <img src="logo.jpg" alt="Không gian Cơm Ánh Dương" class="about-img active">
+                    </div>
+
+                    <!-- Carousel Controls (Optional/Hidden by default) -->
+                    <div class="carousel-dots" id="aboutCarouselDots"></div>
+
                     <div class="about-image-badge">
                         <span class="badge-icon">🏆</span>
                         <span>Uy tín từ 2018</span>
@@ -169,8 +176,8 @@
                 <div class="about-text">
                     <h3>Hương vị truyền thống, chất lượng hiện đại</h3>
                     <p>
-                        <strong>Cơm Ánh Dương</strong> được thành lập với niềm đam mê mang đến những bữa cơm
-                        ngon lành, đậm đà hương vị quê hương cho mọi người dân Sa Đéc và vùng lân cận.
+                        Tại <strong>Cơm Ánh Dương</strong>, chúng tôi chắt chiu từng hạt ngọc trời, lựa chọn những nguyên liệu tươi ngon nhất từ vùng đất Sa Đéc trù phú.
+                        Mỗi bữa ăn không chỉ là sự no đủ, mà còn là hương vị của ký ức, của sự sum vầy và tận tâm như chính cơm mẹ nấu.
                     </p>
                     <p>
                         Chúng tôi tin rằng một bữa ăn ngon không chỉ nằm ở nguyên liệu tươi mới, mà còn
@@ -597,8 +604,10 @@
     <!-- Dynamic Data Scripts -->
     <script src="js/env.js"></script>
     <script src="js/debug.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/news-service.js"></script>
+    <script src="js/landing.js"></script>
 </body>
 
 </html>

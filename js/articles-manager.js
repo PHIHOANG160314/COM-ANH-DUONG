@@ -27,95 +27,230 @@ const ArticlesManager = {
         if (window.Debug) Debug.info('📰 Articles Manager Initialized (Enhanced)');
         this.renderUI();
         this.loadArticles();
+        this.initAboutUs();
     },
 
     // ==================== UI RENDERING ====================
 
     renderUI() {
         const container = document.getElementById('page-articles');
-        if (!container || container.querySelector('.articles-header')) return;
+        if (!container) return;
 
         container.innerHTML = `
-            <!-- Header with Actions -->
-            <div class="articles-header">
-                <div class="header-left">
-                    <h2>📰 Quản Lý Bài Viết</h2>
-                    <span class="article-count" id="articleCount">0 bài viết</span>
+            <!-- Tabs -->
+            <div class="cms-tabs">
+                <button class="cms-tab active" onclick="ArticlesManager.switchTab('articles', event)">📰 Bài viết</button>
+                <button class="cms-tab" onclick="ArticlesManager.switchTab('about', event)">ℹ️ Giới thiệu</button>
+            </div>
+
+            <!-- Articles Section -->
+            <div id="cms-tab-articles">
+                <!-- Header with Actions -->
+                <div class="articles-header">
+                    <div class="header-left">
+                        <h2>📰 Quản Lý Bài Viết</h2>
+                        <span class="article-count" id="articleCount">0 bài viết</span>
+                    </div>
+                    <button class="btn-primary btn-icon-text" onclick="ArticlesManager.openModal()">
+                        <span>+</span> Thêm bài viết
+                    </button>
                 </div>
-                <button class="btn-primary btn-icon-text" onclick="ArticlesManager.openModal()">
-                    <span>+</span> Thêm bài viết
-                </button>
-            </div>
 
-            <!-- Filters & Search -->
-            <div class="articles-filters">
-                <div class="search-box">
-                    <input type="text" id="articleSearch" placeholder="🔍 Tìm kiếm theo tiêu đề..." 
-                           onkeyup="ArticlesManager.handleSearch(event)">
+                <!-- Filters & Search -->
+                <div class="articles-filters">
+                    <div class="search-box">
+                        <input type="text" id="articleSearch" placeholder="🔍 Tìm kiếm theo tiêu đề..."
+                               onkeyup="ArticlesManager.handleSearch(event)">
+                    </div>
+                    <select id="categoryFilter" onchange="ArticlesManager.handleFilterChange()">
+                        <option value="all">📂 Tất cả danh mục</option>
+                        <option value="Tin tức">📰 Tin tức</option>
+                        <option value="Khuyến mãi">🎁 Khuyến mãi</option>
+                        <option value="Sự kiện">🎉 Sự kiện</option>
+                        <option value="Ẩm thực">🍜 Ẩm thực</option>
+                    </select>
+                    <select id="statusFilter" onchange="ArticlesManager.handleFilterChange()">
+                        <option value="all">👁️ Tất cả trạng thái</option>
+                        <option value="active">✅ Hiển thị</option>
+                        <option value="hidden">❌ Ẩn</option>
+                    </select>
+                    <button class="btn-secondary btn-sm" onclick="ArticlesManager.clearFilters()">
+                        🔄 Xóa bộ lọc
+                    </button>
                 </div>
-                <select id="categoryFilter" onchange="ArticlesManager.handleFilterChange()">
-                    <option value="all">📂 Tất cả danh mục</option>
-                    <option value="Tin tức">📰 Tin tức</option>
-                    <option value="Khuyến mãi">🎁 Khuyến mãi</option>
-                    <option value="Sự kiện">🎉 Sự kiện</option>
-                    <option value="Ẩm thực">🍜 Ẩm thực</option>
-                </select>
-                <select id="statusFilter" onchange="ArticlesManager.handleFilterChange()">
-                    <option value="all">👁️ Tất cả trạng thái</option>
-                    <option value="active">✅ Hiển thị</option>
-                    <option value="hidden">❌ Ẩn</option>
-                </select>
-                <button class="btn-secondary btn-sm" onclick="ArticlesManager.clearFilters()">
-                    🔄 Xóa bộ lọc
-                </button>
+
+                <!-- Bulk Actions Bar (hidden by default) -->
+                <div class="bulk-actions-bar" id="bulkActionsBar" style="display: none;">
+                    <span id="bulkCount">0 mục đã chọn</span>
+                    <button class="btn-warning btn-sm" onclick="ArticlesManager.bulkToggleStatus()">
+                        👁️ Bật/Tắt hiển thị
+                    </button>
+                    <button class="btn-danger btn-sm" onclick="ArticlesManager.bulkDelete()">
+                        🗑️ Xóa
+                    </button>
+                    <button class="btn-secondary btn-sm" onclick="ArticlesManager.clearSelection()">
+                        ✕ Bỏ chọn
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="articles-table-wrapper">
+                    <table class="articles-table" id="articlesTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAll" onchange="ArticlesManager.toggleSelectAll()">
+                                </th>
+                                <th class="sortable" onclick="ArticlesManager.sort('title')">
+                                    Tiêu đề <span class="sort-icon">⬍</span>
+                                </th>
+                                <th class="sortable" onclick="ArticlesManager.sort('category')">
+                                    Danh mục <span class="sort-icon">⬍</span>
+                                </th>
+                                <th class="sortable" onclick="ArticlesManager.sort('published_at')">
+                                    Ngày đăng <span class="sort-icon">▼</span>
+                                </th>
+                                <th>Trạng thái</th>
+                                <th>Link</th>
+                                <th style="width: 120px;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="articlesTableBody">
+                            <tr><td colspan="7" class="loading-state">⏳ Đang tải...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="articlesPagination"></div>
             </div>
 
-            <!-- Bulk Actions Bar (hidden by default) -->
-            <div class="bulk-actions-bar" id="bulkActionsBar" style="display: none;">
-                <span id="bulkCount">0 mục đã chọn</span>
-                <button class="btn-warning btn-sm" onclick="ArticlesManager.bulkToggleStatus()">
-                    👁️ Bật/Tắt hiển thị
-                </button>
-                <button class="btn-danger btn-sm" onclick="ArticlesManager.bulkDelete()">
-                    🗑️ Xóa
-                </button>
-                <button class="btn-secondary btn-sm" onclick="ArticlesManager.clearSelection()">
-                    ✕ Bỏ chọn
-                </button>
-            </div>
+            <!-- About Us Section -->
+            <div id="cms-tab-about" style="display: none;">
+                <div class="articles-header">
+                    <div class="header-left">
+                        <h2>ℹ️ Quản Lý Giới Thiệu</h2>
+                        <p style="color: var(--text-secondary);">Cấu hình slideshow và nội dung giới thiệu trên trang chủ</p>
+                    </div>
+                    <button class="btn-primary btn-icon-text" onclick="ArticlesManager.saveAboutUsConfig()">
+                        <span>💾</span> Lưu cấu hình
+                    </button>
+                </div>
 
-            <!-- Table -->
-            <div class="articles-table-wrapper">
-                <table class="articles-table" id="articlesTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">
-                                <input type="checkbox" id="selectAll" onchange="ArticlesManager.toggleSelectAll()">
-                            </th>
-                            <th class="sortable" onclick="ArticlesManager.sort('title')">
-                                Tiêu đề <span class="sort-icon">⬍</span>
-                            </th>
-                            <th class="sortable" onclick="ArticlesManager.sort('category')">
-                                Danh mục <span class="sort-icon">⬍</span>
-                            </th>
-                            <th class="sortable" onclick="ArticlesManager.sort('published_at')">
-                                Ngày đăng <span class="sort-icon">▼</span>
-                            </th>
-                            <th>Trạng thái</th>
-                            <th>Link</th>
-                            <th style="width: 120px;">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="articlesTableBody">
-                        <tr><td colspan="7" class="loading-state">⏳ Đang tải...</td></tr>
-                    </tbody>
-                </table>
+                <div class="about-us-config-container"></div>
             </div>
-
-            <!-- Pagination -->
-            <div class="pagination" id="articlesPagination"></div>
 
             <style>
+                .cms-tabs {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                    border-bottom: 1px solid var(--border);
+                    padding-bottom: 10px;
+                }
+                .cms-tab {
+                    background: none;
+                    border: none;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    color: var(--text-secondary);
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                }
+                .cms-tab:hover {
+                    background: var(--bg-hover);
+                }
+                .cms-tab.active {
+                    background: var(--primary);
+                    color: white;
+                }
+
+                /* About Us Styles */
+                .config-card {
+                    background: var(--bg-card);
+                    padding: 24px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    border: 1px solid var(--border);
+                }
+                .config-card h3 {
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid var(--border);
+                }
+                .toggle-switch-label {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    font-weight: 500;
+                }
+                .image-list {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 16px;
+                    margin-top: 16px;
+                }
+                .image-item {
+                    position: relative;
+                    aspect-ratio: 16/9;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    border: 3px solid transparent;
+                    cursor: pointer;
+                    background: var(--bg-surface);
+                }
+                .image-item.active {
+                    border-color: var(--primary);
+                }
+                .image-item img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .image-actions {
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    display: none;
+                }
+                .image-item:hover .image-actions {
+                    display: block;
+                }
+                .btn-delete-img {
+                    background: rgba(220, 38, 38, 0.9);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                }
+                .active-badge {
+                    position: absolute;
+                    bottom: 8px;
+                    left: 8px;
+                    background: var(--primary);
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 600;
+                }
+                .form-row-flex {
+                    display: flex;
+                    gap: 10px;
+                }
+                .form-row-flex input {
+                    flex: 1;
+                }
+
                 .articles-header {
                     display: flex;
                     justify-content: space-between;
@@ -327,6 +462,129 @@ const ArticlesManager = {
                 }
             </style>
         `;
+    },
+
+    // ==================== TABS & ABOUT US LOGIC ====================
+
+    switchTab(tab, event) {
+        if (event) {
+            document.querySelectorAll('.cms-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('cms-tab-articles').style.display = tab === 'articles' ? 'block' : 'none';
+        document.getElementById('cms-tab-about').style.display = tab === 'about' ? 'block' : 'none';
+    },
+
+    initAboutUs() {
+        // Render initial form state
+        this.renderAboutUsForm();
+    },
+
+    renderAboutUsForm() {
+        const container = document.querySelector('.about-us-config-container');
+        if (!container) return;
+
+        // Use global config from data.js
+        const config = window.AboutUsConfig || { autoPlay: true, interval: 3000, images: [], activeImageIndex: 0 };
+
+        container.innerHTML = `
+            <div class="config-card">
+                <h3>⚙️ Cấu hình Carousel</h3>
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="toggle-switch-label">
+                        <input type="checkbox" id="aboutAutoPlay" ${config.autoPlay ? 'checked' : ''}
+                               onchange="ArticlesManager.updateAboutConfig('autoPlay', this.checked)">
+                        <span style="font-size: 1.1rem;">⚡ Tự động chuyển ảnh (Auto-play)</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>⏱️ Thời gian chuyển (ms)</label>
+                    <input type="number" id="aboutInterval" class="md-input"
+                           value="${config.interval}"
+                           onchange="ArticlesManager.updateAboutConfig('interval', parseInt(this.value))"
+                           style="max-width: 200px;">
+                    <small class="field-hint">1000ms = 1 giây. Khuyên dùng: 3000-5000ms</small>
+                </div>
+            </div>
+
+            <div class="config-card">
+                <h3>🖼️ Quản lý hình ảnh</h3>
+                <div class="form-row-flex">
+                    <input type="text" id="newImageUrl" class="md-input" placeholder="Nhập URL hình ảnh (VD: https://example.com/image.jpg)...">
+                    <button class="btn-secondary" onclick="ArticlesManager.addAboutImage()">➕ Thêm</button>
+                </div>
+
+                <div class="image-list" id="aboutImageList">
+                    ${(config.images && config.images.length > 0) ? config.images.map((img, index) => `
+                        <div class="image-item ${(!config.autoPlay && config.activeImageIndex === index) ? 'active' : ''}"
+                             onclick="ArticlesManager.setActiveAboutImage(${index})">
+                            <img src="${img}" onerror="this.src='https://via.placeholder.com/300x200?text=Error'">
+                            <div class="image-actions">
+                                <button class="btn-delete-img" onclick="event.stopPropagation(); ArticlesManager.deleteAboutImage(${index})" title="Xóa ảnh">×</button>
+                            </div>
+                            ${(!config.autoPlay && config.activeImageIndex === index) ? '<span class="active-badge">✓ Hiển thị</span>' : ''}
+                        </div>
+                    `).join('') : '<p class="text-secondary" style="grid-column: 1/-1; text-align: center; padding: 20px;">Chưa có hình ảnh nào. Hãy thêm ảnh mới!</p>'}
+                </div>
+                ${!config.autoPlay ? '<p class="text-secondary small mt-2" style="margin-top: 10px;">💡 Click vào ảnh để chọn ảnh hiển thị mặc định (khi tắt Auto-play).</p>' : ''}
+            </div>
+        `;
+    },
+
+    updateAboutConfig(key, value) {
+        if (!window.AboutUsConfig) return;
+        window.AboutUsConfig[key] = value;
+        this.renderAboutUsForm();
+    },
+
+    addAboutImage() {
+        const urlInput = document.getElementById('newImageUrl');
+        const url = urlInput.value.trim();
+        if (!url) return;
+
+        if (!window.AboutUsConfig.images) window.AboutUsConfig.images = [];
+        window.AboutUsConfig.images.push(url);
+
+        // If first image, set as active
+        if (window.AboutUsConfig.images.length === 1) {
+            window.AboutUsConfig.activeImageIndex = 0;
+        }
+
+        this.renderAboutUsForm();
+    },
+
+    deleteAboutImage(index) {
+        if (!confirm('Bạn có chắc chắn muốn xóa ảnh này?')) return;
+
+        window.AboutUsConfig.images.splice(index, 1);
+
+        // Adjust active index if needed
+        if (window.AboutUsConfig.activeImageIndex >= window.AboutUsConfig.images.length) {
+            window.AboutUsConfig.activeImageIndex = Math.max(0, window.AboutUsConfig.images.length - 1);
+        }
+
+        this.renderAboutUsForm();
+    },
+
+    setActiveAboutImage(index) {
+        if (window.AboutUsConfig.autoPlay) {
+            toast.info('⚠️ Đang bật Auto-play. Tắt Auto-play để chọn ảnh cố định.');
+            return;
+        }
+        window.AboutUsConfig.activeImageIndex = index;
+        this.renderAboutUsForm();
+    },
+
+    saveAboutUsConfig() {
+        if (typeof window.saveAboutUsConfig === 'function') {
+            window.saveAboutUsConfig(window.AboutUsConfig);
+            if (window.toast) toast.success('✅ Đã lưu cấu hình Giới thiệu!');
+            else alert('Đã lưu cấu hình!');
+        } else {
+            localStorage.setItem('cad_cms_config', JSON.stringify(window.AboutUsConfig));
+            if (window.toast) toast.success('✅ Đã lưu (LocalStorage)!');
+        }
     },
 
     // ==================== DATA LOADING ====================
