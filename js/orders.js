@@ -275,7 +275,7 @@ const OrderManagement = {
             <div class="order-card-footer">
                 <span class="order-total">${window.utils.formatCurrency(order.total)}</span>
                 ${nextAction ?
-                `<button class="order-action-btn md-ripple ${nextAction.class}" onclick="OrderManagement.handleAction('${order.id}', '${nextAction.nextStatus}')">${nextAction.label}</button>`
+                `<md-filled-button class="order-action-btn ${nextAction.class}" onclick="OrderManagement.handleAction('${order.id}', '${nextAction.nextStatus}')">${nextAction.label}</md-filled-button>`
                 : '<span style="color: var(--secondary); font-weight: 600;">✓ Hoàn thành</span>'}
             </div>
         `;
@@ -317,30 +317,30 @@ const OrderManagement = {
 
     async showAssignShipperModal(order) {
         // Load shippers from database
-        let shippersHtml = '<option value="">-- Chọn Shipper --</option>';
+        let shippersHtml = '<md-select-option value=""><div slot="headline">-- Chọn Shipper --</div></md-select-option>';
 
         if (typeof SupabaseService !== 'undefined' && typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
             try {
                 const result = await SupabaseService.getActiveShippers();
                 if (result.data && result.data.length > 0) {
                     shippersHtml += result.data.map(s =>
-                        `<option value="${s.id}" data-name="${s.name}">
-                            ${s.name} ${s.status === 'online' ? '🟢' : s.status === 'busy' ? '🟡' : '⚪'}
-                            (⭐${s.rating?.toFixed(1) || '5.0'} | ${s.total_deliveries || 0} đơn)
-                        </option>`
+                        `<md-select-option value="${s.id}" data-name="${s.name}">
+                            <div slot="headline">${s.name} ${s.status === 'online' ? '🟢' : s.status === 'busy' ? '🟡' : '⚪'}
+                            (⭐${s.rating?.toFixed(1) || '5.0'} | ${s.total_deliveries || 0} đơn)</div>
+                        </md-select-option>`
                     ).join('');
                 } else {
-                    shippersHtml += '<option value="" disabled>Chưa có shipper nào</option>';
+                    shippersHtml += '<md-select-option value="" disabled><div slot="headline">Chưa có shipper nào</div></md-select-option>';
                 }
             } catch (err) {
                 console.error('Failed to load shippers:', err);
-                shippersHtml += '<option value="" disabled>Lỗi tải danh sách</option>';
+                shippersHtml += '<md-select-option value="" disabled><div slot="headline">Lỗi tải danh sách</div></md-select-option>';
             }
         } else {
             // Fallback to demo shippers
             shippersHtml += `
-                <option value="demo-shipper1" data-name="Nguyễn Văn Shipper A">Nguyễn Văn Shipper A 🟢</option>
-                <option value="demo-shipper2" data-name="Trần Văn Shipper B">Trần Văn Shipper B 🟢</option>
+                <md-select-option value="demo-shipper1" data-name="Nguyễn Văn Shipper A"><div slot="headline">Nguyễn Văn Shipper A 🟢</div></md-select-option>
+                <md-select-option value="demo-shipper2" data-name="Trần Văn Shipper B"><div slot="headline">Trần Văn Shipper B 🟢</div></md-select-option>
             `;
         }
 
@@ -352,14 +352,13 @@ const OrderManagement = {
                     <div style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">📍 ${order.address}</div>
                 </div>
                 <div class="form-group">
-                    <label>Chọn Shipper *</label>
-                    <select id="assignShipper" class="full-width" style="padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
+                    <md-outlined-select label="Chọn Shipper *" id="assignShipper" class="full-width">
                         ${shippersHtml}
-                    </select>
+                    </md-outlined-select>
                 </div>
             `, `
-                <button class="btn-secondary" onclick="window.utils.modal.close()">Hủy</button>
-                <button class="btn-primary" onclick="OrderManagement.confirmAssign('${order.id}', '${order.supabaseId || ''}')">Xác nhận giao hàng</button>
+                <md-outlined-button onclick="window.utils.modal.close()">Hủy</md-outlined-button>
+                <md-filled-button onclick="OrderManagement.confirmAssign('${order.id}', '${order.supabaseId || ''}')">Xác nhận giao hàng</md-filled-button>
             `);
         }
     },
@@ -367,7 +366,12 @@ const OrderManagement = {
     async confirmAssign(orderId, supabaseOrderId) {
         const select = document.getElementById('assignShipper');
         const shipperId = select.value;
-        const shipperName = select.options[select.selectedIndex]?.dataset?.name || select.options[select.selectedIndex]?.text || 'Shipper';
+        // For md-outlined-select, the selected option is not directly exposed via options index like native select
+        // We need to find the selected element or use the value to find data
+        // MD3 select doesn't support dataset on options easily accessible via value property alone
+        // But we can query the selected option
+        const selectedOption = select.querySelector(`md-select-option[value="${shipperId}"]`);
+        const shipperName = selectedOption?.dataset?.name || 'Shipper';
 
         if (!shipperId) {
             window.utils.toast.warning('Vui lòng chọn shipper');
@@ -412,12 +416,11 @@ const OrderManagement = {
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Ghi chú thêm</label>
-                    <input type="text" id="deliveryNote" placeholder="VD: Đã nhận tiền mặt, khách hài lòng...">
+                    <md-outlined-text-field label="Ghi chú thêm" id="deliveryNote" placeholder="VD: Đã nhận tiền mặt, khách hài lòng..."></md-outlined-text-field>
                 </div>
             `, `
-                <button class="btn-secondary" onclick="window.utils.modal.close()">Hủy</button>
-                <button class="btn-primary" onclick="OrderManagement.confirmDelivery('${order.id}')">Hoàn tất đơn hàng</button>
+                <md-outlined-button onclick="window.utils.modal.close()">Hủy</md-outlined-button>
+                <md-filled-button onclick="OrderManagement.confirmDelivery('${order.id}')">Hoàn tất đơn hàng</md-filled-button>
             `);
         }
     },
@@ -466,55 +469,49 @@ const OrderManagement = {
     showAddOrderModal() {
         const dailyItems = MenuManagement && MenuManagement.getDailyMenuItems ? MenuManagement.getDailyMenuItems() : [];
         const itemsOptions = dailyItems.length > 0
-            ? dailyItems.map(i => `<option value="${i.name} - ${i.price}">${i.name} (${window.utils.formatCurrency(i.price)})</option>`).join('')
-            : '<option value="">Chưa có menu hôm nay</option>';
+            ? dailyItems.map(i => `<md-select-option value="${i.name} - ${i.price}"><div slot="headline">${i.name} (${window.utils.formatCurrency(i.price)})</div></md-select-option>`).join('')
+            : '<md-select-option value=""><div slot="headline">Chưa có menu hôm nay</div></md-select-option>';
 
         if (window.utils.modal) {
              window.utils.modal.open('Tạo đơn hàng mới', `
                 <div class="form-group">
                     <label>Loại đơn hàng</label>
-                    <div class="radio-group" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <label style="flex: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-                            <input type="radio" name="orderType" value="dine_in" checked onclick="OrderManagement.toggleAddressField(false)">
-                            <span>🍽️ Đặt trước (Tại quán)</span>
-                        </label>
-                        <label style="flex: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-                            <input type="radio" name="orderType" value="delivery" onclick="OrderManagement.toggleAddressField(true)">
-                            <span>🛵 Giao tận nơi</span>
-                        </label>
+                    <div class="radio-group" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
+                        <div style="display: flex; align-items: center;">
+                            <md-radio id="radio-dinein" name="orderType" value="dine_in" checked touch-target="wrapper" onclick="OrderManagement.toggleAddressField(false)"></md-radio>
+                            <label for="radio-dinein" style="cursor: pointer; margin-left: 8px;">🍽️ Đặt trước (Tại quán)</label>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <md-radio id="radio-delivery" name="orderType" value="delivery" touch-target="wrapper" onclick="OrderManagement.toggleAddressField(true)"></md-radio>
+                            <label for="radio-delivery" style="cursor: pointer; margin-left: 8px;">🛵 Giao tận nơi</label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Tên khách hàng *</label>
-                    <input type="text" id="orderCustomer" placeholder="VD: Nguyễn Văn A">
+                    <md-outlined-text-field label="Tên khách hàng *" id="orderCustomer" placeholder="VD: Nguyễn Văn A"></md-outlined-text-field>
                 </div>
                 <div class="form-group">
-                    <label>Số điện thoại *</label>
-                    <input type="tel" id="orderPhone" placeholder="VD: 0912345678">
+                    <md-outlined-text-field label="Số điện thoại *" type="tel" id="orderPhone" placeholder="VD: 0912345678"></md-outlined-text-field>
                 </div>
                 <div class="form-group" id="addressGroup" style="display: none;">
-                    <label>Địa chỉ giao hàng *</label>
-                    <input type="text" id="orderAddress" placeholder="VD: 123 Nguyễn Huệ, Q.1">
+                    <md-outlined-text-field label="Địa chỉ giao hàng *" id="orderAddress" placeholder="VD: 123 Nguyễn Huệ, Q.1"></md-outlined-text-field>
                 </div>
                 <div class="form-group">
-                    <label>Món ăn (Chọn từ Menu hôm nay)</label>
-                    <select id="orderItemSelect" onchange="OrderManagement.addItemToOrder()" style="padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; width: 100%; margin-bottom: 0.5rem;">
-                        <option value="">-- Chọn món --</option>
+                    <md-outlined-select label="Món ăn (Chọn từ Menu hôm nay)" id="orderItemSelect" onchange="OrderManagement.addItemToOrder()" style="width: 100%; margin-bottom: 0.5rem;">
+                        <md-select-option value=""><div slot="headline">-- Chọn món --</div></md-select-option>
                         ${itemsOptions}
-                    </select>
-                    <textarea id="orderItems" rows="3" placeholder="Chi tiết món..." style="width: 100%; padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); resize: vertical;"></textarea>
+                    </md-outlined-select>
+                    <md-outlined-text-field type="textarea" id="orderItems" rows="3" label="Chi tiết món..." style="width: 100%;"></md-outlined-text-field>
                 </div>
                 <div class="form-group">
-                    <label>Tổng tiền (VNĐ) *</label>
-                    <input type="number" id="orderTotal" placeholder="0" min="0">
+                    <md-outlined-text-field label="Tổng tiền (VNĐ) *" type="number" id="orderTotal" placeholder="0" min="0"></md-outlined-text-field>
                 </div>
                 <div class="form-group">
-                    <label>Ghi chú</label>
-                    <input type="text" id="orderNote" placeholder="VD: Ít cay...">
+                    <md-outlined-text-field label="Ghi chú" id="orderNote" placeholder="VD: Ít cay..."></md-outlined-text-field>
                 </div>
             `, `
-                <button class="btn-secondary" onclick="window.utils.modal.close()">Hủy</button>
-                <button class="btn-primary" onclick="OrderManagement.createOrder()">Tạo đơn</button>
+                <md-outlined-button onclick="window.utils.modal.close()">Hủy</md-outlined-button>
+                <md-filled-button onclick="OrderManagement.createOrder()">Tạo đơn</md-filled-button>
             `);
         }
     },
@@ -549,7 +546,15 @@ const OrderManagement = {
     },
 
     createOrder() {
-        const type = document.querySelector('input[name="orderType"]:checked').value;
+        const typeRadio = document.querySelector('md-radio[name="orderType"][checked]') || document.querySelector('md-radio[name="orderType"]');
+        // md-radio doesn't use 'checked' attribute for state exactly like native input in querySelector always, need to check property
+        // But here we are using click handlers to set state.
+        // Actually, md-radio group behaviour is handled by name. We can query the checked one.
+        // For md-radio, we can just check checked property.
+
+        let type = 'dine_in';
+        if (document.getElementById('radio-delivery').checked) type = 'delivery';
+
         const customer = document.getElementById('orderCustomer').value.trim();
         const phone = document.getElementById('orderPhone').value.trim();
         let address = document.getElementById('orderAddress').value.trim();
@@ -636,8 +641,8 @@ const OrderManagement = {
                     <strong style="font-size: 1.25rem; color: var(--secondary);">${window.utils.formatCurrency(order.total)}</strong>
                 </div>
             `, `
-                <button class="btn-secondary" onclick="window.utils.modal.close()">Đóng</button>
-                <button class="btn-primary" onclick="OrderManagement.printOrder('${order.id}')">🖨️ In đơn</button>
+                <md-outlined-button onclick="window.utils.modal.close()">Đóng</md-outlined-button>
+                <md-filled-button onclick="OrderManagement.printOrder('${order.id}')">🖨️ In đơn</md-filled-button>
             `);
         }
     }

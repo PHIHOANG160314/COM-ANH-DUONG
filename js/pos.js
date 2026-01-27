@@ -55,11 +55,11 @@ const POS = {
         }
 
         // Build options
-        let optionsHTML = '<option value="">Chọn bàn</option>';
+        let optionsHTML = '<md-select-option value=""><div slot="headline">Chọn bàn</div></md-select-option>';
         tables.forEach(table => {
-            optionsHTML += `<option value="${table.id}">${table.name}</option>`;
+            optionsHTML += `<md-select-option value="${table.id}"><div slot="headline">${table.name}</div></md-select-option>`;
         });
-        optionsHTML += '<option value="takeaway">Mang đi</option>';
+        optionsHTML += '<md-select-option value="takeaway"><div slot="headline">Mang đi</div></md-select-option>';
 
         select.innerHTML = optionsHTML;
         if (window.Debug) Debug.log('POS: Populated', tables.length, 'tables');
@@ -67,11 +67,24 @@ const POS = {
 
     setupEventListeners() {
         // Category tabs
-        document.querySelectorAll('.category-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                this.currentCategory = e.target.dataset.category;
+        // md-chip-set handles selection, we just need to listen to interaction
+        // However, the original code used class manipulation.
+        // With md-filter-chip, we can listen to 'click' or 'input' on the chips.
+        const chips = document.querySelectorAll('.category-tab');
+        chips.forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                // md-filter-chip toggles by default, but we want radio behavior here effectively.
+                // We'll manually handle visual selection if needed, or rely on the fact that we clear others?
+                // Actually md-chip-set doesn't enforce single selection automatically unless configured?
+                // Let's just update the state.
+
+                // Unselect others
+                chips.forEach(c => {
+                    if (c !== e.currentTarget) c.selected = false;
+                });
+                e.currentTarget.selected = true;
+
+                this.currentCategory = e.currentTarget.dataset.category;
                 this.renderMenu();
             });
         });
@@ -145,9 +158,13 @@ const POS = {
                         <div class="cart-item-price">${window.utils.formatCurrency(item.price)}</div>
                     </div>
                     <div class="cart-item-qty">
-                        <button class="qty-btn md-ripple md-focus-ring" onclick="POS.updateQuantity(${item.id}, -1)">−</button>
+                        <md-icon-button class="qty-btn" onclick="POS.updateQuantity(${item.id}, -1)">
+                            <md-icon>remove</md-icon>
+                        </md-icon-button>
                         <span class="qty-value">${item.quantity}</span>
-                        <button class="qty-btn md-ripple md-focus-ring" onclick="POS.updateQuantity(${item.id}, 1)">+</button>
+                        <md-icon-button class="qty-btn" onclick="POS.updateQuantity(${item.id}, 1)">
+                            <md-icon>add</md-icon>
+                        </md-icon-button>
                     </div>
                     <div class="cart-item-total">${window.utils.formatCurrency(item.price * item.quantity)}</div>
                 </div>
@@ -212,8 +229,8 @@ const POS = {
                     <strong>Tổng cộng: ${window.utils.formatCurrency(total)}</strong>
                 </div>
             `, `
-                <button class="btn-secondary md-ripple" onclick="window.utils.modal.close()">Hủy</button>
-                <button class="btn-primary md-ripple" onclick="POS.confirmCheckout()">Xác nhận</button>
+                <md-outlined-button onclick="window.utils.modal.close()">Hủy</md-outlined-button>
+                <md-filled-button onclick="POS.confirmCheckout()">Xác nhận</md-filled-button>
             `);
         }
     },

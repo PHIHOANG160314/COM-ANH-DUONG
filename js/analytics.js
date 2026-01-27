@@ -120,11 +120,17 @@ const SalesAnalytics = {
 
     setupEventListeners() {
         // Quick filter buttons
-        document.querySelectorAll('.quick-filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.quick-filter-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                this.currentFilter = e.target.dataset.filter;
+        // md-filter-chip
+        const chips = document.querySelectorAll('.quick-filter-btn');
+        chips.forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                // Unselect others
+                chips.forEach(c => {
+                    if (c !== e.currentTarget) c.selected = false;
+                });
+                e.currentTarget.selected = true;
+
+                this.currentFilter = e.currentTarget.dataset.filter;
                 this.applyQuickFilter();
                 this.renderAll();
             });
@@ -172,7 +178,8 @@ const SalesAnalytics = {
         if (fromInput && toInput && fromInput.value && toInput.value) {
             this.dateFrom = fromInput.value;
             this.dateTo = toInput.value;
-            document.querySelectorAll('.quick-filter-btn').forEach(b => b.classList.remove('active'));
+            // Deselect all quick filters
+            document.querySelectorAll('.quick-filter-btn').forEach(b => b.selected = false);
             this.renderAll();
         }
     },

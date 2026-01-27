@@ -67,8 +67,8 @@ const Inventory = {
                 <td>${formatNumber(item.minStock)}</td>
                 <td>${getStatusBadge(status === 'warning' ? 'low' : status, statusText)}</td>
                 <td>
-                    <button class="action-btn" onclick="Inventory.addStock('${item.id}')">+ Nhập</button>
-                    <button class="action-btn" onclick="Inventory.reduceStock('${item.id}')">- Xuất</button>
+                    <md-filled-tonal-button class="action-btn" onclick="Inventory.addStock('${item.id}')">+ Nhập</md-filled-tonal-button>
+                    <md-outlined-button class="action-btn" onclick="Inventory.reduceStock('${item.id}')">- Xuất</md-outlined-button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -78,24 +78,21 @@ const Inventory = {
     showAddModal() {
         modal.open('Nhập kho', `
             <div class="form-group">
-                <label>Chọn nguyên liệu</label>
-                <select id="modalItem">
+                <md-outlined-select label="Chọn nguyên liệu" id="modalItem">
                     ${inventoryData.map(item =>
-            `<option value="${item.id}">${item.name} (${item.unit})</option>`
+            `<md-select-option value="${item.id}"><div slot="headline">${item.name} (${item.unit})</div></md-select-option>`
         ).join('')}
-                </select>
+                </md-outlined-select>
             </div>
             <div class="form-group">
-                <label>Số lượng nhập</label>
-                <input type="number" id="modalAmount" min="1" value="10">
+                <md-outlined-text-field label="Số lượng nhập" type="number" id="modalAmount" min="1" value="10"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Ghi chú</label>
-                <input type="text" id="modalNote" placeholder="VD: Nhập từ NCC ABC">
+                <md-outlined-text-field label="Ghi chú" id="modalNote" placeholder="VD: Nhập từ NCC ABC"></md-outlined-text-field>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="Inventory.confirmAddStock()">Xác nhận</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="Inventory.confirmAddStock()">Xác nhận</md-filled-button>
         `);
     },
 

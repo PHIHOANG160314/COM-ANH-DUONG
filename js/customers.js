@@ -120,11 +120,11 @@ const CustomerLoyalty = {
                 <td>${c.totalSpent.toLocaleString()}đ</td>
                 <td>${c.visits} lần</td>
                 <td>
-                    <button class="action-btn" onclick="CustomerLoyalty.showQRCode(${c.id})" title="Mã QR">📲</button>
-                    <button class="action-btn" onclick="CustomerLoyalty.sendMessage(${c.id})" title="Gửi tin nhắn">📱</button>
-                    <button class="action-btn" onclick="CustomerLoyalty.viewHistory(${c.id})" title="Xem lịch sử">📋</button>
-                    <button class="action-btn" onclick="CustomerLoyalty.addPoints(${c.id})" title="Thêm điểm">➕</button>
-                    <button class="action-btn" onclick="CustomerLoyalty.redeemPoints(${c.id})" title="Đổi điểm">🎁</button>
+                    <md-icon-button class="action-btn" onclick="CustomerLoyalty.showQRCode(${c.id})" title="Mã QR"><md-icon>qr_code</md-icon></md-icon-button>
+                    <md-icon-button class="action-btn" onclick="CustomerLoyalty.sendMessage(${c.id})" title="Gửi tin nhắn"><md-icon>sms</md-icon></md-icon-button>
+                    <md-icon-button class="action-btn" onclick="CustomerLoyalty.viewHistory(${c.id})" title="Xem lịch sử"><md-icon>history</md-icon></md-icon-button>
+                    <md-icon-button class="action-btn" onclick="CustomerLoyalty.addPoints(${c.id})" title="Thêm điểm"><md-icon>add_circle</md-icon></md-icon-button>
+                    <md-icon-button class="action-btn" onclick="CustomerLoyalty.redeemPoints(${c.id})" title="Đổi điểm"><md-icon>redeem</md-icon></md-icon-button>
                 </td>
             </tr>
         `).join('');
@@ -156,12 +156,12 @@ const CustomerLoyalty = {
 
     showAddModal() {
         modal.open('➕ Thêm Khách Hàng', `
-            <div class="form-group"><label>Họ tên</label><input type="text" id="customerName" placeholder="Nhập họ tên..."></div>
-            <div class="form-group"><label>Số điện thoại</label><input type="tel" id="customerPhone" placeholder="0901234567"></div>
-            <div class="form-group"><label>Điểm ban đầu</label><input type="number" id="customerPoints" value="0" min="0"></div>
+            <div class="form-group"><md-outlined-text-field label="Họ tên" id="customerName" placeholder="Nhập họ tên..."></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Số điện thoại" type="tel" id="customerPhone" placeholder="0901234567"></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Điểm ban đầu" type="number" id="customerPoints" value="0" min="0"></md-outlined-text-field></div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="CustomerLoyalty.addCustomer()">✅ Thêm</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="CustomerLoyalty.addCustomer()">✅ Thêm</md-filled-button>
         `);
     },
 
@@ -201,15 +201,14 @@ const CustomerLoyalty = {
                 <p>Điểm hiện tại: <strong class="points-value">${c.points.toLocaleString()}</strong></p>
             </div>
             <div class="form-group">
-                <label>Số điểm thêm</label>
-                <input type="number" id="addPointsAmount" value="10" min="1" max="10000">
+                <md-outlined-text-field label="Số điểm thêm" type="number" id="addPointsAmount" value="10" min="1" max="10000"></md-outlined-text-field>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted);">
                 💡 Quy đổi: 10.000đ = 10 điểm
             </p>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="CustomerLoyalty.confirmAddPoints(${id})">✅ Thêm điểm</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="CustomerLoyalty.confirmAddPoints(${id})">✅ Thêm điểm</md-filled-button>
         `);
     },
 
@@ -242,17 +241,16 @@ const CustomerLoyalty = {
                 <p>Điểm hiện tại: <strong class="points-value">${c.points.toLocaleString()}</strong></p>
             </div>
             <div class="form-group">
-                <label>Đổi thành voucher</label>
-                <select id="redeemOption">
-                    <option value="50" ${c.points < 50 ? 'disabled' : ''}>50 điểm → Giảm 10.000đ</option>
-                    <option value="100" ${c.points < 100 ? 'disabled' : ''}>100 điểm → Giảm 25.000đ</option>
-                    <option value="200" ${c.points < 200 ? 'disabled' : ''}>200 điểm → Giảm 60.000đ</option>
-                    <option value="500" ${c.points < 500 ? 'disabled' : ''}>500 điểm → Giảm 200.000đ</option>
-                </select>
+                <md-outlined-select label="Đổi thành voucher" id="redeemOption">
+                    <md-select-option value="50" ${c.points < 50 ? 'disabled' : ''}><div slot="headline">50 điểm → Giảm 10.000đ</div></md-select-option>
+                    <md-select-option value="100" ${c.points < 100 ? 'disabled' : ''}><div slot="headline">100 điểm → Giảm 25.000đ</div></md-select-option>
+                    <md-select-option value="200" ${c.points < 200 ? 'disabled' : ''}><div slot="headline">200 điểm → Giảm 60.000đ</div></md-select-option>
+                    <md-select-option value="500" ${c.points < 500 ? 'disabled' : ''}><div slot="headline">500 điểm → Giảm 200.000đ</div></md-select-option>
+                </md-outlined-select>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-success" onclick="CustomerLoyalty.confirmRedeem(${id})">🎁 Đổi</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button class="btn-success" onclick="CustomerLoyalty.confirmRedeem(${id})">🎁 Đổi</md-filled-button>
         `);
     },
 
@@ -305,7 +303,7 @@ const CustomerLoyalty = {
                 </div>
             </div>
         `, `
-            <button class="btn-primary" onclick="modal.close()">Đóng</button>
+            <md-filled-button onclick="modal.close()">Đóng</md-filled-button>
         `);
     },
 
@@ -318,29 +316,27 @@ const CustomerLoyalty = {
 
         modal.open(`📱 Gửi Tin Nhắn - ${c.name}`, `
             <div class="form-group">
-                <label>Chọn mẫu tin nhắn</label>
-                <select id="messageTemplate" onchange="CustomerLoyalty.previewMessage()">
-                    <option value="menu">📜 Menu Hôm Nay</option>
-                    <option value="promo">🎉 Khuyến mãi hôm nay</option>
-                    <option value="birthday">🎂 Chúc mừng sinh nhật</option>
-                    <option value="points">💎 Thông báo điểm thưởng</option>
-                    <option value="custom">✏️ Tin nhắn tùy chỉnh</option>
-                </select>
+                <md-outlined-select label="Chọn mẫu tin nhắn" id="messageTemplate" onchange="CustomerLoyalty.previewMessage()">
+                    <md-select-option value="menu"><div slot="headline">📜 Menu Hôm Nay</div></md-select-option>
+                    <md-select-option value="promo"><div slot="headline">🎉 Khuyến mãi hôm nay</div></md-select-option>
+                    <md-select-option value="birthday"><div slot="headline">🎂 Chúc mừng sinh nhật</div></md-select-option>
+                    <md-select-option value="points"><div slot="headline">💎 Thông báo điểm thưởng</div></md-select-option>
+                    <md-select-option value="custom"><div slot="headline">✏️ Tin nhắn tùy chỉnh</div></md-select-option>
+                </md-outlined-select>
             </div>
             <div class="form-group">
-                <label>Nội dung tin nhắn</label>
-                <textarea id="messageContent" rows="5" style="width:100%; padding:0.75rem; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary);"></textarea>
+                <md-outlined-text-field type="textarea" label="Nội dung tin nhắn" id="messageContent" rows="5" style="width:100%;"></md-outlined-text-field>
             </div>
             <div class="form-group">
                 <label>Gửi qua</label>
                 <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                    <button class="btn-primary" style="flex:1; min-width:150px; background:linear-gradient(135deg,#0068ff,#0099ff);" onclick="CustomerLoyalty.sendViaZalo('${c.phone}')">💬 Gửi qua Zalo</button>
-                    <button class="btn-secondary" onclick="CustomerLoyalty.copyMessage()">📋 Copy</button>
-                    <button class="btn-icon-sm" onclick="CustomerLoyalty.sendViaSMS('${c.phone}')" title="SMS">📱</button>
+                    <md-filled-button style="flex:1; min-width:150px; --md-sys-color-primary: #0068ff;" onclick="CustomerLoyalty.sendViaZalo('${c.phone}')">💬 Gửi qua Zalo</md-filled-button>
+                    <md-outlined-button onclick="CustomerLoyalty.copyMessage()">📋 Copy</md-outlined-button>
+                    <md-icon-button onclick="CustomerLoyalty.sendViaSMS('${c.phone}')" title="SMS"><md-icon>sms</md-icon></md-icon-button>
                 </div>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Đóng</button>
+            <md-outlined-button onclick="modal.close()">Đóng</md-outlined-button>
         `);
 
         // Load default message
@@ -457,30 +453,27 @@ Xin chào quý khách!
     showBulkPromotionModal() {
         modal.open('📢 Gửi Khuyến Mãi Hàng Loạt', `
             <div class="form-group">
-                <label>Chọn nhóm khách hàng</label>
-                <select id="bulkTarget">
-                    <option value="all">👥 Tất cả khách hàng (${this.customers.length})</option>
-                    <option value="gold">🥇 Khách Gold (${this.customers.filter(c => c.tier === 'gold').length})</option>
-                    <option value="silver">🥈 Khách Silver (${this.customers.filter(c => c.tier === 'silver').length})</option>
-                    <option value="bronze">🥉 Khách Bronze (${this.customers.filter(c => c.tier === 'bronze').length})</option>
-                </select>
+                <md-outlined-select label="Chọn nhóm khách hàng" id="bulkTarget">
+                    <md-select-option value="all"><div slot="headline">👥 Tất cả khách hàng (${this.customers.length})</div></md-select-option>
+                    <md-select-option value="gold"><div slot="headline">🥇 Khách Gold (${this.customers.filter(c => c.tier === 'gold').length})</div></md-select-option>
+                    <md-select-option value="silver"><div slot="headline">🥈 Khách Silver (${this.customers.filter(c => c.tier === 'silver').length})</div></md-select-option>
+                    <md-select-option value="bronze"><div slot="headline">🥉 Khách Bronze (${this.customers.filter(c => c.tier === 'bronze').length})</div></md-select-option>
+                </md-outlined-select>
             </div>
             <div class="form-group">
-                <label>Loại tin nhắn</label>
-                <select id="bulkTemplate" onchange="CustomerLoyalty.previewBulkMessage()">
-                    <option value="menuToday">📜 Menu Hôm Nay</option>
-                    <option value="promo">🎉 Khuyến mãi</option>
-                    <option value="event">🎊 Sự kiện đặc biệt</option>
-                </select>
+                <md-outlined-select label="Loại tin nhắn" id="bulkTemplate" onchange="CustomerLoyalty.previewBulkMessage()">
+                    <md-select-option value="menuToday"><div slot="headline">📜 Menu Hôm Nay</div></md-select-option>
+                    <md-select-option value="promo"><div slot="headline">🎉 Khuyến mãi</div></md-select-option>
+                    <md-select-option value="event"><div slot="headline">🎊 Sự kiện đặc biệt</div></md-select-option>
+                </md-outlined-select>
             </div>
             <div class="form-group">
-                <label>Nội dung</label>
-                <textarea id="bulkMessageContent" rows="5" style="width:100%; padding:0.75rem; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-primary);"></textarea>
+                <md-outlined-text-field type="textarea" label="Nội dung" id="bulkMessageContent" rows="5" style="width:100%;"></md-outlined-text-field>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="CustomerLoyalty.exportPhoneList()">📋 Xuất danh sách SĐT</button>
-            <button class="btn-success" onclick="CustomerLoyalty.sendBulkPromotion()">📤 Gửi tất cả</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-tonal-button onclick="CustomerLoyalty.exportPhoneList()">📋 Xuất danh sách SĐT</md-filled-tonal-button>
+            <md-filled-button class="btn-success" onclick="CustomerLoyalty.sendBulkPromotion()">📤 Gửi tất cả</md-filled-button>
         `);
 
         setTimeout(() => this.previewBulkMessage(), 100);
@@ -562,13 +555,13 @@ Xin chào quý khách!
                     <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem;">
                         Tin nhắn đã được copy. Bạn có thể dán vào Zalo/SMS để gửi hàng loạt.
                     </p>
-                    <div style="margin-top: 1rem; padding: 0.75rem; background: var(--bg-input); border-radius: 8px; font-size: 0.8rem; text-align: left; max-height: 100px; overflow-y: auto;">
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: var(--surface-container); border-radius: 8px; font-size: 0.8rem; text-align: left; max-height: 100px; overflow-y: auto;">
                         <strong>Danh sách SĐT:</strong><br>
                         ${phoneNumbers}
                     </div>
                 </div>
             `, `
-                <button class="btn-primary" onclick="modal.close()">Đóng</button>
+                <md-filled-button onclick="modal.close()">Đóng</md-filled-button>
             `);
         }, 300);
     },
@@ -593,12 +586,12 @@ Xin chào quý khách!
             <div style="text-align: center;">
                 <h3 style="margin-bottom: 0.5rem;">${c.name}</h3>
                 <p style="color: var(--text-muted); margin-bottom: 1rem;">📱 ${c.phone}</p>
-                
+
                 <div id="customerQRCode" style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;"></div>
-                
+
                 <p style="font-size: 1.1rem; font-weight: bold; color: var(--primary-light);">${customerCode}</p>
-                
-                <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-input); border-radius: 8px; text-align: left;">
+
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--surface-container); border-radius: 8px; text-align: left;">
                     <p style="margin-bottom: 0.5rem;">💎 Điểm hiện tại: <strong>${c.points.toLocaleString()}</strong></p>
                     <p style="margin-bottom: 0.5rem;">🏆 Hạng thành viên: <strong>${c.tier === 'gold' ? '🥇 Gold' : c.tier === 'silver' ? '🥈 Silver' : '🥉 Bronze'}</strong></p>
                     <p style="font-size: 0.85rem; color: var(--text-muted);">
@@ -607,8 +600,8 @@ Xin chào quý khách!
                 </div>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Đóng</button>
-            <button class="btn-primary" onclick="CustomerLoyalty.downloadQR('${customerCode}', '${c.name}')">💾 Tải QR</button>
+            <md-outlined-button onclick="modal.close()">Đóng</md-outlined-button>
+            <md-filled-button onclick="CustomerLoyalty.downloadQR('${customerCode}', '${c.name}')">💾 Tải QR</md-filled-button>
         `);
 
         // Generate QR Code
@@ -643,17 +636,17 @@ Xin chào quý khách!
             <div style="text-align: center;">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">📲</div>
                 <p style="margin-bottom: 1rem;">Nhập mã khách hàng hoặc số điện thoại:</p>
-                
+
                 <div class="form-group">
-                    <input type="text" id="scanCustomerCode" placeholder="ANDG-0001-1234 hoặc 0901234567" style="text-align: center; font-size: 1.1rem;">
+                    <md-outlined-text-field id="scanCustomerCode" placeholder="ANDG-0001-1234 hoặc 0901234567" style="width: 100%; text-align: center; font-size: 1.1rem;"></md-outlined-text-field>
                 </div>
-                
-                <button class="btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="CustomerLoyalty.lookupCustomer()">🔍 Tìm khách hàng</button>
-                
-                <div id="scanResult" style="display: none; padding: 1rem; background: var(--bg-input); border-radius: 8px; text-align: left;"></div>
+
+                <md-filled-button style="width: 100%; margin-bottom: 1rem;" onclick="CustomerLoyalty.lookupCustomer()">🔍 Tìm khách hàng</md-filled-button>
+
+                <div id="scanResult" style="display: none; padding: 1rem; background: var(--surface-container); border-radius: 8px; text-align: left;"></div>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Đóng</button>
+            <md-outlined-button onclick="modal.close()">Đóng</md-outlined-button>
         `);
     },
 
@@ -675,7 +668,7 @@ Xin chào quý khách!
 
         if (!customer) {
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `<p style="color: var(--danger);">❌ Không tìm thấy khách hàng!</p>`;
+            resultDiv.innerHTML = `<p style="color: var(--error);">❌ Không tìm thấy khách hàng!</p>`;
             return;
         }
 
@@ -684,15 +677,14 @@ Xin chào quý khách!
             <h4 style="margin-bottom: 0.5rem;">✅ ${customer.name}</h4>
             <p>📱 ${customer.phone} | 💎 ${customer.points.toLocaleString()} điểm</p>
             <hr style="margin: 0.75rem 0; border-color: var(--border-color);">
-            
+
             <div class="form-group" style="margin-bottom: 0.5rem;">
-                <label>Số tiền mua hàng (VNĐ)</label>
-                <input type="number" id="purchaseAmount" placeholder="50000" min="0" step="1000">
+                <md-outlined-text-field label="Số tiền mua hàng (VNĐ)" type="number" id="purchaseAmount" placeholder="50000" min="0" step="1000"></md-outlined-text-field>
             </div>
-            
+
             <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                <button class="btn-success" style="flex:1;" onclick="CustomerLoyalty.addPointsFromPurchase(${customer.id})">➕ Tích điểm</button>
-                <button class="btn-warning" style="flex:1;" onclick="CustomerLoyalty.usePointsForPurchase(${customer.id})">🎁 Dùng điểm</button>
+                <md-filled-button class="btn-success" style="flex:1;" onclick="CustomerLoyalty.addPointsFromPurchase(${customer.id})">➕ Tích điểm</md-filled-button>
+                <md-filled-button class="btn-warning" style="flex:1;" onclick="CustomerLoyalty.usePointsForPurchase(${customer.id})">🎁 Dùng điểm</md-filled-button>
             </div>
         `;
     },
@@ -736,15 +728,14 @@ Xin chào quý khách!
                     <p style="font-size: 0.85rem; color: var(--text-muted);">1 điểm = ${this.POINTS_RATE.toLocaleString()}đ</p>
                 </div>
                 <div class="form-group">
-                    <label>Số điểm muốn dùng</label>
-                    <input type="number" id="pointsToUse" value="${Math.min(c.points, 100)}" min="1" max="${c.points}">
+                    <md-outlined-text-field label="Số điểm muốn dùng" type="number" id="pointsToUse" value="${Math.min(c.points, 100)}" min="1" max="${c.points}"></md-outlined-text-field>
                 </div>
                 <p style="margin-top: 0.5rem;">
                     💰 Giảm giá: <strong id="discountPreview">${(Math.min(c.points, 100) * this.POINTS_RATE).toLocaleString()}đ</strong>
                 </p>
             `, `
-                <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-                <button class="btn-success" onclick="CustomerLoyalty.confirmUsePoints(${id})">✅ Xác nhận đổi</button>
+                <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+                <md-filled-button class="btn-success" onclick="CustomerLoyalty.confirmUsePoints(${id})">✅ Xác nhận đổi</md-filled-button>
             `);
 
             // Update preview on change

@@ -65,9 +65,11 @@ const Recipes = {
                         </div>
                     </div>
                     <div class="recipe-actions">
-                        <button class="btn-secondary" onclick="Recipes.view(${recipe.id})">Chi tiết</button>
-                        <button class="btn-primary" onclick="Recipes.edit(${recipe.id})">Sửa</button>
-                        <button class="btn-danger-sm" onclick="Recipes.delete(${recipe.id})">🗑️</button>
+                        <md-outlined-button onclick="Recipes.view(${recipe.id})">Chi tiết</md-outlined-button>
+                        <md-filled-button onclick="Recipes.edit(${recipe.id})">Sửa</md-filled-button>
+                        <md-icon-button class="btn-danger-sm" onclick="Recipes.delete(${recipe.id})" style="color:var(--error);">
+                            <md-icon>delete</md-icon>
+                        </md-icon-button>
                     </div>
                 </div>
             `;
@@ -100,7 +102,9 @@ const Recipes = {
         }
 
         return menuList.map(item =>
-            `<option value="${item.id}" data-name="${item.name}" data-price="${item.price}" data-icon="${item.icon}">${item.icon} ${item.name} - ${formatCurrency(item.price)}</option>`
+            `<md-select-option value="${item.id}" data-name="${item.name}" data-price="${item.price}" data-icon="${item.icon}">
+                <div slot="headline">${item.icon} ${item.name} - ${formatCurrency(item.price)}</div>
+             </md-select-option>`
         ).join('');
     },
 
@@ -109,49 +113,43 @@ const Recipes = {
 
         modal.open('Thêm công thức mới', `
             <div class="form-group">
-                <label>Chọn món từ Menu (hoặc nhập mới)</label>
-                <select id="recipeMenuItem" onchange="Recipes.onMenuItemSelect()">
-                    <option value="">-- Chọn món từ menu --</option>
+                <md-outlined-select label="Chọn món từ Menu" id="recipeMenuItem" onchange="Recipes.onMenuItemSelect()">
+                    <md-select-option value=""><div slot="headline">-- Chọn món từ menu --</div></md-select-option>
                     ${menuOptions}
-                    <option value="custom">✏️ Nhập tên món mới...</option>
-                </select>
+                    <md-select-option value="custom"><div slot="headline">✏️ Nhập tên món mới...</div></md-select-option>
+                </md-outlined-select>
             </div>
             <div class="form-group" id="customNameGroup" style="display:none;">
-                <label>Tên món mới</label>
-                <input type="text" id="recipeNameCustom" placeholder="VD: Bún bò đặc biệt">
+                <md-outlined-text-field label="Tên món mới" id="recipeNameCustom" placeholder="VD: Bún bò đặc biệt"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Icon</label>
-                <input type="text" id="recipeIcon" value="🍽️" maxlength="4">
+                <md-outlined-text-field label="Icon" id="recipeIcon" value="🍽️" maxlength="4"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Số phần</label>
-                <input type="number" id="recipeServings" value="1" min="1">
+                <md-outlined-text-field label="Số phần" type="number" id="recipeServings" value="1" min="1"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Thời gian chuẩn bị</label>
-                <input type="text" id="recipePrepTime" value="15 phút">
+                <md-outlined-text-field label="Thời gian chuẩn bị" id="recipePrepTime" value="15 phút"></md-outlined-text-field>
             </div>
             <hr style="border-color: var(--border-color); margin: 1rem 0;">
             <h4 style="margin-bottom: 1rem;">Nguyên liệu</h4>
             <div id="recipeIngredients">
-                <div class="ingredient-row">
-                    <input type="text" placeholder="Tên NL" class="ing-name">
-                    <input type="number" placeholder="SL" class="ing-amount">
-                    <input type="text" placeholder="ĐVT" class="ing-unit" value="g">
-                    <input type="number" placeholder="Giá" class="ing-cost">
-                    <button class="remove-ingredient" onclick="this.parentElement.remove()">×</button>
+                <div class="ingredient-row" style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+                    <md-outlined-text-field placeholder="Tên NL" class="ing-name" style="flex:2"></md-outlined-text-field>
+                    <md-outlined-text-field placeholder="SL" type="number" class="ing-amount" style="flex:1"></md-outlined-text-field>
+                    <md-outlined-text-field placeholder="ĐVT" class="ing-unit" value="g" style="flex:1"></md-outlined-text-field>
+                    <md-outlined-text-field placeholder="Giá" type="number" class="ing-cost" style="flex:1"></md-outlined-text-field>
+                    <md-icon-button class="remove-ingredient" onclick="this.parentElement.remove()"><md-icon>close</md-icon></md-icon-button>
                 </div>
             </div>
-            <button class="btn-secondary" onclick="Recipes.addIngredientRow()" style="margin-top: 0.5rem;">+ Thêm NL</button>
+            <md-text-button onclick="Recipes.addIngredientRow()" style="margin-top: 0.5rem;">+ Thêm NL</md-text-button>
             <hr style="border-color: var(--border-color); margin: 1rem 0;">
             <div class="form-group">
-                <label>Giá bán</label>
-                <input type="number" id="recipeSellingPrice" placeholder="VD: 50000" min="0">
+                <md-outlined-text-field label="Giá bán" type="number" id="recipeSellingPrice" placeholder="VD: 50000" min="0"></md-outlined-text-field>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="Recipes.createRecipe()">Lưu công thức</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="Recipes.createRecipe()">Lưu công thức</md-filled-button>
         `);
     },
 
@@ -177,12 +175,13 @@ const Recipes = {
         const container = document.getElementById('recipeIngredients');
         const row = document.createElement('div');
         row.className = 'ingredient-row';
+        row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px; align-items:center;';
         row.innerHTML = `
-            <input type="text" placeholder="Tên NL" class="ing-name">
-            <input type="number" placeholder="SL" class="ing-amount">
-            <input type="text" placeholder="ĐVT" class="ing-unit" value="g">
-            <input type="number" placeholder="Giá" class="ing-cost">
-            <button class="remove-ingredient" onclick="this.parentElement.remove()">×</button>
+            <md-outlined-text-field placeholder="Tên NL" class="ing-name" style="flex:2"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="SL" type="number" class="ing-amount" style="flex:1"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="ĐVT" class="ing-unit" value="g" style="flex:1"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="Giá" type="number" class="ing-cost" style="flex:1"></md-outlined-text-field>
+            <md-icon-button class="remove-ingredient" onclick="this.parentElement.remove()"><md-icon>close</md-icon></md-icon-button>
         `;
         container.appendChild(row);
     },
@@ -307,7 +306,7 @@ const Recipes = {
                     </tr>
                 </tfoot>
             </table>
-            <div style="display: flex; justify-content: space-between; padding: 1rem; background: var(--bg-hover); border-radius: var(--border-radius);">
+            <div style="display: flex; justify-content: space-between; padding: 1rem; background: var(--surface-container); border-radius: 8px;">
                 <div>
                     <div style="color: var(--text-muted); font-size: 0.85rem;">Giá bán</div>
                     <div style="font-size: 1.25rem; font-weight: 700; color: var(--secondary);">${formatCurrency(recipe.sellingPrice)}</div>
@@ -317,7 +316,7 @@ const Recipes = {
                     <div style="font-size: 1.25rem; font-weight: 700;">${calculateFoodCost(recipe.totalCost, recipe.sellingPrice)}%</div>
                 </div>
             </div>
-        `, `<button class="btn-primary" onclick="modal.close()">Đóng</button>`);
+        `, `<md-filled-button onclick="modal.close()">Đóng</md-filled-button>`);
     },
 
     edit(recipeId) {
@@ -326,16 +325,14 @@ const Recipes = {
 
         modal.open('Sửa công thức - ' + recipe.name, `
             <div class="form-group">
-                <label>Giá bán</label>
-                <input type="number" id="editPrice" value="${recipe.sellingPrice}" min="0" step="1000">
+                <md-outlined-text-field label="Giá bán" type="number" id="editPrice" value="${recipe.sellingPrice}" min="0" step="1000"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Thời gian chuẩn bị</label>
-                <input type="text" id="editPrepTime" value="${recipe.prepTime}">
+                <md-outlined-text-field label="Thời gian chuẩn bị" id="editPrepTime" value="${recipe.prepTime}"></md-outlined-text-field>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="Recipes.saveEdit(${recipeId})">Lưu</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="Recipes.saveEdit(${recipeId})">Lưu</md-filled-button>
         `);
     },
 

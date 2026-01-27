@@ -101,15 +101,38 @@ const MenuManagement = {
 
     setupEventListeners() {
         // Tab switching
-        document.querySelectorAll('.menu-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                const type = e.target.dataset.menuType;
-                document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
-                document.getElementById(type === 'master' ? 'masterMenuSection' : 'dailyMenuSection').classList.add('active');
+        const tabs = document.querySelector('.menu-tabs');
+        if (tabs) {
+            tabs.addEventListener('change', (e) => {
+                // md-tabs dispatches 'change' event when tab selection changes
+                const tab = e.target.activeTab; // or look at e.target.selected depending on implementation version
+                // The md-tabs component usually handles the selection state internally.
+                // We need to find which tab is active.
+                // The event target is the md-tabs element.
+                // e.target.activeTabIndex is available
+
+                // Let's rely on click events on the tabs themselves if propagation works,
+                // OR check the tabs property.
+                // Actually, the original code used buttons. Now we use md-primary-tab.
+                // We can just listen to the tabs container.
+
+                // Let's use the 'change' event on the tabs container.
+                const activeTab = e.target.activeTab;
+                if (activeTab) {
+                    const type = activeTab.dataset.menuType;
+                    document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(type === 'master' ? 'masterMenuSection' : 'dailyMenuSection').classList.add('active');
+                }
             });
-        });
+
+            // Fallback/Alternative: Attach click to tabs directly if 'change' isn't sufficient or complex
+            document.querySelectorAll('.menu-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                     // e.currentTarget is the md-primary-tab
+                     // logic handled by change event usually, but just in case
+                });
+            });
+        }
 
         // Button listeners
         const addBtn = document.getElementById('addMenuItemBtn');
@@ -171,9 +194,13 @@ const MenuManagement = {
                 <td style="color:var(--text-muted);">${formatCurrency(item.cost || 0)}</td>
                 <td>${item.active ? '<span class="status-badge ok">Đang bán</span>' : '<span class="status-badge low">Tạm ngưng</span>'}</td>
                 <td>
-                    <button class="action-btn" onclick="MenuManagement.editItem('${item.id}')" title="Sửa">✏️</button>
-                    <button class="action-btn" onclick="MenuManagement.toggleActive('${item.id}')" title="${item.active ? 'Tạm ngưng' : 'Bật lại'}">${item.active ? '⏸️' : '▶️'}</button>
-                    <button class="action-btn delete-btn" onclick="MenuManagement.deleteItem('${item.id}')" title="Xóa">🗑️</button>
+                    <md-icon-button onclick="MenuManagement.editItem('${item.id}')" title="Sửa"><md-icon>edit</md-icon></md-icon-button>
+                    <md-icon-button onclick="MenuManagement.toggleActive('${item.id}')" title="${item.active ? 'Tạm ngưng' : 'Bật lại'}">
+                        <md-icon>${item.active ? 'pause' : 'play_arrow'}</md-icon>
+                    </md-icon-button>
+                    <md-icon-button class="delete-btn" onclick="MenuManagement.deleteItem('${item.id}')" title="Xóa" style="color: var(--danger);">
+                        <md-icon>delete</md-icon>
+                    </md-icon-button>
                 </td>
             `;
             row.querySelector('.menu-checkbox').addEventListener('change', (e) => {
@@ -209,8 +236,12 @@ const MenuManagement = {
                     <div class="daily-menu-price">${formatCurrency(item.price)}</div>
                 </div>
                 <div class="daily-menu-actions">
-                    <button class="toggle-btn ${item.available ? 'on' : 'off'}" onclick="MenuManagement.toggleDailyAvailable('${item.id}')">${item.available ? '✓' : '✕'}</button>
-                    <button class="remove-btn" onclick="MenuManagement.removeFromDaily('${item.id}')">🗑️</button>
+                    <md-icon-button class="toggle-btn ${item.available ? 'on' : 'off'}" onclick="MenuManagement.toggleDailyAvailable('${item.id}')">
+                        <md-icon>${item.available ? 'check_circle' : 'cancel'}</md-icon>
+                    </md-icon-button>
+                    <md-icon-button class="remove-btn" onclick="MenuManagement.removeFromDaily('${item.id}')">
+                         <md-icon>delete</md-icon>
+                    </md-icon-button>
                 </div>
             `;
             grid.appendChild(card);
@@ -231,14 +262,20 @@ const MenuManagement = {
 
     showAddItemModal() {
         modal.open('Thêm món mới', `
-            <div class="form-group"><label>Tên món *</label><input type="text" id="newItemName" placeholder="VD: Phở Bò"></div>
-            <div class="form-group"><label>Loại</label><select id="newItemCategory"><option value="food">Món chính</option><option value="drinks">Đồ uống</option><option value="dessert">Tráng miệng</option></select></div>
-            <div class="form-group"><label>Icon</label><input type="text" id="newItemIcon" value="🍽️" maxlength="4"></div>
-            <div class="form-group"><label>Giá bán *</label><input type="number" id="newItemPrice" placeholder="50000" min="0"></div>
-            <div class="form-group"><label>Giá vốn</label><input type="number" id="newItemCost" placeholder="15000" min="0"></div>
+            <div class="form-group"><md-outlined-text-field label="Tên món *" id="newItemName" placeholder="VD: Phở Bò"></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select id="newItemCategory" label="Loại">
+                    <md-select-option value="food"><div slot="headline">Món chính</div></md-select-option>
+                    <md-select-option value="drinks"><div slot="headline">Đồ uống</div></md-select-option>
+                    <md-select-option value="dessert"><div slot="headline">Tráng miệng</div></md-select-option>
+                </md-outlined-select>
+            </div>
+            <div class="form-group"><md-outlined-text-field label="Icon" id="newItemIcon" value="🍽️" maxlength="4"></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Giá bán *" type="number" id="newItemPrice" placeholder="50000" min="0"></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Giá vốn" type="number" id="newItemCost" placeholder="15000" min="0"></md-outlined-text-field></div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="MenuManagement.createItem()">Thêm món</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="MenuManagement.createItem()">Thêm món</md-filled-button>
         `);
     },
 
@@ -271,14 +308,20 @@ const MenuManagement = {
         if (!item) return;
 
         modal.open('Sửa món - ' + item.name, `
-            <div class="form-group"><label>Tên món</label><input type="text" id="editItemName" value="${item.name}"></div>
-            <div class="form-group"><label>Loại</label><select id="editItemCategory"><option value="food" ${item.category === 'food' ? 'selected' : ''}>Món chính</option><option value="drinks" ${item.category === 'drinks' ? 'selected' : ''}>Đồ uống</option><option value="dessert" ${item.category === 'dessert' ? 'selected' : ''}>Tráng miệng</option></select></div>
-            <div class="form-group"><label>Icon</label><input type="text" id="editItemIcon" value="${item.icon}" maxlength="4"></div>
-            <div class="form-group"><label>Giá bán</label><input type="number" id="editItemPrice" value="${item.price}" min="0"></div>
-            <div class="form-group"><label>Giá vốn</label><input type="number" id="editItemCost" value="${item.cost}" min="0"></div>
+            <div class="form-group"><md-outlined-text-field label="Tên món" id="editItemName" value="${item.name}"></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select id="editItemCategory" label="Loại">
+                    <md-select-option value="food" ${item.category === 'food' ? 'selected' : ''}><div slot="headline">Món chính</div></md-select-option>
+                    <md-select-option value="drinks" ${item.category === 'drinks' ? 'selected' : ''}><div slot="headline">Đồ uống</div></md-select-option>
+                    <md-select-option value="dessert" ${item.category === 'dessert' ? 'selected' : ''}><div slot="headline">Tráng miệng</div></md-select-option>
+                </md-outlined-select>
+            </div>
+            <div class="form-group"><md-outlined-text-field label="Icon" id="editItemIcon" value="${item.icon}" maxlength="4"></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Giá bán" type="number" id="editItemPrice" value="${item.price}" min="0"></md-outlined-text-field></div>
+            <div class="form-group"><md-outlined-text-field label="Giá vốn" type="number" id="editItemCost" value="${item.cost}" min="0"></md-outlined-text-field></div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="MenuManagement.saveItem('${itemId}')">Lưu</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="MenuManagement.saveItem('${itemId}')">Lưu</md-filled-button>
         `);
     },
 
@@ -324,11 +367,11 @@ const MenuManagement = {
                 <p style="font-size: 3rem; margin-bottom: 1rem;">${item.icon}</p>
                 <p style="font-size: 1.1rem; margin-bottom: 0.5rem;"><strong>${item.name}</strong></p>
                 <p style="color: var(--text-muted);">Bạn có chắc muốn xóa món này khỏi menu?</p>
-                <p style="color: var(--danger); font-size: 0.85rem; margin-top: 1rem;">⚠️ Hành động này không thể hoàn tác!</p>
+                <p style="color: var(--error); font-size: 0.85rem; margin-top: 1rem;">⚠️ Hành động này không thể hoàn tác!</p>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-danger" onclick="MenuManagement.confirmDelete('${itemId}')">🗑️ Xóa món</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button style="--md-sys-color-primary: var(--error);" onclick="MenuManagement.confirmDelete('${itemId}')">🗑️ Xóa món</md-filled-button>
         `);
     },
 
@@ -461,31 +504,27 @@ const MenuManagement = {
                         ${preview.map(row => `<tr>${columns.map(c => `<td>${row[c] || ''}</td>`).join('')}</tr>`).join('')}
                     </tbody>
                 </table>
-                <div style="margin-top: 1.5rem; background: var(--bg-input); padding: 1rem; border-radius: 8px;">
+                <div style="margin-top: 1.5rem; background: var(--surface-container); padding: 1rem; border-radius: 8px;">
                     <p style="font-weight: 600; margin-bottom: 0.75rem;">📋 Ánh xạ cột (Column Mapping):</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                         <div class="form-group" style="margin:0;">
-                            <label style="font-size: 0.8rem;">Tên món</label>
-                            <select id="mapName">${columns.map(c => `<option value="${c}" ${c.toLowerCase().includes('tên') || c.toLowerCase().includes('name') ? 'selected' : ''}>${c}</option>`).join('')}</select>
+                            <md-outlined-select label="Tên món" id="mapName">${columns.map(c => `<md-select-option value="${c}" ${c.toLowerCase().includes('tên') || c.toLowerCase().includes('name') ? 'selected' : ''}><div slot="headline">${c}</div></md-select-option>`).join('')}</md-outlined-select>
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label style="font-size: 0.8rem;">Giá bán</label>
-                            <select id="mapPrice">${columns.map(c => `<option value="${c}" ${c.toLowerCase().includes('giá') || c.toLowerCase().includes('price') ? 'selected' : ''}>${c}</option>`).join('')}</select>
+                            <md-outlined-select label="Giá bán" id="mapPrice">${columns.map(c => `<md-select-option value="${c}" ${c.toLowerCase().includes('giá') || c.toLowerCase().includes('price') ? 'selected' : ''}><div slot="headline">${c}</div></md-select-option>`).join('')}</md-outlined-select>
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label style="font-size: 0.8rem;">Giá vốn (tuỳ chọn)</label>
-                            <select id="mapCost"><option value="">-- Không --</option>${columns.map(c => `<option value="${c}" ${c.toLowerCase().includes('vốn') || c.toLowerCase().includes('cost') ? 'selected' : ''}>${c}</option>`).join('')}</select>
+                            <md-outlined-select label="Giá vốn (tuỳ chọn)" id="mapCost"><md-select-option value=""><div slot="headline">-- Không --</div></md-select-option>${columns.map(c => `<md-select-option value="${c}" ${c.toLowerCase().includes('vốn') || c.toLowerCase().includes('cost') ? 'selected' : ''}><div slot="headline">${c}</div></md-select-option>`).join('')}</md-outlined-select>
                         </div>
                         <div class="form-group" style="margin:0;">
-                            <label style="font-size: 0.8rem;">Loại (tuỳ chọn)</label>
-                            <select id="mapCategory"><option value="">-- Mặc định: Món chính --</option>${columns.map(c => `<option value="${c}" ${c.toLowerCase().includes('loại') || c.toLowerCase().includes('category') ? 'selected' : ''}>${c}</option>`).join('')}</select>
+                            <md-outlined-select label="Loại (tuỳ chọn)" id="mapCategory"><md-select-option value=""><div slot="headline">-- Mặc định: Món chính --</div></md-select-option>${columns.map(c => `<md-select-option value="${c}" ${c.toLowerCase().includes('loại') || c.toLowerCase().includes('category') ? 'selected' : ''}><div slot="headline">${c}</div></md-select-option>`).join('')}</md-outlined-select>
                         </div>
                     </div>
                 </div>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="MenuManagement.processExcelImport(${JSON.stringify(data).replace(/"/g, '&quot;')})">✅ Import ${data.length} món</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="MenuManagement.processExcelImport(${JSON.stringify(data).replace(/"/g, '&quot;')})">✅ Import ${data.length} món</md-filled-button>
         `);
     },
 

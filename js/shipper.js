@@ -51,16 +51,20 @@ const ShipperApp = {
         const pinInput = document.getElementById('shipperPin');
 
         if (phoneInput) {
-            phoneInput.addEventListener('keypress', (e) => {
+            phoneInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
                     pinInput?.focus();
                 }
             });
         }
 
         if (pinInput) {
-            pinInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.login();
+            pinInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.login();
+                }
             });
         }
     },
@@ -221,13 +225,7 @@ const ShipperApp = {
         }
 
         if (statusToggle) {
-            // Support both md-switch (selected) and native input (checked)
-            const isOnline = this.currentShipper?.status === 'online';
-            if ('selected' in statusToggle) {
-                statusToggle.selected = isOnline;
-            } else {
-                statusToggle.checked = isOnline;
-            }
+            statusToggle.checked = this.currentShipper?.status === 'online';
         }
     },
 
@@ -398,7 +396,7 @@ const ShipperApp = {
         const ratingEl = document.getElementById('shipperRating');
 
         if (nameEl) nameEl.textContent = this.currentShipper?.name || 'Shipper';
-        if (ratingEl) ratingEl.innerHTML = `<md-icon style="font-size: 16px; color: #FFC107;">star</md-icon> ${this.currentShipper?.rating?.toFixed(1) || '5.0'}`;
+        if (ratingEl) ratingEl.textContent = `⭐ ${this.currentShipper?.rating?.toFixed(1) || '5.0'}`;
 
         this.updateStatusToggle();
     },
@@ -492,14 +490,12 @@ const ShipperApp = {
                 </div>
                 
                 <div class="order-actions">
-                    <md-filled-button class="btn-action" onclick="ShipperApp.pickupOrder('${order.id}')">
-                        <md-icon slot="icon">inventory_2</md-icon>
-                        Nhận đơn
-                    </md-filled-button>
-                    <md-outlined-button class="btn-action" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
-                        <md-icon slot="icon">map</md-icon>
-                        Chỉ đường
-                    </md-outlined-button>
+                    <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.pickupOrder('${order.id}')">
+                        📦 Nhận đơn
+                    </button>
+                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                        🗺️ Chỉ đường
+                    </a>
                 </div>
             </div>
         `;
@@ -527,24 +523,22 @@ const ShipperApp = {
         let actionsHtml = '';
         if (delivery.status === 'assigned') {
             actionsHtml = `
-                <md-filled-button class="btn-action" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
-                    <md-icon slot="icon">directions_run</md-icon>
-                    Đã lấy hàng
-                </md-filled-button>
+                <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
+                    🏃 Đã lấy hàng
+                </button>
             `;
         } else if (delivery.status === 'picked_up' || delivery.status === 'delivering') {
             actionsHtml = `
-                <md-filled-button class="btn-action" onclick="ShipperApp.completeDelivery('${delivery.id}')" style="--md-filled-button-container-color: var(--ad-color-success); --md-filled-button-label-text-color: var(--ad-color-on-success);">
-                    <md-icon slot="icon">check</md-icon>
-                    Đã giao xong
-                </md-filled-button>
+                <button class="btn-action success md-ripple md-focus-ring" onclick="ShipperApp.completeDelivery('${delivery.id}')">
+                    ✅ Đã giao xong
+                </button>
             `;
         }
 
         return `
             <div class="order-card delivery-card ${delivery.status}" data-delivery-id="${delivery.id}">
                 <div class="delivery-badge">${statusLabels[delivery.status] || delivery.status}</div>
-
+                
                 <div class="order-card-header">
                     <div>
                         <div class="order-id">#${order.order_number || order.id?.substring(0, 8)}</div>
@@ -552,48 +546,36 @@ const ShipperApp = {
                     </div>
                     <span class="commission-badge">+${this.formatPrice(delivery.commission || this.currentShipper?.commission_rate || 15000)}</span>
                 </div>
-
+                
                 <div class="order-customer">
-                    <div class="customer-name" style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 18px;">person</md-icon>
-                        ${order.customer_name || 'Khách hàng'}
-                    </div>
-                    <div class="customer-phone" style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 16px;">call</md-icon>
-                        <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
+                    <div class="customer-name">👤 ${order.customer_name || 'Khách hàng'}</div>
+                    <div class="customer-phone">
+                        📞 <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
                     </div>
                 </div>
-
+                
                 <div class="order-address">
-                    <div class="address-label" style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 14px;">location_on</md-icon>
-                        Địa chỉ giao hàng
-                    </div>
+                    <div class="address-label">📍 Địa chỉ giao hàng</div>
                     <div class="address-text">${address}</div>
                 </div>
-
+                
                 <div class="order-items">
-                    <div class="order-items-title" style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 14px;">restaurant</md-icon>
-                        ${itemsText}
-                    </div>
+                    <div class="order-items-title">🍽️ ${itemsText}</div>
                 </div>
-
+                
                 <div class="order-total">
                     <span class="total-label">Thu hộ:</span>
                     <span class="total-value">${this.formatPrice(order.total)}</span>
                 </div>
-
+                
                 <div class="order-actions">
                     ${actionsHtml}
-                    <md-outlined-button class="btn-action" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
-                        <md-icon slot="icon">map</md-icon>
-                        Chỉ đường
-                    </md-outlined-button>
-                    <md-outlined-button class="btn-action" href="tel:${order.customer_phone}">
-                        <md-icon slot="icon">call</md-icon>
-                        Gọi
-                    </md-outlined-button>
+                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                        🗺️ Chỉ đường
+                    </a>
+                    <a class="btn-action call md-ripple md-focus-ring" href="tel:${order.customer_phone}">
+                        📞 Gọi
+                    </a>
                 </div>
             </div>
         `;
@@ -891,22 +873,12 @@ const ShipperApp = {
                     <span class="history-date">${this.formatDate(delivery.delivered_at)}</span>
                 </div>
                 <div class="history-details">
-                    <div class="history-customer" style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 16px;">person</md-icon>
-                        ${order.customer_name || 'Khách hàng'}
-                    </div>
+                    <span class="history-customer">👤 ${order.customer_name || 'Khách hàng'}</span>
                     <span class="history-total">${this.formatPrice(order.total)}</span>
                 </div>
                 <div class="history-commission">
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <md-icon style="font-size: 16px; color: var(--shipper-accent);">monetization_on</md-icon>
-                        Hoa hồng: <strong>${this.formatPrice(delivery.commission || 15000)}</strong>
-                    </div>
-                    ${delivery.customer_rating ? `
-                    <div class="history-rating" style="display: flex; align-items: center; gap: 2px;">
-                        <md-icon style="font-size: 14px; color: #FFC107;">star</md-icon>
-                        ${delivery.customer_rating}
-                    </div>` : ''}
+                    💰 Hoa hồng: <strong>${this.formatPrice(delivery.commission || 15000)}</strong>
+                    ${delivery.customer_rating ? `<span class="history-rating">⭐ ${delivery.customer_rating}</span>` : ''}
                 </div>
             </div>
         `;

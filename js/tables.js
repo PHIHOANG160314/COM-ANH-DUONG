@@ -98,42 +98,38 @@ const TableManagement = {
         modal.open(`${table.name} - ${this.getStatusText(table.status)}`, `
             <div class="table-modal">
                 <div class="table-modal-icon">${this.getTableIcon(table.seats)}</div>
-                
+
                 <div class="form-group">
-                    <label>Tên bàn:</label>
-                    <input type="text" id="tableNameEdit" value="${table.name}" placeholder="Bàn 1">
+                    <md-outlined-text-field label="Tên bàn" id="tableNameEdit" value="${table.name}" placeholder="Bàn 1"></md-outlined-text-field>
                 </div>
-                
+
                 <div class="form-group">
-                    <label>Số chỗ ngồi:</label>
-                    <select id="tableSeatsEdit">
-                        <option value="2" ${table.seats === 2 ? 'selected' : ''}>2 chỗ</option>
-                        <option value="4" ${table.seats === 4 ? 'selected' : ''}>4 chỗ</option>
-                        <option value="6" ${table.seats === 6 ? 'selected' : ''}>6 chỗ</option>
-                        <option value="8" ${table.seats === 8 ? 'selected' : ''}>8 chỗ</option>
-                        <option value="10" ${table.seats === 10 ? 'selected' : ''}>10 chỗ</option>
-                    </select>
+                    <md-outlined-select label="Số chỗ ngồi" id="tableSeatsEdit">
+                        <md-select-option value="2" ${table.seats === 2 ? 'selected' : ''}><div slot="headline">2 chỗ</div></md-select-option>
+                        <md-select-option value="4" ${table.seats === 4 ? 'selected' : ''}><div slot="headline">4 chỗ</div></md-select-option>
+                        <md-select-option value="6" ${table.seats === 6 ? 'selected' : ''}><div slot="headline">6 chỗ</div></md-select-option>
+                        <md-select-option value="8" ${table.seats === 8 ? 'selected' : ''}><div slot="headline">8 chỗ</div></md-select-option>
+                        <md-select-option value="10" ${table.seats === 10 ? 'selected' : ''}><div slot="headline">10 chỗ</div></md-select-option>
+                    </md-outlined-select>
                 </div>
-                
+
                 <div class="form-group">
-                    <label>Trạng thái:</label>
-                    <select id="tableStatusSelect">
-                        <option value="available" ${table.status === 'available' ? 'selected' : ''}>✅ Trống</option>
-                        <option value="occupied" ${table.status === 'occupied' ? 'selected' : ''}>🔴 Đang dùng</option>
-                        <option value="reserved" ${table.status === 'reserved' ? 'selected' : ''}>📅 Đặt trước</option>
-                        <option value="cleaning" ${table.status === 'cleaning' ? 'selected' : ''}>🧹 Dọn dẹp</option>
-                    </select>
+                    <md-outlined-select label="Trạng thái" id="tableStatusSelect">
+                        <md-select-option value="available" ${table.status === 'available' ? 'selected' : ''}><div slot="headline">✅ Trống</div></md-select-option>
+                        <md-select-option value="occupied" ${table.status === 'occupied' ? 'selected' : ''}><div slot="headline">🔴 Đang dùng</div></md-select-option>
+                        <md-select-option value="reserved" ${table.status === 'reserved' ? 'selected' : ''}><div slot="headline">📅 Đặt trước</div></md-select-option>
+                        <md-select-option value="cleaning" ${table.status === 'cleaning' ? 'selected' : ''}><div slot="headline">🧹 Dọn dẹp</div></md-select-option>
+                    </md-outlined-select>
                 </div>
-                
+
                 <div class="form-group">
-                    <label>Tên khách (nếu có):</label>
-                    <input type="text" id="tableCustomerName" value="${table.customerName || ''}" placeholder="Nhập tên khách...">
+                    <md-outlined-text-field label="Tên khách (nếu có)" id="tableCustomerName" value="${table.customerName || ''}" placeholder="Nhập tên khách..."></md-outlined-text-field>
                 </div>
             </div>
         `, `
-            <button class="btn-danger" onclick="TableManagement.deleteTable(${id})" style="margin-right:auto;">🗑️ Xóa bàn</button>
-            <button class="btn-secondary" onclick="modal.close()">Đóng</button>
-            <button class="btn-primary" onclick="TableManagement.updateTable(${id})">💾 Lưu</button>
+            <md-filled-tonal-button onclick="TableManagement.deleteTable(${id})" style="margin-right:auto; --md-sys-color-primary: var(--error); --md-sys-color-on-primary: #ffffff;">🗑️ Xóa bàn</md-filled-tonal-button>
+            <md-outlined-button onclick="modal.close()">Đóng</md-outlined-button>
+            <md-filled-button onclick="TableManagement.updateTable(${id})">💾 Lưu</md-filled-button>
         `);
     },
 
@@ -168,22 +164,20 @@ const TableManagement = {
     addTable() {
         modal.open('➕ Thêm Bàn Mới', `
             <div class="form-group">
-                <label>Tên bàn:</label>
-                <input type="text" id="newTableName" placeholder="Bàn ${this.tables.length + 1}">
+                <md-outlined-text-field label="Tên bàn" id="newTableName" placeholder="Bàn ${this.tables.length + 1}"></md-outlined-text-field>
             </div>
             <div class="form-group">
-                <label>Số chỗ ngồi:</label>
-                <select id="newTableSeats">
-                    <option value="2">2 chỗ</option>
-                    <option value="4" selected>4 chỗ</option>
-                    <option value="6">6 chỗ</option>
-                    <option value="8">8 chỗ</option>
-                    <option value="10">10 chỗ</option>
-                </select>
+                <md-outlined-select label="Số chỗ ngồi" id="newTableSeats">
+                    <md-select-option value="2"><div slot="headline">2 chỗ</div></md-select-option>
+                    <md-select-option value="4" selected><div slot="headline">4 chỗ</div></md-select-option>
+                    <md-select-option value="6"><div slot="headline">6 chỗ</div></md-select-option>
+                    <md-select-option value="8"><div slot="headline">8 chỗ</div></md-select-option>
+                    <md-select-option value="10"><div slot="headline">10 chỗ</div></md-select-option>
+                </md-outlined-select>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="TableManagement.confirmAddTable()">✅ Thêm</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="TableManagement.confirmAddTable()">✅ Thêm</md-filled-button>
         `);
     },
 

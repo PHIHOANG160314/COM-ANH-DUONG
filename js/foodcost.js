@@ -23,12 +23,19 @@ const FoodCost = {
         const row = document.createElement('div');
         row.className = 'ingredient-row';
         row.dataset.id = rowId;
+        row.style.display = 'flex';
+        row.style.gap = '8px';
+        row.style.alignItems = 'center';
+        row.style.marginBottom = '8px';
+
         row.innerHTML = `
-            <input type="text" placeholder="Tên nguyên liệu" class="ing-name">
-            <input type="number" placeholder="Số lượng" class="ing-amount" min="0" step="0.1">
-            <input type="text" placeholder="Đơn vị" class="ing-unit" value="g">
-            <input type="number" placeholder="Đơn giá" class="ing-price" min="0">
-            <button class="remove-ingredient" onclick="FoodCost.removeIngredientRow(${rowId})">×</button>
+            <md-outlined-text-field placeholder="Tên nguyên liệu" class="ing-name" style="flex: 2;"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="SL" type="number" class="ing-amount" min="0" step="0.1" style="flex: 1;"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="Đơn vị" class="ing-unit" value="g" style="flex: 1;"></md-outlined-text-field>
+            <md-outlined-text-field placeholder="Đơn giá" type="number" class="ing-price" min="0" style="flex: 1;"></md-outlined-text-field>
+            <md-icon-button class="remove-ingredient" onclick="FoodCost.removeIngredientRow(${rowId})">
+                <md-icon>close</md-icon>
+            </md-icon-button>
         `;
 
         container.appendChild(row);

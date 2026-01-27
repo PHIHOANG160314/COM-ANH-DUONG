@@ -38,7 +38,7 @@ const FeaturedManager = {
         const modeToggle = document.getElementById('featuredModeToggle');
         if (modeToggle) {
             modeToggle.addEventListener('change', () => {
-                this.config.mode = modeToggle.checked ? 'manual' : 'auto';
+                this.config.mode = modeToggle.selected ? 'manual' : 'auto';
                 this.render();
                 this.saveConfig();
             });

@@ -13,14 +13,19 @@ const SOPs = {
     },
 
     setupEventListeners() {
-        document.querySelectorAll('.sop-cat-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.sop-cat-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                this.currentSOP = e.target.dataset.sop;
-                this.render();
+        // md-list-item handles clicks, but we can listen on the container
+        const sopCategories = document.querySelector('.sop-categories md-list');
+        if (sopCategories) {
+            sopCategories.addEventListener('click', (e) => {
+                const item = e.target.closest('md-list-item');
+                if (item) {
+                     document.querySelectorAll('.sop-cat-btn').forEach(b => b.classList.remove('active'));
+                     item.classList.add('active');
+                     this.currentSOP = item.dataset.sop;
+                     this.render();
+                }
             });
-        });
+        }
 
         document.getElementById('resetSopBtn').addEventListener('click', () => this.reset());
         document.getElementById('completeSopBtn').addEventListener('click', () => this.completeAll());

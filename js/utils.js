@@ -116,33 +116,41 @@ const toast = {
 
 // Modal system
 const modal = {
-    overlay: null,
     modalEl: null,
 
     init() {
-        this.overlay = document.getElementById('modalOverlay');
         this.modalEl = document.getElementById('modal');
-
-        document.getElementById('modalClose').addEventListener('click', () => this.close());
-        this.overlay.addEventListener('click', (e) => {
-            if (e.target === this.overlay) this.close();
-        });
+        if (this.modalEl) {
+             // md-dialog handles overlay and closing automatically when clicking outside if configured,
+             // but here we just need to ensure we can close it programmatically.
+             // We can attach close event to the close button inside the headline if needed.
+             const closeBtn = document.getElementById('modalClose');
+             if (closeBtn) {
+                 closeBtn.addEventListener('click', () => this.close());
+             }
+        }
     },
 
     open(title, content, footer = '') {
-        if (!this.overlay) this.init();
+        if (!this.modalEl) this.init();
+        if (!this.modalEl) return;
 
-        document.getElementById('modalTitle').textContent = title;
-        document.getElementById('modalBody').innerHTML = content;
-        document.getElementById('modalFooter').innerHTML = footer;
+        const titleEl = document.getElementById('modalTitle');
+        const bodyEl = document.getElementById('modalBody');
+        const footerEl = document.getElementById('modalFooter');
 
-        this.overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        if (titleEl) titleEl.textContent = title;
+        if (bodyEl) bodyEl.innerHTML = content;
+        if (footerEl) footerEl.innerHTML = footer;
+
+        // Use md-dialog API
+        this.modalEl.show();
     },
 
     close() {
-        this.overlay.classList.remove('active');
-        document.body.style.overflow = '';
+        if (this.modalEl) {
+            this.modalEl.close();
+        }
     }
 };
 

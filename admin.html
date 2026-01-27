@@ -17,11 +17,11 @@
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.sheetjs.com https://esm.run;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.run;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -35,7 +35,9 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.jpg">
 
-    <!-- Fonts & Styles -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -46,6 +48,15 @@
     <link rel="stylesheet" href="css/m3-dashboard-layout.css">
     <link rel="stylesheet" href="css/m3-adaptive-layouts.css">
     <link rel="stylesheet" href="css/m3-accessibility.css">
+
+    <!-- Import Map for Material Web -->
+    <script type="importmap">
+    {
+        "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+        }
+    }
+    </script>
 
     <!-- Application Styles -->
     <link rel="stylesheet" href="css/main.css">
@@ -70,7 +81,7 @@
                     </div>
                     <span class="ad-logo-text ad-logo-text--gradient">Ánh Dương</span>
                 </a>
-                <button type="button" class="sidebar-toggle" id="sidebarToggle">☰</button>
+                <md-icon-button id="sidebarToggle" class="sidebar-toggle">☰</md-icon-button>
             </div>
 
             <nav class="sidebar-nav" aria-label="Main Navigation">
@@ -148,10 +159,9 @@
                     <p>📞 0917 076 061</p>
                     <p>📍 91 Hùng Vương, Sa Đéc</p>
                 </div>
-                <button type="button" class="btn-logout md-ripple md-focus-ring"
-                    onclick="AuthService.logout(); location.reload();" title="Đăng xuất">
+                <md-text-button class="btn-logout" onclick="AuthService.logout(); location.reload();" title="Đăng xuất">
                     🚪 Đăng xuất
-                </button>
+                </md-text-button>
             </div>
         </aside>
 
@@ -165,21 +175,20 @@
                 </div>
                 <div class="header-right">
                     <div class="search-box">
-                        <input type="text" placeholder="Tìm kiếm..." id="globalSearch">
-                        <span class="search-icon">🔍</span>
+                        <md-outlined-text-field placeholder="Tìm kiếm..." id="globalSearch">
+                            <md-icon slot="leading-icon">search</md-icon>
+                        </md-outlined-text-field>
                     </div>
-                    <button type="button" class="btn-icon" id="themeToggleBtn" title="Chuyển đổi sáng/tối">
+                    <md-icon-button id="themeToggleBtn" title="Chuyển đổi sáng/tối">
                         <span id="themeIcon">🌙</span>
-                    </button>
-                    <button type="button" class="btn-icon" id="langToggleBtn" onclick="i18n.toggleLanguage()"
-                        title="Change Language">
-                        🌐 EN
-                    </button>
-                    <button type="button" class="btn-icon" id="notificationBtn"
-                        onclick="KitchenDisplay.showReadyOrders()" title="Đơn sẵn sàng phục vụ">
+                    </md-icon-button>
+                    <md-icon-button id="langToggleBtn" onclick="i18n.toggleLanguage()" title="Change Language">
+                        🌐
+                    </md-icon-button>
+                    <md-icon-button id="notificationBtn" onclick="KitchenDisplay.showReadyOrders()" title="Đơn sẵn sàng phục vụ">
                         <span>🔔</span>
                         <span class="badge">0</span>
-                    </button>
+                    </md-icon-button>
                 </div>
             </header>
 
@@ -339,14 +348,12 @@
                             <h2>📊 Thống Kê Doanh Thu</h2>
                             <div class="analytics-filters">
                                 <div class="quick-filters">
-                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter active"
-                                        data-filter="today">Hôm nay</button>
-                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
-                                        data-filter="week">Tuần</button>
-                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
-                                        data-filter="month">Tháng</button>
-                                    <button type="button" class="quick-filter-btn md-chip md-chip-filter"
-                                        data-filter="year">Năm</button>
+                                    <md-chip-set>
+                                        <md-filter-chip class="quick-filter-btn" label="Hôm nay" data-filter="today" selected></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Tuần" data-filter="week"></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Tháng" data-filter="month"></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Năm" data-filter="year"></md-filter-chip>
+                                    </md-chip-set>
                                 </div>
                                 <div class="date-picker-group">
                                     <input type="date" id="analyticsDateFrom">
@@ -422,40 +429,62 @@
                     <div class="pos-container">
                         <div class="pos-menu">
                             <div class="category-tabs" id="categoryTabs">
-                                <button type="button" class="category-tab md-chip md-chip-filter active"
-                                    data-category="all">Tất
-                                    cả</button>
-                                <button type="button" class="category-tab md-chip md-chip-filter"
-                                    data-category="food">Món
-                                    chính</button>
-                                <button type="button" class="category-tab md-chip md-chip-filter"
-                                    data-category="drinks">Đồ
-                                    uống</button>
-                                <button type="button" class="category-tab md-chip md-chip-filter"
-                                    data-category="dessert">Tráng
-                                    miệng</button>
+                                <md-chip-set>
+                                    <md-filter-chip class="category-tab" label="Tất cả" data-category="all" selected></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Món chính" data-category="food"></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Đồ uống" data-category="drinks"></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Tráng miệng" data-category="dessert"></md-filter-chip>
+                                </md-chip-set>
                             </div>
                             <div class="menu-grid" id="menuGrid"></div>
                         </div>
                         <div class="pos-cart">
                             <div class="cart-header">
                                 <h3>🛒 Đơn hàng</h3>
-                                <select id="tableSelect">
-                                    <option value="">Chọn bàn</option>
-                                    <option value="1">Bàn 1</option>
-                                    <option value="2">Bàn 2</option>
-                                    <option value="3">Bàn 3</option>
-                                    <option value="4">Bàn 4</option>
-                                    <option value="5">Bàn 5</option>
-                                    <option value="6">Bàn 6</option>
-                                    <option value="7">Bàn 7</option>
-                                    <option value="8">Bàn 8</option>
-                                    <option value="9">Bàn 9</option>
-                                    <option value="10">Bàn 10</option>
-                                    <option value="11">Bàn 11</option>
-                                    <option value="12">Bàn 12</option>
-                                    <option value="takeaway">Mang đi</option>
-                                </select>
+                                <md-outlined-select id="tableSelect">
+                                    <md-select-option value="" selected>
+                                        <div slot="headline">Chọn bàn</div>
+                                    </md-select-option>
+                                    <md-select-option value="1">
+                                        <div slot="headline">Bàn 1</div>
+                                    </md-select-option>
+                                    <md-select-option value="2">
+                                        <div slot="headline">Bàn 2</div>
+                                    </md-select-option>
+                                    <md-select-option value="3">
+                                        <div slot="headline">Bàn 3</div>
+                                    </md-select-option>
+                                    <md-select-option value="4">
+                                        <div slot="headline">Bàn 4</div>
+                                    </md-select-option>
+                                    <md-select-option value="5">
+                                        <div slot="headline">Bàn 5</div>
+                                    </md-select-option>
+                                    <md-select-option value="6">
+                                        <div slot="headline">Bàn 6</div>
+                                    </md-select-option>
+                                    <md-select-option value="7">
+                                        <div slot="headline">Bàn 7</div>
+                                    </md-select-option>
+                                    <md-select-option value="8">
+                                        <div slot="headline">Bàn 8</div>
+                                    </md-select-option>
+                                    <md-select-option value="9">
+                                        <div slot="headline">Bàn 9</div>
+                                    </md-select-option>
+                                    <md-select-option value="10">
+                                        <div slot="headline">Bàn 10</div>
+                                    </md-select-option>
+                                    <md-select-option value="11">
+                                        <div slot="headline">Bàn 11</div>
+                                    </md-select-option>
+                                    <md-select-option value="12">
+                                        <div slot="headline">Bàn 12</div>
+                                    </md-select-option>
+                                    <md-select-option value="takeaway">
+                                        <div slot="headline">Mang đi</div>
+                                    </md-select-option>
+                                </md-outlined-select>
                             </div>
                             <div class="cart-items" id="cartItems">
                                 <div class="cart-empty">Chưa có món nào</div>
@@ -475,14 +504,12 @@
                                 </div>
                             </div>
                             <div class="cart-actions">
-                                <button type="button"
-                                    class="btn-secondary md-button md-button-outlined md-ripple md-focus-ring"
-                                    id="clearCartBtn">Xóa
-                                    đơn</button>
-                                <button type="button"
-                                    class="btn-primary md-button md-button-filled md-ripple md-focus-ring"
-                                    id="checkoutBtn">Thanh
-                                    toán</button>
+                                <md-outlined-button class="btn-secondary" id="clearCartBtn">
+                                    Xóa đơn
+                                </md-outlined-button>
+                                <md-filled-button class="btn-primary" id="checkoutBtn">
+                                    Thanh toán
+                                </md-filled-button>
                             </div>
                         </div>
                     </div>
@@ -494,21 +521,19 @@
                         <div class="foodcost-form card">
                             <h3>Tính giá thành món ăn</h3>
                             <div class="form-group">
-                                <label>Tên món</label>
-                                <input type="text" id="dishName" placeholder="VD: Bún bò Huế">
+                                <md-outlined-text-field label="Tên món" id="dishName" placeholder="VD: Bún bò Huế"></md-outlined-text-field>
                             </div>
                             <div class="ingredients-section">
                                 <div class="section-header">
                                     <h4>Nguyên liệu</h4>
-                                    <button type="button" class="btn-icon-sm" id="addIngredientBtn">+ Thêm</button>
+                                    <md-text-button id="addIngredientBtn">+ Thêm</md-text-button>
                                 </div>
                                 <div id="ingredientsList"></div>
                             </div>
                             <div class="form-group">
-                                <label>Target Food Cost %</label>
-                                <input type="number" id="targetFoodCost" value="30" min="1" max="100">
+                                <md-outlined-text-field label="Target Food Cost %" type="number" id="targetFoodCost" value="30" min="1" max="100"></md-outlined-text-field>
                             </div>
-                            <button type="button" class="btn-primary full-width" id="calculateBtn">Tính toán</button>
+                            <md-filled-button class="full-width" id="calculateBtn">Tính toán</md-filled-button>
                         </div>
                         <div class="foodcost-result card">
                             <h3>Kết quả</h3>
@@ -530,8 +555,7 @@
                                     <span class="result-value" id="grossProfit">0đ</span>
                                 </div>
                             </div>
-                            <button type="button" class="btn-secondary full-width" id="saveRecipeBtn">Lưu công
-                                thức</button>
+                            <md-outlined-button class="full-width" id="saveRecipeBtn">Lưu công thức</md-outlined-button>
                         </div>
                     </div>
                 </section>
@@ -540,30 +564,28 @@
                 <section class="page" id="page-inventory">
                     <div class="inventory-header">
                         <div class="inventory-actions">
-                            <button type="button" class="btn-primary md-button md-button-filled md-ripple md-focus-ring"
-                                id="addInventoryBtn">+
-                                Nhập
-                                kho</button>
-                            <button type="button"
-                                class="btn-secondary md-button md-button-outlined md-ripple md-focus-ring"
-                                id="exportInventoryBtn">Xuất
-                                kho</button>
+                            <md-filled-button id="addInventoryBtn">
+                                + Nhập kho
+                            </md-filled-button>
+                            <md-outlined-button id="exportInventoryBtn">
+                                Xuất kho
+                            </md-outlined-button>
                         </div>
                         <div class="inventory-filters">
-                            <select id="inventoryCategory">
-                                <option value="">Tất cả nhóm</option>
-                                <option value="meat">Thịt</option>
-                                <option value="seafood">Hải sản</option>
-                                <option value="vegetables">Rau củ</option>
-                                <option value="spices">Gia vị</option>
-                                <option value="drinks">Đồ uống</option>
-                            </select>
-                            <select id="inventoryStatus">
-                                <option value="">Tất cả trạng thái</option>
-                                <option value="low">Sắp hết</option>
-                                <option value="ok">Đủ dùng</option>
-                                <option value="excess">Dư thừa</option>
-                            </select>
+                            <md-outlined-select id="inventoryCategory">
+                                <md-select-option value="" selected><div slot="headline">Tất cả nhóm</div></md-select-option>
+                                <md-select-option value="meat"><div slot="headline">Thịt</div></md-select-option>
+                                <md-select-option value="seafood"><div slot="headline">Hải sản</div></md-select-option>
+                                <md-select-option value="vegetables"><div slot="headline">Rau củ</div></md-select-option>
+                                <md-select-option value="spices"><div slot="headline">Gia vị</div></md-select-option>
+                                <md-select-option value="drinks"><div slot="headline">Đồ uống</div></md-select-option>
+                            </md-outlined-select>
+                            <md-outlined-select id="inventoryStatus">
+                                <md-select-option value="" selected><div slot="headline">Tất cả trạng thái</div></md-select-option>
+                                <md-select-option value="low"><div slot="headline">Sắp hết</div></md-select-option>
+                                <md-select-option value="ok"><div slot="headline">Đủ dùng</div></md-select-option>
+                                <md-select-option value="excess"><div slot="headline">Dư thừa</div></md-select-option>
+                            </md-outlined-select>
                         </div>
                     </div>
                     <div class="inventory-table-container">
@@ -588,9 +610,10 @@
                 <!-- Recipes Page -->
                 <section class="page" id="page-recipes">
                     <div class="recipes-header">
-                        <button type="button" class="btn-primary md-ripple md-focus-ring" id="addRecipeBtn">+ Thêm công
-                            thức</button>
-                        <input type="text" class="search-input" id="recipeSearch" placeholder="Tìm công thức...">
+                        <md-filled-button id="addRecipeBtn">+ Thêm công thức</md-filled-button>
+                        <md-outlined-text-field placeholder="Tìm công thức..." id="recipeSearch">
+                            <md-icon slot="leading-icon">search</md-icon>
+                        </md-outlined-text-field>
                     </div>
                     <div class="recipes-grid" id="recipesGrid"></div>
                 </section>
@@ -598,11 +621,14 @@
                 <!-- Menu Management Page -->
                 <section class="page" id="page-menu">
                     <div class="menu-management">
-                        <div class="menu-tabs">
-                            <button type="button" class="menu-tab active" data-menu-type="master">📋 Menu Tổng</button>
-                            <button type="button" class="menu-tab md-ripple md-focus-ring" data-menu-type="daily">📅
-                                Menu Hôm Nay</button>
-                        </div>
+                        <md-tabs class="menu-tabs">
+                            <md-primary-tab class="menu-tab" data-menu-type="master" selected>
+                                📋 Menu Tổng
+                            </md-primary-tab>
+                            <md-primary-tab class="menu-tab" data-menu-type="daily">
+                                📅 Menu Hôm Nay
+                            </md-primary-tab>
+                        </md-tabs>
 
                         <!-- Master Menu -->
                         <div class="menu-section active" id="masterMenuSection">
@@ -611,22 +637,25 @@
                                 <div class="menu-header-actions">
                                     <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv"
                                         style="display:none">
-                                    <button type="button" class="btn-outline md-ripple md-focus-ring"
-                                        id="downloadTemplateBtn" title="Tải file mẫu có hướng dẫn"
-                                        onclick="MenuManagement.downloadTemplate()">📄
-                                        Tải Mẫu</button>
-                                    <button type="button" class="btn-info md-ripple md-focus-ring" id="importExcelBtn"
-                                        title="Import từ file Excel">📥
-                                        Import</button>
-                                    <button type="button" class="btn-warning md-ripple md-focus-ring"
-                                        id="exportExcelBtn" title="Xuất menu ra Excel">📤
-                                        Export</button>
-                                    <button type="button" class="btn-success md-ripple md-focus-ring"
-                                        id="addToDailyBtn">➕ Menu Ngày</button>
-                                    <button type="button" class="btn-secondary md-ripple md-focus-ring"
-                                        id="resetMenuBtn" title="Khôi phục lại menu mẫu đầy đủ">🔄 Nạp Mẫu</button>
-                                    <button type="button" class="btn-primary md-ripple md-focus-ring"
-                                        id="addMenuItemBtn">+ Thêm món</button>
+                                    <md-outlined-button id="downloadTemplateBtn" title="Tải file mẫu có hướng dẫn"
+                                        onclick="MenuManagement.downloadTemplate()">
+                                        📄 Tải Mẫu
+                                    </md-outlined-button>
+                                    <md-filled-tonal-button id="importExcelBtn" title="Import từ file Excel" class="btn-info">
+                                        📥 Import
+                                    </md-filled-tonal-button>
+                                    <md-filled-button id="exportExcelBtn" title="Xuất menu ra Excel" class="btn-warning" style="--md-sys-color-primary: var(--warning-color);">
+                                        📤 Export
+                                    </md-filled-button>
+                                    <md-filled-button id="addToDailyBtn" class="btn-success" style="--md-sys-color-primary: var(--success-color);">
+                                        ➕ Menu Ngày
+                                    </md-filled-button>
+                                    <md-outlined-button id="resetMenuBtn" title="Khôi phục lại menu mẫu đầy đủ" class="btn-secondary">
+                                        🔄 Nạp Mẫu
+                                    </md-outlined-button>
+                                    <md-filled-button id="addMenuItemBtn">
+                                        + Thêm món
+                                    </md-filled-button>
                                 </div>
                             </div>
                             <div class="menu-table-container">
@@ -653,11 +682,12 @@
                             <div class="menu-header">
                                 <h3>📅 Menu Hôm Nay - <span id="todayDate"></span></h3>
                                 <div class="menu-header-actions">
-                                    <button type="button" class="btn-secondary md-ripple md-focus-ring"
-                                        id="clearDailyBtn">Xóa tất cả</button>
-                                    <button type="button" class="btn-primary md-ripple md-focus-ring"
-                                        id="copyYesterdayBtn">📋 Copy từ hôm
-                                        qua</button>
+                                    <md-outlined-button id="clearDailyBtn" class="btn-secondary">
+                                        Xóa tất cả
+                                    </md-outlined-button>
+                                    <md-filled-button id="copyYesterdayBtn">
+                                        📋 Copy từ hôm qua
+                                    </md-filled-button>
                                 </div>
                             </div>
                             <div class="daily-menu-grid" id="dailyMenuGrid"></div>
@@ -674,17 +704,26 @@
                         <div class="sops-sidebar">
                             <h3>Danh mục SOP</h3>
                             <div class="sop-categories">
-                                <button type="button" class="sop-cat-btn active" data-sop="opening">🌅 Opening</button>
-                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="closing">🌙
-                                    Closing</button>
-                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="service">🍽️
-                                    Service</button>
-                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring"
-                                    data-sop="kitchen">🧑‍🍳 Kitchen</button>
-                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="cleaning">🧹
-                                    Cleaning</button>
-                                <button type="button" class="sop-cat-btn md-ripple md-focus-ring" data-sop="safety">🛡️
-                                    Food Safety</button>
+                                <md-list>
+                                    <md-list-item type="button" class="sop-cat-btn active" data-sop="opening">
+                                        <div slot="headline">🌅 Opening</div>
+                                    </md-list-item>
+                                    <md-list-item type="button" class="sop-cat-btn" data-sop="closing">
+                                        <div slot="headline">🌙 Closing</div>
+                                    </md-list-item>
+                                    <md-list-item type="button" class="sop-cat-btn" data-sop="service">
+                                        <div slot="headline">🍽️ Service</div>
+                                    </md-list-item>
+                                    <md-list-item type="button" class="sop-cat-btn" data-sop="kitchen">
+                                        <div slot="headline">🧑‍🍳 Kitchen</div>
+                                    </md-list-item>
+                                    <md-list-item type="button" class="sop-cat-btn" data-sop="cleaning">
+                                        <div slot="headline">🧹 Cleaning</div>
+                                    </md-list-item>
+                                    <md-list-item type="button" class="sop-cat-btn" data-sop="safety">
+                                        <div slot="headline">🛡️ Food Safety</div>
+                                    </md-list-item>
+                                </md-list>
                             </div>
                         </div>
                         <div class="sops-content">
@@ -699,10 +738,12 @@
                             </div>
                             <div class="sop-checklist" id="sopChecklist"></div>
                             <div class="sop-actions">
-                                <button type="button" class="btn-secondary md-ripple md-focus-ring"
-                                    id="resetSopBtn">Reset</button>
-                                <button type="button" class="btn-primary md-ripple md-focus-ring"
-                                    id="completeSopBtn">Hoàn thành</button>
+                                <md-outlined-button id="resetSopBtn" class="btn-secondary">
+                                    Reset
+                                </md-outlined-button>
+                                <md-filled-button id="completeSopBtn">
+                                    Hoàn thành
+                                </md-filled-button>
                             </div>
                         </div>
                     </div>
@@ -723,14 +764,11 @@
                                     <h3>Chế độ hiển thị</h3>
                                     <p id="currentModeText">Tự động - Dựa trên thống kê bán hàng realtime</p>
                                 </div>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="featuredModeToggle">
-                                    <span class="toggle-slider"></span>
-                                    <span class="toggle-labels">
-                                        <span class="label-auto">Auto</span>
-                                        <span class="label-manual">Manual</span>
-                                    </span>
-                                </label>
+                                <div class="toggle-container">
+                                    <span>Auto</span>
+                                    <md-switch id="featuredModeToggle"></md-switch>
+                                    <span>Manual</span>
+                                </div>
                             </div>
                         </div>
 
@@ -740,14 +778,14 @@
                             <div class="auto-config">
                                 <div class="config-row">
                                     <label>Số lượng món hiển thị:</label>
-                                    <select id="featuredAutoCount">
-                                        <option value="3">3 món</option>
-                                        <option value="4">4 món</option>
-                                        <option value="5">5 món</option>
-                                        <option value="6" selected>6 món</option>
-                                        <option value="8">8 món</option>
-                                        <option value="10">10 món</option>
-                                    </select>
+                                    <md-outlined-select id="featuredAutoCount">
+                                        <md-select-option value="3"><div slot="headline">3 món</div></md-select-option>
+                                        <md-select-option value="4"><div slot="headline">4 món</div></md-select-option>
+                                        <md-select-option value="5"><div slot="headline">5 món</div></md-select-option>
+                                        <md-select-option value="6" selected><div slot="headline">6 món</div></md-select-option>
+                                        <md-select-option value="8"><div slot="headline">8 món</div></md-select-option>
+                                        <md-select-option value="10"><div slot="headline">10 món</div></md-select-option>
+                                    </md-outlined-select>
                                 </div>
                                 <div class="config-info">
                                     <span class="info-icon">ℹ️</span>
@@ -767,8 +805,7 @@
                         <div class="featured-section card" id="featuredManualSection" style="display: none;">
                             <div class="manual-header">
                                 <h3>✋ Cấu hình Manual Mode</h3>
-                                <button type="button" class="btn-primary md-ripple" id="addFeaturedBtn">+ Thêm
-                                    món</button>
+                                <md-filled-button id="addFeaturedBtn">+ Thêm món</md-filled-button>
                             </div>
                             <div class="manual-list" id="featuredManualList">
                                 <p class="text-muted">Chưa có món nào. Nhấn "Thêm món" để bắt đầu.</p>
@@ -781,32 +818,28 @@
 
                         <!-- Save Button -->
                         <div class="featured-actions">
-                            <button type="button" class="btn-primary md-button md-button-filled md-ripple"
-                                id="saveFeaturedBtn" onclick="FeaturedManager.saveConfig()">
+                            <md-filled-button id="saveFeaturedBtn" onclick="FeaturedManager.saveConfig()">
                                 💾 Lưu cấu hình
-                            </button>
+                            </md-filled-button>
                         </div>
                     </div>
                 </section>
 
                 <!-- Add Featured Item Modal -->
-                <div class="modal-overlay" id="addFeaturedModal" style="display: none;">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h3>Chọn món để thêm</h3>
-                            <button type="button" class="modal-close"
-                                onclick="FeaturedManager.hideAddItemModal()">×</button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="text" class="search-input" id="featuredItemSearch"
-                                placeholder="Tìm kiếm món..."
-                                oninput="FeaturedManager.filterAvailableItems(this.value)">
-                            <div class="available-items-list" id="availableItemsList">
-                                <p class="text-muted">Đang tải...</p>
-                            </div>
+                <md-dialog id="addFeaturedModal">
+                    <div slot="headline">
+                        <h3>Chọn món để thêm</h3>
+                        <md-icon-button class="modal-close" onclick="FeaturedManager.hideAddItemModal()">close</md-icon-button>
+                    </div>
+                    <div slot="content" class="modal-body">
+                        <md-outlined-text-field placeholder="Tìm kiếm món..." id="featuredItemSearch" oninput="FeaturedManager.filterAvailableItems(this.value)">
+                            <md-icon slot="leading-icon">search</md-icon>
+                        </md-outlined-text-field>
+                        <div class="available-items-list" id="availableItemsList">
+                            <p class="text-muted">Đang tải...</p>
                         </div>
                     </div>
-                </div>
+                </md-dialog>
 
                 <!-- Order Management Page -->
                 <section class="page" id="page-orders">
@@ -829,8 +862,7 @@
                                 <span class="stat-label">Đã giao</span>
                             </div>
                         </div>
-                        <button type="button" class="btn-primary md-ripple md-focus-ring" id="addOrderBtn">+ Tạo đơn
-                            mới</button>
+                        <md-filled-button id="addOrderBtn">+ Tạo đơn mới</md-filled-button>
                     </div>
                     <div class="orders-kanban">
                         <div class="kanban-column" data-status="new">
@@ -874,8 +906,7 @@
                         <div class="tables-header">
                             <h2>🍽️ Sơ Đồ Bàn</h2>
                             <div id="tableStats" class="table-stats"></div>
-                            <button type="button" class="btn-primary md-ripple md-focus-ring" id="addTableBtn">+ Thêm
-                                bàn</button>
+                            <md-filled-button id="addTableBtn">+ Thêm bàn</md-filled-button>
                         </div>
                         <div class="tables-grid" id="tablesGrid"></div>
                     </div>
@@ -901,11 +932,12 @@
                             <h2>👥 Quản Lý Nhân Viên</h2>
                             <div id="staffStats" class="staff-stats"></div>
                             <div class="staff-actions">
-                                <button type="button" class="btn-info md-ripple md-focus-ring" id="payrollBtn"
-                                    onclick="StaffManagement.showPayrollModal()">💰
-                                    Bảng lương</button>
-                                <button type="button" class="btn-primary md-ripple md-focus-ring" id="addStaffBtn">+
-                                    Thêm nhân viên</button>
+                                <md-filled-tonal-button id="payrollBtn" onclick="StaffManagement.showPayrollModal()" class="btn-info">
+                                    💰 Bảng lương
+                                </md-filled-tonal-button>
+                                <md-filled-button id="addStaffBtn">
+                                    + Thêm nhân viên
+                                </md-filled-button>
                             </div>
                         </div>
                         <div class="staff-table-container">
@@ -953,14 +985,15 @@
                             <h2>💎 Khách Hàng Thân Thiết</h2>
                             <div id="customerStats" class="customer-stats"></div>
                             <div class="customer-actions">
-                                <button type="button" class="btn-success md-ripple md-focus-ring"
-                                    onclick="CustomerLoyalty.showStoreScanModal()">📲 Quét QR
-                                    tích điểm</button>
-                                <button type="button" class="btn-warning md-ripple md-focus-ring"
-                                    onclick="CustomerLoyalty.showBulkPromotionModal()">📢 Gửi
-                                    khuyến mãi</button>
-                                <button type="button" class="btn-primary md-ripple md-focus-ring" id="addCustomerBtn">+
-                                    Thêm khách hàng</button>
+                                <md-filled-button class="btn-success" onclick="CustomerLoyalty.showStoreScanModal()" style="--md-sys-color-primary: var(--success-color);">
+                                    📲 Quét QR tích điểm
+                                </md-filled-button>
+                                <md-filled-button class="btn-warning" onclick="CustomerLoyalty.showBulkPromotionModal()" style="--md-sys-color-primary: var(--warning-color);">
+                                    📢 Gửi khuyến mãi
+                                </md-filled-button>
+                                <md-filled-button id="addCustomerBtn">
+                                    + Thêm khách hàng
+                                </md-filled-button>
                             </div>
                         </div>
                         <div class="customers-table-container">
@@ -993,16 +1026,14 @@
     </div>
 
     <!-- Modals -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">Modal Title</h3>
-                <button type="button" class="modal-close" id="modalClose">×</button>
-            </div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer" id="modalFooter"></div>
+    <md-dialog id="modal">
+        <div slot="headline" class="modal-header">
+            <h3 id="modalTitle">Modal Title</h3>
+            <md-icon-button class="modal-close" id="modalClose">close</md-icon-button>
         </div>
-    </div>
+        <div slot="content" class="modal-body" id="modalBody"></div>
+        <div slot="actions" class="modal-footer" id="modalFooter"></div>
+    </md-dialog>
 
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
@@ -1142,6 +1173,7 @@
             document.querySelector('.header-actions')?.appendChild(installBtn);
         });
     </script>
+    <script type="module" src="js/material-components.js"></script>
 </body>
 
 </html>

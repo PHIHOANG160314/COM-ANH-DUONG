@@ -24,35 +24,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/m3-typography.css">
     <link rel="stylesheet" href="css/m3-design-system.css">
     <link rel="stylesheet" href="css/shipper.css">
 
+    <!-- Import Map for Material Web -->
+    <script type="importmap">
+    {
+        "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+        }
+    }
+    </script>
+
     <!-- Security: Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://esm.run;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.run;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
     ">
-
-    <!-- Import Map for Material Web (Official esm.run CDN) -->
-    <script type="importmap">
-      {
-        "imports": {
-          "@material/web/": "https://esm.run/@material/web/"
-        }
-      }
-    </script>
-    <script type="module" src="js/material-components.js"></script>
 </head>
 
 <body>
@@ -72,17 +70,16 @@
             <div class="header-right">
                 <!-- Status Toggle -->
                 <div class="status-toggle-wrap" id="statusToggleWrap" style="display: none;">
-                    <md-switch id="statusToggle" onchange="ShipperApp.toggleStatus()"></md-switch>
+                    <label class="status-toggle">
+                        <input type="checkbox" id="statusToggle" onchange="ShipperApp.toggleStatus()">
+                        <span class="toggle-slider"></span>
+                    </label>
                     <span class="shipper-status" id="shipperStatus">⚪ Offline</span>
                 </div>
                 <!-- Rating -->
-                <span class="shipper-rating" id="shipperRating" style="display: flex; align-items: center; gap: 4px;">
-                    <md-icon style="font-size: 16px; color: #FFC107;">star</md-icon>
-                    5.0
-                </span>
+                <span class="shipper-rating" id="shipperRating">⭐ 5.0</span>
                 <!-- Logout -->
-                <md-text-button id="logoutBtn" onclick="ShipperApp.logout()" style="display: none; color: white;">
-                    <md-icon slot="icon">logout</md-icon>
+                <md-text-button id="logoutBtn" onclick="ShipperApp.logout()" style="display: none;">
                     Đăng xuất
                 </md-text-button>
             </div>
@@ -95,37 +92,24 @@
         <section class="section active" id="section-login">
             <div class="login-container">
                 <div class="login-card">
-                    <div class="login-icon">
-                        <md-icon style="font-size: 4rem; width: 4rem; height: 4rem;">two_wheeler</md-icon>
-                    </div>
+                    <div class="login-icon">🛵</div>
                     <h2>Đăng nhập Shipper</h2>
                     <div class="login-form">
                         <div class="form-group">
-                            <md-outlined-text-field label="Số điện thoại" id="shipperPhone" maxlength="11" type="tel"
-                                inputmode="tel" autocomplete="tel" style="width: 100%;">
-                                <md-icon slot="leading-icon">phone</md-icon>
-                            </md-outlined-text-field>
+                            <md-outlined-text-field label="Số điện thoại" type="tel" id="shipperPhone" maxlength="11" placeholder="0901234567"
+                                inputmode="tel" autocomplete="tel" style="width: 100%"></md-outlined-text-field>
                         </div>
-                        <div class="form-group" style="margin-top: 16px;">
-                            <md-outlined-text-field label="Mã PIN" id="shipperPin" maxlength="6" type="password"
-                                inputmode="numeric" autocomplete="current-password" style="width: 100%;">
-                                <md-icon slot="leading-icon">lock</md-icon>
-                            </md-outlined-text-field>
+                        <div class="form-group">
+                            <md-outlined-text-field label="Mã PIN" type="password" id="shipperPin" maxlength="6" placeholder="••••"
+                                inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" style="width: 100%"></md-outlined-text-field>
                         </div>
-                        <md-filled-button class="btn-login" onclick="ShipperApp.login()"
-                            style="width: 100%; margin-top: 24px;">
+                        <md-filled-button class="btn-login" onclick="ShipperApp.login()" style="width: 100%">
                             Đăng nhập
                         </md-filled-button>
                     </div>
                     <div class="login-help">
-                        <p style="display: flex; align-items: center; gap: 8px; justify-content: center;">
-                            <md-icon style="font-size: 18px;">support_agent</md-icon>
-                            Liên hệ quản lý để nhận tài khoản
-                        </p>
-                        <p class="working-hours-hint" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
-                            <md-icon style="font-size: 18px;">schedule</md-icon>
-                            Giờ làm việc: 6:00 - 18:00
-                        </p>
+                        <p>📞 Liên hệ quản lý để nhận tài khoản</p>
+                        <p class="working-hours-hint">⏰ Giờ làm việc: 6:00 - 18:00</p>
                     </div>
                 </div>
             </div>
@@ -137,7 +121,7 @@
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card pending">
-                        <md-icon class="stat-icon">inventory_2</md-icon>
+                        <span class="stat-icon">📦</span>
                         <div class="stat-info">
                             <span class="stat-value" id="pendingCount"><span class="md-skeleton md-skeleton-text"
                                     style="width: 30px; height: 24px; display: inline-block;"></span></span>
@@ -145,7 +129,7 @@
                         </div>
                     </div>
                     <div class="stat-card delivering">
-                        <md-icon class="stat-icon">rocket_launch</md-icon>
+                        <span class="stat-icon">🚀</span>
                         <div class="stat-info">
                             <span class="stat-value" id="deliveringCount"><span class="md-skeleton md-skeleton-text"
                                     style="width: 30px; height: 24px; display: inline-block;"></span></span>
@@ -153,7 +137,7 @@
                         </div>
                     </div>
                     <div class="stat-card completed">
-                        <md-icon class="stat-icon">check_circle</md-icon>
+                        <span class="stat-icon">✅</span>
                         <div class="stat-info">
                             <span class="stat-value" id="completedCount"><span class="md-skeleton md-skeleton-text"
                                     style="width: 30px; height: 24px; display: inline-block;"></span></span>
@@ -161,7 +145,7 @@
                         </div>
                     </div>
                     <div class="stat-card earnings">
-                        <md-icon class="stat-icon">payments</md-icon>
+                        <span class="stat-icon">💰</span>
                         <div class="stat-info">
                             <span class="stat-value" id="todayEarnings"><span class="md-skeleton md-skeleton-text"
                                     style="width: 60px; height: 24px; display: inline-block;"></span></span>
@@ -184,10 +168,9 @@
                 <div class="orders-section">
                     <div class="section-header">
                         <h2>📋 Đơn hàng mới</h2>
-                        <md-text-button onclick="ShipperApp.refreshOrders()">
-                            <md-icon slot="icon">refresh</md-icon>
-                            Làm mới
-                        </md-text-button>
+                        <md-filled-tonal-button onclick="ShipperApp.refreshOrders()">
+                            🔄 Làm mới
+                        </md-filled-tonal-button>
                     </div>
                     <div class="orders-list" id="ordersList">
                         <p class="no-orders">Đang tải đơn hàng...</p>
@@ -205,21 +188,21 @@
 
                 <div class="earnings-cards">
                     <div class="earnings-card today">
-                        <md-icon class="earnings-icon">calendar_today</md-icon>
+                        <div class="earnings-icon">📅</div>
                         <div class="earnings-info">
                             <span class="earnings-label">Hôm nay</span>
                             <span class="earnings-value" id="todayEarnings2">0đ</span>
                         </div>
                     </div>
                     <div class="earnings-card week">
-                        <md-icon class="earnings-icon">date_range</md-icon>
+                        <div class="earnings-icon">📆</div>
                         <div class="earnings-info">
                             <span class="earnings-label">7 ngày qua</span>
                             <span class="earnings-value" id="weekEarnings">0đ</span>
                         </div>
                     </div>
                     <div class="earnings-card month">
-                        <md-icon class="earnings-icon">calendar_month</md-icon>
+                        <div class="earnings-icon">🗓️</div>
                         <div class="earnings-info">
                             <span class="earnings-label">Tháng này</span>
                             <span class="earnings-value" id="monthEarnings">0đ</span>
@@ -256,9 +239,9 @@
         <section class="section" id="section-order-detail">
             <div class="order-detail-container">
                 <div class="section-header">
-                    <md-icon-button onclick="ShipperApp.showSection('dashboard')">
-                        <md-icon>arrow_back</md-icon>
-                    </md-icon-button>
+                    <md-text-button onclick="ShipperApp.showSection('dashboard')">
+                        ← Quay lại
+                    </md-text-button>
                     <h2>Chi tiết đơn hàng</h2>
                 </div>
                 <div class="order-detail-content" id="orderDetailContent">
@@ -270,37 +253,33 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav" id="bottomNav" style="display: none;">
-        <div class="nav-item active" data-section="dashboard" onclick="ShipperApp.showSection('dashboard')"
-            role="button" tabindex="0">
-            <md-ripple></md-ripple>
-            <md-icon class="nav-icon">home</md-icon>
+        <button type="button" class="nav-item active" data-section="dashboard"
+            onclick="ShipperApp.showSection('dashboard')">
+            <span class="nav-icon">🏠</span>
             <span class="nav-label">Trang chủ</span>
-        </div>
-        <div class="nav-item" data-section="pending" onclick="ShipperApp.filterOrders('pending')" role="button"
-            tabindex="0">
-            <md-ripple></md-ripple>
-            <md-icon class="nav-icon">inventory_2</md-icon>
+        </button>
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="pending"
+            onclick="ShipperApp.filterOrders('pending')">
+            <span class="nav-icon">📦</span>
             <span class="nav-label">Chờ nhận</span>
             <span class="nav-badge" id="navPendingBadge">0</span>
-        </div>
-        <div class="nav-item" data-section="delivering" onclick="ShipperApp.filterOrders('delivering')" role="button"
-            tabindex="0">
-            <md-ripple></md-ripple>
-            <md-icon class="nav-icon">rocket_launch</md-icon>
+        </button>
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="delivering"
+            onclick="ShipperApp.filterOrders('delivering')">
+            <span class="nav-icon">🚀</span>
             <span class="nav-label">Đang giao</span>
             <span class="nav-badge" id="navDeliveringBadge">0</span>
-        </div>
-        <div class="nav-item" data-section="earnings" onclick="ShipperApp.showSection('earnings')" role="button"
-            tabindex="0">
-            <md-ripple></md-ripple>
-            <md-icon class="nav-icon">payments</md-icon>
+        </button>
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="earnings"
+            onclick="ShipperApp.showSection('earnings')">
+            <span class="nav-icon">💰</span>
             <span class="nav-label">Thu nhập</span>
-        </div>
-        <div class="nav-item" data-section="history" onclick="ShipperApp.showHistory()" role="button" tabindex="0">
-            <md-ripple></md-ripple>
-            <md-icon class="nav-icon">history</md-icon>
+        </button>
+        <button type="button" class="nav-item md-ripple md-focus-ring" data-section="history"
+            onclick="ShipperApp.showHistory()">
+            <span class="nav-icon">📊</span>
             <span class="nav-label">Lịch sử</span>
-        </div>
+        </button>
     </nav>
 
     <!-- Toast Container -->
@@ -314,6 +293,7 @@
     <script src="js/supabase-client.js"></script>
     <script src="js/shipper-auth.js"></script>
     <script src="js/shipper.js"></script>
+    <script type="module" src="js/material-components.js"></script>
 
     <!-- Service Worker -->
     <script>

@@ -72,9 +72,9 @@ const StaffManagement = {
                 <td>${shiftNames[s.shift] || s.shift}</td>
                 <td>${s.status === 'active' ? '<span class="status-badge ok">Đang làm</span>' : '<span class="status-badge low">Nghỉ</span>'}</td>
                 <td>
-                    <button class="action-btn" onclick="StaffManagement.editStaff(${s.id})" title="Sửa">✏️</button>
-                    <button class="action-btn" onclick="StaffManagement.toggleStatus(${s.id})" title="Đổi trạng thái">🔄</button>
-                    <button class="action-btn delete-btn" onclick="StaffManagement.deleteStaff(${s.id})" title="Xóa">🗑️</button>
+                    <md-icon-button onclick="StaffManagement.editStaff(${s.id})" title="Sửa"><md-icon>edit</md-icon></md-icon-button>
+                    <md-icon-button onclick="StaffManagement.toggleStatus(${s.id})" title="Đổi trạng thái"><md-icon>sync</md-icon></md-icon-button>
+                    <md-icon-button class="delete-btn" onclick="StaffManagement.deleteStaff(${s.id})" title="Xóa" style="color:var(--error);"><md-icon>delete</md-icon></md-icon-button>
                 </td>
             </tr>
         `).join('');
@@ -94,28 +94,28 @@ const StaffManagement = {
 
     showAddModal() {
         modal.open('➕ Thêm Nhân Viên', `
-            <div class="form-group"><label>Họ tên</label><input type="text" id="staffName" placeholder="Nhập họ tên..."></div>
-            <div class="form-group"><label>Chức vụ</label>
-                <select id="staffRole" onchange="StaffManagement.suggestHourlyRate()">
-                    <option value="waiter">🍽️ Phục vụ</option>
-                    <option value="cashier">💰 Thu ngân</option>
-                    <option value="chef">👨‍🍳 Đầu bếp</option>
-                    <option value="shipper">🛵 Giao hàng</option>
-                    <option value="manager">👔 Quản lý</option>
-                </select>
+            <div class="form-group"><md-outlined-text-field label="Họ tên" id="staffName" placeholder="Nhập họ tên..."></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select label="Chức vụ" id="staffRole" onchange="StaffManagement.suggestHourlyRate()">
+                    <md-select-option value="waiter"><div slot="headline">🍽️ Phục vụ</div></md-select-option>
+                    <md-select-option value="cashier"><div slot="headline">💰 Thu ngân</div></md-select-option>
+                    <md-select-option value="chef"><div slot="headline">👨‍🍳 Đầu bếp</div></md-select-option>
+                    <md-select-option value="shipper"><div slot="headline">🛵 Giao hàng</div></md-select-option>
+                    <md-select-option value="manager"><div slot="headline">👔 Quản lý</div></md-select-option>
+                </md-outlined-select>
             </div>
-            <div class="form-group"><label>Số điện thoại</label><input type="tel" id="staffPhone" placeholder="0901234567"></div>
-            <div class="form-group"><label>Ca làm việc</label>
-                <select id="staffShift">
-                    <option value="full">⏰ Cả ngày</option>
-                    <option value="morning">🌅 Sáng (6-14h)</option>
-                    <option value="evening">🌆 Chiều (14-22h)</option>
-                </select>
+            <div class="form-group"><md-outlined-text-field label="Số điện thoại" type="tel" id="staffPhone" placeholder="0901234567"></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select label="Ca làm việc" id="staffShift">
+                    <md-select-option value="full"><div slot="headline">⏰ Cả ngày</div></md-select-option>
+                    <md-select-option value="morning"><div slot="headline">🌅 Sáng (6-14h)</div></md-select-option>
+                    <md-select-option value="evening"><div slot="headline">🌆 Chiều (14-22h)</div></md-select-option>
+                </md-outlined-select>
             </div>
-            <div class="form-group"><label>💰 Lương/giờ (VNĐ)</label><input type="number" id="staffHourlyRate" value="25000" min="10000" step="1000" placeholder="25000"></div>
+            <div class="form-group"><md-outlined-text-field label="💰 Lương/giờ (VNĐ)" type="number" id="staffHourlyRate" value="25000" min="10000" step="1000" placeholder="25000"></md-outlined-text-field></div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="StaffManagement.addStaff()">✅ Thêm</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="StaffManagement.addStaff()">✅ Thêm</md-filled-button>
         `);
     },
 
@@ -160,28 +160,28 @@ const StaffManagement = {
         if (!s) return;
 
         modal.open('✏️ Sửa Nhân Viên', `
-            <div class="form-group"><label>Họ tên</label><input type="text" id="editStaffName" value="${s.name}"></div>
-            <div class="form-group"><label>Chức vụ</label>
-                <select id="editStaffRole">
-                    <option value="waiter" ${s.role === 'waiter' ? 'selected' : ''}>🍽️ Phục vụ</option>
-                    <option value="cashier" ${s.role === 'cashier' ? 'selected' : ''}>💰 Thu ngân</option>
-                    <option value="chef" ${s.role === 'chef' ? 'selected' : ''}>👨‍🍳 Đầu bếp</option>
-                    <option value="shipper" ${s.role === 'shipper' ? 'selected' : ''}>🛵 Giao hàng</option>
-                    <option value="manager" ${s.role === 'manager' ? 'selected' : ''}>👔 Quản lý</option>
-                </select>
+            <div class="form-group"><md-outlined-text-field label="Họ tên" id="editStaffName" value="${s.name}"></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select label="Chức vụ" id="editStaffRole">
+                    <md-select-option value="waiter" ${s.role === 'waiter' ? 'selected' : ''}><div slot="headline">🍽️ Phục vụ</div></md-select-option>
+                    <md-select-option value="cashier" ${s.role === 'cashier' ? 'selected' : ''}><div slot="headline">💰 Thu ngân</div></md-select-option>
+                    <md-select-option value="chef" ${s.role === 'chef' ? 'selected' : ''}><div slot="headline">👨‍🍳 Đầu bếp</div></md-select-option>
+                    <md-select-option value="shipper" ${s.role === 'shipper' ? 'selected' : ''}><div slot="headline">🛵 Giao hàng</div></md-select-option>
+                    <md-select-option value="manager" ${s.role === 'manager' ? 'selected' : ''}><div slot="headline">👔 Quản lý</div></md-select-option>
+                </md-outlined-select>
             </div>
-            <div class="form-group"><label>Số điện thoại</label><input type="tel" id="editStaffPhone" value="${s.phone}"></div>
-            <div class="form-group"><label>Ca làm việc</label>
-                <select id="editStaffShift">
-                    <option value="full" ${s.shift === 'full' ? 'selected' : ''}>⏰ Cả ngày</option>
-                    <option value="morning" ${s.shift === 'morning' ? 'selected' : ''}>🌅 Sáng</option>
-                    <option value="evening" ${s.shift === 'evening' ? 'selected' : ''}>🌆 Chiều</option>
-                </select>
+            <div class="form-group"><md-outlined-text-field label="Số điện thoại" type="tel" id="editStaffPhone" value="${s.phone}"></md-outlined-text-field></div>
+            <div class="form-group">
+                <md-outlined-select label="Ca làm việc" id="editStaffShift">
+                    <md-select-option value="full" ${s.shift === 'full' ? 'selected' : ''}><div slot="headline">⏰ Cả ngày</div></md-select-option>
+                    <md-select-option value="morning" ${s.shift === 'morning' ? 'selected' : ''}><div slot="headline">🌅 Sáng</div></md-select-option>
+                    <md-select-option value="evening" ${s.shift === 'evening' ? 'selected' : ''}><div slot="headline">🌆 Chiều</div></md-select-option>
+                </md-outlined-select>
             </div>
-            <div class="form-group"><label>💰 Lương/giờ (VNĐ)</label><input type="number" id="editStaffHourlyRate" value="${s.hourlyRate || 25000}" min="10000" step="1000"></div>
+            <div class="form-group"><md-outlined-text-field label="💰 Lương/giờ (VNĐ)" type="number" id="editStaffHourlyRate" value="${s.hourlyRate || 25000}" min="10000" step="1000"></md-outlined-text-field></div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Hủy</button>
-            <button class="btn-primary" onclick="StaffManagement.saveEdit(${id})">💾 Lưu</button>
+            <md-outlined-button onclick="modal.close()">Hủy</md-outlined-button>
+            <md-filled-button onclick="StaffManagement.saveEdit(${id})">💾 Lưu</md-filled-button>
         `);
     },
 
@@ -344,8 +344,8 @@ const StaffManagement = {
                     <td>${record?.hours ? record.hours + 'h' : '-'}</td>
                     <td>
                         ${!record || record.checkOut ?
-                    `<button class="btn-success btn-sm" onclick="StaffManagement.checkIn(${s.id})">📥 Check-in</button>` :
-                    `<button class="btn-warning btn-sm" onclick="StaffManagement.checkOut(${s.id})">📤 Check-out</button>`
+                    `<md-filled-tonal-button class="btn-success btn-sm" onclick="StaffManagement.checkIn(${s.id})">📥 Check-in</md-filled-tonal-button>` :
+                    `<md-filled-tonal-button class="btn-warning btn-sm" onclick="StaffManagement.checkOut(${s.id})">📤 Check-out</md-filled-tonal-button>`
                 }
                     </td>
                 </tr>
@@ -410,8 +410,7 @@ const StaffManagement = {
         const month = new Date().toISOString().slice(0, 7);
         modal.open('💰 Bảng Tính Lương Tháng', `
             <div class="form-group">
-                <label>Chọn tháng</label>
-                <input type="month" id="payrollMonth" value="${month}" onchange="StaffManagement.calculatePayroll()">
+                <md-outlined-text-field label="Chọn tháng" type="month" id="payrollMonth" value="${month}" onchange="StaffManagement.calculatePayroll()"></md-outlined-text-field>
             </div>
             <div style="max-height: 400px; overflow-y: auto;">
                 <table class="data-table" id="payrollTable" style="font-size: 0.85rem;">
@@ -433,8 +432,8 @@ const StaffManagement = {
                 <strong>Tổng chi trả: <span id="payrollTotal" style="color: var(--primary-light);">0đ</span></strong>
             </div>
         `, `
-            <button class="btn-secondary" onclick="modal.close()">Đóng</button>
-            <button class="btn-primary" onclick="StaffManagement.exportPayroll()">📤 Xuất Excel</button>
+            <md-outlined-button onclick="modal.close()">Đóng</md-outlined-button>
+            <md-filled-button onclick="StaffManagement.exportPayroll()">📤 Xuất Excel</md-filled-button>
         `);
 
         setTimeout(() => this.calculatePayroll(), 100);
