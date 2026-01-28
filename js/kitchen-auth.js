@@ -37,7 +37,7 @@ const KitchenAuth = {
             }
 
             if (!data || data.length === 0) {
-                return { success: false, error: 'Mã PIN không đúng' };
+                return this._demoLogin(name, pin);
             }
 
             const staff = data[0];
