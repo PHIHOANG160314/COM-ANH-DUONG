@@ -1354,7 +1354,7 @@ body {
     width: 100%;
     border-radius: 8px;
     padding: 16px;
-    background: transparent;
+    background: var(--md-sys-color-surface-container-low, rgba(255,255,255,0.08));
     border: 1px solid var(--md-sys-color-outline);
     color: var(--md-sys-color-on-surface);
     font-family: inherit;

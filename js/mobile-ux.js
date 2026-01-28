@@ -127,7 +127,7 @@ const MobileUX = {
                     <div class="menu-card-name">${item.name}</div>
                     <div class="menu-card-price">${CustomerApp.formatPrice(item.price)}</div>
                     <button class="menu-card-add btn-press hover-glow" onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
-                        + Thêm vào giỏ
+                        ➕ Thêm
                     </button>
                 </div>
             `;
@@ -404,7 +404,7 @@ const MobileUX = {
                     <button class="btn-qty" onclick="MobileUX.updateDetailQty(1)">+</button>
                 </div>
                 <button class="btn-add-detail btn-press" onclick="MobileUX.addFromDetail(${item.id})">
-                    Thêm vào giỏ - ${CustomerApp.formatPrice(item.price)}
+                        ➕ Thêm - ${CustomerApp.formatPrice(item.price)}
                 </button>
             </div>
         `;
