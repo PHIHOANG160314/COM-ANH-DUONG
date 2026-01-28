@@ -56,8 +56,10 @@ const KitchenDisplay = {
     },
 
     processOrders(orders, isSupabase) {
+        // Kitchen shows: new orders (pending/new), confirmed (received), preparing
+        const kitchenStatuses = ['pending', 'preparing', 'new', 'received', 'confirmed'];
         return orders
-            .filter(o => ['pending', 'preparing'].includes(o.status))
+            .filter(o => kitchenStatuses.includes(o.status))
             .map(o => isSupabase ? this._convertOrder(o) : o)
             .sort((a, b) => new Date(a.time) - new Date(b.time));
     },
