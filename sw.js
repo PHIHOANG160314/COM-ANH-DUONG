@@ -3,7 +3,7 @@
 // PWA Offline Support (v6.0 - IndexedDB)
 // ========================================
 
-const CACHE_VERSION = 'v7.0';
+const CACHE_VERSION = 'v8.0';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
@@ -66,7 +66,7 @@ const STATIC_FILES = [
 
 // Install event - cache static files
 self.addEventListener('install', event => {
-    console.log('🔧 Service Worker v6.0: Installing...');
+    console.log('🔧 Service Worker v8.0: Installing...');
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
@@ -80,7 +80,7 @@ self.addEventListener('install', event => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', event => {
-    console.log('✅ Service Worker v6.0: Activated');
+    console.log('✅ Service Worker v8.0: Activated');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
@@ -308,5 +308,5 @@ self.addEventListener('message', event => {
     }
 });
 
-console.log('🚀 F&B Master Service Worker v6.0 loaded!');
+console.log('🚀 F&B Master Service Worker v8.0 loaded!');
 

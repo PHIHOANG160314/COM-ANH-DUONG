@@ -69,11 +69,8 @@
             </a>
             <div class="header-right">
                 <!-- Status Toggle -->
-                <div class="status-toggle-wrap" id="statusToggleWrap" style="display: none;">
-                    <label class="status-toggle">
-                        <input type="checkbox" id="statusToggle" onchange="ShipperApp.toggleStatus()">
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="status-toggle-wrap" id="statusToggleWrap" style="display: none; align-items: center; gap: 8px;">
+                    <md-switch id="statusToggle" aria-label="Trạng thái hoạt động"></md-switch>
                     <span class="shipper-status" id="shipperStatus">⚪ Offline</span>
                 </div>
                 <!-- Rating -->

@@ -735,7 +735,7 @@ body {
    ======================================== */
 .floating-cart {
     position: fixed;
-    bottom: 0;
+    bottom: 64px;
     left: 0;
     right: 0;
     background: var(--md-sys-color-surface-container-high);

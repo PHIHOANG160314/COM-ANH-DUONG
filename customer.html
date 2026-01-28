@@ -645,9 +645,7 @@
                 <span>Tổng cộng:</span>
                 <strong id="floatingCartTotal">0đ</strong>
             </div>
-            <md-filled-button onclick="CustomerApp.goToOrder()" style="width: 100%;">
-                Đặt hàng ngay
-            </md-filled-button>
+            <button class="btn-order" onclick="CustomerApp.goToOrder()">🛒 Đặt hàng ngay</button>
         </div>
     </div>
 
@@ -697,29 +695,29 @@
     <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
         <a href="javascript:void(0)" class="bottom-nav-item active" data-section="menu"
             onclick="CustomerApp.showSection('menu')">
-            <span class="material-symbols-outlined bottom-nav-icon">restaurant_menu</span>
+            <span class="bottom-nav-icon">🍽️</span>
             <span class="bottom-nav-label">Menu</span>
         </a>
         <a href="javascript:void(0)" class="bottom-nav-item" data-section="tracking"
             onclick="CustomerApp.showSection('tracking')">
-            <span class="material-symbols-outlined bottom-nav-icon">receipt_long</span>
+            <span class="bottom-nav-icon">📋</span>
             <span class="bottom-nav-label">Đơn hàng</span>
         </a>
 
         <!-- FAB Order Button - Centered & Prominent -->
         <button class="bottom-nav-fab" onclick="CustomerApp.goToOrder()" aria-label="Đặt hàng">
-            <span class="material-symbols-outlined">shopping_cart_checkout</span>
+            <span style="font-size: 28px;">🛒</span>
             <span class="bottom-nav-badge" id="fabCartBadge"></span>
         </button>
 
         <a href="javascript:void(0)" class="bottom-nav-item" data-section="loyalty"
             onclick="CustomerApp.showSection('loyalty')">
-            <span class="material-symbols-outlined bottom-nav-icon">card_giftcard</span>
+            <span class="bottom-nav-icon">🎁</span>
             <span class="bottom-nav-label">Tích điểm</span>
         </a>
         <a href="javascript:void(0)" class="bottom-nav-item" data-section="contact"
             onclick="CustomerApp.showSection('contact')">
-            <span class="material-symbols-outlined bottom-nav-icon">call</span>
+            <span class="bottom-nav-icon">📞</span>
             <span class="bottom-nav-label">Liên hệ</span>
         </a>
     </nav>

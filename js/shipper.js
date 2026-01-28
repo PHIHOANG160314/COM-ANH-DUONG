@@ -49,8 +49,19 @@ const ShipperApp = {
     setupLoginForm() {
         const phoneInput = document.getElementById('shipperPhone');
         const pinInput = document.getElementById('shipperPin');
+        const statusToggle = document.getElementById('statusToggle');
+
+        if (statusToggle) {
+            statusToggle.addEventListener('change', () => {
+                this.toggleStatus();
+            });
+        }
 
         if (phoneInput) {
+            phoneInput.addEventListener('input', () => {
+                phoneInput.error = false;
+                phoneInput.errorText = '';
+            });
             phoneInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -60,6 +71,10 @@ const ShipperApp = {
         }
 
         if (pinInput) {
+            pinInput.addEventListener('input', () => {
+                pinInput.error = false;
+                pinInput.errorText = '';
+            });
             pinInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -73,16 +88,33 @@ const ShipperApp = {
 
     // Login with phone + PIN
     async login() {
-        const phone = document.getElementById('shipperPhone')?.value?.trim();
-        const pin = document.getElementById('shipperPin')?.value?.trim();
+        const phoneInput = document.getElementById('shipperPhone');
+        const pinInput = document.getElementById('shipperPin');
+
+        const phone = phoneInput?.value?.trim();
+        const pin = pinInput?.value?.trim();
+
+        // Reset errors
+        if (phoneInput) { phoneInput.error = false; phoneInput.errorText = ''; }
+        if (pinInput) { pinInput.error = false; pinInput.errorText = ''; }
 
         if (!phone || phone.length < 10) {
-            this.showToast('Vui lòng nhập số điện thoại hợp lệ', 'error');
+            if (phoneInput) {
+                phoneInput.error = true;
+                phoneInput.errorText = 'SĐT không hợp lệ';
+            } else {
+                this.showToast('Vui lòng nhập số điện thoại hợp lệ', 'error');
+            }
             return;
         }
 
         if (!pin || pin.length < 4) {
-            this.showToast('Vui lòng nhập mã PIN 4 số', 'error');
+            if (pinInput) {
+                pinInput.error = true;
+                pinInput.errorText = 'PIN phải có 4-6 số';
+            } else {
+                this.showToast('Vui lòng nhập mã PIN hợp lệ', 'error');
+            }
             return;
         }
 
@@ -128,9 +160,12 @@ const ShipperApp = {
         } finally {
             if (loginBtn) {
                 loginBtn.disabled = false;
+                // loginBtn.textContent = 'Đăng nhập'; // md-filled-button doesn't use textContent directly for label usually, but it has slot.
+                // However, M3 button text is in the default slot. textContent works if it has no icon.
+                // Let's safe check.
                 loginBtn.textContent = 'Đăng nhập';
             }
-            document.getElementById('shipperPin').value = '';
+            if (pinInput) pinInput.value = '';
         }
     },
 
@@ -225,7 +260,7 @@ const ShipperApp = {
         }
 
         if (statusToggle) {
-            statusToggle.checked = this.currentShipper?.status === 'online';
+            statusToggle.selected = this.currentShipper?.status === 'online';
         }
     },
 
@@ -490,12 +525,13 @@ const ShipperApp = {
                 </div>
                 
                 <div class="order-actions">
-                    <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.pickupOrder('${order.id}')">
+                    <md-filled-button class="btn-action" onclick="ShipperApp.pickupOrder('${order.id}')">
                         📦 Nhận đơn
-                    </button>
-                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                    </md-filled-button>
+                    <md-outlined-button class="btn-action" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank"
+                        onclick="window.open(this.href, '_blank'); return false;">
                         🗺️ Chỉ đường
-                    </a>
+                    </md-outlined-button>
                 </div>
             </div>
         `;
@@ -523,22 +559,22 @@ const ShipperApp = {
         let actionsHtml = '';
         if (delivery.status === 'assigned') {
             actionsHtml = `
-                <button class="btn-action primary md-ripple md-focus-ring" onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
+                <md-filled-button onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
                     🏃 Đã lấy hàng
-                </button>
+                </md-filled-button>
             `;
         } else if (delivery.status === 'picked_up' || delivery.status === 'delivering') {
             actionsHtml = `
-                <button class="btn-action success md-ripple md-focus-ring" onclick="ShipperApp.completeDelivery('${delivery.id}')">
+                <md-filled-button class="btn-success" style="--md-sys-color-primary: var(--shipper-success);" onclick="ShipperApp.completeDelivery('${delivery.id}')">
                     ✅ Đã giao xong
-                </button>
+                </md-filled-button>
             `;
         }
 
         return `
             <div class="order-card delivery-card ${delivery.status}" data-delivery-id="${delivery.id}">
                 <div class="delivery-badge">${statusLabels[delivery.status] || delivery.status}</div>
-                
+
                 <div class="order-card-header">
                     <div>
                         <div class="order-id">#${order.order_number || order.id?.substring(0, 8)}</div>
@@ -546,36 +582,37 @@ const ShipperApp = {
                     </div>
                     <span class="commission-badge">+${this.formatPrice(delivery.commission || this.currentShipper?.commission_rate || 15000)}</span>
                 </div>
-                
+
                 <div class="order-customer">
                     <div class="customer-name">👤 ${order.customer_name || 'Khách hàng'}</div>
                     <div class="customer-phone">
                         📞 <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
                     </div>
                 </div>
-                
+
                 <div class="order-address">
                     <div class="address-label">📍 Địa chỉ giao hàng</div>
                     <div class="address-text">${address}</div>
                 </div>
-                
+
                 <div class="order-items">
                     <div class="order-items-title">🍽️ ${itemsText}</div>
                 </div>
-                
+
                 <div class="order-total">
                     <span class="total-label">Thu hộ:</span>
                     <span class="total-value">${this.formatPrice(order.total)}</span>
                 </div>
-                
-                <div class="order-actions">
+
+                <div class="order-actions" style="flex-wrap: wrap; gap: 8px;">
                     ${actionsHtml}
-                    <a class="btn-action navigate md-ripple md-focus-ring" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank">
+                    <md-outlined-button href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank"
+                        onclick="window.open(this.href, '_blank'); return false;">
                         🗺️ Chỉ đường
-                    </a>
-                    <a class="btn-action call md-ripple md-focus-ring" href="tel:${order.customer_phone}">
+                    </md-outlined-button>
+                    <md-outlined-button href="tel:${order.customer_phone}" onclick="window.location.href=this.href; return false;">
                         📞 Gọi
-                    </a>
+                    </md-outlined-button>
                 </div>
             </div>
         `;
