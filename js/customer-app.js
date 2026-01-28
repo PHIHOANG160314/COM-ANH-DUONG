@@ -819,8 +819,7 @@ const CustomerApp = {
                     <div class="menu-card-price" style="color: var(--primary-2026); font-weight: 700;">${this.formatPrice(item.price)}</div>
                     <md-filled-tonal-button class="menu-card-add"
                             onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
-                        <md-icon slot="icon">add</md-icon>
-                        Thêm
+                        ➕ Thêm
                     </md-filled-tonal-button>
                 </div>
             </div>
