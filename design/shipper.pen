@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "name": "Shipper Delivery App",
+  "description": "Ứng dụng giao hàng cho shipper",
+  "canvas": {
+    "width": 390,
+    "height": 844,
+    "background": "#0a0a12"
+  },
+  "designTokens": {
+    "colors": {
+      "primary": "#4ade80",
+      "secondary": "#10b981",
+      "accent": "#f59e0b",
+      "success": "#22c55e",
+      "danger": "#ef4444"
+    }
+  },
+  "layout": {
+    "type": "mobile-app",
+    "bottomNav": {
+      "items": [
+        {"icon": "home", "label": "Đơn hàng"},
+        {"icon": "map", "label": "Bản đồ"},
+        {"icon": "history", "label": "Lịch sử"},
+        {"icon": "person", "label": "Cá nhân"}
+      ]
+    }
+  },
+  "components": [
+    {
+      "id": "header",
+      "type": "shipper-header",
+      "props": {
+        "status": "online",
+        "earnings": "350,000đ"
+      }
+    },
+    {
+      "id": "current-order",
+      "type": "delivery-card",
+      "props": {
+        "showPickup": true,
+        "showDropoff": true,
+        "showNavigation": true,
+        "showCall": true
+      }
+    },
+    {
+      "id": "order-list",
+      "type": "pending-orders",
+      "props": {
+        "title": "Đơn chờ nhận",
+        "showDistance": true,
+        "showEarnings": true,
+        "acceptButton": true
+      }
+    },
+    {
+      "id": "status-buttons",
+      "type": "action-row",
+      "props": {
+        "items": [
+          {"label": "Đã lấy hàng", "action": "picked_up"},
+          {"label": "Đang giao", "action": "delivering"},
+          {"label": "Hoàn thành", "action": "completed"}
+        ]
+      }
+    },
+    {
+      "id": "map-view",
+      "type": "map",
+      "props": {
+        "showRoute": true,
+        "showCurrentLocation": true,
+        "showDestination": true
+      }
+    }
+  ],
+  "prompts": [
+    "Create food delivery driver app",
+    "Show current order with pickup and dropoff locations",
+    "Map integration with route display",
+    "Status update buttons and earnings tracker"
+  ]
+}

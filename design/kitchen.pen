@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "name": "Kitchen Display System",
+  "description": "Màn hình hiển thị bếp - theo dõi đơn hàng realtime",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "background": "#1a1a2e"
+  },
+  "designTokens": {
+    "colors": {
+      "pending": "#FEF3C7",
+      "pendingBorder": "#F59E0B",
+      "preparing": "#DBEAFE",
+      "preparingBorder": "#3B82F6",
+      "ready": "#D1FAE5",
+      "readyBorder": "#10B981"
+    }
+  },
+  "layout": {
+    "type": "full-screen",
+    "header": {
+      "height": "80px",
+      "background": "linear-gradient(135deg, #004d00, #006400)"
+    }
+  },
+  "components": [
+    {
+      "id": "header",
+      "type": "kitchen-header",
+      "props": {
+        "logo": "👨‍🍳 Màn Hình Bếp",
+        "stats": [
+          {"label": "Chờ xử lý", "value": "3", "color": "pending"},
+          {"label": "Đang làm", "value": "5", "color": "preparing"},
+          {"label": "Sẵn sàng", "value": "2", "color": "ready"}
+        ]
+      }
+    },
+    {
+      "id": "filter-chips",
+      "type": "chip-group",
+      "props": {
+        "items": ["Tất cả", "Chờ xử lý", "Đang làm", "Sẵn sàng"],
+        "selected": "Tất cả"
+      }
+    },
+    {
+      "id": "orders-grid",
+      "type": "card-grid",
+      "props": {
+        "columns": "auto-fill",
+        "minWidth": "320px",
+        "gap": "16px"
+      }
+    },
+    {
+      "id": "order-card",
+      "type": "kitchen-order-card",
+      "props": {
+        "showOrderId": true,
+        "showTable": true,
+        "showTime": true,
+        "showItems": true,
+        "actions": ["Bắt đầu làm", "Hoàn thành"]
+      }
+    }
+  ],
+  "prompts": [
+    "Create kitchen display system for restaurant",
+    "Large order cards with status colors",
+    "Real-time order queue with action buttons",
+    "Dark theme optimized for kitchen visibility"
+  ]
+}

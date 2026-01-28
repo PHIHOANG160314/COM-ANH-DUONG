@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "name": "Admin Dashboard",
+  "description": "Bảng điều khiển quản lý Cơm Ánh Dương",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "background": "#0a0a12"
+  },
+  "designTokens": {
+    "colors": {
+      "primary": "#4ade80",
+      "secondary": "#10b981",
+      "accent": "#f59e0b",
+      "danger": "#ef4444",
+      "warning": "#eab308",
+      "info": "#3b82f6",
+      "background": "#0a0a12",
+      "surface": "#1a1a2e",
+      "surfaceVariant": "#2a2a4a"
+    }
+  },
+  "layout": {
+    "type": "sidebar-main",
+    "sidebar": {
+      "width": "280px",
+      "items": [
+        {"icon": "dashboard", "label": "Tổng quan", "active": true},
+        {"icon": "shopping_cart", "label": "Đơn hàng"},
+        {"icon": "restaurant_menu", "label": "Thực đơn"},
+        {"icon": "people", "label": "Khách hàng"},
+        {"icon": "analytics", "label": "Báo cáo"},
+        {"icon": "settings", "label": "Cài đặt"}
+      ]
+    }
+  },
+  "components": [
+    {
+      "id": "kpi-row",
+      "type": "kpi-cards",
+      "props": {
+        "items": [
+          {"label": "Doanh thu hôm nay", "value": "5,250,000đ", "trend": "+12%"},
+          {"label": "Đơn hàng", "value": "48", "trend": "+8%"},
+          {"label": "Khách mới", "value": "12", "trend": "+25%"},
+          {"label": "Đánh giá TB", "value": "4.8⭐", "trend": "+0.2"}
+        ]
+      }
+    },
+    {
+      "id": "orders-kanban",
+      "type": "kanban-board",
+      "props": {
+        "columns": ["Đặt hàng", "Nhận đơn", "Đang giao", "Đã giao"],
+        "draggable": true
+      }
+    },
+    {
+      "id": "revenue-chart",
+      "type": "line-chart",
+      "props": {
+        "title": "Doanh thu 7 ngày",
+        "xAxis": "date",
+        "yAxis": "revenue"
+      }
+    },
+    {
+      "id": "top-products",
+      "type": "data-table",
+      "props": {
+        "title": "Món bán chạy",
+        "columns": ["Tên món", "Số lượng", "Doanh thu"]
+      }
+    }
+  ],
+  "prompts": [
+    "Create F&B admin dashboard with dark theme",
+    "Include KPI cards, orders kanban, revenue charts",
+    "Sidebar navigation with Material Design icons",
+    "Vietnamese labels throughout"
+  ]
+}

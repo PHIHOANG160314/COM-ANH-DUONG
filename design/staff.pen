@@ -1,0 +1,76 @@
+{
+  "version": "1.0",
+  "name": "Staff Mobile POS",
+  "description": "Giao diện nhân viên - order và quản lý bàn",
+  "canvas": {
+    "width": 390,
+    "height": 844,
+    "background": "#0a0a12"
+  },
+  "designTokens": {
+    "colors": {
+      "primary": "#4ade80",
+      "secondary": "#10b981",
+      "accent": "#f59e0b",
+      "background": "#0a0a12",
+      "surface": "#1a1a2e"
+    }
+  },
+  "layout": {
+    "type": "mobile-app",
+    "bottomNav": {
+      "items": [
+        {"icon": "home", "label": "Trang chủ"},
+        {"icon": "table_restaurant", "label": "Bàn"},
+        {"icon": "receipt_long", "label": "Đơn hàng"},
+        {"icon": "person", "label": "Cá nhân"}
+      ]
+    }
+  },
+  "components": [
+    {
+      "id": "header",
+      "type": "mobile-header",
+      "props": {
+        "title": "Nhân viên",
+        "avatar": true,
+        "notifications": true
+      }
+    },
+    {
+      "id": "quick-actions",
+      "type": "action-grid",
+      "props": {
+        "items": [
+          {"icon": "add_shopping_cart", "label": "Tạo đơn", "color": "primary"},
+          {"icon": "table_bar", "label": "Quản lý bàn", "color": "secondary"},
+          {"icon": "access_time", "label": "Chấm công", "color": "accent"}
+        ]
+      }
+    },
+    {
+      "id": "active-orders",
+      "type": "order-list",
+      "props": {
+        "title": "Đơn đang xử lý",
+        "showStatus": true,
+        "showTime": true
+      }
+    },
+    {
+      "id": "table-grid",
+      "type": "table-layout",
+      "props": {
+        "columns": 4,
+        "showStatus": true,
+        "statuses": ["available", "occupied", "reserved"]
+      }
+    }
+  ],
+  "prompts": [
+    "Create mobile POS app for restaurant staff",
+    "Bottom navigation with 4 tabs",
+    "Table management grid with status indicators",
+    "Quick action buttons for common tasks"
+  ]
+}
