@@ -6,7 +6,7 @@
 
 const CustomerApp = {
     cart: [],
-    orderType: 'dinein',
+    orderType: 'delivery',
     currentMember: null,
     menuData: [],
     originalMenuData: [], // Back up for original data
@@ -963,13 +963,9 @@ const CustomerApp = {
                     <div class="order-item-price">${this.formatPrice(item.price)}</div>
                 </div>
                 <div class="order-item-qty" style="display: flex; align-items: center; gap: 8px;">
-                    <md-filled-tonal-icon-button onclick="CustomerApp.updateQty('${item.id}', -1)">
-                        <md-icon>remove</md-icon>
-                    </md-filled-tonal-icon-button>
+                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", -1)'>➖</button>
                     <span class="qty-value" style="font-weight: 600; min-width: 24px; text-align: center;">${item.qty}</span>
-                    <md-filled-tonal-icon-button onclick="CustomerApp.updateQty('${item.id}', 1)">
-                        <md-icon>add</md-icon>
-                    </md-filled-tonal-icon-button>
+                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", 1)'>➕</button>
                 </div>
                 <div class="order-item-total">${this.formatPrice(item.price * item.qty)}</div>
             </div>

@@ -412,44 +412,20 @@
             <div class="order-container">
                 <div class="order-type-selector" style="margin-bottom: 16px;">
                     <md-chip-set>
-                        <md-filter-chip label="Ăn tại quán" id="type-dinein" data-type="dinein"
-                            onclick="CustomerApp.setOrderType('dinein')" selected>
-                            <md-icon slot="icon">restaurant</md-icon>
+                        <md-filter-chip label="Giao hàng" id="type-delivery" data-type="delivery"
+                            onclick="CustomerApp.setOrderType('delivery')" selected>
+                            <md-icon slot="icon">two_wheeler</md-icon>
                         </md-filter-chip>
                         <md-filter-chip label="Mang đi" id="type-takeaway" data-type="takeaway"
                             onclick="CustomerApp.setOrderType('takeaway')">
                             <md-icon slot="icon">takeout_dining</md-icon>
                         </md-filter-chip>
-                        <md-filter-chip label="Giao hàng" id="type-delivery" data-type="delivery"
-                            onclick="CustomerApp.setOrderType('delivery')">
-                            <md-icon slot="icon">two_wheeler</md-icon>
-                        </md-filter-chip>
                     </md-chip-set>
                 </div>
 
-                <div class="delivery-info" id="dineinInfo" style="display: block;">
-                    <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">🪑 Chọn
-                        bàn</h3>
-                    <select id="dineinTable"
-                        style="width: 100%; padding: 16px; border: 1px solid var(--md-sys-color-outline); border-radius: 4px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-size: 16px;">
-                        <option value="">-- Chọn bàn --</option>
-                        <option value="1">Bàn 1</option>
-                        <option value="2">Bàn 2</option>
-                        <option value="3">Bàn 3</option>
-                        <option value="4">Bàn 4</option>
-                        <option value="5">Bàn 5</option>
-                        <option value="6">Bàn 6</option>
-                        <option value="7">Bàn 7</option>
-                        <option value="8">Bàn 8</option>
-                        <option value="9">Bàn 9</option>
-                        <option value="10">Bàn 10</option>
-                        <option value="11">Bàn 11</option>
-                        <option value="12">Bàn 12</option>
-                    </select>
-                </div>
 
                 <div class="delivery-info" id="deliveryInfo"
-                    style="display: none; gap: 12px; display: flex; flex-direction: column;">
+                    style="gap: 12px; display: flex; flex-direction: column;">
                     <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">📍 Thông
                         tin giao hàng</h3>
                     <md-outlined-text-field id="deliveryName" label="Họ tên người nhận" type="text"
