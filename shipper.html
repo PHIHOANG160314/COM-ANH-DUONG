@@ -93,16 +93,18 @@
                     <h2>Đăng nhập Shipper</h2>
                     <div class="login-form">
                         <div class="form-group">
-                            <md-outlined-text-field label="Số điện thoại" type="tel" id="shipperPhone" maxlength="11" placeholder="0901234567"
-                                inputmode="tel" autocomplete="tel" style="width: 100%"></md-outlined-text-field>
+                            <div class="m3-text-field">
+                                <input type="tel" id="shipperPhone" placeholder=" " maxlength="11" inputmode="tel" required>
+                                <label for="shipperPhone">Số điện thoại</label>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <md-outlined-text-field label="Mã PIN" type="password" id="shipperPin" maxlength="6" placeholder="••••"
-                                inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" style="width: 100%"></md-outlined-text-field>
+                            <div class="m3-text-field">
+                                <input type="password" id="shipperPin" placeholder=" " maxlength="4" inputmode="numeric" required>
+                                <label for="shipperPin">Mã PIN</label>
+                            </div>
                         </div>
-                        <md-filled-button class="btn-login" onclick="ShipperApp.login()" style="width: 100%">
-                            Đăng nhập
-                        </md-filled-button>
+                        <button type="button" class="btn-login" onclick="ShipperApp.login()">🔓 Đăng nhập</button>
                     </div>
                     <div class="login-help">
                         <p>📞 Liên hệ quản lý để nhận tài khoản</p>

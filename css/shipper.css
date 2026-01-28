@@ -975,3 +975,58 @@ body {
         padding-bottom: env(safe-area-inset-bottom);
     }
 }
+
+/* ========================================
+   M3 CUSTOM TEXT FIELD
+   ======================================== */
+.m3-text-field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.m3-text-field input,
+.m3-text-field textarea {
+    width: 100%;
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--md-sys-color-surface-container-low, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--md-sys-color-outline);
+    color: var(--md-sys-color-on-surface);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.m3-text-field textarea {
+    resize: vertical;
+}
+
+.m3-text-field label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.2s ease all;
+    color: var(--md-sys-color-on-surface-variant);
+    pointer-events: none;
+    padding: 0 4px;
+}
+
+.m3-text-field input:focus,
+.m3-text-field textarea:focus {
+    border-color: var(--md-sys-color-primary);
+    border-width: 2px;
+    padding: 15px;
+}
+
+.m3-text-field input:focus+label,
+.m3-text-field input:not(:placeholder-shown)+label,
+.m3-text-field textarea:focus+label,
+.m3-text-field textarea:not(:placeholder-shown)+label {
+    top: 0;
+    transform: translateY(-50%) scale(0.8);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-primary);
+}
