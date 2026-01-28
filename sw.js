@@ -138,8 +138,10 @@ self.addEventListener('fetch', event => {
                     .catch(() => {
                         // Offline fallback for HTML pages
                         if (request.headers.get('accept')?.includes('text/html')) {
-                            return caches.match('/customer.html') || caches.match('/index.html');
+                            return caches.match('/customer.html') || caches.match('/index.html') || new Response('Offline', { status: 503 });
                         }
+                        // Return empty response for other failed requests
+                        return new Response('', { status: 503, statusText: 'Service Unavailable' });
                     });
             })
     );

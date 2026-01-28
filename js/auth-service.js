@@ -237,7 +237,7 @@ const AuthService = {
 
     logout() {
         localStorage.removeItem(this.SESSION_KEY);
-        if (SecureStorage && typeof SecureStorage.removeItem === 'function') {
+        if (typeof SecureStorage !== 'undefined' && typeof SecureStorage.removeItem === 'function') {
             SecureStorage.removeItem(this.SESSION_KEY);
         }
         this._cachedSession = null;

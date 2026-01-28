@@ -228,8 +228,13 @@ const OrderManagement = {
         Object.values(containers).forEach(c => c.innerHTML = '');
 
         statuses.forEach(status => {
-            const orders = this.orders.filter(o => o.status === status);
+            let orders = this.orders.filter(o => o.status === status);
             const container = containers[status];
+
+            // Giới hạn cột 'delivered' chỉ hiển thị 20 đơn gần nhất
+            if (status === 'delivered' && orders.length > 20) {
+                orders = orders.slice(0, 20);
+            }
 
             if (orders.length === 0) {
                 container.innerHTML = '<div class="empty-column">Không có đơn</div>';
@@ -345,7 +350,7 @@ const OrderManagement = {
         }
 
         if (window.utils && window.utils.modal) {
-             window.utils.modal.open('Chọn người giao hàng', `
+            window.utils.modal.open('Chọn người giao hàng', `
                 <div class="form-group">
                     <label>Đơn hàng: #${order.id}</label>
                     <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">${order.customer} - ${order.phone}</div>
@@ -403,7 +408,7 @@ const OrderManagement = {
 
     showDeliveryProofModal(order) {
         if (window.utils && window.utils.modal) {
-             window.utils.modal.open('Xác minh giao hàng thành công', `
+            window.utils.modal.open('Xác minh giao hàng thành công', `
                 <div class="form-group">
                     <label>Đơn hàng: #${order.id}</label>
                     <div style="margin-bottom: 1rem;">Shipper: <strong>${order.assignee}</strong></div>
@@ -473,7 +478,7 @@ const OrderManagement = {
             : '<md-select-option value=""><div slot="headline">Chưa có menu hôm nay</div></md-select-option>';
 
         if (window.utils.modal) {
-             window.utils.modal.open('Tạo đơn hàng mới', `
+            window.utils.modal.open('Tạo đơn hàng mới', `
                 <div class="form-group">
                     <label>Loại đơn hàng</label>
                     <div class="radio-group" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
@@ -593,7 +598,7 @@ const OrderManagement = {
         const typeLabel = order.type === 'dine_in' ? '🍽️ Đặt trước' : '🛵 Giao hàng';
 
         if (window.utils.modal) {
-             window.utils.modal.open(`Chi tiết đơn hàng #${order.id}`, `
+            window.utils.modal.open(`Chi tiết đơn hàng #${order.id}`, `
                 <div style="margin-bottom: 1rem;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                         <div>

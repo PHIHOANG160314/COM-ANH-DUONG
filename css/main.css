@@ -326,7 +326,7 @@ body::after {
 
 /* Sidebar Footer */
 .sidebar-footer {
-    padding: 0.5rem 0.75rem;
+    padding: 1rem 0.75rem;
     border-top: 1px solid var(--border-color);
     flex-shrink: 0;
 }

@@ -1644,8 +1644,10 @@
 
 .kanban-header h3 {
     flex: 1;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .kanban-count {
@@ -1766,15 +1768,16 @@
 }
 
 .order-action-btn {
-    padding: 0.4rem 0.75rem;
+    padding: 0.5rem 1rem;
     background: var(--primary);
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     color: white;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 36px;
 }
 
 .order-action-btn:hover {

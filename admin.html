@@ -21,7 +21,7 @@
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.run;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://esm.run https://fonts.googleapis.com https://fonts.gstatic.com;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -185,7 +185,8 @@
                     <md-icon-button id="langToggleBtn" onclick="i18n.toggleLanguage()" title="Change Language">
                         🌐
                     </md-icon-button>
-                    <md-icon-button id="notificationBtn" onclick="KitchenDisplay.showReadyOrders()" title="Đơn sẵn sàng phục vụ">
+                    <md-icon-button id="notificationBtn" onclick="KitchenDisplay.showReadyOrders()"
+                        title="Đơn sẵn sàng phục vụ">
                         <span>🔔</span>
                         <span class="badge">0</span>
                     </md-icon-button>
@@ -349,10 +350,14 @@
                             <div class="analytics-filters">
                                 <div class="quick-filters">
                                     <md-chip-set>
-                                        <md-filter-chip class="quick-filter-btn" label="Hôm nay" data-filter="today" selected></md-filter-chip>
-                                        <md-filter-chip class="quick-filter-btn" label="Tuần" data-filter="week"></md-filter-chip>
-                                        <md-filter-chip class="quick-filter-btn" label="Tháng" data-filter="month"></md-filter-chip>
-                                        <md-filter-chip class="quick-filter-btn" label="Năm" data-filter="year"></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Hôm nay" data-filter="today"
+                                            selected></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Tuần"
+                                            data-filter="week"></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Tháng"
+                                            data-filter="month"></md-filter-chip>
+                                        <md-filter-chip class="quick-filter-btn" label="Năm"
+                                            data-filter="year"></md-filter-chip>
                                     </md-chip-set>
                                 </div>
                                 <div class="date-picker-group">
@@ -430,10 +435,14 @@
                         <div class="pos-menu">
                             <div class="category-tabs" id="categoryTabs">
                                 <md-chip-set>
-                                    <md-filter-chip class="category-tab" label="Tất cả" data-category="all" selected></md-filter-chip>
-                                    <md-filter-chip class="category-tab" label="Món chính" data-category="food"></md-filter-chip>
-                                    <md-filter-chip class="category-tab" label="Đồ uống" data-category="drinks"></md-filter-chip>
-                                    <md-filter-chip class="category-tab" label="Tráng miệng" data-category="dessert"></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Tất cả" data-category="all"
+                                        selected></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Món chính"
+                                        data-category="food"></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Đồ uống"
+                                        data-category="drinks"></md-filter-chip>
+                                    <md-filter-chip class="category-tab" label="Tráng miệng"
+                                        data-category="dessert"></md-filter-chip>
                                 </md-chip-set>
                             </div>
                             <div class="menu-grid" id="menuGrid"></div>
@@ -521,7 +530,8 @@
                         <div class="foodcost-form card">
                             <h3>Tính giá thành món ăn</h3>
                             <div class="form-group">
-                                <md-outlined-text-field label="Tên món" id="dishName" placeholder="VD: Bún bò Huế"></md-outlined-text-field>
+                                <md-outlined-text-field label="Tên món" id="dishName"
+                                    placeholder="VD: Bún bò Huế"></md-outlined-text-field>
                             </div>
                             <div class="ingredients-section">
                                 <div class="section-header">
@@ -531,7 +541,8 @@
                                 <div id="ingredientsList"></div>
                             </div>
                             <div class="form-group">
-                                <md-outlined-text-field label="Target Food Cost %" type="number" id="targetFoodCost" value="30" min="1" max="100"></md-outlined-text-field>
+                                <md-outlined-text-field label="Target Food Cost %" type="number" id="targetFoodCost"
+                                    value="30" min="1" max="100"></md-outlined-text-field>
                             </div>
                             <md-filled-button class="full-width" id="calculateBtn">Tính toán</md-filled-button>
                         </div>
@@ -573,18 +584,38 @@
                         </div>
                         <div class="inventory-filters">
                             <md-outlined-select id="inventoryCategory">
-                                <md-select-option value="" selected><div slot="headline">Tất cả nhóm</div></md-select-option>
-                                <md-select-option value="meat"><div slot="headline">Thịt</div></md-select-option>
-                                <md-select-option value="seafood"><div slot="headline">Hải sản</div></md-select-option>
-                                <md-select-option value="vegetables"><div slot="headline">Rau củ</div></md-select-option>
-                                <md-select-option value="spices"><div slot="headline">Gia vị</div></md-select-option>
-                                <md-select-option value="drinks"><div slot="headline">Đồ uống</div></md-select-option>
+                                <md-select-option value="" selected>
+                                    <div slot="headline">Tất cả nhóm</div>
+                                </md-select-option>
+                                <md-select-option value="meat">
+                                    <div slot="headline">Thịt</div>
+                                </md-select-option>
+                                <md-select-option value="seafood">
+                                    <div slot="headline">Hải sản</div>
+                                </md-select-option>
+                                <md-select-option value="vegetables">
+                                    <div slot="headline">Rau củ</div>
+                                </md-select-option>
+                                <md-select-option value="spices">
+                                    <div slot="headline">Gia vị</div>
+                                </md-select-option>
+                                <md-select-option value="drinks">
+                                    <div slot="headline">Đồ uống</div>
+                                </md-select-option>
                             </md-outlined-select>
                             <md-outlined-select id="inventoryStatus">
-                                <md-select-option value="" selected><div slot="headline">Tất cả trạng thái</div></md-select-option>
-                                <md-select-option value="low"><div slot="headline">Sắp hết</div></md-select-option>
-                                <md-select-option value="ok"><div slot="headline">Đủ dùng</div></md-select-option>
-                                <md-select-option value="excess"><div slot="headline">Dư thừa</div></md-select-option>
+                                <md-select-option value="" selected>
+                                    <div slot="headline">Tất cả trạng thái</div>
+                                </md-select-option>
+                                <md-select-option value="low">
+                                    <div slot="headline">Sắp hết</div>
+                                </md-select-option>
+                                <md-select-option value="ok">
+                                    <div slot="headline">Đủ dùng</div>
+                                </md-select-option>
+                                <md-select-option value="excess">
+                                    <div slot="headline">Dư thừa</div>
+                                </md-select-option>
                             </md-outlined-select>
                         </div>
                     </div>
@@ -641,16 +672,20 @@
                                         onclick="MenuManagement.downloadTemplate()">
                                         📄 Tải Mẫu
                                     </md-outlined-button>
-                                    <md-filled-tonal-button id="importExcelBtn" title="Import từ file Excel" class="btn-info">
+                                    <md-filled-tonal-button id="importExcelBtn" title="Import từ file Excel"
+                                        class="btn-info">
                                         📥 Import
                                     </md-filled-tonal-button>
-                                    <md-filled-button id="exportExcelBtn" title="Xuất menu ra Excel" class="btn-warning" style="--md-sys-color-primary: var(--warning-color);">
+                                    <md-filled-button id="exportExcelBtn" title="Xuất menu ra Excel" class="btn-warning"
+                                        style="--md-sys-color-primary: var(--warning-color);">
                                         📤 Export
                                     </md-filled-button>
-                                    <md-filled-button id="addToDailyBtn" class="btn-success" style="--md-sys-color-primary: var(--success-color);">
+                                    <md-filled-button id="addToDailyBtn" class="btn-success"
+                                        style="--md-sys-color-primary: var(--success-color);">
                                         ➕ Menu Ngày
                                     </md-filled-button>
-                                    <md-outlined-button id="resetMenuBtn" title="Khôi phục lại menu mẫu đầy đủ" class="btn-secondary">
+                                    <md-outlined-button id="resetMenuBtn" title="Khôi phục lại menu mẫu đầy đủ"
+                                        class="btn-secondary">
                                         🔄 Nạp Mẫu
                                     </md-outlined-button>
                                     <md-filled-button id="addMenuItemBtn">
@@ -779,12 +814,24 @@
                                 <div class="config-row">
                                     <label>Số lượng món hiển thị:</label>
                                     <md-outlined-select id="featuredAutoCount">
-                                        <md-select-option value="3"><div slot="headline">3 món</div></md-select-option>
-                                        <md-select-option value="4"><div slot="headline">4 món</div></md-select-option>
-                                        <md-select-option value="5"><div slot="headline">5 món</div></md-select-option>
-                                        <md-select-option value="6" selected><div slot="headline">6 món</div></md-select-option>
-                                        <md-select-option value="8"><div slot="headline">8 món</div></md-select-option>
-                                        <md-select-option value="10"><div slot="headline">10 món</div></md-select-option>
+                                        <md-select-option value="3">
+                                            <div slot="headline">3 món</div>
+                                        </md-select-option>
+                                        <md-select-option value="4">
+                                            <div slot="headline">4 món</div>
+                                        </md-select-option>
+                                        <md-select-option value="5">
+                                            <div slot="headline">5 món</div>
+                                        </md-select-option>
+                                        <md-select-option value="6" selected>
+                                            <div slot="headline">6 món</div>
+                                        </md-select-option>
+                                        <md-select-option value="8">
+                                            <div slot="headline">8 món</div>
+                                        </md-select-option>
+                                        <md-select-option value="10">
+                                            <div slot="headline">10 món</div>
+                                        </md-select-option>
                                     </md-outlined-select>
                                 </div>
                                 <div class="config-info">
@@ -829,10 +876,12 @@
                 <md-dialog id="addFeaturedModal">
                     <div slot="headline">
                         <h3>Chọn món để thêm</h3>
-                        <md-icon-button class="modal-close" onclick="FeaturedManager.hideAddItemModal()">close</md-icon-button>
+                        <md-icon-button class="modal-close"
+                            onclick="FeaturedManager.hideAddItemModal()">close</md-icon-button>
                     </div>
                     <div slot="content" class="modal-body">
-                        <md-outlined-text-field placeholder="Tìm kiếm món..." id="featuredItemSearch" oninput="FeaturedManager.filterAvailableItems(this.value)">
+                        <md-outlined-text-field placeholder="Tìm kiếm món..." id="featuredItemSearch"
+                            oninput="FeaturedManager.filterAvailableItems(this.value)">
                             <md-icon slot="leading-icon">search</md-icon>
                         </md-outlined-text-field>
                         <div class="available-items-list" id="availableItemsList">
@@ -932,7 +981,8 @@
                             <h2>👥 Quản Lý Nhân Viên</h2>
                             <div id="staffStats" class="staff-stats"></div>
                             <div class="staff-actions">
-                                <md-filled-tonal-button id="payrollBtn" onclick="StaffManagement.showPayrollModal()" class="btn-info">
+                                <md-filled-tonal-button id="payrollBtn" onclick="StaffManagement.showPayrollModal()"
+                                    class="btn-info">
                                     💰 Bảng lương
                                 </md-filled-tonal-button>
                                 <md-filled-button id="addStaffBtn">
@@ -985,10 +1035,12 @@
                             <h2>💎 Khách Hàng Thân Thiết</h2>
                             <div id="customerStats" class="customer-stats"></div>
                             <div class="customer-actions">
-                                <md-filled-button class="btn-success" onclick="CustomerLoyalty.showStoreScanModal()" style="--md-sys-color-primary: var(--success-color);">
+                                <md-filled-button class="btn-success" onclick="CustomerLoyalty.showStoreScanModal()"
+                                    style="--md-sys-color-primary: var(--success-color);">
                                     📲 Quét QR tích điểm
                                 </md-filled-button>
-                                <md-filled-button class="btn-warning" onclick="CustomerLoyalty.showBulkPromotionModal()" style="--md-sys-color-primary: var(--warning-color);">
+                                <md-filled-button class="btn-warning" onclick="CustomerLoyalty.showBulkPromotionModal()"
+                                    style="--md-sys-color-primary: var(--warning-color);">
                                     📢 Gửi khuyến mãi
                                 </md-filled-button>
                                 <md-filled-button id="addCustomerBtn">
