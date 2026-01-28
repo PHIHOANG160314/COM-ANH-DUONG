@@ -962,9 +962,9 @@ const CustomerApp = {
                     <div class="order-item-price">${this.formatPrice(item.price)}</div>
                 </div>
                 <div class="order-item-qty" style="display: flex; align-items: center; gap: 8px;">
-                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", -1)'>➖</button>
+                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", -1)'>Bỏ</button>
                     <span class="qty-value" style="font-weight: 600; min-width: 24px; text-align: center;">${item.qty}</span>
-                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", 1)'>➕</button>
+                    <button class='qty-btn' onclick='CustomerApp.updateQty("${item.id}", 1)'>Thêm</button>
                 </div>
                 <div class="order-item-total">${this.formatPrice(item.price * item.qty)}</div>
             </div>

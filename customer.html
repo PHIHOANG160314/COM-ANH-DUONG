@@ -424,18 +424,29 @@
                 </div>
 
 
-                <div class="delivery-info" id="deliveryInfo"
-                    style="gap: 12px; display: flex; flex-direction: column;">
-                    <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">📍 Thông
+                <div class="delivery-info" id="deliveryInfo" style="gap: 16px; display: flex; flex-direction: column;">
+                    <h3 style="margin-bottom: 8px; font-size: 1.1rem; color: var(--md-sys-color-on-surface);">📍 Thông
                         tin giao hàng</h3>
-                    <md-outlined-text-field id="deliveryName" label="Họ tên người nhận" type="text"
-                        style="width: 100%;"></md-outlined-text-field>
-                    <md-outlined-text-field id="deliveryPhone" label="Số điện thoại" type="tel"
-                        style="width: 100%;"></md-outlined-text-field>
-                    <md-outlined-text-field id="deliveryAddress" label="Địa chỉ giao hàng" type="textarea" rows="3"
-                        style="width: 100%;"></md-outlined-text-field>
-                    <md-outlined-text-field id="deliveryNote" label="Ghi chú (tùy chọn)" type="text"
-                        style="width: 100%;"></md-outlined-text-field>
+
+                    <div class="m3-text-field">
+                        <input type="text" id="deliveryName" placeholder=" " required>
+                        <label for="deliveryName">Họ tên người nhận</label>
+                    </div>
+
+                    <div class="m3-text-field">
+                        <input type="tel" id="deliveryPhone" placeholder=" " required>
+                        <label for="deliveryPhone">Số điện thoại</label>
+                    </div>
+
+                    <div class="m3-text-field">
+                        <textarea id="deliveryAddress" placeholder=" " rows="2" required></textarea>
+                        <label for="deliveryAddress">Địa chỉ giao hàng</label>
+                    </div>
+
+                    <div class="m3-text-field">
+                        <input type="text" id="deliveryNote" placeholder=" ">
+                        <label for="deliveryNote">Ghi chú (tùy chọn)</label>
+                    </div>
                 </div>
 
                 <div class="order-summary" id="orderSummary">
