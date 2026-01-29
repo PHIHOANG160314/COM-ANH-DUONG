@@ -15,36 +15,48 @@ const CustomerApp = {
 
     // Filter menu based on "Daily Menu" config (Option B: empty = show message)
     filterDailyMenu() {
+        console.log('%c🔥 filterDailyMenu EXECUTING', 'background: #FF5722; color: white; font-size: 14px; padding: 2px 6px;');
+
         const dailyConfig = localStorage.getItem('daily_menu_config');
+        console.log('📦 Raw localStorage daily_menu_config:', dailyConfig);
 
         // No config? Show empty state (Option B)
         if (!dailyConfig) {
             this.menuData = [];
-            console.log('📅 No daily config - showing empty state');
+            console.log('%c❌ No daily config found - menu will be EMPTY', 'color: red; font-weight: bold;');
             return;
         }
 
         try {
             const config = JSON.parse(dailyConfig);
+            console.log('📋 Parsed config:', JSON.stringify(config, null, 2));
 
             // Check if we have activeItems
             if (!config || !Array.isArray(config.activeItems) || config.activeItems.length === 0) {
                 // Empty config = show empty state (Option B)
                 this.menuData = [];
-                console.log('📅 Daily menu is empty - showing empty state');
+                console.log('%c❌ Daily menu activeItems is empty - menu will be EMPTY', 'color: red; font-weight: bold;');
                 return;
             }
 
             // Reset to original before filtering
+            console.log(`📊 Original menu count: ${this.originalMenuData.length}`);
             this.menuData = [...this.originalMenuData];
 
             // Filter to only show active items
             const activeIds = config.activeItems.map(String);
+            console.log('🎯 Active IDs to filter:', activeIds);
+
             this.menuData = this.menuData.filter(item => activeIds.includes(String(item.id)));
-            console.log(`📅 Daily Menu Active: ${this.menuData.length} items from ${config.activeItems.length} IDs`);
+            console.log(`%c✅ FILTERED: ${this.menuData.length} items from ${activeIds.length} IDs`, 'color: green; font-weight: bold;');
+
+            // Log which items will be displayed
+            this.menuData.forEach(item => {
+                console.log(`   → ID ${item.id}: ${item.name}`);
+            });
 
         } catch (e) {
-            console.error('Error parsing daily menu config', e);
+            console.error('❌ Error parsing daily menu config', e);
             this.menuData = [];
         }
     },
