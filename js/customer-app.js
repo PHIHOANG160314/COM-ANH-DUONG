@@ -89,6 +89,12 @@ const CustomerApp = {
     },
 
     async init() {
+        // ========== V1.0.1 - DEBUG BANNER ==========
+        console.log('%c🍽️ CUSTOMER APP v1.0.1 - 29/01/2026 22:15', 'background: #4CAF50; color: white; font-size: 16px; padding: 4px 8px; border-radius: 4px;');
+        console.log('📋 Debug: DailyMenuService available?', typeof DailyMenuService !== 'undefined');
+        console.log('📋 Debug: window.DailyMenuService?', typeof window.DailyMenuService !== 'undefined');
+        // ============================================
+
         if (window.Debug) Debug.log('🍽️ Customer Portal initializing...');
 
         // Load menu data from window.menuItems (from data.js)
@@ -111,23 +117,9 @@ const CustomerApp = {
         if (typeof DailyMenuService !== 'undefined') {
             console.log('🔄 Customer: Starting daily menu sync...');
 
-            // FIX: Force clear potentially stale cache before fetching
-            // This ensures we don't rely on old data if the fetch fails later,
-            // or if we want to ensure fresh data is pulled.
-            // Note: The service also checks dates, but this is an extra safety measure at app init
-            try {
-                const local = localStorage.getItem('daily_menu_config');
-                if (local) {
-                    const config = JSON.parse(local);
-                    const today = new Date().toISOString().split('T')[0];
-                    const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
-
-                    if (lastUpdated !== today) {
-                        console.log(`🧹 Customer: Init detected stale cache (${lastUpdated} vs ${today}), clearing...`);
-                        localStorage.removeItem('daily_menu_config');
-                    }
-                }
-            } catch(e) { console.error('Error clearing cache in customer init:', e); }
+            // FIX 2: Always clear old config to ensure fresh fetch
+            localStorage.removeItem('daily_menu_config');
+            console.log('Customer: Cleared old localStorage before fresh fetch');
 
             console.log('🔄 Customer: Fetching daily menu from Supabase...');
             try {
