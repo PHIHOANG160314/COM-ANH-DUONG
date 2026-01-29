@@ -66,7 +66,7 @@ const STATIC_FILES = [
 
 // Install event - cache static files
 self.addEventListener('install', event => {
-    console.log('🔧 Service Worker v9.0: Installing...');
+    console.log('🔧 Service Worker v10.0: Installing...');
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
@@ -80,7 +80,7 @@ self.addEventListener('install', event => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', event => {
-    console.log('✅ Service Worker v9.0: Activated');
+    console.log('✅ Service Worker v10.0: Activated');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
@@ -108,7 +108,28 @@ self.addEventListener('fetch', event => {
             return;
         }
     }
+    // NETWORK-FIRST for HTML pages - always get fresh content
+    if (request.headers.get('accept')?.includes('text/html') ||
+        url.pathname.endsWith('.html') ||
+        url.pathname === '/' ||
+        url.pathname === '/customer' ||
+        url.pathname === '/admin') {
 
+        event.respondWith(
+            fetch(request)
+                .then(response => {
+                    if (response.status === 200) {
+                        const responseClone = response.clone();
+                        caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, responseClone));
+                    }
+                    return response;
+                })
+                .catch(() => caches.match(request)) // Fallback to cache if offline
+        );
+        return;
+    }
+
+    // Cache-first for other assets (JS, CSS, images)
     event.respondWith(
         caches.match(request)
             .then(cachedResponse => {
