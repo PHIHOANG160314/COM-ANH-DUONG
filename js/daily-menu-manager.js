@@ -49,13 +49,45 @@ const DailyMenuManager = {
                 console.log('📥 DailyMenuService.getConfig result:', result);
 
                 if (result.success && result.data) {
-                    this.config.activeItems = result.data.active_items || [];
-                    this.config.active = true;
-                    console.log('✅ Loaded from Supabase:', this.config.activeItems.length, 'items');
-                    console.log('📋 Active Item IDs:', JSON.stringify(this.config.activeItems));
-                    // Always sync to localStorage to prevent stale cache
-                    localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
-                    if (window.Debug) Debug.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
+                    const supabaseItems = result.data.active_items || [];
+                    console.log('📥 Supabase returned:', supabaseItems.length, 'items');
+
+                    // If Supabase has items, use them
+                    if (supabaseItems.length > 0) {
+                        this.config.activeItems = supabaseItems;
+                        this.config.active = true;
+                        console.log('✅ Using Supabase data:', this.config.activeItems.length, 'items');
+                        console.log('📋 Active Item IDs:', JSON.stringify(this.config.activeItems));
+                        // Sync to localStorage
+                        localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
+                    } else {
+                        // Supabase empty - check localStorage
+                        console.log('⚠️ Supabase empty, checking localStorage...');
+                        const local = localStorage.getItem('daily_menu_config');
+                        if (local) {
+                            try {
+                                const localConfig = JSON.parse(local);
+                                if (localConfig.activeItems && localConfig.activeItems.length > 0) {
+                                    console.log('✅ Using localStorage:', localConfig.activeItems.length, 'items');
+                                    this.config.activeItems = localConfig.activeItems;
+                                    this.config.active = true;
+                                    // SYNC localStorage data back to Supabase
+                                    console.log('🔄 Syncing localStorage to Supabase...');
+                                    DailyMenuService.saveConfig(this.config.activeItems);
+                                } else {
+                                    console.log('📋 Both Supabase and localStorage are empty');
+                                    this.config.activeItems = [];
+                                }
+                            } catch (e) {
+                                console.error('Error parsing localStorage', e);
+                                this.config.activeItems = [];
+                            }
+                        } else {
+                            console.log('📋 No localStorage data, using empty');
+                            this.config.activeItems = [];
+                        }
+                    }
+                    if (window.Debug) Debug.log('📅 Loaded daily menu:', this.config.activeItems.length, 'items');
                 } else {
                     console.log('⚠️ Supabase returned no data, falling back to localStorage');
                     // Fallback to localStorage
