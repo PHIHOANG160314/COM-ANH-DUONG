@@ -325,6 +325,9 @@ const DailyMenuManager = {
     },
 
     toggleItemDaily(id) {
+        console.log('%c🔄 toggleItemDaily called with id:', 'background: #2196F3; color: white;', id);
+        console.log('📋 BEFORE: activeItems =', JSON.stringify(this.config.activeItems));
+
         const idStr = String(id);
         const currentIds = this.config.activeItems.map(String);
         const index = currentIds.indexOf(idStr);
@@ -332,11 +335,14 @@ const DailyMenuManager = {
         if (index > -1) {
             // Remove
             this.config.activeItems.splice(index, 1);
+            console.log('➖ Removed item', id);
         } else {
             // Add
             this.config.activeItems.push(parseInt(id));
+            console.log('➕ Added item', id);
         }
 
+        console.log('📋 AFTER: activeItems =', JSON.stringify(this.config.activeItems));
         this.saveConfig();
         this.renderMasterTable();
     },
