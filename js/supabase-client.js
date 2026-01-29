@@ -1383,6 +1383,18 @@ const DailyMenuService = {
         }
 
         return withRetry(async () => {
+            const today = new Date().toISOString().split('T')[0];
+            const localCache = localStorage.getItem('daily_menu_config');
+            if (localCache) {
+                try {
+                    const cached = JSON.parse(localCache);
+                    const cachedDate = cached.lastUpdated?.split('T')[0];
+                    if (cachedDate !== today) {
+                        console.log('Clearing stale cache from', cachedDate);
+                        localStorage.removeItem('daily_menu_config');
+                    }
+                } catch (e) { }
+            }
             const supabase = await getSupabase();
             if (!supabase) {
                 // Fallback to localStorage
@@ -1407,7 +1419,7 @@ const DailyMenuService = {
                 return createSuccessResponse({ active_items: [] });
             }
 
-            const today = new Date().toISOString().split('T')[0];
+            // const today = new Date().toISOString().split('T')[0];
             const { data, error } = await supabase
                 .from('daily_menu_config')
                 .select('*')
@@ -1427,6 +1439,8 @@ const DailyMenuService = {
     async saveConfig(activeItems) {
         return withRetry(async () => {
             const supabase = await getSupabase();
+            const today = new Date().toISOString().split('T')[0]; // FIX: Declare 'today' variable
+            console.log('📅 DailyMenuService.saveConfig:', { today, activeItemsCount: activeItems.length });
 
             // Always save to localStorage as fallback
             const localConfig = {
@@ -1447,7 +1461,6 @@ const DailyMenuService = {
                 return createSuccessResponse({ active_items: activeItems, source: 'localStorage' });
             }
 
-            const today = new Date().toISOString().split('T')[0];
             const { data, error } = await supabase
                 .from('daily_menu_config')
                 .upsert({
