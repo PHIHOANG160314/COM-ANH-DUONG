@@ -128,6 +128,11 @@ const App = {
             this.elements.pageTitle.textContent = PAGE_TITLES[page] || page;
         }
 
+        // Module specific init on navigation
+        if (page === 'menu' && window.FeaturedManager) {
+            FeaturedManager.init();
+        }
+
         this.currentPage = page;
         this.closeSidebar();
     },

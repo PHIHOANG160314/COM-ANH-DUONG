@@ -638,11 +638,13 @@ const CustomerApp = {
             }
         }
 
-        // Fallback to default featured items
+        // Fallback to default featured items - REMOVED to use Service only
+        /*
         if (featured.length === 0) {
             const featuredIds = typeof window.featuredItems !== 'undefined' ? window.featuredItems : [1, 2, 16, 51, 66];
             featured = this.menuData.filter(item => featuredIds.includes(item.id));
         }
+        */
 
         // Render featured cards
         this.renderFeaturedCards(featured);
