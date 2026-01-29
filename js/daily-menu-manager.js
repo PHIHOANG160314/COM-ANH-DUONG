@@ -126,11 +126,29 @@ const DailyMenuManager = {
         }
     },
 
+    // Reliable collection from UI
+    collectActiveItems() {
+        // Collect from Master checkboxes if Master tab is active or just generally from checked boxes
+        const checkboxes = document.querySelectorAll('#masterMenuBody input[type="checkbox"]:checked');
+        if (checkboxes.length > 0) {
+            this.config.activeItems = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            console.log('📋 Collected active items from UI:', this.config.activeItems.length);
+        } else {
+            // Fallback: don't overwrite with empty if we are not on Master tab
+            // But if we are clearly saving 0 items, we check activeItems length
+        }
+        return this.config.activeItems;
+    },
+
     async saveConfig(notify = true) {
-        // DEBUG: Log caller and current state
+        // FORCE COLLECT items from UI before saving
+        this.collectActiveItems();
+
+        // FORCE COLLECT active items from memory or UI to be sure
         console.log('📅 DailyMenuManager.saveConfig called');
-        console.log('📋 Current activeItems:', JSON.stringify(this.config.activeItems));
-        console.log('📋 activeItems length:', this.config.activeItems.length);
+
+        // Validation log
+        console.log('📋 Current activeItems BEFORE save:', this.config.activeItems.length, JSON.stringify(this.config.activeItems));
 
         // Validate: Don't save if explicitly 0 items when we shouldn't
         if (this.config.activeItems.length === 0) {
