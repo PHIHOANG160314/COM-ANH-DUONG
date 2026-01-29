@@ -46,6 +46,8 @@ const DailyMenuManager = {
                 if (result.success && result.data) {
                     this.config.activeItems = result.data.active_items || [];
                     this.config.active = true;
+                    // Always sync to localStorage to prevent stale cache
+                    localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
                     if (window.Debug) Debug.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
                 } else {
                     // Fallback to localStorage
@@ -91,6 +93,8 @@ const DailyMenuManager = {
                 const result = await DailyMenuService.saveConfig(this.config.activeItems);
                 if (result && result.success) {
                     console.log('✅ Synced to Supabase successfully');
+                    // Always sync to localStorage to prevent stale cache
+                    localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
                 } else {
                     console.warn('⚠️ Supabase sync returned:', result);
                 }
