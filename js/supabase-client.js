@@ -1368,6 +1368,17 @@ const DailyMenuService = {
                 if (local) {
                     try {
                         const config = JSON.parse(local);
+                        // Check if cache is from today
+                        const today = new Date().toISOString().split('T')[0];
+                        const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
+                        console.log(`📅 Date check: stored=${lastUpdated}, today=${today}`);
+
+                        if (lastUpdated !== today) {
+                            console.log('📅 Clearing old daily menu cache from localStorage');
+                            localStorage.removeItem('daily_menu_config');
+                            return createSuccessResponse({ active_items: [] });
+                        }
+
                         return createSuccessResponse({ active_items: config.activeItems || [] });
                     } catch (e) { }
                 }

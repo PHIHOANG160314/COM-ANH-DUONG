@@ -115,15 +115,19 @@ const CustomerApp = {
                 const result = await DailyMenuService.getConfig();
                 console.log('✅ Customer: Daily menu loaded:', result);
 
-                if (result.success && result.data && result.data.active_items) {
+                if (result.success && result.data) {
+                    // Always sync to localStorage, even if empty
+                    const activeItems = result.data.active_items || [];
+
                     // Save to localStorage for consistency
                     const localConfig = {
                         active: true,
-                        activeItems: result.data.active_items,
+                        activeItems: activeItems,
                         lastUpdated: new Date().toISOString()
                     };
+                    console.log('💾 Customer: Overwriting localStorage with fresh Supabase data', { activeItemsCount: activeItems.length });
                     localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
-                    console.log('💾 Customer: Saved config to localStorage');
+                    console.log(`💾 Customer: Synced daily menu (Items: ${activeItems.length})`);
                 }
             } catch (e) {
                 console.warn('Customer: Could not load daily menu from Supabase:', e);
@@ -193,7 +197,179 @@ const CustomerApp = {
         // Initialize realtime order tracking
         this.initRealtimeOrderTracking();
 
+        // Initialize Pull to Refresh
+        this.initPullToRefresh();
+
         if (window.Debug) Debug.log('🍽️ Customer Portal ready!');
+    },
+
+    // ========================================
+    // PULL TO REFRESH
+    // ========================================
+    initPullToRefresh() {
+        const grid = document.getElementById('customerMenuGrid');
+        if (!grid) return;
+
+        let startY = 0;
+        let isPulling = false;
+        const threshold = 120; // px to trigger refresh
+
+        // Create refresh spinner if not exists
+        let spinner = document.getElementById('ptr-spinner');
+        if (!spinner) {
+            spinner = document.createElement('div');
+            spinner.id = 'ptr-spinner';
+            spinner.style.cssText = `
+                position: fixed;
+                top: -60px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                transition: top 0.2s ease-out;
+                background: var(--bg-card, white);
+                padding: 12px;
+                border-radius: 50%;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                pointer-events: none;
+            `;
+            spinner.innerHTML = '<span style="font-size: 20px; display: block;">⬇️</span>';
+            document.body.appendChild(spinner);
+        }
+
+        // Add CSS animation for spinner
+        if (!document.getElementById('ptr-style')) {
+            const style = document.createElement('style');
+            style.id = 'ptr-style';
+            style.textContent = `
+                @keyframes ptr-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                .ptr-spinning span { animation: ptr-spin 1s linear infinite; display: block; }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Helper to check if we are at top
+        const isAtTop = () => window.scrollY <= 10;
+
+        grid.addEventListener('touchstart', (e) => {
+            if (isAtTop()) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            } else {
+                isPulling = false;
+            }
+        }, { passive: true });
+
+        grid.addEventListener('touchmove', (e) => {
+            if (!isPulling) return;
+
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+
+            // Only react to pull down when at top
+            if (diff > 0 && isAtTop()) {
+                // Add resistance/damping
+                const move = Math.min(diff * 0.4, 150);
+
+                spinner.style.top = `${move - 50}px`; // Start appearing
+
+                const icon = spinner.querySelector('span');
+                if (diff > threshold) {
+                    icon.innerHTML = '🔄';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.innerHTML = '⬇️';
+                    icon.style.transform = `rotate(${diff}deg)`;
+                }
+            } else {
+                // Scrolled down or pushing up
+                spinner.style.top = '-60px';
+                isPulling = false; // Cancel if we scroll down
+            }
+        }, { passive: true });
+
+        grid.addEventListener('touchend', async (e) => {
+            if (!isPulling) return;
+            isPulling = false;
+
+            const endY = e.changedTouches[0].clientY;
+            const diff = endY - startY;
+
+            if (diff >= threshold && isAtTop()) {
+                // Trigger refresh
+                spinner.style.top = '20px';
+                spinner.classList.add('ptr-spinning');
+                spinner.querySelector('span').innerHTML = '🔄';
+
+                // Perform refresh
+                await this.refreshData();
+
+                // Hide after delay
+                setTimeout(() => {
+                    spinner.style.top = '-60px';
+                    spinner.classList.remove('ptr-spinning');
+                }, 800);
+            } else {
+                // Cancel
+                spinner.style.top = '-60px';
+            }
+        });
+    },
+
+    async refreshData() {
+        console.log('🔄 [Sync] Starting menu refresh...');
+        this.showSyncIndicator();
+
+        try {
+            // 1. Fetch Daily Menu Config
+            if (typeof DailyMenuService !== 'undefined') {
+                console.log('🔄 [Sync] Fetching DailyMenuService.getConfig()...');
+                const result = await DailyMenuService.getConfig();
+
+                if (result.success && result.data) {
+                    console.log('✅ [Sync] Daily config received:', result.data);
+
+                    const activeItems = result.data.active_items || [];
+                    const localConfig = {
+                        active: true,
+                        activeItems: activeItems,
+                        lastUpdated: new Date().toISOString()
+                    };
+
+                    // 2. Update LocalStorage
+                    localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+                    console.log('💾 [Sync] Updated daily_menu_config in localStorage');
+
+                    // 3. Filter Daily Menu
+                    this.filterDailyMenu();
+                } else {
+                    console.warn('⚠️ [Sync] Daily config fetch failed or empty:', result);
+                }
+            } else {
+                console.warn('⚠️ [Sync] DailyMenuService not available');
+            }
+
+            // 4. Render Menu
+            console.log('🎨 [Sync] Re-rendering menu...');
+            this.renderMenu(this.currentCategory);
+
+            // 5. Load Featured Items
+            console.log('🔥 [Sync] Loading featured items...');
+            await this.loadFeaturedItems();
+
+            this.showToast('✅ Đã cập nhật menu mới nhất');
+            console.log('✅ [Sync] Menu refresh completed');
+
+        } catch (e) {
+            console.error('❌ [Sync] Refresh failed:', e);
+            this.showToast('⚠️ Cập nhật thất bại', 'error');
+        } finally {
+            this.hideSyncIndicator();
+        }
     },
 
     // ========================================
