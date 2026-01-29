@@ -1360,6 +1360,28 @@ const DailyMenuService = {
 
     // Get today's daily menu config
     async getConfig() {
+        // FIX: Check for stale cache BEFORE everything else
+        try {
+            const local = localStorage.getItem('daily_menu_config');
+            if (local) {
+                const config = JSON.parse(local);
+                const today = new Date().toISOString().split('T')[0];
+                const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
+                console.log(`🔍 DailyMenuService: Pre-check cache date: stored=${lastUpdated}, today=${today}`);
+
+                if (lastUpdated !== today) {
+                    console.log('🧹 DailyMenuService: Clearing stale daily menu cache before connection');
+                    localStorage.removeItem('daily_menu_config');
+                } else {
+                    console.log('✅ DailyMenuService: Local cache is up to date');
+                }
+            } else {
+                console.log('ℹ️ DailyMenuService: No local cache found');
+            }
+        } catch (e) {
+            console.error('⚠️ DailyMenuService: Error checking local cache:', e);
+        }
+
         return withRetry(async () => {
             const supabase = await getSupabase();
             if (!supabase) {

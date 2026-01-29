@@ -109,6 +109,26 @@ const CustomerApp = {
 
         // Load daily menu config from Supabase (if available)
         if (typeof DailyMenuService !== 'undefined') {
+            console.log('🔄 Customer: Starting daily menu sync...');
+
+            // FIX: Force clear potentially stale cache before fetching
+            // This ensures we don't rely on old data if the fetch fails later,
+            // or if we want to ensure fresh data is pulled.
+            // Note: The service also checks dates, but this is an extra safety measure at app init
+            try {
+                const local = localStorage.getItem('daily_menu_config');
+                if (local) {
+                    const config = JSON.parse(local);
+                    const today = new Date().toISOString().split('T')[0];
+                    const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
+
+                    if (lastUpdated !== today) {
+                        console.log(`🧹 Customer: Init detected stale cache (${lastUpdated} vs ${today}), clearing...`);
+                        localStorage.removeItem('daily_menu_config');
+                    }
+                }
+            } catch(e) { console.error('Error clearing cache in customer init:', e); }
+
             console.log('🔄 Customer: Fetching daily menu from Supabase...');
             try {
                 // Ensure we wait for this to complete before filtering
