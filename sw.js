@@ -3,7 +3,7 @@
 // PWA Offline Support (v6.0 - IndexedDB)
 // ========================================
 
-const CACHE_VERSION = 'v9.0';
+const CACHE_VERSION = 'v10.0';
 const CACHE_NAME = 'fb-master-' + CACHE_VERSION;
 const STATIC_CACHE = 'fb-static-' + CACHE_VERSION;
 const DYNAMIC_CACHE = 'fb-dynamic-' + CACHE_VERSION;
