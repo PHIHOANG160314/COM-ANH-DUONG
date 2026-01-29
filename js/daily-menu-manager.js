@@ -335,9 +335,8 @@ const DailyMenuManager = {
             document.getElementById('selectAllMaster').checked = false;
         }
 
-        this.saveConfig();
         this.renderMasterTable(); // Update status tags
-        /* alert(`Đã thêm ${addedCount} món vào Menu Hôm Nay`); */
+        this.saveConfig();
 
         // Auto switch to Daily tab to see result? No, stay here for bulk add
     },
@@ -361,8 +360,9 @@ const DailyMenuManager = {
         }
 
         console.log('📋 AFTER: activeItems =', JSON.stringify(this.config.activeItems));
-        this.saveConfig();
-        this.renderMasterTable();
+
+        this.renderMasterTable(); // RENDER FIRST to update DOM checkboxes
+        this.saveConfig();        // THEN SAVE (collectActiveItems will read fresh DOM)
     },
 
     removeFromDaily(id) {
@@ -372,16 +372,16 @@ const DailyMenuManager = {
 
         if (index > -1) {
             this.config.activeItems.splice(index, 1);
-            this.saveConfig();
-            this.renderDailyGrid();
+            this.renderDailyGrid(); // RENDER FIRST
+            this.saveConfig();      // THEN SAVE
         }
     },
 
     clearDailyMenu() {
         if (!confirm('Bạn có chắc muốn xóa tất cả món trong menu hôm nay?')) return;
         this.config.activeItems = [];
-        this.saveConfig();
         this.renderDailyGrid();
+        this.saveConfig();
     },
 
     copyYesterday() {
