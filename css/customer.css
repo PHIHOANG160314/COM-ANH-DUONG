@@ -1354,7 +1354,7 @@ body {
     width: 100%;
     border-radius: 8px;
     padding: 16px;
-    background: var(--md-sys-color-surface-container-low, rgba(255,255,255,0.08));
+    background: var(--md-sys-color-surface-container-low, rgba(255, 255, 255, 0.08));
     border: 1px solid var(--md-sys-color-outline);
     color: var(--md-sys-color-on-surface);
     font-family: inherit;
@@ -1393,4 +1393,44 @@ body {
     transform: translateY(-50%) scale(0.8);
     background: var(--md-sys-color-surface);
     color: var(--md-sys-color-primary);
+}
+
+/* ========================================
+   FALLBACK: md-filled-button khi chưa load
+   ======================================== */
+md-filled-button:not(:defined),
+md-filled-tonal-button:not(:defined) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 20px;
+    background: var(--md-sys-color-primary, #2e7d32);
+    color: var(--md-sys-color-on-primary, #ffffff);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+md-filled-button:not(:defined):hover,
+md-filled-tonal-button:not(:defined):hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    filter: brightness(1.1);
+}
+
+md-filled-button:not(:defined):active,
+md-filled-tonal-button:not(:defined):active {
+    transform: scale(0.98);
+}
+
+md-filled-tonal-button:not(:defined) {
+    background: var(--md-sys-color-secondary-container, #c8e6c9);
+    color: var(--md-sys-color-on-secondary-container, #1b5e20);
 }

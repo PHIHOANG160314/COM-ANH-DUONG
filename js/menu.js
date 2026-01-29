@@ -97,6 +97,23 @@ const MenuManagement = {
 
     saveDailyMenu() {
         storage.set('daily_menu_' + this.getTodayKey(), this.dailyMenu);
+
+        // Sync to Supabase Realtime for customer pages
+        if (typeof DailyMenuService !== 'undefined' && DailyMenuService.saveConfig) {
+            const activeItemIds = this.dailyMenu
+                .filter(item => item.available)
+                .map(item => item.id);
+
+            DailyMenuService.saveConfig(activeItemIds)
+                .then(result => {
+                    if (window.Debug && result.success) {
+                        Debug.info('📡 Daily menu synced to realtime:', activeItemIds.length, 'items');
+                    }
+                })
+                .catch(err => {
+                    if (window.Debug) Debug.warn('Daily menu sync failed:', err);
+                });
+        }
     },
 
     setupEventListeners() {
@@ -128,8 +145,8 @@ const MenuManagement = {
             // Fallback/Alternative: Attach click to tabs directly if 'change' isn't sufficient or complex
             document.querySelectorAll('.menu-tab').forEach(tab => {
                 tab.addEventListener('click', (e) => {
-                     // e.currentTarget is the md-primary-tab
-                     // logic handled by change event usually, but just in case
+                    // e.currentTarget is the md-primary-tab
+                    // logic handled by change event usually, but just in case
                 });
             });
         }
