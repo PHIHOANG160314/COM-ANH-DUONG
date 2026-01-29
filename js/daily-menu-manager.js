@@ -39,17 +39,25 @@ const DailyMenuManager = {
     },
 
     async loadConfig() {
+        console.log('📅 DailyMenuManager.loadConfig starting...');
+
         // Try to load from Supabase first, fallback to localStorage
         if (typeof DailyMenuService !== 'undefined') {
             try {
+                console.log('🔄 Loading from DailyMenuService.getConfig()...');
                 const result = await DailyMenuService.getConfig();
+                console.log('📥 DailyMenuService.getConfig result:', result);
+
                 if (result.success && result.data) {
                     this.config.activeItems = result.data.active_items || [];
                     this.config.active = true;
+                    console.log('✅ Loaded from Supabase:', this.config.activeItems.length, 'items');
+                    console.log('📋 Active Item IDs:', JSON.stringify(this.config.activeItems));
                     // Always sync to localStorage to prevent stale cache
                     localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
                     if (window.Debug) Debug.log('📅 Loaded daily menu from Supabase:', this.config.activeItems.length, 'items');
                 } else {
+                    console.log('⚠️ Supabase returned no data, falling back to localStorage');
                     // Fallback to localStorage
                     this._loadFromLocalStorage();
                 }
@@ -58,6 +66,7 @@ const DailyMenuManager = {
                 this._loadFromLocalStorage();
             }
         } else {
+            console.log('⚠️ DailyMenuService not available, using localStorage');
             this._loadFromLocalStorage();
         }
 
@@ -66,6 +75,8 @@ const DailyMenuManager = {
         if (dateEl) {
             dateEl.textContent = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric' });
         }
+
+        console.log('📅 DailyMenuManager.loadConfig finished. activeItems:', this.config.activeItems.length);
     },
 
     _loadFromLocalStorage() {
@@ -84,13 +95,25 @@ const DailyMenuManager = {
     },
 
     async saveConfig(notify = true) {
-        console.log('📅 Saving daily menu:', this.config.activeItems.length, 'items');
+        // DEBUG: Log caller and current state
+        console.log('📅 DailyMenuManager.saveConfig called');
+        console.log('📋 Current activeItems:', JSON.stringify(this.config.activeItems));
+        console.log('📋 activeItems length:', this.config.activeItems.length);
+
+        // Validate: Don't save if explicitly 0 items when we shouldn't
+        if (this.config.activeItems.length === 0) {
+            console.warn('⚠️ WARNING: Saving 0 items to daily menu!');
+        }
+
         this.config.lastUpdated = new Date().toISOString();
 
         // Save to Supabase (also handles localStorage fallback internally)
         if (typeof DailyMenuService !== 'undefined') {
             try {
+                console.log('🔄 Calling DailyMenuService.saveConfig with', this.config.activeItems.length, 'items');
                 const result = await DailyMenuService.saveConfig(this.config.activeItems);
+                console.log('📤 DailyMenuService.saveConfig result:', result);
+
                 if (result && result.success) {
                     console.log('✅ Synced to Supabase successfully');
                     // Always sync to localStorage to prevent stale cache
