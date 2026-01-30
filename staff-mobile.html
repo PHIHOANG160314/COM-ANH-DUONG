@@ -142,7 +142,7 @@
                         <span class="action-label">Bếp</span>
                         <span class="action-badge" id="kitchenOrderCount">0</span>
                     </div>
-                    <div class="action-card pos" onclick="window.location='index.html#pos'" role="button" tabindex="0">
+                    <div class="action-card pos" onclick="StaffApp.showSection('pos')" role="button" tabindex="0">
                         <md-ripple></md-ripple>
                         <span class="action-icon">💳</span>
                         <span class="action-label">POS</span>
@@ -225,6 +225,75 @@
                 </div>
                 <div class="orders-list" id="allOrdersList">
                     <p class="no-orders">Chưa có đơn hàng</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- POS Section -->
+        <section class="section" id="section-pos">
+            <div class="pos-container-mobile">
+                <div class="section-header" style="display: flex; align-items: center; gap: 8px;">
+                    <md-icon-button onclick="StaffApp.showSection('dashboard')">
+                        <md-icon>arrow_back</md-icon>
+                    </md-icon-button>
+                    <h2>🛒 Bán hàng</h2>
+                    <div style="flex:1"></div>
+                    <md-outlined-select id="staffTableSelect" style="min-width: 120px;">
+                        <md-select-option value="" selected>
+                            <div slot="headline">Chọn bàn</div>
+                        </md-select-option>
+                        <md-select-option value="1">
+                            <div slot="headline">Bàn 1</div>
+                        </md-select-option>
+                        <md-select-option value="2">
+                            <div slot="headline">Bàn 2</div>
+                        </md-select-option>
+                        <md-select-option value="3">
+                            <div slot="headline">Bàn 3</div>
+                        </md-select-option>
+                        <md-select-option value="4">
+                            <div slot="headline">Bàn 4</div>
+                        </md-select-option>
+                        <md-select-option value="5">
+                            <div slot="headline">Bàn 5</div>
+                        </md-select-option>
+                        <md-select-option value="6">
+                            <div slot="headline">Bàn 6</div>
+                        </md-select-option>
+                        <md-select-option value="takeaway">
+                            <div slot="headline">Mang đi</div>
+                        </md-select-option>
+                    </md-outlined-select>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="category-tabs-mobile" style="overflow-x: auto; padding: 8px 12px;">
+                    <md-chip-set>
+                        <md-filter-chip class="pos-category-tab" label="Tất cả" data-category="all"
+                            selected></md-filter-chip>
+                        <md-filter-chip class="pos-category-tab" label="Món chính"
+                            data-category="food"></md-filter-chip>
+                        <md-filter-chip class="pos-category-tab" label="Đồ uống"
+                            data-category="drinks"></md-filter-chip>
+                        <md-filter-chip class="pos-category-tab" label="Tráng miệng"
+                            data-category="dessert"></md-filter-chip>
+                    </md-chip-set>
+                </div>
+
+                <!-- Menu Grid -->
+                <div class="menu-grid-mobile" id="staffMenuGrid">
+                    <p class="no-orders">Đang tải menu...</p>
+                </div>
+
+                <!-- Cart Summary (Fixed bottom) -->
+                <div class="cart-summary-mobile glass-card" id="staffCartSummary">
+                    <div class="cart-info">
+                        <span class="cart-count" id="staffCartCount">0 món</span>
+                        <span class="cart-total" id="staffCartTotal">0đ</span>
+                    </div>
+                    <md-filled-button onclick="StaffApp.staffCheckout()">
+                        Thanh toán
+                    </md-filled-button>
                 </div>
             </div>
         </section>

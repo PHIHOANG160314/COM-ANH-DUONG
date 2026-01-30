@@ -1,25 +1,13 @@
 -- =====================================================
--- ENABLE REALTIME ON ORDERS TABLE
--- Run this in Supabase SQL Editor
+-- ENABLE SUPABASE REALTIME FOR DAILY MENU SYNC
+-- Run this in Supabase Dashboard → SQL Editor
 -- =====================================================
 
--- Step 1: Check if replica identity is set correctly
--- (Required for UPDATE events to include full row data)
-ALTER TABLE orders REPLICA IDENTITY FULL;
+-- Enable Realtime for daily_menu_config table
+ALTER PUBLICATION supabase_realtime ADD TABLE daily_menu_config;
 
--- Step 2: Enable realtime for orders table
--- Go to Supabase Dashboard > Database > Replication
--- OR run this command:
-BEGIN;
-  -- Check current publication
-  DROP PUBLICATION IF EXISTS supabase_realtime;
-  
-  -- Create new publication including orders table
-  CREATE PUBLICATION supabase_realtime FOR TABLE orders;
-COMMIT;
+-- Enable Realtime for featured_items_config table
+ALTER PUBLICATION supabase_realtime ADD TABLE featured_items_config;
 
--- Alternative: Add orders to existing publication
--- ALTER PUBLICATION supabase_realtime ADD TABLE orders;
-
--- Step 3: Verify realtime is enabled
+-- Verify (should show the tables in the publication)
 SELECT * FROM pg_publication_tables WHERE pubname = 'supabase_realtime';

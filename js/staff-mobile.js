@@ -764,6 +764,10 @@ const StaffApp = {
             this.showToast('⛔ Bạn không có quyền truy cập Đơn hàng', 'error');
             return;
         }
+        if (sectionId === 'pos' && !this.hasPermission('pos')) {
+            this.showToast('⛔ Bạn không có quyền truy cập Bán hàng', 'error');
+            return;
+        }
 
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -778,6 +782,8 @@ const StaffApp = {
             this.loadOrders();
         } else if (sectionId === 'dashboard') {
             this.updateDashboard();
+        } else if (sectionId === 'pos') {
+            this.initPOS();
         }
     },
 
@@ -820,6 +826,192 @@ const StaffApp = {
         toast.textContent = message;
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
+    },
+
+    // ========================================
+    // STAFF POS - BÁN HÀNG
+    // ========================================
+    staffCart: [],
+    currentMenuCategory: 'all',
+
+    initPOS() {
+        this.setupPOSEventListeners();
+        this.renderStaffMenu();
+        this.updateStaffCart();
+    },
+
+    setupPOSEventListeners() {
+        const chips = document.querySelectorAll('.pos-category-tab');
+        chips.forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                chips.forEach(c => c.selected = false);
+                e.currentTarget.selected = true;
+                this.currentMenuCategory = e.currentTarget.dataset.category;
+                this.renderStaffMenu();
+            });
+        });
+    },
+
+    renderStaffMenu() {
+        const grid = document.getElementById('staffMenuGrid');
+        if (!grid) return;
+
+        let items = window.menuItems || [];
+        if (this.currentMenuCategory !== 'all') {
+            items = items.filter(i => i.category === this.currentMenuCategory);
+        }
+
+        if (items.length === 0) {
+            grid.innerHTML = '<p class="no-orders">Không có món trong danh mục này</p>';
+            return;
+        }
+
+        grid.innerHTML = items.map(item => `
+            <div class="menu-item-mobile" onclick="StaffApp.addToStaffCart(${item.id})">
+                <md-ripple></md-ripple>
+                <span class="item-icon">${item.icon || '🍽️'}</span>
+                <span class="item-name">${item.name}</span>
+                <span class="item-price">${this.formatPrice(item.price)}</span>
+            </div>
+        `).join('');
+    },
+
+    addToStaffCart(itemId) {
+        const item = (window.menuItems || []).find(i => i.id === itemId);
+        if (!item) return;
+
+        const existing = this.staffCart.find(c => c.id === itemId);
+        if (existing) {
+            existing.quantity++;
+        } else {
+            this.staffCart.push({ ...item, quantity: 1 });
+        }
+
+        this.updateStaffCart();
+        this.showToast(`✅ ${item.name}`);
+    },
+
+    removeFromStaffCart(itemId) {
+        this.staffCart = this.staffCart.filter(c => c.id !== itemId);
+        this.updateStaffCart();
+    },
+
+    updateStaffCartQty(itemId, delta) {
+        const item = this.staffCart.find(c => c.id === itemId);
+        if (item) {
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                this.removeFromStaffCart(itemId);
+            } else {
+                this.updateStaffCart();
+            }
+        }
+    },
+
+    updateStaffCart() {
+        const countEl = document.getElementById('staffCartCount');
+        const totalEl = document.getElementById('staffCartTotal');
+
+        const count = this.staffCart.reduce((s, i) => s + i.quantity, 0);
+        const total = this.staffCart.reduce((s, i) => s + i.price * i.quantity, 0);
+
+        if (countEl) countEl.textContent = `${count} món`;
+        if (totalEl) totalEl.textContent = this.formatPrice(total);
+    },
+
+    async staffCheckout() {
+        if (this.staffCart.length === 0) {
+            this.showToast('Vui lòng chọn món', 'warning');
+            return;
+        }
+
+        const tableSelect = document.getElementById('staffTableSelect');
+        const table = tableSelect?.value;
+        if (!table) {
+            this.showToast('Vui lòng chọn bàn', 'warning');
+            return;
+        }
+
+        const subtotal = this.staffCart.reduce((s, i) => s + i.price * i.quantity, 0);
+        const vat = subtotal * 0.1;
+        const total = subtotal + vat;
+
+        // Create order ID
+        const orderId = 'AD' + Date.now().toString().slice(-6) + '-' + Math.floor(Math.random() * 10000);
+
+        const orderItems = this.staffCart.map(item => ({
+            id: item.id,
+            name: item.name,
+            icon: item.icon || '🍽️',
+            qty: item.quantity,
+            price: item.price
+        }));
+
+        const newOrder = {
+            id: orderId,
+            table: table === 'takeaway' ? 'Mang đi' : 'Bàn ' + table,
+            items: orderItems,
+            total: total,
+            status: 'pending',
+            orderType: table === 'takeaway' ? 'takeaway' : 'dinein',
+            createdAt: new Date().toISOString(),
+            staffId: this.currentStaff?.id,
+            staffName: this.currentStaff?.name
+        };
+
+        // Save to localStorage
+        const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+        orders.unshift(newOrder);
+        localStorage.setItem('customer_orders', JSON.stringify(orders));
+
+        // Sync to Supabase
+        await this.syncStaffOrderToSupabase(newOrder);
+
+        // Clear cart
+        this.staffCart = [];
+        this.updateStaffCart();
+        if (tableSelect) tableSelect.value = '';
+
+        this.showToast(`✅ Đã tạo đơn ${orderId}`, 'success');
+
+        // Refresh dashboard and orders
+        this.updateDashboard();
+        this.loadOrders();
+        this.loadKitchenOrders();
+
+        // Go back to dashboard
+        this.showSection('dashboard');
+    },
+
+    async syncStaffOrderToSupabase(order) {
+        if (typeof SupabaseService === 'undefined' || !window.isSupabaseConfigured?.()) {
+            if (window.Debug) Debug.warn('Supabase not configured, order saved locally only');
+            return;
+        }
+
+        try {
+            const result = await SupabaseService.createOrder({
+                order_number: order.id,
+                customer_name: 'Khách tại quán',
+                customer_phone: '',
+                table_number: order.table,
+                items: JSON.stringify(order.items),
+                subtotal: Math.round(order.total / 1.1),
+                discount: 0,
+                total: order.total,
+                status: 'pending',
+                order_type: order.orderType,
+                notes: `Staff: ${order.staffName || 'Unknown'}`
+            });
+
+            if (result.error) {
+                console.error('Failed to sync order:', result.error);
+            } else {
+                if (window.Debug) Debug.log('✅ Order synced to Supabase:', result.data?.id);
+            }
+        } catch (err) {
+            console.error('Supabase sync error:', err);
+        }
     }
 };
 

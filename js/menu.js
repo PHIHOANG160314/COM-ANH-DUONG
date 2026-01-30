@@ -20,15 +20,29 @@ const MenuManagement = {
         this.updateTodayDate();
     },
 
-    loadData() {
-        if (window.Debug) Debug.log('Loading Menu Data...', 'Original items:', ORIGINAL_MENU_DATA.length);
+    async loadData() {
+        if (window.Debug) Debug.log('Loading Menu Data...');
 
-        if (ORIGINAL_MENU_DATA.length === 0) {
-            console.error('CRITICAL: No menu data found!');
-            return;
+        // 1. Try to load from Supabase DB first
+        if (typeof DailyMenuService !== 'undefined' && DailyMenuService.getMenuItems) {
+            const result = await DailyMenuService.getMenuItems();
+
+            if (result.success && result.data && result.data.length > 0) {
+                this.masterMenu = result.data.map(item => ({
+                    ...item,
+                    active: item.is_available // Map DB column to app property
+                }));
+                if (window.Debug) Debug.info(`✅ Loaded ${this.masterMenu.length} items from Supabase DB`);
+                this.saveMasterMenu(); // Sync to local storage for offline
+
+                // Proceed to daily menu
+                this.loadDailyMenu();
+                this.render();
+                return;
+            }
         }
 
-        // Load master menu from localStorage
+        // 2. Fallback to localStorage
         let savedMaster = storage.get('master_menu');
 
         // Integrity Check
@@ -36,16 +50,22 @@ const MenuManagement = {
 
         // Decide whether to reset
         if (!savedMaster || !isValid(savedMaster) || savedMaster.length < ORIGINAL_MENU_DATA.length) {
-            if (window.Debug) Debug.log('Resetting menu data...');
+            if (window.Debug) Debug.log('Resetting menu data to static default...');
             this.forceResetMenu();
         } else {
             this.masterMenu = savedMaster;
             if (window.Debug) Debug.info('Loaded', this.masterMenu.length, 'items from storage');
         }
 
+        this.loadDailyMenu();
+    },
+
+    loadDailyMenu() {
         // Load daily menu
         const today = this.getTodayKey();
         const savedDaily = storage.get('daily_menu_' + today);
+        const isValid = (data) => Array.isArray(data);
+
         if (savedDaily && isValid(savedDaily)) {
             this.dailyMenu = savedDaily;
         } else {
@@ -211,12 +231,12 @@ const MenuManagement = {
                 <td style="color:var(--text-muted);">${formatCurrency(item.cost || 0)}</td>
                 <td>${item.active ? '<span class="status-badge ok">Đang bán</span>' : '<span class="status-badge low">Tạm ngưng</span>'}</td>
                 <td>
-                    <md-icon-button onclick="MenuManagement.editItem('${item.id}')" title="Sửa"><md-icon>edit</md-icon></md-icon-button>
+                    <md-icon-button onclick="MenuManagement.editItem('${item.id}')" title="Sửa">✏️</md-icon-button>
                     <md-icon-button onclick="MenuManagement.toggleActive('${item.id}')" title="${item.active ? 'Tạm ngưng' : 'Bật lại'}">
-                        <md-icon>${item.active ? 'pause' : 'play_arrow'}</md-icon>
+                        <span style="font-size: 20px;">${item.active ? '⏸️' : '▶️'}</span>
                     </md-icon-button>
                     <md-icon-button class="delete-btn" onclick="MenuManagement.deleteItem('${item.id}')" title="Xóa" style="color: var(--danger);">
-                        <md-icon>delete</md-icon>
+                        🗑️
                     </md-icon-button>
                 </td>
             `;
@@ -253,11 +273,11 @@ const MenuManagement = {
                     <div class="daily-menu-price">${formatCurrency(item.price)}</div>
                 </div>
                 <div class="daily-menu-actions">
-                    <md-icon-button class="toggle-btn ${item.available ? 'on' : 'off'}" onclick="MenuManagement.toggleDailyAvailable('${item.id}')">
-                        <md-icon>${item.available ? 'check_circle' : 'cancel'}</md-icon>
+                    <md-icon-button class="toggle-btn ${item.available ? 'on' : 'off'}" onclick="MenuManagement.toggleDailyAvailable('${item.id}')" title="${item.available ? 'Tạm ngưng' : 'Bán lại'}">
+                        ${item.available ? '✅' : '⛔'}
                     </md-icon-button>
-                    <md-icon-button class="remove-btn" onclick="MenuManagement.removeFromDaily('${item.id}')">
-                         <md-icon>delete</md-icon>
+                    <md-icon-button class="remove-btn" onclick="MenuManagement.removeFromDaily('${item.id}')" title="Bỏ khỏi menu ngày">
+                         🗑️
                     </md-icon-button>
                 </div>
             `;
@@ -296,7 +316,7 @@ const MenuManagement = {
         `);
     },
 
-    createItem() {
+    async createItem() {
         const name = document.getElementById('newItemName').value.trim();
         const category = document.getElementById('newItemCategory').value;
         const icon = document.getElementById('newItemIcon').value || '🍽️';
@@ -308,16 +328,25 @@ const MenuManagement = {
             return;
         }
 
-        const newItem = {
-            id: 'M' + String(this.masterMenu.length + 1).padStart(3, '0'),
-            name, category, icon, price, cost, active: true
-        };
+        const newItem = { name, category, icon, price, cost };
 
-        this.masterMenu.push(newItem);
-        this.saveMasterMenu();
-        this.render();
-        modal.close();
-        toast.success(`Đã thêm món "${name}"`);
+        if (typeof DailyMenuService !== 'undefined' && DailyMenuService.createMenuItem) {
+            const result = await DailyMenuService.createMenuItem(newItem);
+            if (result.success && result.data) {
+                const addedItem = {
+                    ...result.data,
+                    active: result.data.is_available
+                };
+                this.masterMenu.push(addedItem);
+                this.render();
+                modal.close();
+                toast.success(`Đã thêm món "${name}" vào Database`);
+                return;
+            }
+        }
+
+        // Fallback or Error
+        toast.error('Lỗi khi thêm món vào Database');
     },
 
     editItem(itemId) {
@@ -342,36 +371,56 @@ const MenuManagement = {
         `);
     },
 
-    saveItem(itemId) {
+    async saveItem(itemId) {
         const item = this.masterMenu.find(i => i.id === itemId);
         if (!item) return;
 
-        item.name = document.getElementById('editItemName').value.trim() || item.name;
-        item.category = document.getElementById('editItemCategory').value;
-        item.icon = document.getElementById('editItemIcon').value || item.icon;
-        item.price = parseInt(document.getElementById('editItemPrice').value) || item.price;
-        item.cost = parseInt(document.getElementById('editItemCost').value) || item.cost;
+        const name = document.getElementById('editItemName').value.trim();
+        const category = document.getElementById('editItemCategory').value;
+        const icon = document.getElementById('editItemIcon').value;
+        const price = parseInt(document.getElementById('editItemPrice').value);
+        const cost = parseInt(document.getElementById('editItemCost').value);
 
-        this.saveMasterMenu();
-        this.render();
+        const updates = { name, category, icon, price, cost };
 
-        const dailyItem = this.dailyMenu.find(i => i.id === itemId);
-        if (dailyItem) {
-            Object.assign(dailyItem, item);
-            this.saveDailyMenu();
+        if (typeof DailyMenuService !== 'undefined' && DailyMenuService.updateMenuItem) {
+            const result = await DailyMenuService.updateMenuItem(itemId, updates);
+
+            if (result.success) {
+                // Update local state
+                Object.assign(item, updates);
+                // Also update daily menu if present
+                const dailyItem = this.dailyMenu.find(i => i.id === itemId);
+                if (dailyItem) {
+                    Object.assign(dailyItem, updates);
+                    this.saveDailyMenu();
+                }
+
+                this.render();
+                modal.close();
+                toast.success('Đã cập nhật món trên Database');
+                return;
+            }
         }
 
-        modal.close();
-        toast.success('Đã cập nhật món');
+        toast.error('Lỗi cập nhật Database');
     },
 
-    toggleActive(itemId) {
+    async toggleActive(itemId) {
         const item = this.masterMenu.find(i => i.id === itemId);
         if (item) {
-            item.active = !item.active;
-            this.saveMasterMenu();
-            this.render();
-            toast.info(item.active ? `"${item.name}" đã bật bán` : `"${item.name}" đã tạm ngưng`);
+            const newActiveState = !item.active;
+
+            if (typeof DailyMenuService !== 'undefined' && DailyMenuService.updateMenuItem) {
+                const result = await DailyMenuService.updateMenuItem(itemId, { active: newActiveState });
+                if (result.success) {
+                    item.active = newActiveState;
+                    this.render();
+                    toast.info(item.active ? `"${item.name}" đã bật bán` : `"${item.name}" đã tạm ngưng`);
+                } else {
+                    toast.error('Lỗi cập nhật trạng thái');
+                }
+            }
         }
     },
 
@@ -392,26 +441,32 @@ const MenuManagement = {
         `);
     },
 
-    confirmDelete(itemId) {
+    async confirmDelete(itemId) {
         const item = this.masterMenu.find(i => i.id === itemId);
         if (!item) return;
 
         const itemName = item.name;
 
-        // Remove from master menu
-        this.masterMenu = this.masterMenu.filter(i => i.id !== itemId);
-        this.saveMasterMenu();
+        if (typeof DailyMenuService !== 'undefined' && DailyMenuService.deleteMenuItem) {
+            const result = await DailyMenuService.deleteMenuItem(itemId);
+            if (result.success) {
+                // Remove from master menu
+                this.masterMenu = this.masterMenu.filter(i => i.id !== itemId);
 
-        // Also remove from daily menu if exists
-        this.dailyMenu = this.dailyMenu.filter(i => i.id !== itemId);
-        this.saveDailyMenu();
+                // Also remove from daily menu if exists
+                this.dailyMenu = this.dailyMenu.filter(i => i.id !== itemId);
+                this.saveDailyMenu();
 
-        // Remove from selected items
-        this.selectedItems = this.selectedItems.filter(id => id !== itemId);
+                // Remove from selected items
+                this.selectedItems = this.selectedItems.filter(id => id !== itemId);
 
-        this.render();
-        modal.close();
-        toast.success(`Đã xóa món "${itemName}" khỏi menu`);
+                this.render();
+                modal.close();
+                toast.success(`Đã xóa món "${itemName}" khỏi Database`);
+            } else {
+                toast.error('Lỗi khi xóa món');
+            }
+        }
     },
 
     addSelectedToDaily() {

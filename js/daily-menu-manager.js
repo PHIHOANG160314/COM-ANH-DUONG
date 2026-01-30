@@ -18,11 +18,19 @@ const DailyMenuManager = {
     async init() {
         if (window.Debug) Debug.info('📅 DailyMenuManager initializing...');
 
-        // Load master data
-        if (typeof window.menuItems !== 'undefined') {
-            this.masterItems = window.menuItems;
-        } else if (typeof menuItems !== 'undefined') {
-            this.masterItems = menuItems;
+        // Load master data from Supabase
+        if (typeof DailyMenuService !== 'undefined') {
+            console.log('🔄 Fetching Master Menu from Supabase...');
+            const result = await DailyMenuService.getMenuItems();
+            if (result.success && result.data && result.data.length > 0) {
+                this.masterItems = result.data;
+                console.log('✅ Loaded', this.masterItems.length, 'master items from DB');
+            } else {
+                console.warn('⚠️ Could not load from DB, falling back to local data');
+                this._loadLocalMasterData();
+            }
+        } else {
+            this._loadLocalMasterData();
         }
 
         // Load current config (async)
@@ -37,6 +45,26 @@ const DailyMenuManager = {
 
         if (window.Debug) Debug.info('✅ DailyMenuManager ready');
     },
+
+    _loadLocalMasterData() {
+        // Load master data from Supabase
+        if (typeof DailyMenuService !== 'undefined') {
+            console.log('🔄 Fetching Master Menu from Supabase...');
+            const result = await DailyMenuService.getMenuItems();
+            if (result.success && result.data && result.data.length > 0) {
+                this.masterItems = result.data;
+                console.log('✅ Loaded', this.masterItems.length, 'master items from DB');
+            } else {
+                console.warn('⚠️ Could not load from DB, falling back to local data');
+                this._loadLocalMasterData();
+            }
+        } else {
+            this._loadLocalMasterData();
+        } else {
+            this.masterItems = [];
+        }
+        console.log('⚠️ Loaded', this.masterItems.length, 'master items from local file');
+},
 
     async loadConfig() {
         console.log('📅 DailyMenuManager.loadConfig starting...');
@@ -111,136 +139,136 @@ const DailyMenuManager = {
         console.log('📅 DailyMenuManager.loadConfig finished. activeItems:', this.config.activeItems.length);
     },
 
-    _loadFromLocalStorage() {
-        const saved = localStorage.getItem('daily_menu_config');
-        if (saved) {
-            try {
-                this.config = JSON.parse(saved);
-            } catch (e) {
-                console.error('Error parsing daily config', e);
-            }
-        } else {
-            // Default: All items active to avoid empty menu on first load
-            this.config.activeItems = this.masterItems.map(i => i.id);
-            this.saveConfig(false);
+        _loadFromLocalStorage() {
+    const saved = localStorage.getItem('daily_menu_config');
+    if (saved) {
+        try {
+            this.config = JSON.parse(saved);
+        } catch (e) {
+            console.error('Error parsing daily config', e);
         }
-    },
+    } else {
+        // Default: All items active to avoid empty menu on first load
+        this.config.activeItems = this.masterItems.map(i => i.id);
+        this.saveConfig(false);
+    }
+},
 
-    // Reliable collection from UI
-    collectActiveItems() {
-        // Only collect from Master checkboxes if Master tab section is currently active
-        const masterSection = document.getElementById('masterMenuSection');
-        const isOnMasterTab = masterSection && masterSection.classList.contains('active');
+// Reliable collection from UI
+collectActiveItems() {
+    // Only collect from Master checkboxes if Master tab section is currently active
+    const masterSection = document.getElementById('masterMenuSection');
+    const isOnMasterTab = masterSection && masterSection.classList.contains('active');
 
-        if (isOnMasterTab) {
-            const checkboxes = document.querySelectorAll('#masterMenuBody input[type="checkbox"]:checked');
-            if (checkboxes.length > 0) {
-                this.config.activeItems = Array.from(checkboxes).map(cb => parseInt(cb.value));
-                console.log('📋 Collected active items from Master UI:', this.config.activeItems.length);
-            } else {
-                console.log('⚠️ Master tab active but no checkboxes checked - keeping existing:', this.config.activeItems.length);
-            }
+    if (isOnMasterTab) {
+        const checkboxes = document.querySelectorAll('#masterMenuBody input[type="checkbox"]:checked');
+        if (checkboxes.length > 0) {
+            this.config.activeItems = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            console.log('📋 Collected active items from Master UI:', this.config.activeItems.length);
         } else {
-            // Not on Master tab - keep current activeItems (set by toggleItemDaily)
-            console.log('📋 Not on Master tab - using existing activeItems:', this.config.activeItems.length);
+            console.log('⚠️ Master tab active but no checkboxes checked - keeping existing:', this.config.activeItems.length);
         }
-        return this.config.activeItems;
-    },
+    } else {
+        // Not on Master tab - keep current activeItems (set by toggleItemDaily)
+        console.log('📋 Not on Master tab - using existing activeItems:', this.config.activeItems.length);
+    }
+    return this.config.activeItems;
+},
 
     async saveConfig(notify = true) {
-        // FORCE COLLECT items from UI before saving
-        this.collectActiveItems();
+    // FORCE COLLECT items from UI before saving
+    this.collectActiveItems();
 
-        // FORCE COLLECT active items from memory or UI to be sure
-        console.log('📅 DailyMenuManager.saveConfig called');
+    // FORCE COLLECT active items from memory or UI to be sure
+    console.log('📅 DailyMenuManager.saveConfig called');
 
-        // Validation log
-        console.log('📋 Current activeItems BEFORE save:', this.config.activeItems.length, JSON.stringify(this.config.activeItems));
+    // Validation log
+    console.log('📋 Current activeItems BEFORE save:', this.config.activeItems.length, JSON.stringify(this.config.activeItems));
 
-        // Validate: Don't save if explicitly 0 items when we shouldn't
-        if (this.config.activeItems.length === 0) {
-            console.warn('⚠️ WARNING: Saving 0 items to daily menu!');
-        }
+    // Validate: Don't save if explicitly 0 items when we shouldn't
+    if (this.config.activeItems.length === 0) {
+        console.warn('⚠️ WARNING: Saving 0 items to daily menu!');
+    }
 
-        this.config.lastUpdated = new Date().toISOString();
+    this.config.lastUpdated = new Date().toISOString();
 
-        // Save to Supabase (also handles localStorage fallback internally)
-        if (typeof DailyMenuService !== 'undefined') {
-            try {
-                console.log('🔄 Calling DailyMenuService.saveConfig with', this.config.activeItems.length, 'items');
-                const result = await DailyMenuService.saveConfig(this.config.activeItems);
-                console.log('📤 DailyMenuService.saveConfig result:', result);
+    // Save to Supabase (also handles localStorage fallback internally)
+    if (typeof DailyMenuService !== 'undefined') {
+        try {
+            console.log('🔄 Calling DailyMenuService.saveConfig with', this.config.activeItems.length, 'items');
+            const result = await DailyMenuService.saveConfig(this.config.activeItems);
+            console.log('📤 DailyMenuService.saveConfig result:', result);
 
-                if (result && result.success) {
-                    console.log('✅ Synced to Supabase successfully');
-                    // Always sync to localStorage to prevent stale cache
-                    localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
-                } else {
-                    console.warn('⚠️ Supabase sync returned:', result);
-                }
-            } catch (e) {
-                console.error('❌ Error saving to Supabase:', e);
-                // Fallback to localStorage only
+            if (result && result.success) {
+                console.log('✅ Synced to Supabase successfully');
+                // Always sync to localStorage to prevent stale cache
                 localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
-                console.log('💾 Saved to localStorage as fallback');
+            } else {
+                console.warn('⚠️ Supabase sync returned:', result);
             }
-        } else {
+        } catch (e) {
+            console.error('❌ Error saving to Supabase:', e);
+            // Fallback to localStorage only
             localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
-            console.log('💾 Saved to localStorage (no Supabase)');
+            console.log('💾 Saved to localStorage as fallback');
         }
+    } else {
+        localStorage.setItem('daily_menu_config', JSON.stringify(this.config));
+        console.log('💾 Saved to localStorage (no Supabase)');
+    }
 
-        if (notify) {
-            if (window.AdminDashboard && window.AdminDashboard.showToast) {
-                window.AdminDashboard.showToast('✅ Đã cập nhật Menu Hôm Nay');
-            }
+    if (notify) {
+        if (window.AdminDashboard && window.AdminDashboard.showToast) {
+            window.AdminDashboard.showToast('✅ Đã cập nhật Menu Hôm Nay');
         }
-    },
+    }
+},
 
-    setupEventListeners() {
-        // Tab switching (already handled by main.js or simple handler here)
-        document.querySelectorAll('.menu-tab').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                // UI Toggle
-                document.querySelectorAll('.menu-tab').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+setupEventListeners() {
+    // Tab switching (already handled by main.js or simple handler here)
+    document.querySelectorAll('.menu-tab').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // UI Toggle
+            document.querySelectorAll('.menu-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-                const type = btn.dataset.menuType;
-                document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+            const type = btn.dataset.menuType;
+            document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
 
-                if (type === 'master') {
-                    document.getElementById('masterMenuSection').classList.add('active');
-                } else {
-                    document.getElementById('dailyMenuSection').classList.add('active');
-                    this.renderDailyGrid(); // Refresh
-                }
-            });
-        });
-
-        // Buttons
-        document.getElementById('addToDailyBtn')?.addEventListener('click', () => this.addSelectedToDaily());
-        document.getElementById('clearDailyBtn')?.addEventListener('click', () => this.clearDailyMenu());
-        document.getElementById('copyYesterdayBtn')?.addEventListener('click', () => this.copyYesterday());
-        document.getElementById('resetMenuBtn')?.addEventListener('click', () => location.reload()); // Simple reload for now
-
-        // Checkbox Master
-        document.addEventListener('change', (e) => {
-            if (e.target.id === 'selectAllMaster') {
-                const checked = e.target.checked;
-                document.querySelectorAll('.master-item-checkbox').forEach(cb => cb.checked = checked);
+            if (type === 'master') {
+                document.getElementById('masterMenuSection').classList.add('active');
+            } else {
+                document.getElementById('dailyMenuSection').classList.add('active');
+                this.renderDailyGrid(); // Refresh
             }
         });
-    },
+    });
 
-    // ===================================
-    // MASTER MENU TABLE
-    // ===================================
-    renderMasterTable() {
-        const tbody = document.getElementById('masterMenuBody');
-        if (!tbody) return;
+    // Buttons
+    document.getElementById('addToDailyBtn')?.addEventListener('click', () => this.addSelectedToDaily());
+    document.getElementById('clearDailyBtn')?.addEventListener('click', () => this.clearDailyMenu());
+    document.getElementById('copyYesterdayBtn')?.addEventListener('click', () => this.copyYesterday());
+    document.getElementById('resetMenuBtn')?.addEventListener('click', () => location.reload()); // Simple reload for now
 
-        tbody.innerHTML = this.masterItems.map(item => {
-            const isDaily = this.config.activeItems.includes(item.id);
-            return `
+    // Checkbox Master
+    document.addEventListener('change', (e) => {
+        if (e.target.id === 'selectAllMaster') {
+            const checked = e.target.checked;
+            document.querySelectorAll('.master-item-checkbox').forEach(cb => cb.checked = checked);
+        }
+    });
+},
+
+// ===================================
+// MASTER MENU TABLE
+// ===================================
+renderMasterTable() {
+    const tbody = document.getElementById('masterMenuBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = this.masterItems.map(item => {
+        const isDaily = this.config.activeItems.includes(item.id);
+        return `
                 <tr>
                     <td>
                         <input type="checkbox" class="master-item-checkbox" value="${item.id}">
@@ -270,25 +298,25 @@ const DailyMenuManager = {
                     </td>
                 </tr>
             `;
-        }).join('');
-    },
+    }).join('');
+},
 
-    // ===================================
-    // DAILY MENU GRID
-    // ===================================
-    renderDailyGrid() {
-        const grid = document.getElementById('dailyMenuGrid');
-        const countEl = document.getElementById('dailyMenuCount');
-        if (!grid) return;
+// ===================================
+// DAILY MENU GRID
+// ===================================
+renderDailyGrid() {
+    const grid = document.getElementById('dailyMenuGrid');
+    const countEl = document.getElementById('dailyMenuCount');
+    if (!grid) return;
 
-        // Filter items
-        const rawIds = this.config.activeItems.map(String);
-        const activeItems = this.masterItems.filter(i => rawIds.includes(String(i.id)));
+    // Filter items
+    const rawIds = this.config.activeItems.map(String);
+    const activeItems = this.masterItems.filter(i => rawIds.includes(String(i.id)));
 
-        if (countEl) countEl.textContent = activeItems.length;
+    if (countEl) countEl.textContent = activeItems.length;
 
-        if (activeItems.length === 0) {
-            grid.innerHTML = `
+    if (activeItems.length === 0) {
+        grid.innerHTML = `
                 <div class="empty-state" style="grid-column:1/-1; text-align:center; padding:40px; color:#888;">
                     <div style="font-size:3rem; margin-bottom:10px;">📭</div>
                     <p>Menu hôm nay chưa có món nào.</p>
@@ -298,10 +326,10 @@ const DailyMenuManager = {
                     </button>
                 </div>
             `;
-            return;
-        }
+        return;
+    }
 
-        grid.innerHTML = activeItems.map(item => `
+    grid.innerHTML = activeItems.map(item => `
             <div class="daily-card" style="background:var(--bg-card); padding:12px; border-radius:12px; border:1px solid var(--border-color); display:flex; align-items:center; gap:12px; position:relative;">
                 <div style="font-size:2rem;">${item.icon || '🍽️'}</div>
                 <div style="flex:1;">
@@ -314,106 +342,106 @@ const DailyMenuManager = {
                 </button>
             </div>
         `).join('');
-    },
+},
 
-    // ===================================
-    // ACTIONS
-    // ===================================
+// ===================================
+// ACTIONS
+// ===================================
 
-    addSelectedToDaily() {
-        const checked = document.querySelectorAll('.master-item-checkbox:checked');
-        if (checked.length === 0) {
-            alert('Vui lòng chọn món để thêm!');
-            return;
-        }
-
-        let addedCount = 0;
-        const currentIds = this.config.activeItems.map(String);
-
-        checked.forEach(cb => {
-            if (!currentIds.includes(cb.value)) {
-                this.config.activeItems.push(parseInt(cb.value));
-                addedCount++;
-            }
-            cb.checked = false; // Reset
-        });
-
-        if (document.getElementById('selectAllMaster')) {
-            document.getElementById('selectAllMaster').checked = false;
-        }
-
-        this.renderMasterTable(); // Update status tags
-        this.saveConfig();
-
-        // Auto switch to Daily tab to see result? No, stay here for bulk add
-    },
-
-    toggleItemDaily(id) {
-        console.log('%c🔄 toggleItemDaily called with id:', 'background: #2196F3; color: white;', id);
-        console.log('📋 BEFORE: activeItems =', JSON.stringify(this.config.activeItems));
-
-        const idStr = String(id);
-        const currentIds = this.config.activeItems.map(String);
-        const index = currentIds.indexOf(idStr);
-
-        if (index > -1) {
-            // Remove
-            this.config.activeItems.splice(index, 1);
-            console.log('➖ Removed item', id);
-        } else {
-            // Add
-            this.config.activeItems.push(parseInt(id));
-            console.log('➕ Added item', id);
-        }
-
-        console.log('📋 AFTER: activeItems =', JSON.stringify(this.config.activeItems));
-
-        this.renderMasterTable(); // RENDER FIRST to update DOM checkboxes
-        this.saveConfig();        // THEN SAVE (collectActiveItems will read fresh DOM)
-    },
-
-    removeFromDaily(id) {
-        const idStr = String(id);
-        const currentIds = this.config.activeItems.map(String);
-        const index = currentIds.indexOf(idStr);
-
-        if (index > -1) {
-            this.config.activeItems.splice(index, 1);
-            this.renderDailyGrid(); // RENDER FIRST
-            this.saveConfig();      // THEN SAVE
-        }
-    },
-
-    clearDailyMenu() {
-        if (!confirm('Bạn có chắc muốn xóa tất cả món trong menu hôm nay?')) return;
-        this.config.activeItems = [];
-        this.renderDailyGrid();
-        this.saveConfig();
-    },
-
-    copyYesterday() {
-        // Since we don't have real "yesterday" history in localStorage in this simple version,
-        // we'll just simulate by keeping the current ones or reloading default.
-        // Or we could implement a history feature.
-        // For now: Just active Top 20 items as a "Smart Suggestion"
-
-        this.config.activeItems = this.masterItems.slice(0, 20).map(i => i.id);
-        this.saveConfig();
-        this.renderDailyGrid();
-        alert('Đã gợi ý 20 món phổ biến nhất!');
-    },
-
-    // ===================================
-    // UTILS
-    // ===================================
-    formatPrice(amount) {
-        return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-    },
-
-    getTypeLabel(type) {
-        const map = { 'food': 'Món ăn', 'drink': 'Đồ uống', 'dessert': 'Tráng miệng' };
-        return map[type] || type;
+addSelectedToDaily() {
+    const checked = document.querySelectorAll('.master-item-checkbox:checked');
+    if (checked.length === 0) {
+        alert('Vui lòng chọn món để thêm!');
+        return;
     }
+
+    let addedCount = 0;
+    const currentIds = this.config.activeItems.map(String);
+
+    checked.forEach(cb => {
+        if (!currentIds.includes(cb.value)) {
+            this.config.activeItems.push(parseInt(cb.value));
+            addedCount++;
+        }
+        cb.checked = false; // Reset
+    });
+
+    if (document.getElementById('selectAllMaster')) {
+        document.getElementById('selectAllMaster').checked = false;
+    }
+
+    this.renderMasterTable(); // Update status tags
+    this.saveConfig();
+
+    // Auto switch to Daily tab to see result? No, stay here for bulk add
+},
+
+toggleItemDaily(id) {
+    console.log('%c🔄 toggleItemDaily called with id:', 'background: #2196F3; color: white;', id);
+    console.log('📋 BEFORE: activeItems =', JSON.stringify(this.config.activeItems));
+
+    const idStr = String(id);
+    const currentIds = this.config.activeItems.map(String);
+    const index = currentIds.indexOf(idStr);
+
+    if (index > -1) {
+        // Remove
+        this.config.activeItems.splice(index, 1);
+        console.log('➖ Removed item', id);
+    } else {
+        // Add
+        this.config.activeItems.push(parseInt(id));
+        console.log('➕ Added item', id);
+    }
+
+    console.log('📋 AFTER: activeItems =', JSON.stringify(this.config.activeItems));
+
+    this.renderMasterTable(); // RENDER FIRST to update DOM checkboxes
+    this.saveConfig();        // THEN SAVE (collectActiveItems will read fresh DOM)
+},
+
+removeFromDaily(id) {
+    const idStr = String(id);
+    const currentIds = this.config.activeItems.map(String);
+    const index = currentIds.indexOf(idStr);
+
+    if (index > -1) {
+        this.config.activeItems.splice(index, 1);
+        this.renderDailyGrid(); // RENDER FIRST
+        this.saveConfig();      // THEN SAVE
+    }
+},
+
+clearDailyMenu() {
+    if (!confirm('Bạn có chắc muốn xóa tất cả món trong menu hôm nay?')) return;
+    this.config.activeItems = [];
+    this.renderDailyGrid();
+    this.saveConfig();
+},
+
+copyYesterday() {
+    // Since we don't have real "yesterday" history in localStorage in this simple version,
+    // we'll just simulate by keeping the current ones or reloading default.
+    // Or we could implement a history feature.
+    // For now: Just active Top 20 items as a "Smart Suggestion"
+
+    this.config.activeItems = this.masterItems.slice(0, 20).map(i => i.id);
+    this.saveConfig();
+    this.renderDailyGrid();
+    alert('Đã gợi ý 20 món phổ biến nhất!');
+},
+
+// ===================================
+// UTILS
+// ===================================
+formatPrice(amount) {
+    return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+},
+
+getTypeLabel(type) {
+    const map = { 'food': 'Món ăn', 'drink': 'Đồ uống', 'dessert': 'Tráng miệng' };
+    return map[type] || type;
+}
 };
 
 // Initialize on load if page menu is active or when tab clicked

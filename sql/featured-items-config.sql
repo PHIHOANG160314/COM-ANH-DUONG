@@ -51,14 +51,19 @@ FOR EACH ROW EXECUTE FUNCTION update_featured_items_timestamp();
 
 -- =====================================================
 -- VIEW: Top selling items (for auto mode)
+-- Parse JSONB from orders.items (không dùng order_items table)
 -- =====================================================
 CREATE OR REPLACE VIEW top_selling_items AS
 SELECT 
-    item_id,
-    item_name,
-    SUM(quantity) as total_sold,
+    (item->>'id')::INTEGER as item_id,
+    item->>'name' as item_name,
+    SUM((item->>'qty')::INTEGER) as total_sold,
     COUNT(*) as order_count
-FROM order_items
+FROM orders,
+     jsonb_array_elements(items) as item
 WHERE created_at > NOW() - INTERVAL '7 days'
-GROUP BY item_id, item_name
-ORDER BY total_sold DESC;
+  AND status NOT IN ('cancelled')
+GROUP BY item->>'id', item->>'name'
+ORDER BY total_sold DESC
+LIMIT 6;
+

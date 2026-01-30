@@ -34,15 +34,24 @@ const FeaturedManager = {
     },
 
     setupEventListeners() {
-        // Mode toggle
+        // Mode toggle - md-switch uses 'checked' not 'selected'
         const modeToggle = document.getElementById('featuredModeToggle');
         if (modeToggle) {
             modeToggle.addEventListener('change', () => {
-                this.config.mode = modeToggle.selected ? 'manual' : 'auto';
+                this.config.mode = modeToggle.checked ? 'manual' : 'auto';
                 this.render();
                 this.saveConfig();
+
+                // Update mode description text
+                const modeText = document.getElementById('currentModeText');
+                if (modeText) {
+                    modeText.textContent = this.config.mode === 'auto'
+                        ? 'Tự động - Dựa trên thống kê bán hàng realtime'
+                        : 'Thủ công - Bạn tự chọn món hiển thị';
+                }
             });
         }
+
 
         // Auto count select
         const autoCountSelect = document.getElementById('featuredAutoCount');
@@ -226,6 +235,15 @@ const FeaturedManager = {
     },
 
     addItem(itemId) {
+        // Limit to 6 items max
+        if (this.config.manual_items.length >= 6) {
+            if (window.AdminDashboard?.showToast) {
+                window.AdminDashboard.showToast('⚠️ Tối đa 6 món bán chạy', 'warning');
+            }
+            this.hideAddItemModal();
+            return;
+        }
+
         if (!this.config.manual_items.includes(itemId)) {
             this.config.manual_items.push(itemId);
             this.renderManualSection();
@@ -233,6 +251,7 @@ const FeaturedManager = {
         }
         this.hideAddItemModal();
     },
+
 
     removeItem(itemId) {
         this.config.manual_items = this.config.manual_items.filter(id => id !== itemId);

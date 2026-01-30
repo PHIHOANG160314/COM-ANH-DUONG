@@ -1503,6 +1503,100 @@ const DailyMenuService = {
         }, 'DailyMenuService.saveConfig');
     },
 
+
+    // Fetch all menu items from Supabase
+    async getMenuItems() {
+        try {
+            const supabase = await getSupabase();
+            const { data, error } = await supabase
+                .from('menu_items')
+                .select('*')
+                .order('category_id')
+                .order('id');
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Error fetching menu items:', error);
+            return { success: false, error };
+        }
+    },
+
+    // Add new menu item
+    async createMenuItem(item) {
+        try {
+            const supabase = await getSupabase();
+            const dbItem = {
+                name: item.name,
+                category_id: item.category,
+                subcategory_id: null,
+                price: item.price,
+                cost: item.cost || 0,
+                icon: item.icon,
+                is_available: true,
+                is_featured: false
+            };
+
+            const { data, error } = await supabase
+                .from('menu_items')
+                .insert(dbItem)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Error creating menu item:', error);
+            return { success: false, error };
+        }
+    },
+
+    // Update menu item
+    async updateMenuItem(id, updates) {
+        try {
+            const supabase = await getSupabase();
+            const dbUpdates = {};
+            if (updates.name) dbUpdates.name = updates.name;
+            if (updates.price) dbUpdates.price = updates.price;
+            if (updates.cost) dbUpdates.cost = updates.cost;
+            if (updates.icon) dbUpdates.icon = updates.icon;
+            if (updates.category) dbUpdates.category_id = updates.category;
+            if (updates.active !== undefined) dbUpdates.is_available = updates.active;
+
+            dbUpdates.updated_at = new Date().toISOString();
+
+            const { data, error } = await supabase
+                .from('menu_items')
+                .update(dbUpdates)
+                .eq('id', id)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return { success: true, data };
+        } catch (error) {
+            console.error('Error updating menu item:', error);
+            return { success: false, error };
+        }
+    },
+
+    // Delete menu item
+    async deleteMenuItem(id) {
+        try {
+            const supabase = await getSupabase();
+            const { error } = await supabase
+                .from('menu_items')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            return { success: true };
+        } catch (error) {
+            console.error('Error deleting menu item:', error);
+            return { success: false, error };
+        }
+    },
+
     // Subscribe to realtime changes
     subscribe(callback) {
         this._callbacks.push(callback);
@@ -1656,12 +1750,16 @@ const FeaturedItemsService = {
 
     // Get top selling items (for auto mode)
     async getTopSellers(limit = 6) {
+        // Enforce max 6 items
+        const maxLimit = Math.min(limit, 6);
+
         return withRetry(async () => {
             const supabase = await getSupabase();
             if (!supabase) {
-                // Fallback: return sample items
+                // Fallback: random items for demo
                 if (typeof window.menuItems !== 'undefined') {
-                    return createSuccessResponse(window.menuItems.slice(0, limit));
+                    const shuffled = [...window.menuItems].sort(() => 0.5 - Math.random());
+                    return createSuccessResponse(shuffled.slice(0, maxLimit));
                 }
                 return createSuccessResponse([]);
             }
@@ -1678,15 +1776,28 @@ const FeaturedItemsService = {
             const { data, error } = await supabase
                 .from('top_selling_items')
                 .select('*')
-                .limit(limit);
+                .limit(maxLimit);
 
             if (error) {
                 // View might not exist, fallback to menuItems
                 if (window.Debug) Debug.warn('top_selling_items view not found, using fallback');
                 if (typeof window.menuItems !== 'undefined') {
-                    return createSuccessResponse(window.menuItems.slice(0, limit));
+                    const shuffled = [...window.menuItems].sort(() => 0.5 - Math.random());
+                    return createSuccessResponse(shuffled.slice(0, maxLimit));
                 }
                 return createErrorResponse(error, 'FeaturedItemsService.getTopSellers');
+            }
+
+            // If no sales data in last 7 days, fallback to popular items
+            if (!data || data.length === 0) {
+                if (window.Debug) Debug.info('No sales data in last 7 days, using popular fallback');
+                if (typeof window.menuItems !== 'undefined') {
+                    // Prioritize drinks category as popular items
+                    const popular = window.menuItems
+                        .filter(i => i.is_featured || i.category === 'drinks')
+                        .slice(0, maxLimit);
+                    return createSuccessResponse(popular.length > 0 ? popular : window.menuItems.slice(0, maxLimit));
+                }
             }
 
             // Map to menu items
@@ -1694,16 +1805,20 @@ const FeaturedItemsService = {
             let featuredItems = [];
 
             if (typeof window.menuItems !== 'undefined') {
-                featuredItems = window.menuItems.filter(item => itemIds.includes(item.id));
+                // Maintain order from top_selling_items
+                featuredItems = itemIds
+                    .map(id => window.menuItems.find(item => item.id === id))
+                    .filter(Boolean);
             }
 
             // Cache results
-            this._cachedItems = featuredItems.length > 0 ? featuredItems : window.menuItems?.slice(0, limit) || [];
+            this._cachedItems = featuredItems.length > 0 ? featuredItems : window.menuItems?.slice(0, maxLimit) || [];
             this._cacheTime = Date.now();
 
             return createSuccessResponse(this._cachedItems);
         }, 'FeaturedItemsService.getTopSellers');
     },
+
 
     // Get featured items based on config
     async getFeaturedItems() {
