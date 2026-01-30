@@ -10,6 +10,8 @@
     "test": "vitest",
     "deploy:preview": "vercel",
     "deploy:prod": "vercel --prod",
+    "deploy": "npm run build && vercel --prod",
+    "deploy:functions": "npx supabase functions deploy create-payment && npx supabase functions deploy handle-webhook && npx supabase functions deploy reconcile-transactions",
     "preview": "vite preview",
     "supabase:types": "npx supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/supabase.ts",
     "seed": "tsx scripts/seed-database.ts",

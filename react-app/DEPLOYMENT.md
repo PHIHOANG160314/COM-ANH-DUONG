@@ -18,6 +18,46 @@ The following environment variables are required for the application to function
 | `VITE_SUPABASE_ANON_KEY` | The anonymous public key for your Supabase project |
 | `VITE_APP_NAME` | (Optional) Application name, defaults to "Cơm Ánh Dương" |
 | `VITE_ENABLE_ANALYTICS` | (Optional) Set to `true` to enable analytics (if configured) |
+| `VITE_PAYMENT_SANDBOX_MODE` | Set to `true` to enable payment sandbox mode (simulated payments) |
+
+## Payment Configuration
+
+This application supports VNPay and MoMo payments via Supabase Edge Functions.
+
+### 1. Supabase Edge Functions
+
+The payment logic resides in Supabase Edge Functions. You must deploy these functions for payments to work.
+
+```bash
+# Login to Supabase CLI
+npx supabase login
+
+# Deploy functions
+npx supabase functions deploy create-payment
+npx supabase functions deploy handle-webhook
+npx supabase functions deploy reconcile-transactions
+
+# Set secrets (Production)
+npx supabase secrets set --env-file ./supabase/.env.production
+```
+
+### 2. Payment Secrets (Supabase)
+
+The following secrets must be set in your Supabase project (NOT in Vercel):
+
+- `VNPAY_TMN_CODE`: Your VNPay Terminal Code
+- `VNPAY_HASH_SECRET`: Your VNPay Hash Secret
+- `VNPAY_URL`: Payment Gateway URL (Sandbox or Production)
+- `MOMO_PARTNER_CODE`: Your MoMo Partner Code
+- `MOMO_ACCESS_KEY`: Your MoMo Access Key
+- `MOMO_SECRET_KEY`: Your MoMo Secret Key
+- `MOMO_ENDPOINT`: Payment Endpoint
+
+### 3. IPN / Webhook Configuration
+
+You need to register the `handle-webhook` function URL with the payment providers (VNPay/MoMo) to receive payment status updates.
+
+- **Supabase Function URL:** `https://<project-ref>.supabase.co/functions/v1/handle-webhook`
 
 ## Deploying to Vercel
 

@@ -1,4 +1,29 @@
-# React + TypeScript + Vite
+# Cơm Ánh Dương - Food Ordering Platform
+
+A modern web application for "Cơm Ánh Dương" built with React 19, TypeScript, and Vite, featuring a complete ordering system, kitchen display, and payment integration.
+
+## Features
+
+-   **Customer Ordering:** Browse menu, customize items, and place orders.
+-   **Payment Integration:** Secure online payments via VNPay and MoMo.
+-   **Staff POS:** Tablet-friendly point-of-sale for staff.
+-   **Kitchen Display System (KDS):** Real-time order management for the kitchen.
+-   **Shipper Portal:** Delivery management interface.
+-   **PWA Support:** Installable as a mobile app.
+
+## Payment System
+
+The application supports real-time payments using Supabase Edge Functions:
+
+-   **VNPay:** Domestic card and QR code payments.
+-   **MoMo:** E-wallet payments.
+-   **Sandbox Mode:** Test payments safely in development.
+
+For deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md) and [PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md).
+
+## Development Setup
+
+### React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
