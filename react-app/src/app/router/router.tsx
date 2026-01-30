@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/shared/ui/protected-route';
 import { CustomerHomePage } from '@/pages/customer/home-page';
 import { CheckoutPage } from '@/pages/customer/checkout-page';
 import { OrderSuccessPage } from '@/pages/customer/order-success-page';
+import { PaymentResultPage } from '@/pages/customer/payment-result-page';
 import { KitchenDisplayPage } from '@/pages/kitchen/kitchen-display-page';
 import { StaffMobilePosPage } from '@/pages/staff/staff-mobile-pos-page';
 import { ShipperDeliveryPage } from '@/pages/shipper/shipper-delivery-page';
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: 'checkout',
         element: <CheckoutPage />,
+      },
+      {
+        path: 'checkout/result',
+        element: <PaymentResultPage />,
       },
       {
         path: 'order-success',
