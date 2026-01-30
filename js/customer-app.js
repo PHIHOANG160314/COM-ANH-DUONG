@@ -44,11 +44,13 @@ const CustomerApp = {
             this.menuData = [...this.originalMenuData];
 
             // Filter to only show active items
-            // FIX: Handle both "M110" (from Supabase) and 110 (from data.js) formats
+            // FIX: Handle "M005" → 5 (strip M prefix AND leading zeros)
             const activeIds = config.activeItems.map(id => {
                 const idStr = String(id);
-                // Strip "M" prefix if present (e.g., "M110" -> "110")
-                return idStr.startsWith('M') ? idStr.substring(1) : idStr;
+                // Strip "M" prefix if present, then parse as integer to remove leading zeros
+                const numericPart = idStr.startsWith('M') ? idStr.substring(1) : idStr;
+                // parseInt removes leading zeros: "005" → 5
+                return String(parseInt(numericPart, 10));
             });
             console.log('🎯 Active IDs to filter (normalized):', activeIds);
 
