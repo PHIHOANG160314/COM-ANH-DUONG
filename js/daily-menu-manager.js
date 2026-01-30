@@ -128,14 +128,21 @@ const DailyMenuManager = {
 
     // Reliable collection from UI
     collectActiveItems() {
-        // Collect from Master checkboxes if Master tab is active or just generally from checked boxes
-        const checkboxes = document.querySelectorAll('#masterMenuBody input[type="checkbox"]:checked');
-        if (checkboxes.length > 0) {
-            this.config.activeItems = Array.from(checkboxes).map(cb => parseInt(cb.value));
-            console.log('📋 Collected active items from UI:', this.config.activeItems.length);
+        // Only collect from Master checkboxes if Master tab section is currently active
+        const masterSection = document.getElementById('masterMenuSection');
+        const isOnMasterTab = masterSection && masterSection.classList.contains('active');
+
+        if (isOnMasterTab) {
+            const checkboxes = document.querySelectorAll('#masterMenuBody input[type="checkbox"]:checked');
+            if (checkboxes.length > 0) {
+                this.config.activeItems = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                console.log('📋 Collected active items from Master UI:', this.config.activeItems.length);
+            } else {
+                console.log('⚠️ Master tab active but no checkboxes checked - keeping existing:', this.config.activeItems.length);
+            }
         } else {
-            // Fallback: don't overwrite with empty if we are not on Master tab
-            // But if we are clearly saving 0 items, we check activeItems length
+            // Not on Master tab - keep current activeItems (set by toggleItemDaily)
+            console.log('📋 Not on Master tab - using existing activeItems:', this.config.activeItems.length);
         }
         return this.config.activeItems;
     },
