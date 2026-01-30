@@ -44,8 +44,13 @@ const CustomerApp = {
             this.menuData = [...this.originalMenuData];
 
             // Filter to only show active items
-            const activeIds = config.activeItems.map(String);
-            console.log('🎯 Active IDs to filter:', activeIds);
+            // FIX: Handle both "M110" (from Supabase) and 110 (from data.js) formats
+            const activeIds = config.activeItems.map(id => {
+                const idStr = String(id);
+                // Strip "M" prefix if present (e.g., "M110" -> "110")
+                return idStr.startsWith('M') ? idStr.substring(1) : idStr;
+            });
+            console.log('🎯 Active IDs to filter (normalized):', activeIds);
 
             this.menuData = this.menuData.filter(item => activeIds.includes(String(item.id)));
             console.log(`%c✅ FILTERED: ${this.menuData.length} items from ${activeIds.length} IDs`, 'color: green; font-weight: bold;');
