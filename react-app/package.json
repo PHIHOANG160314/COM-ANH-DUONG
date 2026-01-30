@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest",
+    "deploy:preview": "vercel",
+    "deploy:prod": "vercel --prod",
     "preview": "vite preview",
     "supabase:types": "npx supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/supabase.ts",
     "seed": "tsx scripts/seed-database.ts",
