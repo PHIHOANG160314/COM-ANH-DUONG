@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe - Kitchen Display | Cơm Ánh Dương</title>
+    <link rel="stylesheet" href="css/wireframe.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #1a1a1a; color: #fff; } /* Dark mode for kitchen */
+        .card { background: #2d2d2d; border-color: #404040; color: #fff; }
+        .header { background: #004d00; }
+        .chip { padding: 8px 16px; border-radius: 20px; background: #404040; color: #aaa; cursor: pointer; }
+        .chip.active { background: var(--primary); color: white; }
+    </style>
+</head>
+<body>
+    <header class="header flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="header-title">👨‍🍳 Bếp Trung Tâm</div>
+        </div>
+        <div class="flex gap-4">
+            <span class="badge badge-pending" style="font-size: 16px;">Chờ: 5</span>
+            <span class="badge" style="background: #2196F3; color: white; border:none; font-size: 16px;">Đang làm: 3</span>
+        </div>
+        <div>12:30 PM - 30/01/2026</div>
+    </header>
+
+    <div class="container">
+        <!-- Filters -->
+        <div class="flex gap-2 mb-4">
+            <div class="chip active">Tất cả</div>
+            <div class="chip">Chờ xử lý</div>
+            <div class="chip">Đang làm</div>
+            <div class="chip">Đã xong</div>
+        </div>
+
+        <!-- Orders Grid (Kanban style or Grid) -->
+        <div class="grid-4">
+            <!-- Order Card 1 - Pending -->
+            <div class="card" style="border-top: 4px solid #FFC107;">
+                <div class="flex justify-between mb-4">
+                    <span style="font-weight: bold; font-size: 1.2rem;">#1024</span>
+                    <span class="badge badge-pending">3 phút trước</span>
+                </div>
+                <div class="mb-4" style="background: #3d3d3d; padding: 4px 8px; border-radius: 4px;">Bàn 05</div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span>1x Cơm Sườn</span>
+                        <span style="color: #aaa;">Không mỡ hành</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>2x Trà Đá</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="btn btn-primary" style="width: 100%; background: #2196F3;">Nhận đơn</button>
+                </div>
+            </div>
+
+            <!-- Order Card 2 - Preparing -->
+            <div class="card" style="border-top: 4px solid #2196F3;">
+                <div class="flex justify-between mb-4">
+                    <span style="font-weight: bold; font-size: 1.2rem;">#1023</span>
+                    <span class="badge" style="background: #E3F2FD; color: #2196F3;">10 phút</span>
+                </div>
+                <div class="mb-4" style="background: #3d3d3d; padding: 4px 8px; border-radius: 4px;">Mang đi</div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span>3x Phở Bò Tái</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>1x Cơm Gà Xối Mỡ</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="btn btn-primary" style="width: 100%; background: #4CAF50;">Hoàn tất</button>
+                </div>
+            </div>
+
+             <!-- Order Card 3 - Preparing -->
+             <div class="card" style="border-top: 4px solid #2196F3;">
+                <div class="flex justify-between mb-4">
+                    <span style="font-weight: bold; font-size: 1.2rem;">#1022</span>
+                    <span class="badge" style="background: #E3F2FD; color: #2196F3;">12 phút</span>
+                </div>
+                <div class="mb-4" style="background: #3d3d3d; padding: 4px 8px; border-radius: 4px;">Bàn 02</div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span>1x Bún Thịt Nướng</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="btn btn-primary" style="width: 100%; background: #4CAF50;">Hoàn tất</button>
+                </div>
+            </div>
+             <!-- Order Card 4 - Pending (Urgent) -->
+             <div class="card" style="border-top: 4px solid #F44336;">
+                <div class="flex justify-between mb-4">
+                    <span style="font-weight: bold; font-size: 1.2rem;">#1021</span>
+                    <span class="badge" style="background: #FFEBEE; color: #D32F2F;">25 phút (Gấp)</span>
+                </div>
+                <div class="mb-4" style="background: #3d3d3d; padding: 4px 8px; border-radius: 4px;">Delivery</div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span>5x Cơm Sườn Đặc Biệt</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="btn btn-primary" style="width: 100%; background: #2196F3;">Nhận đơn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

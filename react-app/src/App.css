@@ -1,112 +1,42 @@
-/* Material 3 Design System - Cơm Ánh Dương */
-
-:root {
-  --md-sys-color-primary: #006400;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #90ee90;
-  --md-sys-color-secondary: #ff8c00;
-  --md-sys-color-surface: #ffffff;
-  --md-sys-color-background: #fafafa;
-  --md-sys-color-error: #dc2626;
-  --md-sys-color-outline: #e5e7eb;
-
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
-
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Roboto', 'Inter', -apple-system, sans-serif;
-  background-color: var(--md-sys-color-background);
-  color: #1f2937;
-}
-
 #root {
-  min-height: 100vh;
-}
-
-/* Loading State */
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-size: 1.5rem;
-  color: var(--md-sys-color-primary);
-}
-
-/* Common Button Styles */
-.btn-primary {
-  background-color: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-primary:hover {
-  background-color: #004d00;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 100, 0, 0.3);
-}
-
-/* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.status-badge.online {
-  background-color: #10b981;
-  color: white;
-}
-
-.status-badge.available {
-  background-color: #3b82f6;
-  color: white;
-}
-
-/* Empty State */
-.empty-state {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
   text-align: center;
-  color: #9ca3af;
-  padding: var(--spacing-xl);
-  font-style: italic;
 }
 
-/* Responsive Grid */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* Utility Classes */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
 }

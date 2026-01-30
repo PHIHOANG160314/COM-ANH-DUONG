@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe - Landing Page | Cơm Ánh Dương</title>
+    <link rel="stylesheet" href="css/wireframe.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .hero {
+            background: linear-gradient(rgba(0,100,0,0.8), rgba(0,100,0,0.8)), #ddd;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            border-radius: 0 0 40px 40px;
+        }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 2rem; color: var(--primary); }
+        .feature-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="header flex justify-between items-center" style="background: white; color: var(--text);">
+        <div class="flex items-center gap-2">
+            <div class="placeholder" style="width: 40px; height: 40px; border-radius: 50%;">Logo</div>
+            <div class="header-title" style="color: var(--primary);">Cơm Ánh Dương</div>
+        </div>
+        <nav class="flex gap-4 items-center">
+            <a href="#" style="text-decoration: none; color: var(--text);">Trang chủ</a>
+            <a href="#" style="text-decoration: none; color: var(--text);">Thực đơn</a>
+            <a href="#" style="text-decoration: none; color: var(--text);">Về chúng tôi</a>
+            <button class="btn btn-primary">Đặt hàng ngay</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 style="font-size: 3rem; margin-bottom: 16px;">Hương Vị Miền Tây Đậm Đà</h1>
+        <p style="font-size: 1.25rem; margin-bottom: 32px; opacity: 0.9;">Cơm tấm, Phở bò, và những món ngon chuẩn vị nhà làm.</p>
+        <div class="flex gap-4 justify-center">
+            <button class="btn btn-primary" style="background: var(--secondary); color: black;">Xem thực đơn</button>
+            <button class="btn btn-outlined" style="border-color: white; color: white;">Liên hệ đặt bàn</button>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="container mt-4 mb-4" style="padding: 60px 16px;">
+        <h2 class="section-title">Tại sao chọn Ánh Dương?</h2>
+        <div class="grid-3">
+            <div class="card" style="text-align: center; border: none; box-shadow: none; background: transparent;">
+                <span class="feature-icon">🥬</span>
+                <h3>Nguyên liệu tươi sạch</h3>
+                <p style="color: #666;">Cam kết thực phẩm an toàn, nhập mới mỗi ngày.</p>
+            </div>
+            <div class="card" style="text-align: center; border: none; box-shadow: none; background: transparent;">
+                <span class="feature-icon">🚀</span>
+                <h3>Giao hàng siêu tốc</h3>
+                <p style="color: #666;">Giao nhanh trong 30 phút tại Sa Đéc.</p>
+            </div>
+            <div class="card" style="text-align: center; border: none; box-shadow: none; background: transparent;">
+                <span class="feature-icon">❤️</span>
+                <h3>Phục vụ tận tâm</h3>
+                <p style="color: #666;">Đội ngũ nhân viên thân thiện, chu đáo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bestsellers -->
+    <section class="container mb-4" style="background: var(--surface-container); border-radius: 24px; padding: 60px 24px;">
+        <h2 class="section-title">Món Ngon Phải Thử</h2>
+        <div class="grid-4">
+            <div class="card">
+                <div class="placeholder mb-4" style="height: 150px;">Img</div>
+                <h4>Cơm Sườn Bì Chả</h4>
+                <div class="flex justify-between items-center mt-2">
+                    <span style="color: var(--primary); font-weight: bold;">45.000đ</span>
+                    <button class="btn btn-primary" style="padding: 4px 12px;">Mua</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="placeholder mb-4" style="height: 150px;">Img</div>
+                <h4>Phở Bò Đặc Biệt</h4>
+                <div class="flex justify-between items-center mt-2">
+                    <span style="color: var(--primary); font-weight: bold;">55.000đ</span>
+                    <button class="btn btn-primary" style="padding: 4px 12px;">Mua</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="placeholder mb-4" style="height: 150px;">Img</div>
+                <h4>Hủ Tiếu Nam Vang</h4>
+                <div class="flex justify-between items-center mt-2">
+                    <span style="color: var(--primary); font-weight: bold;">40.000đ</span>
+                    <button class="btn btn-primary" style="padding: 4px 12px;">Mua</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="placeholder mb-4" style="height: 150px;">Img</div>
+                <h4>Cơm Gà Xối Mỡ</h4>
+                <div class="flex justify-between items-center mt-2">
+                    <span style="color: var(--primary); font-weight: bold;">40.000đ</span>
+                    <button class="btn btn-primary" style="padding: 4px 12px;">Mua</button>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 32px;">
+            <button class="btn btn-outlined">Xem tất cả menu →</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #1a1a1a; color: white; padding: 60px 16px;">
+        <div class="container grid-3">
+            <div>
+                <h3 class="mb-4" style="color: var(--primary-container);">Cơm Ánh Dương</h3>
+                <p>91 Hùng Vương, Sa Đéc, Đồng Tháp</p>
+                <p>Hotline: 0917 076 061</p>
+            </div>
+            <div>
+                <h4 class="mb-4">Liên kết</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li class="mb-2"><a href="#" style="color: #aaa; text-decoration: none;">Về chúng tôi</a></li>
+                    <li class="mb-2"><a href="#" style="color: #aaa; text-decoration: none;">Chính sách bảo mật</a></li>
+                    <li class="mb-2"><a href="#" style="color: #aaa; text-decoration: none;">Điều khoản sử dụng</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="mb-4">Kết nối</h4>
+                <div class="flex gap-2">
+                    <button class="btn btn-outlined" style="color: white; border-color: #444;">Facebook</button>
+                    <button class="btn btn-outlined" style="color: white; border-color: #444;">Zalo</button>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-4" style="border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #666;">
+            © 2026 Cơm Ánh Dương. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

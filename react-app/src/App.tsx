@@ -1,56 +1,61 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Suspense, lazy } from 'react';
+import { useState } from 'react';
+import { Button, Container, Typography, Box, Paper } from '@mui/material';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
 import './App.css';
 
-// Lazy load pages for code splitting
-const HomePage = lazy(() => import('./pages/home-landing-page'));
-const CustomerPage = lazy(() => import('./pages/customer-ordering-page'));
-const KitchenPage = lazy(() => import('./pages/kitchen-display-system-page'));
-const ShipperPage = lazy(() => import('./pages/shipper-delivery-page'));
-const StaffMobilePage = lazy(() => import('./pages/staff-mobile-pos-page'));
-
-// Create React Query client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 3,
-    },
-  },
-});
-
-// Define routes using React Router v7 data router
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <HomePage />,
-  },
-  {
-    path: '/customer',
-    element: <CustomerPage />,
-  },
-  {
-    path: '/kitchen',
-    element: <KitchenPage />,
-  },
-  {
-    path: '/shipper',
-    element: <ShipperPage />,
-  },
-  {
-    path: '/staff-mobile',
-    element: <StaffMobilePage />,
-  },
-]);
-
 function App() {
+  const [count, setCount] = useState(0);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<div className="loading">Đang tải...</div>}>
-        <RouterProvider router={router} />
-      </Suspense>
-    </QueryClientProvider>
+    <Container maxWidth="md">
+      <Box sx={{ my: 4, textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 4 }}>
+          <a href="https://vite.dev" target="_blank">
+            <img
+              src={viteLogo}
+              className="logo"
+              alt="Vite logo"
+              style={{ height: '6em', padding: '1.5em' }}
+            />
+          </a>
+          <a href="https://react.dev" target="_blank">
+            <img
+              src={reactLogo}
+              className="logo react"
+              alt="React logo"
+              style={{ height: '6em', padding: '1.5em' }}
+            />
+          </a>
+        </Box>
+
+        <Typography variant="h2" component="h1" gutterBottom color="primary">
+          Cơm Ánh Dương React App
+        </Typography>
+
+        <Typography variant="h5" component="h2" gutterBottom color="text.secondary">
+          Vite + React 19 + MUI v6 + FSD Lite
+        </Typography>
+
+        <Paper elevation={3} sx={{ p: 4, mt: 4, maxWidth: 500, mx: 'auto' }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setCount((count) => count + 1)}
+            sx={{ mb: 2 }}
+          >
+            count is {count}
+          </Button>
+          <Typography variant="body1">
+            Edit <code>src/App.tsx</code> and save to test HMR
+          </Typography>
+        </Paper>
+
+        <Typography variant="caption" display="block" sx={{ mt: 4, color: 'text.disabled' }}>
+          Click on the Vite and React logos to learn more
+        </Typography>
+      </Box>
+    </Container>
   );
 }
 

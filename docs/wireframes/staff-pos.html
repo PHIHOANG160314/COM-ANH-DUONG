@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe - Staff POS | Cơm Ánh Dương</title>
+    <link rel="stylesheet" href="css/wireframe.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .pos-layout { display: flex; height: calc(100vh - 64px); }
+        .pos-menu { flex: 2; padding: 16px; overflow-y: auto; background: var(--surface); }
+        .pos-cart { flex: 1; background: white; border-left: 1px solid var(--outline-variant); display: flex; flex-direction: column; }
+        .category-tab { padding: 12px; border-bottom: 2px solid transparent; cursor: pointer; }
+        .category-tab.active { border-bottom-color: var(--primary); color: var(--primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header class="header flex justify-between items-center" style="height: 64px;">
+        <div class="flex items-center gap-2">
+            <div class="header-title">POS - Thu Ngân</div>
+        </div>
+        <div class="flex gap-4 items-center">
+            <span>Ca làm việc: Sáng (NV01)</span>
+            <button class="btn btn-text" style="color: white;">Đồng bộ 🔄</button>
+        </div>
+    </header>
+
+    <div class="pos-layout">
+        <!-- Left: Menu -->
+        <div class="pos-menu">
+            <!-- Table Selection & Search -->
+            <div class="flex gap-4 mb-4">
+                <select class="input" style="width: 150px;">
+                    <option>Mang đi</option>
+                    <option>Bàn 01</option>
+                    <option>Bàn 02</option>
+                </select>
+                <input type="text" class="input" placeholder="Tìm món (F3)..." style="flex:1;">
+            </div>
+
+            <!-- Categories -->
+            <div class="flex gap-4 mb-4 border-b" style="border-bottom: 1px solid #ddd;">
+                <div class="category-tab active">Tất cả</div>
+                <div class="category-tab">Cơm</div>
+                <div class="category-tab">Bún/Phở</div>
+                <div class="category-tab">Đồ uống</div>
+                <div class="category-tab">Combo</div>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid-3">
+                <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Cơm Sườn</h5>
+                    <div style="color: var(--primary); font-weight: 600;">45k</div>
+                </div>
+                <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Cơm Gà</h5>
+                    <div style="color: var(--primary); font-weight: 600;">40k</div>
+                </div>
+                <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Phở Bò</h5>
+                    <div style="color: var(--primary); font-weight: 600;">55k</div>
+                </div>
+                 <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Bún Bò</h5>
+                    <div style="color: var(--primary); font-weight: 600;">50k</div>
+                </div>
+                 <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Trà Đá</h5>
+                    <div style="color: var(--primary); font-weight: 600;">5k</div>
+                </div>
+                 <div class="card cursor-pointer">
+                    <div class="placeholder mb-2" style="height: 100px;">Img</div>
+                    <h5>Coca Cola</h5>
+                    <div style="color: var(--primary); font-weight: 600;">15k</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Cart -->
+        <div class="pos-cart">
+            <!-- Customer Info -->
+            <div class="p-4 border-b" style="border-bottom: 1px solid #eee;">
+                <div class="flex justify-between items-center mb-2">
+                    <span style="font-weight: 600;">Khách lẻ</span>
+                    <button class="btn btn-text" style="font-size: 12px; padding: 0;">+ Khách hàng</button>
+                </div>
+            </div>
+
+            <!-- Cart Items -->
+            <div style="flex: 1; overflow-y: auto; padding: 16px;">
+                <div class="flex justify-between items-start mb-4 pb-2 border-b" style="border-bottom: 1px dashed #eee;">
+                    <div>
+                        <div style="font-weight: 500;">1. Cơm Sườn</div>
+                        <div style="font-size: 12px; color: #666;">Thêm trứng (+5k)</div>
+                    </div>
+                    <div class="text-right">
+                        <div>50.000</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button style="width: 20px; height: 20px; border-radius: 50%; border:1px solid #ccc;">-</button>
+                            <span>1</span>
+                            <button style="width: 20px; height: 20px; border-radius: 50%; border:1px solid #ccc;">+</button>
+                        </div>
+                    </div>
+                </div>
+                 <div class="flex justify-between items-start mb-4 pb-2 border-b" style="border-bottom: 1px dashed #eee;">
+                    <div>
+                        <div style="font-weight: 500;">2. Trà Đá</div>
+                    </div>
+                    <div class="text-right">
+                        <div>10.000</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button style="width: 20px; height: 20px; border-radius: 50%; border:1px solid #ccc;">-</button>
+                            <span>2</span>
+                            <button style="width: 20px; height: 20px; border-radius: 50%; border:1px solid #ccc;">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Action -->
+            <div class="p-4" style="background: var(--surface-container); border-top: 1px solid var(--outline-variant);">
+                <div class="flex justify-between mb-2">
+                    <span>Tạm tính:</span>
+                    <span>60.000đ</span>
+                </div>
+                <div class="flex justify-between mb-4" style="font-weight: 600; font-size: 1.2rem; color: var(--primary);">
+                    <span>Tổng cộng:</span>
+                    <span>60.000đ</span>
+                </div>
+                <div class="grid-2">
+                    <button class="btn btn-outlined">Lưu đơn</button>
+                    <button class="btn btn-primary">Thanh toán (F4)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
