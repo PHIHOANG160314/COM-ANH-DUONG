@@ -1450,7 +1450,12 @@ const DailyMenuService = {
         return withRetry(async () => {
             const supabase = await getSupabase();
             const today = getVietnamDate();
-            console.log('📅 DailyMenuService.saveConfig:', { today, activeItemsCount: activeItems.length });
+
+            // CRITICAL DEBUG: Log everything
+            console.log('%c📅 DailyMenuService.saveConfig START', 'background: #4CAF50; color: white; font-size: 14px;');
+            console.log('📅 Today (VN):', today);
+            console.log('📅 Active Items:', JSON.stringify(activeItems));
+            console.log('📅 Supabase client:', supabase ? 'Available' : 'NOT AVAILABLE');
 
             // Always save to localStorage as fallback
             const localConfig = {
@@ -1459,6 +1464,7 @@ const DailyMenuService = {
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+            console.log('💾 Saved to localStorage');
 
             // Also broadcast via BroadcastChannel for same-browser tabs
             if (typeof BroadcastChannel !== 'undefined') {
@@ -1468,20 +1474,30 @@ const DailyMenuService = {
             }
 
             if (!supabase) {
+                console.warn('❌ Supabase not available - using localStorage only');
                 return createSuccessResponse({ active_items: activeItems, source: 'localStorage' });
             }
 
+            // Prepare upsert payload
+            const payload = {
+                active_date: today,
+                active_items: activeItems,
+                updated_at: new Date().toISOString()
+            };
+            console.log('📤 Upsert payload:', JSON.stringify(payload));
+
             const { data, error } = await supabase
                 .from('daily_menu_config')
-                .upsert({
-                    active_date: today,
-                    active_items: activeItems,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'active_date' })
+                .upsert(payload, { onConflict: 'active_date' })
                 .select()
                 .single();
 
-            if (error) return createErrorResponse(error, 'DailyMenuService.saveConfig');
+            if (error) {
+                console.error('%c❌ SUPABASE UPSERT ERROR', 'background: red; color: white; font-size: 14px;', error);
+                return createErrorResponse(error, 'DailyMenuService.saveConfig');
+            }
+
+            console.log('%c✅ SUPABASE SAVE SUCCESS', 'background: #4CAF50; color: white; font-size: 14px;', data);
             if (window.Debug) Debug.info('📅 Daily menu saved:', activeItems.length, 'items');
             return createSuccessResponse(data);
         }, 'DailyMenuService.saveConfig');
