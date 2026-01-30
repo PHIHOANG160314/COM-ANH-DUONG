@@ -224,6 +224,12 @@ const CustomerApp = {
         // Initialize Pull to Refresh
         this.initPullToRefresh();
 
+        // =====================================================
+        // FALLBACK POLLING - Sync menu every 30s nếu Realtime chưa bật
+        // =====================================================
+        this._lastMenuHash = '';
+        this.startMenuPolling();
+
         if (window.Debug) Debug.log('🍽️ Customer Portal ready!');
     },
 
@@ -394,6 +400,62 @@ const CustomerApp = {
         } finally {
             this.hideSyncIndicator();
         }
+    },
+
+    // ========================================
+    // FALLBACK POLLING - Sync menu mỗi 30s
+    // ========================================
+    startMenuPolling() {
+        // Poll every 30 seconds
+        const POLL_INTERVAL = 30000;
+
+        setInterval(async () => {
+            if (typeof DailyMenuService === 'undefined') return;
+
+            try {
+                const result = await DailyMenuService.getConfig();
+                if (!result.success || !result.data) return;
+
+                const newItems = result.data.active_items || [];
+                const newHash = JSON.stringify(newItems.sort());
+
+                // Only update if menu actually changed
+                if (newHash !== this._lastMenuHash) {
+                    console.log('🔄 [Polling] Menu changed! Old:', this._lastMenuHash.length, 'New:', newHash.length);
+                    this._lastMenuHash = newHash;
+
+                    // Update localStorage
+                    const localConfig = {
+                        active: true,
+                        activeItems: newItems,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
+
+                    // Refresh UI
+                    this.showSyncIndicator();
+                    this.filterDailyMenu();
+                    this.renderMenu(this.currentCategory);
+                    this.loadFeaturedItems();
+                    this.hideSyncIndicator();
+
+                    console.log('✅ [Polling] Menu updated with', newItems.length, 'items');
+                }
+            } catch (e) {
+                console.warn('⚠️ [Polling] Error:', e.message);
+            }
+        }, POLL_INTERVAL);
+
+        // Set initial hash
+        const local = localStorage.getItem('daily_menu_config');
+        if (local) {
+            try {
+                const config = JSON.parse(local);
+                this._lastMenuHash = JSON.stringify((config.activeItems || []).sort());
+            } catch (e) { }
+        }
+
+        console.log('📡 [Polling] Started menu polling every', POLL_INTERVAL / 1000, 'seconds');
     },
 
     // ========================================

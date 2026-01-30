@@ -17,6 +17,16 @@ const RETRY_CONFIG = {
     maxDelay: 10000  // 10 seconds max
 };
 
+// =====================================================
+// VIETNAM TIMEZONE HELPER (UTC+7)
+// Fixes: Menu mất từ 0:00-7:00 sáng do UTC sai ngày
+// =====================================================
+const getVietnamDate = () => {
+    // Use Intl.DateTimeFormat for reliable timezone conversion
+    // 'sv-SE' locale uses YYYY-MM-DD format which matches Supabase date format
+    return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+};
+
 // Check if Supabase is available
 const isSupabaseConfigured = () => {
     return SUPABASE_CONFIG.url !== 'YOUR_SUPABASE_URL' &&
@@ -1365,7 +1375,7 @@ const DailyMenuService = {
             const local = localStorage.getItem('daily_menu_config');
             if (local) {
                 const config = JSON.parse(local);
-                const today = new Date().toISOString().split('T')[0];
+                const today = getVietnamDate();
                 const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
                 console.log(`🔍 DailyMenuService: Pre-check cache date: stored=${lastUpdated}, today=${today}`);
 
@@ -1383,7 +1393,7 @@ const DailyMenuService = {
         }
 
         return withRetry(async () => {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getVietnamDate();
             const localCache = localStorage.getItem('daily_menu_config');
             if (localCache) {
                 try {
@@ -1402,8 +1412,8 @@ const DailyMenuService = {
                 if (local) {
                     try {
                         const config = JSON.parse(local);
-                        // Check if cache is from today
-                        const today = new Date().toISOString().split('T')[0];
+                        // Check if cache is from today (VN Time)
+                        const today = getVietnamDate();
                         const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
                         console.log(`📅 Date check: stored=${lastUpdated}, today=${today}`);
 
@@ -1439,7 +1449,7 @@ const DailyMenuService = {
     async saveConfig(activeItems) {
         return withRetry(async () => {
             const supabase = await getSupabase();
-            const today = new Date().toISOString().split('T')[0]; // FIX: Declare 'today' variable
+            const today = getVietnamDate();
             console.log('📅 DailyMenuService.saveConfig:', { today, activeItemsCount: activeItems.length });
 
             // Always save to localStorage as fallback
@@ -1491,7 +1501,7 @@ const DailyMenuService = {
             if (this._subscription) return; // Already subscribed
 
             const channelName = 'daily-menu-realtime';
-            const today = new Date().toISOString().split('T')[0];
+            const today = getVietnamDate();
 
             const channel = supabase
                 .channel(channelName)
