@@ -1,4 +1,16 @@
-import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Container, Typography, Grid, Paper, Alert } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Container,
+  Typography,
+  Grid,
+  Paper,
+  Alert,
+} from '@mui/material';
 import { useDailyMenu } from '../api/use-menu';
 
 interface CategoryCardProps {
@@ -119,7 +131,11 @@ export const MenuShowcase = () => {
           <Typography variant="h1" sx={{ fontSize: { xs: '3rem', md: '4.5rem' }, fontWeight: 700 }}>
             Cơm Ánh Dương
           </Typography>
-          <Typography variant="h4" color="warning.main" sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}>
+          <Typography
+            variant="h4"
+            color="warning.main"
+            sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
+          >
             Hương Vị Quê Hương
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600 }}>
@@ -204,13 +220,28 @@ export const MenuShowcase = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%)',
+            background:
+              'radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%)',
             pointerEvents: 'none',
           },
         }}
       >
-        <Box sx={{ position: 'relative', zIndex: 2, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography variant="h3" component="h2" fontWeight={700} sx={{ fontSize: { xs: '2rem', md: '3rem' } }}>
+        <Box
+          sx={{
+            position: 'relative',
+            zIndex: 2,
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="h2"
+            fontWeight={700}
+            sx={{ fontSize: { xs: '2rem', md: '3rem' } }}
+          >
             🎉 Ưu Đãi Hôm Nay
           </Typography>
           <Typography variant="h6" sx={{ opacity: 0.9 }}>

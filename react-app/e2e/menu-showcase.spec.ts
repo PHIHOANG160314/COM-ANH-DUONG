@@ -14,22 +14,19 @@ test.describe('Menu Showcase', () => {
     await expect(page.getByText('Đồ Uống', { exact: true })).toBeVisible();
     await expect(page.getByText('Tráng Miệng', { exact: true })).toBeVisible();
 
-    // 4. Verify Featured items (checking for at least some items)
-    // Assuming featured items are within a specific section, but looking for common items or structure
-    // We can look for the "Featured Items" header if it exists, or just check for multiple items.
-    // Based on "6 featured items (demo data)", let's check for product cards.
-    // We can assume they have images or prices.
-    const productCards = page.locator('article'); // Common tag for cards, or we can look for specific classes if we knew them.
-    // Alternatively, checking for specific demo data names if known.
-    // Since I don't know exact names, I'll look for generic indicators or just assume if the page loads without error and has content.
-    // Let's check for the "Món Ăn Nổi Bật" or similar header if expected.
+    // 4. Verify Featured items section header
+    await expect(page.getByText('Món Nổi Bật')).toBeVisible();
 
     // 5. Verify Daily specials banner (green gradient)
     // Looking for text "Ưu Đãi Hôm Nay"
     await expect(page.getByText('Ưu Đãi Hôm Nay')).toBeVisible();
 
     // 6. Order CTA button
-    await expect(page.getByRole('button', { name: /đặt cơm/i }).or(page.getByRole('link', { name: /đặt cơm/i }))).toBeVisible();
+    await expect(
+      page
+        .getByRole('button', { name: /đặt cơm/i })
+        .or(page.getByRole('link', { name: /đặt cơm/i }))
+    ).toBeVisible();
 
     // 7. Footer
     await expect(page.locator('footer')).toBeVisible();
@@ -37,7 +34,7 @@ test.describe('Menu Showcase', () => {
 
   test('should verify demo data loads without errors', async ({ page }) => {
     const consoleErrors: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') consoleErrors.push(msg.text());
     });
 
@@ -47,7 +44,9 @@ test.describe('Menu Showcase', () => {
     await page.waitForTimeout(2000);
 
     // Check for Supabase errors in console
-    const supabaseErrors = consoleErrors.filter(err => err.includes('Supabase') || err.includes('error'));
+    const supabaseErrors = consoleErrors.filter(
+      (err) => err.includes('Supabase') || err.includes('error')
+    );
     expect(supabaseErrors.length).toBe(0);
 
     // Verify some content is present which implies data loaded

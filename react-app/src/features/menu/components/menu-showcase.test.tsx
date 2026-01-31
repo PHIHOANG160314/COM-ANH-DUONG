@@ -2,11 +2,14 @@ import { render, screen } from '@testing-library/react';
 import { MenuShowcase } from './menu-showcase';
 import { useDailyMenu } from '../api/use-menu';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 
 // Mock the hook
 vi.mock('../api/use-menu', () => ({
   useDailyMenu: vi.fn(),
 }));
+
+const mockUseDailyMenu = useDailyMenu as Mock;
 
 describe('MenuShowcase', () => {
   beforeEach(() => {
@@ -14,7 +17,7 @@ describe('MenuShowcase', () => {
   });
 
   it('renders all main sections', () => {
-    (useDailyMenu as any).mockReturnValue({
+    mockUseDailyMenu.mockReturnValue({
       data: [],
       isLoading: false,
     });
@@ -39,7 +42,7 @@ describe('MenuShowcase', () => {
   });
 
   it('renders loading state correctly', () => {
-    (useDailyMenu as any).mockReturnValue({
+    mockUseDailyMenu.mockReturnValue({
       data: [],
       isLoading: true,
     });
@@ -66,7 +69,7 @@ describe('MenuShowcase', () => {
       },
     ];
 
-    (useDailyMenu as any).mockReturnValue({
+    mockUseDailyMenu.mockReturnValue({
       data: mockProducts,
       isLoading: false,
     });
