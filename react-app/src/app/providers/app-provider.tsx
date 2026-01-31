@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 import theme from '@/shared/theme/theme';
 import { AuthProvider } from './auth-provider';
 import { router } from '../router/router';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,13 +24,15 @@ const persister = createSyncStoragePersister({
 
 export const AppProvider = () => {
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
-      </ThemeProvider>
-    </PersistQueryClientProvider>
+    <ErrorBoundary>
+      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </ThemeProvider>
+      </PersistQueryClientProvider>
+    </ErrorBoundary>
   );
 };
