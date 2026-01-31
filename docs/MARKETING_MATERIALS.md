@@ -49,8 +49,8 @@ Xin chào [Tên KH],
 
 🔥 3 Món bán chạy nhất tuần:
 1. Phở Bò Tái - 45,000đ
-2. Cà Phê Sữa Đá - 22,000đ
-3. Chè Thái - 25,000đ
+2. Cà Phê Sữa Đá - 15,000đ
+3. Chè Thái - 20,000đ
 
 💰 Giảm 10% đơn từ 150K
 📲 Đặt ngay: comanhduong.com

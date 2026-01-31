@@ -434,9 +434,9 @@ ROI: (140M - 20M) / 20M = 600%
 - Month 6 target: 2,000 customers = 20% penetration
 
 **Service Area Expansion:**
-- Month 1-3: Quận 1, 3, 7
-- Month 4-6: Add Bình Thạnh, Phú Nhuận, Tân Bình
-- Month 7+: Add Quận 2, 9, Thủ Đức
+- Month 1-3: Phường 1, 2, 3, 4, Tân Quy Đông (TP. Sa Đéc)
+- Month 4-6: Add Phường An Hòa, Xã Tân Phú Đông
+- Month 7+: Add Lai Vung, Lấp Vò (lân cận)
 
 ---
 

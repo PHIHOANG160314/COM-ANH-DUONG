@@ -1,8 +1,31 @@
-# Codebase Summary (FSD Lite)
+# Codebase Summary
 
-This project follows a **Feature-Sliced Design (FSD) Lite** architecture to ensure scalability and maintainability.
+This project is a food delivery management system ("Cơm Ánh Dương") targeting the Sa Đéc, Đồng Tháp market. It consists of a React frontend application, a Supabase backend (implied), and comprehensive marketing and planning assets.
 
-## 📂 Directory Structure
+## 📂 Repository Structure
+
+```
+.
+├── docs/               # Project documentation (Architecture, PDR, Marketing materials)
+├── marketing/          # Marketing assets directory
+│   ├── content/        # Social media posts and copy
+│   ├── gmb/            # Google My Business assets
+│   ├── loyalty/        # Loyalty program materials
+│   └── print/          # Printable assets (menus, flyers)
+├── plans/              # Project plans and reports
+│   ├── marketing/      # Marketing strategies and campaigns
+│   └── reports/        # Task reports
+├── react-app/          # Main application source code (Vite + React 19)
+│   ├── src/            # Feature-Sliced Design (FSD) Lite structure
+│   └── ...
+└── sql/                # Database schemas and scripts
+```
+
+## 💻 Application Architecture (react-app)
+
+The frontend follows a **Feature-Sliced Design (FSD) Lite** architecture.
+
+### Directory Structure (`react-app/src/`)
 
 ```
 react-app/src/

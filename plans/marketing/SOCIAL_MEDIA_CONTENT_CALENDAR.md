@@ -16,7 +16,7 @@
 
 "Cơm Nhà Mẹ Nấu - Giao Trong 30 Phút"
 
-📍 Phục vụ: Quận 1, 3, 7, Bình Thạnh
+📍 Phục vụ: TP. Sa Đéc, Đồng Tháp
 ⏰ 10:00 - 14:00 & 17:00 - 20:00
 💰 Chỉ từ 35,000đ/suất
 🚚 FREE SHIP đơn từ 50k
@@ -180,10 +180,10 @@ Số lượng có hạn! ⚡
 ❤️ KHÁCH HÀNG NÓI GÌ VỀ CHÚNG MÌNH? ❤️
 
 "Cơm ngon thật sự! Giống cơm mẹ mình nấu. Giao nhanh nữa, 25 phút đã có. Giá rẻ hơn ăn quán mà ngon hơn nhiều. Sẽ order tiếp!"
-- Chị Lan, Quận 1
+- Chị Lan, Phường 2, Sa Đéc
 
 "Đặt cơm trưa cho team văn phòng, mọi người đều khen ngon. Phần ăn đủ no, đóng gói sạch sẽ. Highly recommend!"
-- Anh Minh, Quận 3
+- Anh Minh, Phường 1, Sa Đéc
 
 🙏 Cảm ơn các con đã tin tưởng mẹ!
 
@@ -311,7 +311,7 @@ Cách tham gia:
 ### Secondary Hashtags (Mix and match):
 - #ĂnGì (discovery)
 - #FoodDelivery (English reach)
-- #SàiGònĂnGì (local)
+- #SaĐécĂnGì (local)
 - #VănPhòng (target audience)
 - #CơmTrưa #CơmChiều (meal times)
 - #GiaoNhanh (USP)

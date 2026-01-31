@@ -17,7 +17,7 @@
 - Tertiary: Quán cơm (Vietnamese Restaurant)
 
 **Address:** [Địa chỉ kitchen thực tế]
-**Service Area:** Quận 1, 3, 7, Bình Thạnh, Phú Nhuận, Tân Bình (TP.HCM)
+**Service Area:** Phường 1, 2, 3, 4, Tân Quy Đông, Tân Quy Tây (Sa Đéc, Đồng Tháp)
 
 **Phone:** 0xxx xxx xxx (số hotline chính)
 **Website:** https://www.comanhduong.com
@@ -31,18 +31,18 @@
 
 **Short Description (250 chars):**
 ```
-Cơm Ánh Dương - Cơm nhà giao nhanh trong 30 phút tại TP.HCM. Menu đa dạng, nguyên liệu tươi mỗi ngày, giá bình dân 35-50k. Phục vụ Quận 1, 3, 7, Bình Thạnh. Đặt ngay!
+Cơm Ánh Dương - Cơm nhà giao nhanh trong 30 phút tại Sa Đéc, Đồng Tháp. Menu đa dạng, nguyên liệu tươi mỗi ngày, giá bình dân 35-50k. Phục vụ các phường trung tâm. Đặt ngay!
 ```
 
 **Long Description (750 chars):**
 ```
-Cơm Ánh Dương chuyên cung cấp cơm văn phòng, cơm ship tận nơi tại TP.HCM với cam kết giao hàng trong 30 phút.
+Cơm Ánh Dương chuyên cung cấp cơm văn phòng, cơm ship tận nơi tại Sa Đéc, Đồng Tháp với cam kết giao hàng trong 30 phút.
 
 🍚 Menu đa dạng 20+ món mỗi ngày: thịt kho, cá kho, sườn nướng, gà rán, món chay...
 ✅ Nguyên liệu tươi từ chợ mỗi sáng, không chất bảo quản
 💰 Giá bình dân 35-50k/suất, rẻ hơn ăn quán 30%
 🚚 Giao nhanh trong 30 phút hoặc miễn phí ship
-📍 Phục vụ: Quận 1, 3, 7, Bình Thạnh, Phú Nhuận, Tân Bình
+📍 Phục vụ: Phường 1, 2, 3, 4, Tân Quy Đông, Tân Quy Tây
 
 Thích hợp cho: Dân văn phòng, gia đình bận rộn, sinh viên.
 
@@ -99,7 +99,7 @@ Thích hợp cho: Dân văn phòng, gia đình bận rộn, sinh viên.
 ```
 com-anh-duong-thit-kho-trung.jpg
 com-anh-duong-kitchen-sach-se.jpg
-ship-com-van-phong-quan-1.jpg
+ship-com-van-phong-phuong-1.jpg
 ```
 
 ---
@@ -141,22 +141,22 @@ Thịt ba chỉ kho nước dừa thơm ngon, trứng đậm vị. Cơm nóng + 
 
 | Keyword | Volume | Competition | Target Page |
 |---------|--------|-------------|-------------|
-| cơm văn phòng quận 1 | High | Medium | Homepage |
-| ship cơm quận 3 | Medium | Low | Service page |
+| cơm văn phòng Sa Đéc | High | Medium | Homepage |
+| ship cơm Đồng Tháp | Medium | Low | Service page |
 | cơm ship gần đây | High | High | Homepage |
 | cơm nhà giao nhanh | Medium | Low | Homepage |
 | đặt cơm trưa | High | Medium | Order page |
-| cơm bình dân sài gòn | Medium | Medium | Menu page |
+| cơm bình dân Sa Đéc | Medium | Medium | Menu page |
 
 ---
 
 ### 2.2 Long-tail Keywords (Medium Priority)
 
-- "ship cơm văn phòng giá rẻ quận 1"
-- "cơm nhà nấu giao tận nơi hcm"
-- "đặt cơm trưa ship nhanh quận 3"
-- "cơm ship 30 phút sài gòn"
-- "cơm sạch giao nhanh bình thạnh"
+- "ship cơm văn phòng giá rẻ Sa Đéc"
+- "cơm nhà nấu giao tận nơi Đồng Tháp"
+- "đặt cơm trưa ship nhanh Sa Đéc"
+- "cơm ship 30 phút Sa Đéc"
+- "cơm sạch giao nhanh Đồng Tháp"
 - "order cơm văn phòng cho team"
 
 ---
@@ -169,16 +169,16 @@ Thịt ba chỉ kho nước dừa thơm ngon, trứng đậm vị. Cơm nóng + 
 - "cơm ship [tên tòa nhà office nổi tiếng]"
 
 **Example:**
-- "ship cơm bitexco"
-- "cơm văn phóng vietcombank tower"
-- "order cơm lotteria tower"
+- "ship cơm KCN Sa Đéc"
+- "cơm văn phòng chợ Sa Đéc"
+- "order cơm Bệnh viện Đa khoa Sa Đéc"
 
 ---
 
 ### 2.4 Competitor Keywords
 
 Nghiên cứu keywords của competitors:
-- "cơm tấm sài gòn ship"
+- "cơm tấm ship Đồng Tháp"
 - "cơm niêu [khu vực]"
 - "bếp ăn văn phòng"
 
@@ -192,15 +192,15 @@ Tạo content tốt hơn cho cùng keywords.
 
 **Title Tag (60 chars):**
 ```
-Cơm Ánh Dương - Ship Cơm Văn Phòng 30 Phút | TP.HCM
+Cơm Ánh Dương - Ship Cơm Văn Phòng 30 Phút | Sa Đéc
 ```
 
 **Meta Description (155 chars):**
 ```
-Cơm nhà giao nhanh 30 phút tại Quận 1, 3, 7, Bình Thạnh. Menu 20+ món, giá 35-50k. Free ship >50k. Đặt ngay: 0xxx xxx xxx
+Cơm nhà giao nhanh 30 phút tại Sa Đéc, Đồng Tháp. Menu 20+ món, giá 35-50k. Free ship >50k. Đặt ngay: 0xxx xxx xxx
 ```
 
-**H1:** Cơm Nhà Giao Nhanh - Cơm Ánh Dương TP.HCM
+**H1:** Cơm Nhà Giao Nhanh - Cơm Ánh Dương Sa Đéc
 
 **Content Structure:**
 1. Hero section (above fold)
@@ -245,17 +245,17 @@ Cơm nhà giao nhanh 30 phút tại Quận 1, 3, 7, Bình Thạnh. Menu 20+ món
 
 ### 3.3 Location Pages (Create for each service area)
 
-**Template:** `/ship-com-[quan]-[ten-quan]`
+**Template:** `/ship-com-[phuong]-[ten-phuong]`
 
-**Example:** `/ship-com-quan-1`
+**Example:** `/ship-com-phuong-1`
 
-**Title:** Ship Cơm Quận 1 Nhanh 30 Phút - Free Ship >50k
+**Title:** Ship Cơm Phường 1 Nhanh 30 Phút - Free Ship >50k
 
 **Content:**
-- Giới thiệu service tại Quận 1
+- Giới thiệu service tại Phường 1 Sa Đéc
 - Map delivery coverage
 - Popular delivery locations (office buildings, apartments)
-- Testimonials từ khách Quận 1
+- Testimonials từ khách Phường 1 Sa Đéc
 - Menu highlights
 - CTA: Order now
 
@@ -283,8 +283,8 @@ Cơm nhà giao nhanh 30 phút tại Quận 1, 3, 7, Bình Thạnh. Menu 20+ món
    - "So sánh cơm nhà vs cơm quán"
 
 3. **Local Content:**
-   - "Top 5 khu văn phòng nhộn nhịp Quận 1"
-   - "Địa điểm ship cơm nhanh gần [landmark]"
+   - "Top 5 khu văn phòng nhộn nhịp Sa Đéc"
+   - "Địa điểm ship cơm nhanh Sa Đéc"
 
 4. **Behind-the-Scenes:**
    - "Một ngày tại bếp Cơm Ánh Dương"
@@ -402,7 +402,7 @@ Hotline: 0xxx xxx xxx
 - Goal: Protect brand
 
 **Campaign 2: Search - Local Service**
-- Keywords: "ship cơm [quận]", "cơm văn phòng [quận]"
+- Keywords: "ship cơm [phường]", "cơm văn phòng [phường]"
 - Budget: 3M/month
 - Location targeting: 5km radius
 - Ad schedule: 9:00-11:00, 15:00-17:00 (decision time)
@@ -420,7 +420,7 @@ Hotline: 0xxx xxx xxx
 ```
 Headline 1: Cơm Nhà Giao 30 Phút
 Headline 2: Menu 20+ Món | Free Ship >50k
-Headline 3: Quận 1, 3, 7 - Đặt Ngay
+Headline 3: Sa Đéc - Đặt Ngay
 Description: Cơm ngon như nhà nấu, ship nhanh tận nơi. Giá chỉ 35-50k. Đặt hàng dễ dàng!
 ```
 
@@ -428,7 +428,7 @@ Description: Cơm ngon như nhà nấu, ship nhanh tận nơi. Giá chỉ 35-50k
 ```
 Headline 1: Cơm Ship Chỉ 35,000đ
 Headline 2: Rẻ Hơn Ăn Quán 30%
-Headline 3: Giao Nhanh Quận 1, 3, 7
+Headline 3: Giao Nhanh Sa Đéc
 Description: Tiết kiệm thời gian và tiền bạc. Cơm sạch, ngon, ship tận desk trong 30 phút!
 ```
 
@@ -475,10 +475,10 @@ Description: Đói bụng à? Order ngay, 30 phút có cơm. Giảm 20% cho khá
 ### 6.2 Facebook Groups Strategy
 
 **Join & Engage:**
-- "Ăn gì ở Quận 1/3/7"
-- "Văn phòng [building name]"
-- "Cộng đồng chung cư [apartment name]"
-- "Hội ship đồ ăn Sài Gòn"
+- "Ăn vặt Sa Đéc"
+- "Hội Đồng Hương Sa Đéc"
+- "Ship đồ ăn Đồng Tháp"
+- "Cộng đồng người Sa Đéc"
 
 **Activity:**
 - Share helpful content (not just promo)
@@ -491,13 +491,13 @@ Description: Đói bụng à? Order ngay, 30 phút có cơm. Giảm 20% cho khá
 
 ### 6.3 TikTok Local Hashtags
 
-- #SàiGònĂnGì
-- #Quận1FoodDelivery
-- #VănPhòngSàiGòn
-- #ShipĐồĂnHCM
+- #SaĐécĂnGì
+- #ĐồngThápFoodDelivery
+- #VănPhòngSaĐéc
+- #ShipĐồĂnĐồngTháp
 
 Create videos with local landmarks (background):
-"Đang làm việc tại [Bitexco/Landmark] và đói bụng? Cơm ship 30 phút!"
+"Đang làm việc tại văn phòng và đói bụng? Cơm ship 30 phút!"
 
 ---
 
@@ -598,7 +598,7 @@ comanhduong.com/menu?utm_source=google&utm_medium=cpc&utm_campaign=local-search-
 
 ### Month 6:
 - 100+ reviews
-- Rank #1-3 for "cơm [quận]" searches
+- Rank #1-3 for "cơm [phường]" searches
 - 500 organic clicks/month
 - 50 orders/month from organic (15% total orders)
 

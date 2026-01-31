@@ -395,7 +395,7 @@
 ---
 
 ### 6.2 Co-working Space Partnerships
-**Target:** Toong, Dreamplex, CirCO, etc.
+**Target:** KCN Sa Đéc, Local Banks (Vietcombank, Agribank), Administrative Centers
 
 **Offer:**
 - In-space menu display

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-31
+
+### Added
+- **Marketing Strategy**: Comprehensive marketing plan for Sa Đéc launch.
+- **Marketing Assets**: Created ready-to-use Facebook posts, GMB guide, discount codes, and print menu formats.
+- **Location Update**: Updated all marketing materials to target Sa Đéc, Đồng Tháp instead of HCM.
+- **Payment Integration**: Implemented VNPay and MoMo payment gateways with secure Edge Functions and reconciliation.
+- **Loyalty System**: Launched "Thành Viên Nhà" program with Bronze/Silver/Gold tiers, point accumulation (5-10%), and redemption.
+- **User Profile**: Added Profile Dashboard, Order History, and Address Book management.
+- **Admin Analytics**: Implemented visual reporting dashboard with Revenue charts, Top Products, and Order Status metrics.
+- **Operations**: Added Inventory Management with auto-stock decrement, System Notifications for Kitchen/Admin, and Daily Revenue Report automation.
+
 ## [1.0.0] - 2026-01-30
 
 ### Added

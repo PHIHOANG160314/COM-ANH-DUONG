@@ -2,13 +2,13 @@
 
 **Ngày tạo:** 2026-01-31
 **Phiên bản:** 1.0
-**Trạng thái:** Active
+**Trạng thái:** READY FOR IMPLEMENTATION
 
 ---
 
 ## 1. Tóm Tắt Chiến Lược
 
-**Sứ mệnh:** Mang hương vị cơm nhà đến với mọi gia đình và dân văn phòng TP.HCM
+**Sứ mệnh:** Mang hương vị cơm nhà đến với mọi gia đình và dân văn phòng Sa Đéc, Đồng Tháp
 **Tầm nhìn:** Trở thành thương hiệu cơm ship #1 khu vực với 500+ đơn/ngày trong 6 tháng
 
 ---
@@ -20,7 +20,7 @@
 #### Segment 1: Dân Văn Phòng (60% doanh thu)
 - **Độ tuổi:** 22-35 tuổi
 - **Thu nhập:** 8-15 triệu/tháng
-- **Địa điểm:** Quận 1, 3, 7, Bình Thạnh, Phú Nhuận
+- **Địa điểm:** Phường 1, 2, 3, 4, Tân Quy Đông, Tân Quy Tây, Sa Đéc
 - **Pain Points:**
   - Không có thời gian nấu ăn
   - Ăn quán quá đắt (50-80k/bữa)
@@ -34,7 +34,7 @@
 #### Segment 2: Gia Đình Trẻ (30% doanh thu)
 - **Độ tuổi:** 28-45 tuổi
 - **Thu nhập:** 15-30 triệu/tháng
-- **Địa điểm:** Quận 2, 7, 9, Thủ Đức
+- **Địa điểm:** Các phường trung tâm Sa Đéc
 - **Pain Points:**
   - Vợ chồng đi làm, không nấu được
   - Lo chất lượng thức ăn cho con
@@ -166,9 +166,9 @@
 - Photo uploads (food, kitchen, delivery)
 - Review generation (ask all customers)
 - Local keywords targeting:
-  - "cơm văn phòng quận X"
-  - "ship cơm gần đây"
-  - "cơm nhà ngon HCM"
+  - "cơm văn phòng Sa Đéc"
+  - "ship cơm Đồng Tháp"
+  - "cơm nhà ngon Sa Đéc"
 
 **Budget:** 3 triệu/tháng
 **KPI:** Top 3 for local searches, 50+ reviews (4.5★)
@@ -220,7 +220,7 @@
 
 ### Direct Competitors:
 
-#### 1. Cơm Tấm Sài Gòn (Ship)
+#### 1. Cơm Tấm Sa Đéc (Local Competitor)
 - **Strength:** Brand lớn, nhiều chi nhánh
 - **Weakness:** Đắt hơn (60-80k), giao chậm
 - **Our Advantage:** Rẻ hơn 30%, giao nhanh hơn

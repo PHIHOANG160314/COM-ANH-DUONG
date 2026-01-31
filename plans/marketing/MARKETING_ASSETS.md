@@ -128,10 +128,10 @@ Thịt kho trứng - Món ăn tuổi thơ làm ai cũng nhớ nhà!
 ❤️ KHÁCH HÀNG NÓI GÌ VỀ CHÚNG MÌNH? ❤️
 
 "Cơm ngon lắm! Thật sự giống cơm mẹ mình nấu. Giao đúng 25 phút, shipper rất lịch sự. Giá rẻ hơn ăn quán mà ngon gấp đôi. Đặt hoài luôn!"
-- Chị Lan Anh, Quận 1
+- Chị Lan Anh, Phường 2, TP. Sa Đéc
 
 💚 "Order cho cả team 10 người, ai cũng khen ngon. Phần ăn vừa đủ no, đóng gói sạch đẹp. Highly recommend!"
-- Anh Minh, Quận 3
+- Anh Minh, Phường 1, TP. Sa Đéc
 
 🙏 Cảm ơn các con đã tin tưởng mẹ!
 
