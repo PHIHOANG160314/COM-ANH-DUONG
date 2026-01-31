@@ -2,23 +2,32 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#006400', // Dark Green
+      main: '#4ade80', // Green accent (from Pencil design)
     },
     secondary: {
-      main: '#73C249', // Light Green
+      main: '#10b981', // Secondary green
     },
     error: {
-      main: '#d32f2f',
+      main: '#ef4444',
     },
     warning: {
-      main: '#FFB300', // Amber/Yellow (Tertiary)
+      main: '#f59e0b', // Accent amber
     },
     info: {
-      main: '#0288d1',
+      main: '#3b82f6',
     },
     success: {
-      main: '#2e7d32',
+      main: '#4ade80',
+    },
+    background: {
+      default: '#0a0a12', // Dark background from Pencil design
+      paper: '#1a1a2e', // Surface color
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: 'rgba(255, 255, 255, 0.7)',
     },
   },
   typography: {

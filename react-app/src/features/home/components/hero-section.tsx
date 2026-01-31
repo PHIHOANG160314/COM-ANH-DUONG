@@ -8,7 +8,7 @@ export const HeroSection = () => {
   return (
     <Box
       sx={{
-        background: 'linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)',
+        background: 'linear-gradient(135deg, #4ade80 0%, #10b981 100%)',
         color: 'white',
         py: { xs: 4, md: 6 },
         mb: 4,
@@ -69,7 +69,7 @@ export const HeroSection = () => {
               onClick={() => navigate('/menu')}
               sx={{
                 bgcolor: 'white',
-                color: '#2e7d32',
+                color: '#10b981',
                 fontWeight: 'bold',
                 px: 4,
                 '&:hover': { bgcolor: '#f5f5f5' },

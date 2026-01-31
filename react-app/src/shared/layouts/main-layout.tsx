@@ -160,11 +160,109 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
       <Box
         component="footer"
-        sx={{ py: 3, px: 2, mt: 'auto', backgroundColor: '#f5f5f5', textAlign: 'center' }}
+        sx={{
+          py: 4,
+          px: 3,
+          mt: 'auto',
+          backgroundColor: '#1a1a2e',
+          color: '#fff',
+        }}
       >
-        <Typography variant="body2" color="text.secondary">
-          © {new Date().getFullYear()} Cơm Ánh Dương. All rights reserved.
-        </Typography>
+        <Container maxWidth="md">
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+              gap: 3,
+              mb: 3,
+            }}
+          >
+            {/* Customer Section */}
+            <Box>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Khách hàng
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/menu')}
+                >
+                  Thực đơn
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/checkout')}
+                >
+                  Giỏ hàng
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/profile')}
+                >
+                  Tài khoản
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Business Section */}
+            <Box>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Quản lý
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/admin')}
+                >
+                  Quản trị
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/kitchen')}
+                >
+                  Bếp
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/pos')}
+                >
+                  POS
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  onClick={() => navigate('/delivery')}
+                >
+                  Giao hàng
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Contact Section */}
+            <Box>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Liên hệ
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2">📞 0123 456 789</Typography>
+                <Typography variant="body2">📍 Hà Nội, Việt Nam</Typography>
+                <Typography variant="body2">🕐 8:00 - 22:00 hàng ngày</Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)', mb: 2 }} />
+
+          <Typography variant="body2" sx={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+            © {new Date().getFullYear()} Cơm Ánh Dương. All rights reserved.
+          </Typography>
+        </Container>
       </Box>
     </Box>
   );
