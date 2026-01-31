@@ -61,7 +61,7 @@ vi.mock('@/shared/ui/operating-hours', () => ({
 }));
 
 vi.mock('@/shared/ui/trust-badges', () => ({
-  TrustBadges: () => <div data-testid="trust-badges">Trust Badges</div>
+  TrustBadges: () => <div data-testid="trust-badges">Trust Badges</div>,
 }));
 
 vi.mock('@/features/payment/components/payment-method-selector', () => ({
@@ -84,34 +84,32 @@ describe('CheckoutPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Default mocks
-    (useCartStore as any).mockReturnValue({
-      items: [
-        { id: '1', name: 'Com Tam', price: 50000, quantity: 2, note: '' }
-      ],
+    // Default mocks - using type-safe casting pattern
+    vi.mocked(useCartStore).mockReturnValue({
+      items: [{ id: '1', name: 'Com Tam', price: 50000, quantity: 2, note: '' }],
       totalAmount: () => 100000,
       clearCart: mockClearCart,
-    });
+    } as unknown as ReturnType<typeof useCartStore>);
 
-    (useAuth as any).mockReturnValue({
-      user: { id: 'user-123', user_metadata: { full_name: 'Test User' } }
-    });
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'user-123', user_metadata: { full_name: 'Test User' } },
+    } as unknown as ReturnType<typeof useAuth>);
 
-    (useAddresses as any).mockReturnValue({
-      addresses: []
-    });
+    vi.mocked(useAddresses).mockReturnValue({
+      addresses: [],
+    } as unknown as ReturnType<typeof useAddresses>);
 
-    (useLoyalty as any).mockReturnValue({
-      stats: { points: 0 }
-    });
+    vi.mocked(useLoyalty).mockReturnValue({
+      stats: { points: 0 },
+    } as unknown as ReturnType<typeof useLoyalty>);
   });
 
   it('renders empty cart message when no items', () => {
-    (useCartStore as any).mockReturnValue({
+    vi.mocked(useCartStore).mockReturnValue({
       items: [],
       totalAmount: () => 0,
       clearCart: mockClearCart,
-    });
+    } as unknown as ReturnType<typeof useCartStore>);
 
     render(
       <MemoryRouter>
