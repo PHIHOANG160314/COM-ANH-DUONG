@@ -1,135 +1,104 @@
-# Supabase Setup Guide - Cơm Ánh Dương
+# Supabase Setup Task - Cơm Ánh Dương
 
-Welcome! This guide will help you set up Supabase and connect it to your website at comanhduong.com.
+## Objective
 
-## Quick Overview
+Configure Supabase database, generate menu images, and deploy to production.
 
-| Step                       | Time  | Location            |
-| -------------------------- | ----- | ------------------- |
-| 1. Create Supabase Project | 5 min | Supabase Dashboard  |
-| 2. Run Migrations          | 3 min | Supabase SQL Editor |
-| 3. Add Demo Data           | 2 min | Supabase SQL Editor |
-| 4. Configure Vercel        | 2 min | Vercel Dashboard    |
-| 5. Redeploy & Verify       | 3 min | Vercel + Website    |
+## Prerequisites
 
-**Total time: ~15 minutes**
+- Supabase CLI: `npx supabase`
+- Vercel CLI: `vercel`
+- For image generation: Antigravity IDE with `generate_image` tool
 
 ---
 
-## Step 1: Create Supabase Project
+## Task 1: Link Supabase Project
 
-1. Go to **[supabase.com](https://supabase.com)** → Click **Start your project**
-2. Sign in with GitHub or email
-3. Click **New project**
-4. Fill in:
-   - **Name**: `com-anh-duong`
-   - **Database Password**: Generate a strong password (save it!)
-   - **Region**: `Southeast Asia (Singapore)` ← closest to Vietnam
-5. Click **Create new project**
-6. Wait 1-2 minutes for setup to complete
+```bash
+cd /Users/macbookprom1/mekong-cli/com-anh-duong-10x/react-app
 
----
-
-## Step 2: Run Database Migrations
-
-You need to run 3 SQL files in order. Each file sets up part of the database.
-
-### 2.1 Get the Migration Files
-
-The files are in your project at:
-
-```
-react-app/supabase/migrations/
-├── 20260131_initial_schema.sql    (1st - core tables)
-├── 20260131_rls_policies.sql      (2nd - security)
-└── 20260614_products_schema.sql   (3rd - products table)
+npx supabase login
+npx supabase link --project-ref <PROJECT_REF>
 ```
 
-### 2.2 Run Each Migration
+## Task 2: Push Database Migrations
 
-1. In Supabase Dashboard → **SQL Editor** (left sidebar, looks like ⌘ icon)
-2. Click **New query**
-3. **Copy the entire contents** of `20260131_initial_schema.sql`
-4. **Paste** into the SQL Editor
-5. Click **Run** (green button)
-6. Look for ✓ "Success" message
-7. **Repeat** for the other two files in order
+```bash
+cd /Users/macbookprom1/mekong-cli/com-anh-duong-10x/react-app
 
-> ⚠️ **Important**: Run them in order! The second file depends on the first.
+npx supabase db push
+```
 
----
+## Task 3: Create Storage Bucket
 
-## Step 3: Add Demo Menu Data
+```bash
+# Create bucket for menu images
+npx supabase storage create menu-images --public
+```
 
-1. Still in **SQL Editor**, click **New query**
-2. Copy contents of `react-app/supabase/seed_products.sql`
-3. Paste and click **Run**
-4. Verify: Go to **Table Editor** → click `products` → you should see ~18 menu items
+## Task 4: Generate Menu Images (Antigravity IDE)
 
----
+For each product, generate a professional food image:
 
-## Step 4: Get Your Credentials
+| Product          | Image Prompt                                                                                                    |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| Cơm Sườn Nướng   | Vietnamese grilled pork chop rice, professional food photography, white plate, natural lighting, top-down angle |
+| Cơm Gà Xối Mỡ    | Vietnamese crispy fried chicken rice, professional food photography, golden brown skin, steaming rice           |
+| Cơm Tấm Bì Chả   | Vietnamese broken rice with pork skin and egg meatloaf, traditional presentation                                |
+| Phở Bò Tái       | Vietnamese beef pho, hot steaming bowl, fresh herbs, lime, bean sprouts                                         |
+| Bún Bò Huế       | Vietnamese spicy beef noodle soup Hue style, red broth, beef shank, herbs                                       |
+| Bánh Mì Đặc Biệt | Vietnamese banh mi sandwich, crusty baguette, pate, cold cuts, pickles, cilantro                                |
 
-1. In Supabase Dashboard → **Settings** (gear icon) → **API**
-2. Copy these two values:
-   - **Project URL**: `https://xxxxxxxxxxxx.supabase.co`
-   - **anon public key**: `eyJhbGciOiJIUzI1NiIsInR5cCI...` (long string)
+Save images to: `react-app/public/images/menu/`
 
-> 💡 Keep these in a notepad - you'll paste them in Vercel next.
+## Task 5: Upload Images to Supabase Storage
 
----
+```bash
+cd /Users/macbookprom1/mekong-cli/com-anh-duong-10x/react-app
 
-## Step 5: Configure Vercel
+# Upload all generated images
+for img in public/images/menu/*.webp; do
+  npx supabase storage cp "$img" storage://menu-images/
+done
+```
 
-1. Go to **[vercel.com](https://vercel.com)** → Sign in
-2. Select the **COM-ANH-DUONG** project
-3. Go to **Settings** → **Environment Variables**
-4. Add two variables:
+## Task 6: Seed Data with Image URLs
 
-| Name                     | Value                            |
-| ------------------------ | -------------------------------- |
-| `VITE_SUPABASE_URL`      | Your Project URL from Step 4     |
-| `VITE_SUPABASE_ANON_KEY` | Your anon public key from Step 4 |
+```bash
+# Update seed file to use Supabase Storage URLs
+# Then run seed
+npx supabase db execute --file supabase/seed_products.sql
+```
 
-5. Click **Save** for each
+## Task 7: Set Vercel Environment Variables
 
----
+```bash
+cd /Users/macbookprom1/mekong-cli/com-anh-duong-10x
 
-## Step 6: Redeploy
+SUPABASE_URL=$(npx supabase status | grep "API URL" | awk '{print $3}')
+SUPABASE_ANON_KEY=$(npx supabase status | grep "anon key" | awk '{print $3}')
 
-1. In Vercel, go to **Deployments** tab
-2. Find the latest deployment
-3. Click the **⋯** menu → **Redeploy**
-4. Check "Use existing Build Cache" → Click **Redeploy**
-5. Wait ~2 minutes for deployment
+vercel env add VITE_SUPABASE_URL production <<< "$SUPABASE_URL"
+vercel env add VITE_SUPABASE_ANON_KEY production <<< "$SUPABASE_ANON_KEY"
+```
 
----
+## Task 8: Deploy
 
-## Step 7: Verify
+```bash
+vercel --prod
+```
 
-1. Go to **https://comanhduong.com/menu**
-2. Open browser DevTools (press F12)
-3. Check the **Console** tab
+## Task 9: Verify
 
-### ✅ Success looks like:
-
-- Menu items load with images
-- No red errors in console
-- No "demo mode" warnings
-
-### ❌ If you see errors:
-
-- **401 Unauthorized**: Double-check your Supabase URL and key in Vercel
-- **No data showing**: Verify the seed data was inserted (check Table Editor)
+```bash
+curl -s https://comanhduong.com/menu | grep -q "Cơm Sườn" && echo "✅ Success" || echo "❌ Failed"
+```
 
 ---
 
-## Need Help?
+## Success Criteria
 
-If something isn't working:
-
-1. Take a screenshot of any error messages
-2. Check which step you were on
-3. Contact support with the screenshot and step number
-
-Good luck! 🍚🍲
+- ✅ Products table has 18+ items
+- ✅ Menu images uploaded to Supabase Storage
+- ✅ Website loads menu with real images
+- ✅ No console errors
