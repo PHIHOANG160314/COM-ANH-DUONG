@@ -17,7 +17,16 @@ const DEMO_PRODUCTS: (Product & { categories: Category | null })[] = [
     is_active: true,
     is_sold_out: false,
     created_at: new Date().toISOString(),
-    categories: { id: 'cat-1', name: 'Cơm Phần', sort_order: 1, is_active: true, created_at: new Date().toISOString() }
+    updated_at: new Date().toISOString(),
+    categories: {
+      id: 'cat-1',
+      name: 'Cơm Phần',
+      slug: 'com-phan',
+      image_url: null,
+      sort_order: 1,
+      is_active: true,
+      created_at: new Date().toISOString()
+    }
   },
   {
     id: 'demo-2',
@@ -29,7 +38,16 @@ const DEMO_PRODUCTS: (Product & { categories: Category | null })[] = [
     is_active: true,
     is_sold_out: false,
     created_at: new Date().toISOString(),
-    categories: { id: 'cat-1', name: 'Cơm Phần', sort_order: 1, is_active: true, created_at: new Date().toISOString() }
+    updated_at: new Date().toISOString(),
+    categories: {
+      id: 'cat-1',
+      name: 'Cơm Phần',
+      slug: 'com-phan',
+      image_url: null,
+      sort_order: 1,
+      is_active: true,
+      created_at: new Date().toISOString()
+    }
   },
   {
     id: 'demo-3',
@@ -41,13 +59,22 @@ const DEMO_PRODUCTS: (Product & { categories: Category | null })[] = [
     is_active: true,
     is_sold_out: false,
     created_at: new Date().toISOString(),
-    categories: { id: 'cat-1', name: 'Cơm Phần', sort_order: 1, is_active: true, created_at: new Date().toISOString() }
+    updated_at: new Date().toISOString(),
+    categories: {
+      id: 'cat-1',
+      name: 'Cơm Phần',
+      slug: 'com-phan',
+      image_url: null,
+      sort_order: 1,
+      is_active: true,
+      created_at: new Date().toISOString()
+    }
   }
 ];
 
 const DEMO_CATEGORIES: Category[] = [
-  { id: 'cat-1', name: 'Cơm Phần', sort_order: 1, is_active: true, created_at: new Date().toISOString() },
-  { id: 'cat-2', name: 'Món Thêm', sort_order: 2, is_active: true, created_at: new Date().toISOString() }
+  { id: 'cat-1', name: 'Cơm Phần', slug: 'com-phan', image_url: null, sort_order: 1, is_active: true, created_at: new Date().toISOString() },
+  { id: 'cat-2', name: 'Món Thêm', slug: 'mon-them', image_url: null, sort_order: 2, is_active: true, created_at: new Date().toISOString() }
 ];
 
 export const useDailyMenu = () => {

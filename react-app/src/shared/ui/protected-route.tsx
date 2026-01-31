@@ -2,15 +2,17 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/app/providers/auth-provider';
 import { AppLoading } from '@/shared/ui';
 import type { Database } from '@/shared/types/database.types';
+import { type ReactNode } from 'react';
 
 type UserRole = Database['public']['Tables']['profiles']['Row']['role'];
 
 interface ProtectedRouteProps {
   allowedRoles?: UserRole[];
   redirectPath?: string;
+  children?: ReactNode;
 }
 
-export const ProtectedRoute = ({ allowedRoles, redirectPath = '/login' }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ allowedRoles, redirectPath = '/login', children }: ProtectedRouteProps) => {
   const { user, role, loading } = useAuth();
   const location = useLocation();
 
@@ -30,5 +32,5 @@ export const ProtectedRoute = ({ allowedRoles, redirectPath = '/login' }: Protec
     return <Navigate to="/" replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 };

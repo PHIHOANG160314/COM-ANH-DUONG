@@ -28,6 +28,11 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     // Check for missing Supabase config
     if (!hasSupabaseConfig) {
+      // In development or demo mode, we might want to show the app with mock data
+      // instead of blocking the entire UI.
+      // Uncomment the return below to strict block usage without config.
+
+      /*
       return (
         <Container maxWidth="sm">
           <Box
@@ -64,6 +69,10 @@ export class ErrorBoundary extends Component<Props, State> {
           </Box>
         </Container>
       );
+      */
+
+      // Warn in console but allow rendering
+      console.warn('App running in Demo Mode (Supabase config missing)');
     }
 
     // Regular error boundary

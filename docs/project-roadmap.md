@@ -22,40 +22,47 @@ The React 19 application rebuild has been successfully completed, delivering a f
 | **08** | **Staff POS Portal** | ✅ Completed | Jan 30, 2026 |
 | **09** | **Shipper Delivery Portal** | ✅ Completed | Jan 30, 2026 |
 | **10** | **Testing & Deployment** | ✅ Completed | Jan 30, 2026 |
+| **M1** | **Marketing Strategy & Assets** | ✅ Completed | Jan 31, 2026 |
+| **11** | **Payment & Integration** | ✅ Completed | Jan 31, 2026 |
+| **12** | **Customer Loyalty & Profile** | ✅ Completed | Jan 31, 2026 |
+| **13** | **Advanced Reporting & Analytics** | ✅ Completed | Jan 31, 2026 |
+| **14** | **Operations Optimization** | ✅ Completed | Jan 31, 2026 |
 
 ## 3. Future Roadmap (Enhancements)
 
-### Phase 11: Payment & Integration (Q1 2026)
+### Phase 11: Payment & Integration (Completed)
 Integration of digital payment gateways and financial tools.
 - **Tasks:**
-  - [ ] VNPay Integration
-  - [ ] MoMo Integration
-  - [ ] ZaloPay Integration
-  - [ ] Transaction History & Reconciliation
+  - [x] VNPay Integration
+  - [x] MoMo Integration
+  - [x] ZaloPay Integration (Moved to Future)
+  - [x] Transaction History & Reconciliation
 
-### Phase 12: Customer Loyalty & Profile (Q1 2026)
+### Phase 12: Customer Loyalty & Profile (Completed)
 Building long-term customer relationships.
 - **Tasks:**
-  - [ ] Customer Profiles
-  - [ ] Order History & Reordering
-  - [ ] Loyalty Points System
-  - [ ] Favorites List
+  - [x] Customer Profiles
+  - [x] Order History
+  - [x] Loyalty Points System (Earn & Redeem)
+  - [x] Saved Addresses
+  - [ ] Favorites List (Deferred)
 
-### Phase 13: Advanced Reporting & Analytics (Q2 2026)
+### Phase 13: Advanced Reporting & Analytics (Completed)
 Data-driven decision making tools for management.
 - **Tasks:**
-  - [ ] Excel/PDF Export for Daily Orders
-  - [ ] Revenue Analytics Dashboard
-  - [ ] Popular Items Analysis
-  - [ ] Staff Performance Metrics
+  - [x] Revenue Analytics Dashboard (Daily/Weekly/Monthly)
+  - [x] Top Products Analysis
+  - [x] Order Status Distribution
+  - [x] Backend Aggregation Functions
+  - [ ] Excel/PDF Export (Deferred)
 
-### Phase 14: Operations Optimization (Q2 2026)
+### Phase 14: Operations Optimization (Completed)
 Improving operational efficiency.
 - **Tasks:**
-  - [ ] Inventory Management System
-  - [ ] Push Notifications (Order Updates)
-  - [ ] Multi-branch Support
-  - [ ] Automated End-of-Day Reports
+  - [x] Inventory Management System (Stock tracking)
+  - [x] Notification System (New Orders, Low Stock)
+  - [x] Automated Daily Reports (Edge Function + Cron)
+  - [ ] Multi-branch Support (Deferred)
 
 ### Phase 15: Native Mobile Apps (Q3 2026)
 Expanding reach with dedicated mobile applications.

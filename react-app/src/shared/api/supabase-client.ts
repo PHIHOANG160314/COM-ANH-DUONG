@@ -3,8 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Check if environment variables are missing
-export const hasSupabaseConfig = Boolean(supabaseUrl && supabaseAnonKey);
+// Check if environment variables are missing or are placeholders
+const isPlaceholder = (value: string | undefined) =>
+  !value || value.includes('placeholder') || value === 'undefined';
+
+export const hasSupabaseConfig =
+  Boolean(supabaseUrl && supabaseAnonKey) &&
+  !isPlaceholder(supabaseUrl) &&
+  !isPlaceholder(supabaseAnonKey);
 
 if (!hasSupabaseConfig) {
   console.error('Missing Supabase environment variables');

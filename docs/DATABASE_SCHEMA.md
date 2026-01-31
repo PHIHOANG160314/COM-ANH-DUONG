@@ -38,6 +38,26 @@
 - `check_in`, `check_out`: Timestamps.
 - `total_hours`: Calculated work duration.
 
+### `loyalty_transactions` (New)
+- `id` (UUID): Primary Key.
+- `customer_id`: Reference to customer.
+- `order_id`: Reference to order (optional).
+- `type`: 'earn', 'redeem', 'adjustment', 'expire', 'bonus'.
+- `points`: +/- amount.
+- `description`: Text details.
+
+### `customer_addresses` (New)
+- `id` (UUID): Primary Key.
+- `customer_id`: Reference to customer.
+- `label`: 'Home', 'Office'.
+- `address`: Full address text.
+- `is_default`: Boolean.
+
+### `saved_items` (New)
+- `id` (UUID): Primary Key.
+- `customer_id`: Reference to customer.
+- `menu_item_id`: Reference to menu item.
+
 ## Features
 - **RLS:** Enabled on all major tables.
 - **Triggers:** Auto-update `updated_at`.

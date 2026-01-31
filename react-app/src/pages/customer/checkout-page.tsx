@@ -1,16 +1,31 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Box, Typography, Grid, Paper } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Grid,
+  Paper,
+  Divider,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Button,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import { AppInput, AppButton } from '@/shared/ui';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/shared/api/supabase-client';
 import { useAuth } from '@/app/providers/auth-provider';
 import { PaymentMethodSelector } from '@/features/payment/components/payment-method-selector';
 import { paymentApi, type PaymentProvider } from '@/features/payment/api/payment-api';
+import { useAddresses } from '@/features/profile/hooks/use-addresses';
+import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
+import { LocationOn, Star } from '@mui/icons-material';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, 'Vui lòng nhập họ tên'),
@@ -28,85 +43,112 @@ export const CheckoutPage = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentProvider>('cash');
 
+  // Loyalty & Addresses
+  const { addresses } = useAddresses();
+  const { stats } = useLoyalty();
+  const [useSavedAddress, setUseSavedAddress] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
+  const [pointsToRedeem, setPointsToRedeem] = useState(0);
+
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       fullName: user?.user_metadata?.full_name || '',
-      phone: '', // Need to fetch from profile if available
+      phone: '',
       address: '',
     },
   });
+
+  // Watch address field to uncheck saved address if user types manually
+  const addressValue = watch('address');
+  useEffect(() => {
+    if (useSavedAddress && selectedAddressId) {
+      const selected = addresses.find((a) => a.id === selectedAddressId);
+      if (selected && addressValue !== selected.address) {
+        // User modified the address manually
+        // We can keep useSavedAddress true or false, but logically it's now a custom address
+        // setUseSavedAddress(false); // Optional: reset selection
+      }
+    }
+  }, [addressValue, useSavedAddress, selectedAddressId, addresses]);
+
+  // Handle Address Selection
+  const handleAddressSelect = (addressId: string) => {
+    const selected = addresses.find((a) => a.id === addressId);
+    if (selected) {
+      setSelectedAddressId(addressId);
+      setUseSavedAddress(true);
+      setValue('address', selected.address, { shouldValidate: true });
+      if (selected.phone) {
+        setValue('phone', selected.phone, { shouldValidate: true });
+      }
+    }
+  };
+
+  // Calculations
+  const subtotal = totalAmount();
+  const discountAmount = pointsToRedeem * 100; // 1 Point = 100 VND
+  const finalTotal = Math.max(0, subtotal - discountAmount);
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (items.length === 0) return;
     setLoading(true);
 
     try {
-      // 1. Create Order
-      // Note: Assuming 'customer_id' is the column name in DB for authenticated user
-      // If schema uses 'customer_id' linked to customers table, we might need to handle that.
-      // Based on initial schema, 'orders' has 'customer_id' UUID REFERENCES public.customers(id)
-      // BUT current schema shows 'orders' also has 'customer_name', 'customer_phone' snapshot fields.
-      // Let's check how 'user_id' was used in previous code vs schema.
-      // The schema says: customer_id UUID REFERENCES public.customers(id)
-      // The previous code had: user_id: user?.id || null
-      // This implies a mismatch or update needed.
-      // For now, let's assume we insert into 'orders' with available fields.
-      // If we need to link to 'customers' table, we might need to look up or create customer first.
-      // For simplicity in this phase, let's use the snapshot fields and auth link if possible.
+      // 1. Get Customer ID (if logged in)
+      let customerId = null;
+      if (user) {
+        const { data: customer } = await supabase
+          .from('customers')
+          .select('id')
+          .eq('auth_user_id', user.id)
+          .single();
+        if (customer) {
+          customerId = customer.id;
+        }
+      }
 
-      // Checking schema again:
-      // customer_id UUID REFERENCES public.customers(id)
-      // We might need to handle the customer creation/lookup separately or triggers handle it.
-      // Let's try to just insert snapshot data for now and assume triggers or backend handles linkage if needed,
-      // or just insert null for customer_id if guest.
-
+      // 2. Create Order
       const orderPayload = {
-        // user_id: user?.id, // Schema might not have user_id, it has customer_id.
-        // If we don't have a customer_id yet, we might skip it or the trigger handles it?
-        // Let's stick to snapshot fields for MVP + 'created_by' if staff?
-        // Actually, for authenticated user, we want to link them.
-        // Let's try to lookup customer first? Or just proceed with snapshot.
-        // Re-reading schema:
-        // customers table links to auth_user_id.
-        // We probably need to ensure a customer record exists.
-        // For Phase 3, let's focus on payment integration and assume Order creation works or fail fast.
-
+        customer_id: customerId,
         customer_name: data.fullName,
         customer_phone: data.phone,
         delivery_address: data.address,
         notes: data.note,
-        total: totalAmount(),
-        subtotal: totalAmount(), // Simplified
+        total: finalTotal,
+        subtotal: subtotal,
+        discount: discountAmount,
+        points_redeemed: pointsToRedeem,
         status: 'pending',
         payment_method: paymentMethod,
         payment_status: 'pending',
-        order_type: 'delivery', // Defaulting to delivery for now based on form
+        order_type: 'delivery',
       };
 
+      // We need to cast payload because types might not be fully updated globally in IDE context
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
-        .insert(orderPayload)
+        .insert(orderPayload as any)
         .select()
         .single();
 
       if (orderError) throw orderError;
       if (!orderData) throw new Error('Không thể tạo đơn hàng');
 
-      // 2. Create Order Items
+      // 3. Create Order Items
       const orderItems = items.map((item) => ({
         order_id: orderData.id,
-        // product_id: item.id, // Schema has 'menu_item_id'
-        menu_item_id: Number(item.id), // Assuming item.id is string/number compatible
+        menu_item_id: Number(item.id),
         quantity: item.quantity,
         unit_price: item.price,
         total_price: item.price * item.quantity,
         item_name: item.name,
-        // note: item.note, // Schema has 'notes'
         notes: item.note,
       }));
 
@@ -114,7 +156,7 @@ export const CheckoutPage = () => {
 
       if (itemsError) throw itemsError;
 
-      // 3. Process Payment
+      // 4. Process Payment
       if (paymentMethod === 'cash') {
         clearCart();
         navigate('/order-success', { state: { orderId: orderData.id } });
@@ -122,7 +164,7 @@ export const CheckoutPage = () => {
         // Online Payment
         const paymentResponse = await paymentApi.createPayment(
           orderData.id,
-          totalAmount(),
+          finalTotal, // Use discounted total
           paymentMethod
         );
 
@@ -130,17 +172,12 @@ export const CheckoutPage = () => {
           throw new Error('Không thể tạo liên kết thanh toán. Vui lòng thử lại.');
         }
 
-        // Redirect to gateway
-        // Clear cart now or wait?
-        // Better to clear cart now to prevent double order if they go back.
-        // But if payment fails/cancels, they might want cart back.
-        // For MVP: Clear cart.
         clearCart();
         window.location.href = paymentResponse.paymentUrl;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Checkout error:', err);
-      alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
+      alert(`Có lỗi xảy ra: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -164,6 +201,34 @@ export const CheckoutPage = () => {
           Thông tin giao hàng
         </Typography>
         <Paper sx={{ p: 3 }}>
+          {/* Saved Addresses Section */}
+          {user && addresses.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <LocationOn color="primary" fontSize="small" /> Chọn từ sổ địa chỉ
+              </Typography>
+              <RadioGroup
+                value={selectedAddressId}
+                onChange={(e) => handleAddressSelect(e.target.value)}
+              >
+                {addresses.map((addr) => (
+                  <FormControlLabel
+                    key={addr.id}
+                    value={addr.id}
+                    control={<Radio size="small" />}
+                    label={
+                      <Typography variant="body2">
+                        <strong>{addr.label}:</strong> {addr.address} {addr.phone ? `(${addr.phone})` : ''}
+                      </Typography>
+                    }
+                    sx={{ mb: 1 }}
+                  />
+                ))}
+              </RadioGroup>
+              <Divider sx={{ my: 2 }} />
+            </Box>
+          )}
+
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -223,10 +288,69 @@ export const CheckoutPage = () => {
             </Box>
           ))}
           <Box sx={{ my: 2, borderTop: '1px solid #eee' }} />
+
+          {/* Loyalty Points Redemption */}
+          {user && stats && stats.points > 0 && (
+            <Box sx={{ mb: 2, p: 2, bgcolor: '#fffde7', borderRadius: 1, border: '1px dashed #fbc02d' }}>
+              <Typography variant="subtitle2" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Star sx={{ color: '#fbc02d' }} fontSize="small" /> Dùng điểm tích lũy
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Bạn có <strong>{stats.points} điểm</strong>. (100đ = 1 điểm)
+              </Typography>
+
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                 <TextField
+                    size="small"
+                    type="number"
+                    label="Nhập số điểm"
+                    value={pointsToRedeem > 0 ? pointsToRedeem : ''}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      if (val >= 0 && val <= stats.points) {
+                        setPointsToRedeem(val);
+                      }
+                    }}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">điểm</InputAdornment>,
+                    }}
+                    sx={{ bgcolor: 'white' }}
+                 />
+                 <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setPointsToRedeem(stats.points)}
+                 >
+                    Dùng tất cả
+                 </Button>
+              </Box>
+              {pointsToRedeem > 0 && (
+                <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
+                   Đã áp dụng giảm giá: -{formatCurrency(pointsToRedeem * 100)}
+                </Typography>
+              )}
+            </Box>
+          )}
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+            <Typography variant="body1">Tạm tính</Typography>
+            <Typography variant="body1">
+              {formatCurrency(subtotal)}
+            </Typography>
+          </Box>
+          {discountAmount > 0 && (
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, color: 'success.main' }}>
+              <Typography variant="body1">Giảm giá (Điểm)</Typography>
+              <Typography variant="body1" fontWeight="bold">
+                -{formatCurrency(discountAmount)}
+              </Typography>
+            </Box>
+          )}
+          <Box sx={{ my: 1, borderTop: '1px solid #eee' }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
             <Typography variant="h6">Tổng cộng</Typography>
             <Typography variant="h6" color="primary" fontWeight="bold">
-              {formatCurrency(totalAmount())}
+              {formatCurrency(finalTotal)}
             </Typography>
           </Box>
           <AppButton

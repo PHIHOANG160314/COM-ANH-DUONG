@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/shared/api/supabase-client';
+import { supabase, hasSupabaseConfig } from '@/shared/api/supabase-client';
 import { AppLoading } from '@/shared/ui/app-loading';
 import type { Database } from '@/shared/types/database.types';
 
@@ -23,6 +23,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // If Supabase is not configured, skip auth check
+    if (!hasSupabaseConfig) {
+      console.warn('⚠️ Supabase not configured - skipping auth check');
+      setLoading(false);
+      return;
+    }
+
     // Timeout to prevent infinite loading if Supabase is misconfigured
     const timeout = setTimeout(() => {
       if (loading) {

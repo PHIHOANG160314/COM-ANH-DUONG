@@ -119,6 +119,7 @@ export interface Database {
           note: string | null;
           created_at: string;
           updated_at: string;
+          points_redeemed: number; // Added field
         };
         Insert: {
           id?: string;
@@ -139,6 +140,7 @@ export interface Database {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          points_redeemed?: number; // Added field
         };
         Update: {
           id?: string;
@@ -159,6 +161,7 @@ export interface Database {
           note?: string | null;
           created_at?: string;
           updated_at?: string;
+          points_redeemed?: number; // Added field
         };
       };
       order_items: {
@@ -187,6 +190,87 @@ export interface Database {
           quantity?: number;
           unit_price?: number;
           note?: string | null;
+          created_at?: string;
+        };
+      };
+      loyalty_transactions: {
+        Row: {
+          id: string;
+          customer_id: string;
+          order_id: string | null;
+          type: 'earn' | 'redeem' | 'adjustment' | 'expire' | 'bonus';
+          points: number;
+          description: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          order_id?: string | null;
+          type: 'earn' | 'redeem' | 'adjustment' | 'expire' | 'bonus';
+          points: number;
+          description?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          customer_id?: string;
+          order_id?: string | null;
+          type?: 'earn' | 'redeem' | 'adjustment' | 'expire' | 'bonus';
+          points?: number;
+          description?: string | null;
+          created_at?: string;
+        };
+      };
+      customer_addresses: {
+        Row: {
+          id: string;
+          customer_id: string;
+          label: string;
+          address: string;
+          phone: string | null;
+          is_default: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          label?: string;
+          address: string;
+          phone?: string | null;
+          is_default?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          customer_id?: string;
+          label?: string;
+          address?: string;
+          phone?: string | null;
+          is_default?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      saved_items: {
+        Row: {
+          id: string;
+          customer_id: string;
+          menu_item_id: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          menu_item_id: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          customer_id?: string;
+          menu_item_id?: number;
           created_at?: string;
         };
       };

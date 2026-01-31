@@ -7,11 +7,13 @@ import { CustomerHomePage } from '@/pages/customer/home-page';
 import { CheckoutPage } from '@/pages/customer/checkout-page';
 import { OrderSuccessPage } from '@/pages/customer/order-success-page';
 import { PaymentResultPage } from '@/pages/customer/payment-result-page';
+import { ProfilePage } from '@/features/profile/pages/profile-page';
 import { KitchenDisplayPage } from '@/pages/kitchen/kitchen-display-page';
 import { StaffMobilePosPage } from '@/pages/staff/staff-mobile-pos-page';
 import { ShipperDeliveryPage } from '@/pages/shipper/shipper-delivery-page';
 import { AdminLayout } from '@/shared/layouts';
 import { AdminDashboardPage } from '@/pages/admin/admin-dashboard-page';
+import { AdminAnalyticsPage } from '@/features/analytics/pages/admin-analytics-page';
 import { AdminProductsPage } from '@/pages/admin/admin-products-page';
 import { AdminMenuPage } from '@/pages/admin/admin-menu-page';
 import { AdminOrdersPage } from '@/pages/admin/admin-orders-page';
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
       {
         path: 'order-success',
         element: <OrderSuccessPage />,
+      },
+      {
+        path: 'profile',
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -63,6 +73,10 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <AdminDashboardPage />,
+          },
+          {
+            path: 'analytics',
+            element: <AdminAnalyticsPage />,
           },
           {
             path: 'products',

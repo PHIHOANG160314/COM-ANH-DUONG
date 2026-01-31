@@ -27,6 +27,7 @@ import {
   ReceiptLong as OrderIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  BarChart as AnalyticsIcon,
 } from '@mui/icons-material';
 import { useAuth } from '@/features/auth/api/use-auth';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
@@ -41,6 +42,7 @@ interface MenuItemConfig {
 
 const menuItems: MenuItemConfig[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin' },
+  { text: 'Báo cáo', icon: <AnalyticsIcon />, path: '/admin/analytics' },
   { text: 'Sản phẩm', icon: <ProductIcon />, path: '/admin/products' },
   { text: 'Thực đơn ngày', icon: <DailyMenuIcon />, path: '/admin/menu' },
   { text: 'Đơn hàng', icon: <OrderIcon />, path: '/admin/orders' },
