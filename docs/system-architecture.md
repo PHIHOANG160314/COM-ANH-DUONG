@@ -41,3 +41,8 @@ graph TD
 - **Authentication**: JWT via Supabase Auth.
 - **Authorization**: RLS policies enforce data access (e.g., Users can only see their own orders).
 - **Input Validation**: Zod schemas validate all forms and API inputs.
+
+## 🛡 Resilience Patterns
+- **Graceful Fallback**:
+  - **Menu/Categories**: Automatically switches to embedded demo data if Supabase connection fails (e.g., Auth 401, Network Error).
+  - **Config Checks**: Verifies Supabase configuration before attempting connection to prevent crashes in unconfigured environments.

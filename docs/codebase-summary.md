@@ -61,3 +61,7 @@ react-app/src/
 - **Server State**: `React Query` handles data fetching, caching, and synchronization.
 - **Client State**: `Zustand` manages global UI state (e.g., cart, theme, sidebar).
 - **Form State**: `React Hook Form` handles complex form validation and submission.
+
+## 🛡️ Resilience & Error Handling
+
+- **Graceful Degradation**: Critical public features (e.g., Menu) utilize a "Demo Mode" fallback. If the backend (Supabase) returns errors (like 401 Unauthorized) or is unconfigured, the application seamlessly serves local demo data to ensure the UI remains functional for visitors.

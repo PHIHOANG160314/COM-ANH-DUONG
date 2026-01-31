@@ -103,10 +103,11 @@ export const useDailyMenu = () => {
         return DEMO_PRODUCTS;
       }
 
-      const { data, error } = await supabase
-        .from('products')
-        .select(
-          `
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(
+            `
           *,
           categories (
             id,
@@ -114,12 +115,22 @@ export const useDailyMenu = () => {
             sort_order
           )
         `
-        )
-        .eq('is_active', true)
-        .order('name');
+          )
+          .eq('is_active', true)
+          .order('name');
 
-      if (error) throw error;
-      return data as (Product & { categories: Category | null })[];
+        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
+        if (error) {
+          console.warn('⚠️ Supabase error - falling back to demo menu:', error.message);
+          return DEMO_PRODUCTS;
+        }
+
+        return data as (Product & { categories: Category | null })[];
+      } catch (err) {
+        // Catch any network or auth errors and fallback to demo
+        console.warn('⚠️ Failed to fetch menu - falling back to demo:', err);
+        return DEMO_PRODUCTS;
+      }
     },
   });
 };
@@ -134,14 +145,25 @@ export const useCategories = () => {
         return DEMO_CATEGORIES;
       }
 
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
+      try {
+        const { data, error } = await supabase
+          .from('categories')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order');
 
-      if (error) throw error;
-      return data as Category[];
+        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
+        if (error) {
+          console.warn('⚠️ Supabase error - falling back to demo categories:', error.message);
+          return DEMO_CATEGORIES;
+        }
+
+        return data as Category[];
+      } catch (err) {
+        // Catch any network or auth errors and fallback to demo
+        console.warn('⚠️ Failed to fetch categories - falling back to demo:', err);
+        return DEMO_CATEGORIES;
+      }
     },
   });
 };
