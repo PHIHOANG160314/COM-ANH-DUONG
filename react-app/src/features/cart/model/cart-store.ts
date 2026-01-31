@@ -9,7 +9,7 @@ export interface CartItem extends Product {
   note?: string;
 }
 
-interface CartState {
+export interface CartState {
   items: CartItem[];
   addItem: (product: Product, quantity?: number, note?: string) => void;
   removeItem: (productId: string) => void;
