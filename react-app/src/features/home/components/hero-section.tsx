@@ -155,7 +155,6 @@ export const HeroSection = () => {
           </Box>
         </Box>
 
-        {/* Info Cards */}
         <Box
           component={motion.div}
           variants={containerVariants}
@@ -169,34 +168,34 @@ export const HeroSection = () => {
           }}
         >
           <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
               <Typography variant="h4">📍</Typography>
-              <Typography fontWeight="bold" color="text.primary">
+              <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
                 Địa chỉ
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: '#666' }}>
                 Phường Sa Đéc, Tỉnh Đồng Tháp
               </Typography>
             </Paper>
           </motion.div>
           <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
               <Typography variant="h4">⏰</Typography>
-              <Typography fontWeight="bold" color="text.primary">
+              <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
                 Giờ mở cửa
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: '#666' }}>
                 6:00 - 21:00 hàng ngày
               </Typography>
             </Paper>
           </motion.div>
           <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+            <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
               <Typography variant="h4">📞</Typography>
-              <Typography fontWeight="bold" color="text.primary">
+              <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
                 Hotline
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" sx={{ color: '#666' }}>
                 0123 456 789
               </Typography>
             </Paper>
