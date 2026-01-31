@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { MainLayout, AuthLayout } from '@/shared/layouts';
 import { LoginForm } from '@/features/auth/login-form';
 import { RegisterForm } from '@/features/auth/register-form';
@@ -7,19 +8,58 @@ import { CustomerHomePage } from '@/pages/customer/home-page';
 import { CheckoutPage } from '@/pages/customer/checkout-page';
 import { OrderSuccessPage } from '@/pages/customer/order-success-page';
 import { PaymentResultPage } from '@/pages/customer/payment-result-page';
-import { ProfilePage } from '@/features/profile/pages/profile-page';
-import { KitchenDisplayPage } from '@/pages/kitchen/kitchen-display-page';
-import { StaffMobilePosPage } from '@/pages/staff/staff-mobile-pos-page';
-import { ShipperDeliveryPage } from '@/pages/shipper/shipper-delivery-page';
-import { AdminLayout } from '@/shared/layouts';
-import { AdminDashboardPage } from '@/pages/admin/admin-dashboard-page';
-import { AdminAnalyticsPage } from '@/features/analytics/pages/admin-analytics-page';
-import { AdminProductsPage } from '@/pages/admin/admin-products-page';
-import { AdminMenuPage } from '@/pages/admin/admin-menu-page';
-import { AdminOrdersPage } from '@/pages/admin/admin-orders-page';
-import { AdminSettingsPage } from '@/pages/admin/admin-settings-page';
 import { MenuShowcase } from '@/features/menu/components/menu-showcase';
 import { NotFoundPage } from '@/pages/not-found-page';
+import { CircularProgress, Box } from '@mui/material';
+
+// Lazy load heavy pages for code splitting
+const ProfilePage = lazy(() =>
+  import('@/features/profile/pages/profile-page').then((m) => ({ default: m.ProfilePage }))
+);
+const KitchenDisplayPage = lazy(() =>
+  import('@/pages/kitchen/kitchen-display-page').then((m) => ({ default: m.KitchenDisplayPage }))
+);
+const StaffMobilePosPage = lazy(() =>
+  import('@/pages/staff/staff-mobile-pos-page').then((m) => ({ default: m.StaffMobilePosPage }))
+);
+const ShipperDeliveryPage = lazy(() =>
+  import('@/pages/shipper/shipper-delivery-page').then((m) => ({ default: m.ShipperDeliveryPage }))
+);
+const AdminLayout = lazy(() =>
+  import('@/shared/layouts').then((m) => ({ default: m.AdminLayout }))
+);
+const AdminDashboardPage = lazy(() =>
+  import('@/pages/admin/admin-dashboard-page').then((m) => ({ default: m.AdminDashboardPage }))
+);
+const AdminAnalyticsPage = lazy(() =>
+  import('@/features/analytics/pages/admin-analytics-page').then((m) => ({
+    default: m.AdminAnalyticsPage,
+  }))
+);
+const AdminProductsPage = lazy(() =>
+  import('@/pages/admin/admin-products-page').then((m) => ({ default: m.AdminProductsPage }))
+);
+const AdminMenuPage = lazy(() =>
+  import('@/pages/admin/admin-menu-page').then((m) => ({ default: m.AdminMenuPage }))
+);
+const AdminOrdersPage = lazy(() =>
+  import('@/pages/admin/admin-orders-page').then((m) => ({ default: m.AdminOrdersPage }))
+);
+const AdminSettingsPage = lazy(() =>
+  import('@/pages/admin/admin-settings-page').then((m) => ({ default: m.AdminSettingsPage }))
+);
+
+// Loading fallback component
+const LazyLoading = () => (
+  <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+    <CircularProgress />
+  </Box>
+);
+
+// Wrapper for lazy components
+const LazyPage = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<LazyLoading />}>{children}</Suspense>
+);
 
 export const router = createBrowserRouter([
   {
@@ -50,7 +90,9 @@ export const router = createBrowserRouter([
         path: 'profile',
         element: (
           <ProtectedRoute>
-            <ProfilePage />
+            <LazyPage>
+              <ProfilePage />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
@@ -75,31 +117,59 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'admin',
-        element: <AdminLayout />,
+        element: (
+          <LazyPage>
+            <AdminLayout />
+          </LazyPage>
+        ),
         children: [
           {
             index: true,
-            element: <AdminDashboardPage />,
+            element: (
+              <LazyPage>
+                <AdminDashboardPage />
+              </LazyPage>
+            ),
           },
           {
             path: 'analytics',
-            element: <AdminAnalyticsPage />,
+            element: (
+              <LazyPage>
+                <AdminAnalyticsPage />
+              </LazyPage>
+            ),
           },
           {
             path: 'products',
-            element: <AdminProductsPage />,
+            element: (
+              <LazyPage>
+                <AdminProductsPage />
+              </LazyPage>
+            ),
           },
           {
             path: 'menu',
-            element: <AdminMenuPage />,
+            element: (
+              <LazyPage>
+                <AdminMenuPage />
+              </LazyPage>
+            ),
           },
           {
             path: 'orders',
-            element: <AdminOrdersPage />,
+            element: (
+              <LazyPage>
+                <AdminOrdersPage />
+              </LazyPage>
+            ),
           },
           {
             path: 'settings',
-            element: <AdminSettingsPage />,
+            element: (
+              <LazyPage>
+                <AdminSettingsPage />
+              </LazyPage>
+            ),
           },
         ],
       },
@@ -112,7 +182,9 @@ export const router = createBrowserRouter([
         path: 'pos',
         element: (
           <MainLayout>
-            <StaffMobilePosPage />
+            <LazyPage>
+              <StaffMobilePosPage />
+            </LazyPage>
           </MainLayout>
         ),
       },
@@ -125,7 +197,9 @@ export const router = createBrowserRouter([
         path: 'kitchen',
         element: (
           <MainLayout>
-            <KitchenDisplayPage />
+            <LazyPage>
+              <KitchenDisplayPage />
+            </LazyPage>
           </MainLayout>
         ),
       },
@@ -138,7 +212,9 @@ export const router = createBrowserRouter([
         path: 'delivery',
         element: (
           <MainLayout>
-            <ShipperDeliveryPage />
+            <LazyPage>
+              <ShipperDeliveryPage />
+            </LazyPage>
           </MainLayout>
         ),
       },
