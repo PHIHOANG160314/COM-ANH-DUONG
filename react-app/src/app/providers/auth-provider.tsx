@@ -3,6 +3,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { supabase, hasSupabaseConfig } from '@/shared/api/supabase-client';
 import { AppLoading } from '@/shared/ui/app-loading';
 import type { Database } from '@/shared/types/database.types';
+import { Debug } from '@/shared/utils/debug';
 
 type UserRole = Database['public']['Tables']['profiles']['Row']['role'];
 
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // If Supabase is not configured, skip auth check
     if (!hasSupabaseConfig) {
-      console.warn('⚠️ Supabase not configured - skipping auth check');
+      Debug.warn('⚠️ Supabase not configured - skipping auth check');
       setLoading(false);
       return;
     }
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Timeout to prevent infinite loading if Supabase is misconfigured
     const timeout = setTimeout(() => {
       if (loading) {
-        console.warn('Auth check timed out - continuing without authentication');
+        Debug.warn('Auth check timed out - continuing without authentication');
         setLoading(false);
       }
     }, 5000);

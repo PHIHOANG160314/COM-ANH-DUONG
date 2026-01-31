@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase, hasSupabaseConfig } from '@/shared/api/supabase-client';
 import type { Database } from '@/shared/types/database.types';
+import { Debug } from '@/shared/utils/debug';
 
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
@@ -171,7 +172,7 @@ export const useDailyMenu = () => {
     queryFn: async () => {
       // Return demo data if Supabase is not configured
       if (!hasSupabaseConfig) {
-        console.warn('⚠️ Supabase not configured - showing demo menu');
+        Debug.warn('⚠️ Supabase not configured - showing demo menu');
         return DEMO_PRODUCTS;
       }
 
@@ -193,14 +194,14 @@ export const useDailyMenu = () => {
 
         // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
         if (error) {
-          console.warn('⚠️ Supabase error - falling back to demo menu:', error.message);
+          Debug.warn('⚠️ Supabase error - falling back to demo menu:', error.message);
           return DEMO_PRODUCTS;
         }
 
         return data as (Product & { categories: Category | null })[];
       } catch (err) {
         // Catch any network or auth errors and fallback to demo
-        console.warn('⚠️ Failed to fetch menu - falling back to demo:', err);
+        Debug.warn('⚠️ Failed to fetch menu - falling back to demo:', err);
         return DEMO_PRODUCTS;
       }
     },
@@ -213,7 +214,7 @@ export const useCategories = () => {
     queryFn: async () => {
       // Return demo data if Supabase is not configured
       if (!hasSupabaseConfig) {
-        console.warn('⚠️ Supabase not configured - showing demo categories');
+        Debug.warn('⚠️ Supabase not configured - showing demo categories');
         return DEMO_CATEGORIES;
       }
 
@@ -226,14 +227,14 @@ export const useCategories = () => {
 
         // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
         if (error) {
-          console.warn('⚠️ Supabase error - falling back to demo categories:', error.message);
+          Debug.warn('⚠️ Supabase error - falling back to demo categories:', error.message);
           return DEMO_CATEGORIES;
         }
 
         return data as Category[];
       } catch (err) {
         // Catch any network or auth errors and fallback to demo
-        console.warn('⚠️ Failed to fetch categories - falling back to demo:', err);
+        Debug.warn('⚠️ Failed to fetch categories - falling back to demo:', err);
         return DEMO_CATEGORIES;
       }
     },

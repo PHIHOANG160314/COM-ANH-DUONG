@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { hasSupabaseConfig } from '../api/supabase-client';
+import { Debug } from '../utils/debug';
 
 interface Props {
   children: ReactNode;
@@ -72,7 +73,7 @@ export class ErrorBoundary extends Component<Props, State> {
       */
 
       // Warn in console but allow rendering
-      console.warn('App running in Demo Mode (Supabase config missing)');
+      Debug.warn('App running in Demo Mode (Supabase config missing)');
     }
 
     // Regular error boundary

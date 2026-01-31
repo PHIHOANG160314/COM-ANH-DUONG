@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Debug } from '../utils/debug';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -13,8 +14,8 @@ export const hasSupabaseConfig =
   !isPlaceholder(supabaseAnonKey);
 
 if (!hasSupabaseConfig) {
-  console.warn('Missing Supabase environment variables - using demo mode');
-  console.warn('Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for real data');
+  Debug.warn('Missing Supabase environment variables - using demo mode');
+  Debug.warn('Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for real data');
 }
 
 // Create client with fallback to prevent crashes
