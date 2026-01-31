@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Snackbar, Alert } from '@mui/material';
 import { Download as InstallIcon } from '@mui/icons-material';
+import { Debug } from '@/shared/utils/debug';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -42,9 +43,9 @@ export const InstallPrompt = () => {
     const { outcome } = await deferredPrompt.userChoice;
 
     if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+      Debug.log('User accepted the install prompt');
     } else {
-      console.log('User dismissed the install prompt');
+      Debug.log('User dismissed the install prompt');
     }
 
     setDeferredPrompt(null);

@@ -1,5 +1,6 @@
 import { Snackbar, Button, Alert } from '@mui/material';
 import { useRegisterSW } from 'virtual:pwa-register/react';
+import { Debug } from '@/shared/utils/debug';
 
 export const ReloadPrompt = () => {
   const {
@@ -8,7 +9,7 @@ export const ReloadPrompt = () => {
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {
-      console.log('SW Registered:', r);
+      Debug.log('SW Registered:', r);
     },
     onRegisterError(error) {
       console.error('SW Registration error:', error);
