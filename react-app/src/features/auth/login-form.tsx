@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Alert, Link } from '@mui/material';
 import { supabase } from '@/shared/api/supabase-client';
 import { AppButton, AppInput } from '@/shared/ui';
+import { Debug } from '@/shared/utils/debug';
 
 const loginSchema = z.object({
   email: z.string().email('Email không hợp lệ'),
@@ -43,7 +44,7 @@ export const LoginForm = () => {
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
-      console.error('Login error:', err);
+      Debug.error('Login error:', err);
       setError(message);
     } finally {
       setLoading(false);

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Alert, Link } from '@mui/material';
 import { supabase } from '@/shared/api/supabase-client';
 import { AppButton, AppInput } from '@/shared/ui';
+import { Debug } from '@/shared/utils/debug';
 
 const registerSchema = z
   .object({
@@ -62,7 +63,7 @@ export const RegisterForm = () => {
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Đăng ký thất bại. Vui lòng thử lại.';
-      console.error('Register error:', err);
+      Debug.error('Register error:', err);
       setError(message);
     } finally {
       setLoading(false);

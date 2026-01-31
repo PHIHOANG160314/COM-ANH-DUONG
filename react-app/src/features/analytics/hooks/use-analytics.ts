@@ -6,6 +6,7 @@ import {
   type StatusData,
 } from '../api/analytics-api';
 import { startOfMonth, endOfMonth } from 'date-fns';
+import { Debug } from '@/shared/utils/debug';
 
 export const useAnalytics = () => {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
@@ -33,7 +34,7 @@ export const useAnalytics = () => {
       setStatusDist(stat || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-      console.error('Analytics Error:', err);
+      Debug.error('Analytics Error:', err);
       setError(errorMessage);
     } finally {
       setLoading(false);

@@ -15,6 +15,7 @@ import { formatCurrency, formatRelativeTime } from '@/shared/lib/formatters';
 import type { DeliveryOrder } from '../api/use-delivery-orders';
 import { useUpdateDeliveryStatus } from '../api/use-delivery-orders';
 import { useState } from 'react';
+import { Debug } from '@/shared/utils/debug';
 
 interface DeliveryCardProps {
   order: DeliveryOrder;
@@ -31,7 +32,7 @@ export const DeliveryCard = ({ order }: DeliveryCardProps) => {
     try {
       await updateStatus(order.id, status);
     } catch (error) {
-      console.error('Failed to update status', error);
+      Debug.error('Failed to update status', error);
       alert('Có lỗi xảy ra khi cập nhật trạng thái.');
     } finally {
       setLoading(false);

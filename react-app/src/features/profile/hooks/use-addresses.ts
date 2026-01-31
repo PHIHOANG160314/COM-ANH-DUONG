@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/app/providers/auth-provider';
 import { addressApi, type CustomerAddress, type InsertAddress } from '../api/address-api';
+import { Debug } from '@/shared/utils/debug';
 
 export const useAddresses = () => {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export const useAddresses = () => {
       setAddresses(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error fetching addresses:', err);
+      Debug.error('Error fetching addresses:', err);
       setError(errorMessage);
     } finally {
       setLoading(false);

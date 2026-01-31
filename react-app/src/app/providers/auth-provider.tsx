@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       })
       .catch((error) => {
-        console.error('Error getting session:', error);
+        Debug.error('Error getting session:', error);
         setLoading(false);
       });
 
@@ -86,13 +86,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .single();
 
       if (error) {
-        console.error('Error fetching user role:', error);
+        Debug.error('Error fetching user role:', error);
         // Fallback or handle error (e.g., set default role if applicable)
       } else {
         setRole(data?.role as UserRole);
       }
     } catch (err) {
-      console.error('Unexpected error fetching role:', err);
+      Debug.error('Unexpected error fetching role:', err);
     } finally {
       setLoading(false);
     }

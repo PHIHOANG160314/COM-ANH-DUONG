@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
+import { Debug } from '@/shared/utils/debug';
 
 export const AdminSettingsPage = () => {
   const [notifications, setNotifications] = useState(true);
@@ -17,8 +18,7 @@ export const AdminSettingsPage = () => {
   const [autoBackup, setAutoBackup] = useState(true);
 
   const handleSave = () => {
-    // TODO: Implement save settings logic
-    console.log('Settings saved:', {
+    Debug.log('Settings saved:', {
       notifications,
       emailAlerts,
       autoBackup,

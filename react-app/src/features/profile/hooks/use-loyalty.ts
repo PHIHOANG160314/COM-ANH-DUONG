@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/app/providers/auth-provider';
 import { loyaltyApi, type LoyaltyStats, type LoyaltyTransaction } from '../api/loyalty-api';
+import { Debug } from '@/shared/utils/debug';
 
 export const useLoyalty = () => {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ export const useLoyalty = () => {
       setHistory(historyData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Error fetching loyalty data:', err);
+      Debug.error('Error fetching loyalty data:', err);
       setError(errorMessage);
     } finally {
       setLoading(false);

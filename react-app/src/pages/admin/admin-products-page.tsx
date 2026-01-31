@@ -5,6 +5,7 @@ import { useAdminProducts } from '@/features/admin/products/use-admin-products';
 import { ProductTable } from '@/features/admin/products/product-table';
 import { ProductForm } from '@/features/admin/products/product-form';
 import type { Product } from '@/features/admin/products/use-admin-products';
+import { Debug } from '@/shared/utils/debug';
 
 export const AdminProductsPage = () => {
   const { products, categories, isLoading, createProduct, updateProduct, deleteProduct } =
@@ -27,14 +28,21 @@ export const AdminProductsPage = () => {
       try {
         await deleteProduct.mutateAsync(id);
       } catch (error) {
-        console.error('Failed to delete product', error);
+        Debug.error('Failed to delete product', error);
         alert('Không thể xóa món ăn này (có thể đã có đơn hàng liên quan).');
       }
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: {
+    name: string;
+    price: number;
+    is_active: boolean;
+    is_sold_out: boolean;
+    description?: string;
+    category_id?: string;
+    image_url?: string;
+  }) => {
     try {
       if (editingProduct) {
         await updateProduct.mutateAsync({ id: editingProduct.id, ...data });
@@ -43,7 +51,7 @@ export const AdminProductsPage = () => {
       }
       setIsFormOpen(false);
     } catch (error) {
-      console.error('Failed to save product', error);
+      Debug.error('Failed to save product', error);
       alert('Có lỗi xảy ra khi lưu món ăn.');
     }
   };

@@ -6,6 +6,7 @@ import { PosCart } from '@/features/pos/components/pos-cart';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { supabase } from '@/shared/api/supabase-client';
 import { useAuth } from '@/app/providers/auth-provider';
+import { Debug } from '@/shared/utils/debug';
 
 export const StaffMobilePosPage = () => {
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
@@ -63,7 +64,7 @@ export const StaffMobilePosPage = () => {
       clearCart();
       setSelectedTable(null); // Go back to table selection
     } catch (err) {
-      console.error('POS Order error:', err);
+      Debug.error('POS Order error:', err);
       alert('Lỗi khi lên đơn. Vui lòng thử lại.');
     } finally {
       setLoading(false);

@@ -12,7 +12,7 @@ export const ReloadPrompt = () => {
       Debug.log('SW Registered:', r);
     },
     onRegisterError(error) {
-      console.error('SW Registration error:', error);
+      Debug.error('SW Registration error:', error);
     },
   });
 

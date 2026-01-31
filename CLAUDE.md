@@ -1,39 +1,36 @@
-# Cơm Ánh Dương - Project Rules
+# CLAUDE.md - Cơm Ánh Dương Project
 
-## Tự động thực hiện (Auto-run)
+**Project**: Restaurant POS + Customer App
+**Stack**: React 19, Vite, Material UI, Supabase
+**Status**: Pre-launch - Production Ready
 
-Khi thực hiện task, hãy:
-1. **Tự mở terminal** và chạy lệnh cần thiết
-2. **Tự kiểm soát real-time** - không cần hỏi xác nhận cho các lệnh an toàn
-3. **Tự verify kết quả** sau khi thực hiện
-4. **ƯU TIÊN TUYỆT ĐỐI:** Agent nên giao việc lập trình chi tiết cho CLI khi có thể (Delegate Mode).
+## Critical Rules
 
-## Proxy Configuration
+1. **ALWAYS follow Binh Pháp strategy** in `.claude/rules/binh-phap.md`
+2. **YAGNI / KISS / DRY** - No over-engineering
+3. **File size < 200 lines** - Modularize large files
+4. **Kebab-case** for all file names
 
-- **Proxy URL:** http://localhost:8080
-- **Strategy:** Round-Robin (phân bổ quota đều)
-- **Model mặc định:** gemini-3-pro-high[1m]
+## Key Workflows
 
-## Workflows có sẵn
+- `/ck:review:codebase` - Deep audit
+- `/ck:fix:hard` - Fix complex issues
+- `/ck:cook:auto` - Auto implement features
+- `/ck:git:cp` - Commit and push
 
-- `/run` - Khởi động proxy và Claude Code CLI tự động
-- `/design` - Tạo UI/UX designs (Use `/pencil` for High-Fidelity/Strategic work)
-- `/pencil` - Strategic Design Generator (Binh Phap integrated)
-- `/supabase` - Setup Supabase database
-- `/watzup` - Weekly status report
-- `/binh-phap` - Strategy planning
+## Tech Debt Targets
 
-## Quy tắc code
+```bash
+# Run before commit - all must return 0
+grep -rn "console\." react-app/src --include="*.ts" --include="*.tsx" | grep -v debug.ts | wc -l
+grep -rn "TODO\|FIXME" react-app/src --include="*.ts" --include="*.tsx" | wc -l
+```
 
-- Sử dụng **Material Design 3** cho UI
-- CSS files nằm trong `/css/`
-- JavaScript files nằm trong `/js/`
-- SQL scripts nằm trong `/sql/`
+## SOPs Location
 
-## Safe commands (auto-run)
+- `react-app/docs/stakeholder-sops.md`
 
-Các lệnh sau có thể tự động chạy không cần xác nhận:
-- `npm install`, `npm run dev`
-- `git status`, `git add`, `git commit`, `git push`
-- HTTP requests đến localhost
-- File read operations
+## COD Focus
+
+Default payment: Cash on Delivery (COD)
+Badge: "Phổ biến" highlighted on checkout

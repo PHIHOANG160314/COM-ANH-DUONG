@@ -18,6 +18,7 @@ import {
 } from '../api/use-kitchen-orders';
 import { formatRelativeTime } from '@/shared/lib/formatters';
 import { useState } from 'react';
+import { Debug } from '@/shared/utils/debug';
 
 interface OrderTicketProps {
   order: KitchenOrder;
@@ -55,7 +56,7 @@ export const OrderTicket = ({ order }: OrderTicketProps) => {
     try {
       await updateStatus(order.id, newStatus);
     } catch (error) {
-      console.error('Failed to update status', error);
+      Debug.error('Failed to update status', error);
     } finally {
       setLoading(false);
     }
