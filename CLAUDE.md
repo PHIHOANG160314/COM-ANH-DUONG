@@ -1,3 +1,7 @@
+<!-- CLEO:START -->
+@.cleo/templates/AGENT-INJECTION.md
+<!-- CLEO:END -->
+
 # CLAUDE.md - Cơm Ánh Dương Project
 
 **Project**: Restaurant POS + Customer App

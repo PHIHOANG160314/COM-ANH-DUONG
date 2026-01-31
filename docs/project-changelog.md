@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-01
+
+### Added (SEA SOPs Transformation)
+- **Trust Badges**: Integrated VSATTP, Fresh Food, and Fast Delivery badges on Home and Checkout for increased trust.
+- **COD Prominence**: Enhanced Cash on Delivery option with "Phổ biến" badge and distinct styling to reduce checkout friction.
+- **Support FAB**: Added Zalo Chat Floating Action Button for instant customer support.
+- **Operating Status**: Implemented "Traffic Light" indicator (Open/Closed) in header based on 10:00-22:00 schedule.
+
 ## [1.1.0] - 2026-01-31
 
 ### Added

@@ -92,3 +92,9 @@ Based on HCT color space.
 - **Focus**: Visible focus rings (2px Primary).
 - **Semantic HTML**: Proper use of `<main>`, `<nav>`, `<header>`, `<article>`.
 - **ARIA**: Labels for icon-only buttons.
+
+## 10. Trust & Conversion (SEA SOPs)
+- **Trust Badges**: Display VSATTP, Fresh Food, Fast Delivery prominently on home/checkout.
+- **COD Prominence**: Highlight Cash on Delivery with "Phổ biến" (Popular) badge and distinct border/background to reduce friction.
+- **Support Visibility**: Floating Zalo Chat button always visible for instant support.
+- **Operating Status**: Traffic light indicator (Green/Red) for Open/Closed status (10:00-22:00) in header.

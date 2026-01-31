@@ -39,10 +39,11 @@ export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodS
               sx={{
                 mb: 1,
                 p: 1,
-                border: '2px solid #4caf50',
+                border: value === 'cash' ? '2px solid #2e7d32' : '1px solid #eee',
                 borderRadius: 1,
                 mx: 0,
-                bgcolor: '#f1f8f4'
+                bgcolor: value === 'cash' ? '#f1f8f4' : 'transparent',
+                transition: 'all 0.2s ease',
               }}
             />
             <FormControlLabel

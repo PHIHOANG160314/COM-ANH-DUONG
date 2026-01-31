@@ -32,6 +32,7 @@ import { ReloadPrompt } from '@/features/pwa/reload-prompt';
 import { InstallPrompt } from '@/features/pwa/install-prompt';
 import { useAuth } from '@/features/auth/api/use-auth';
 import { useCartStore } from '@/features/cart/model/cart-store';
+import { OperatingHours } from '@/shared/ui/operating-hours';
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -123,6 +124,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           >
             Cơm Ánh Dương
           </Typography>
+
+          {!isMobile && (
+            <Box sx={{ mr: 2 }}>
+              <OperatingHours />
+            </Box>
+          )}
 
           {!isMobile && (
             <>

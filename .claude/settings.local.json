@@ -18,7 +18,8 @@
       "Bash(for file in js/*.js:*)",
       "Bash(do node --check:*)",
       "Bash(done)",
-      "Bash(claude:*)"
+      "Bash(claude:*)",
+      "WebSearch"
     ]
   }
 }

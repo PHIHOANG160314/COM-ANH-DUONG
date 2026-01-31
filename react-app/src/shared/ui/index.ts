@@ -5,3 +5,6 @@ export * from './app-loading';
 export * from './protected-route';
 export * from './error-boundary';
 export * from './zalo-widget';
+export * from './operating-hours';
+export * from './zalo-chat-fab';
+export * from './trust-badges';

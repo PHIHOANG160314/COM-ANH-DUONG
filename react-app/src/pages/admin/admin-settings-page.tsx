@@ -63,10 +63,7 @@ export const AdminSettingsPage = () => {
 
               <FormControlLabel
                 control={
-                  <Switch
-                    checked={autoBackup}
-                    onChange={(e) => setAutoBackup(e.target.checked)}
-                  />
+                  <Switch checked={autoBackup} onChange={(e) => setAutoBackup(e.target.checked)} />
                 }
                 label="Tự động sao lưu dữ liệu"
               />
@@ -83,23 +80,11 @@ export const AdminSettingsPage = () => {
             <Divider sx={{ mb: 2 }} />
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                label="Tên nhà hàng"
-                defaultValue="Cơm Ánh Dương"
-                fullWidth
-              />
+              <TextField label="Tên nhà hàng" defaultValue="Cơm Ánh Dương" fullWidth />
 
-              <TextField
-                label="Địa chỉ"
-                defaultValue="123 Đường ABC, Quận XYZ"
-                fullWidth
-              />
+              <TextField label="Địa chỉ" defaultValue="123 Đường ABC, Quận XYZ" fullWidth />
 
-              <TextField
-                label="Số điện thoại"
-                defaultValue="0123456789"
-                fullWidth
-              />
+              <TextField label="Số điện thoại" defaultValue="0123456789" fullWidth />
 
               <TextField
                 label="Email"

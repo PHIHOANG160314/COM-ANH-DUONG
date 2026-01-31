@@ -132,10 +132,7 @@ export const HeroSection = () => {
                   Xem Thực Đơn
                 </Button>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   variant="outlined"
                   size="large"

@@ -36,8 +36,11 @@ This document outlines the standard operating procedures for all stakeholder rol
 1. Navigate to homepage (`/`)
 2. View featured menu items and daily specials
 3. Click "Thực đơn" (Menu) icon in header
-4. Browse categories and products
-5. View product details (name, price, image, description)
+4. **Check Status**: Verify restaurant is "Open" (Green light) in header (10:00-22:00)
+5. **Trust Check**: View Trust Badges (VSATTP, Fresh) on homepage for reassurance
+6. Browse categories and products
+7. **Support**: Use floating Zalo Chat button if help is needed
+8. View product details (name, price, image, description)
 
 ### Place Order
 1. Select product from menu

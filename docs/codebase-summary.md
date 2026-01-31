@@ -46,6 +46,7 @@ react-app/src/
 | **Pages** | Route entry points | `HomePage`, `AdminDashboard`, `MenuShowcase` |
 | **Widgets** | Large UI components | `OrderList`, `MenuGrid`, `Navbar` |
 | **Features** | User interactions | `AddToCart`, `Login`, `MenuShowcase` |
+| **SEA Components** | Conversion & Trust | `ZaloChatFab` (support), `TrustBadges` (social proof), `OperatingHours` (status) |
 | **Entities** | Business logic/data | `User`, `Product`, `Order` (stores, types) |
 | **Shared** | Reusable primitives | `ui/`, `api/`, `utils/`, `hooks/` |
 

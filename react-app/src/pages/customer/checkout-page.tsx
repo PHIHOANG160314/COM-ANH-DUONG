@@ -13,10 +13,9 @@ import {
   Button,
   TextField,
   InputAdornment,
-  Chip,
   Alert,
 } from '@mui/material';
-import { LocalShipping, VerifiedUser, AccessTime, Payments } from '@mui/icons-material';
+import { AccessTime } from '@mui/icons-material';
 import { AppInput, AppButton } from '@/shared/ui';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { formatCurrency } from '@/shared/lib/formatters';
@@ -30,6 +29,8 @@ import { useAddresses } from '@/features/profile/hooks/use-addresses';
 import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
 import { LocationOn, Star } from '@mui/icons-material';
 import { Debug } from '@/shared/utils/debug';
+import { getStoreStatus, OperatingHours } from '@/shared/ui/operating-hours';
+import { TrustBadges } from '@/shared/ui/trust-badges';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, 'Vui lòng nhập họ tên'),
@@ -46,6 +47,10 @@ export const CheckoutPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentProvider>('cash');
+
+  // Operating Hours Check
+  const storeStatus = getStoreStatus();
+  const isStoreClosed = storeStatus.status === 'closed';
 
   // Loyalty & Addresses
   const { addresses } = useAddresses();
@@ -284,34 +289,24 @@ export const CheckoutPage = () => {
             />
 
             {/* SEA F&B SOPs - Trust Elements */}
-            <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-              <Chip
-                icon={<Payments />}
-                label="Thanh toán khi nhận hàng"
-                color="success"
-                sx={{ fontWeight: 'bold' }}
-              />
-              <Chip
-                icon={<LocalShipping />}
-                label="Giao 30-45 phút"
-                color="primary"
-                variant="outlined"
-              />
-              <Chip
-                icon={<VerifiedUser />}
-                label="Đảm bảo chất lượng"
-                color="info"
-                variant="outlined"
-              />
+            <Box sx={{ mb: 2 }}>
+              <TrustBadges variant="minimal" />
             </Box>
 
-            <Alert 
-              severity="info" 
-              icon={<AccessTime />}
-              sx={{ mb: 2 }}
-            >
-              ⏰ Giờ mở cửa: <strong>06:00 - 21:00</strong> | TP. Sa Đéc, Đồng Tháp
-            </Alert>
+            {isStoreClosed ? (
+              <Alert severity="error" icon={<AccessTime />} sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Quán đang đóng cửa
+                </Typography>
+                <Typography variant="body2">
+                  Giờ mở cửa: 10:00 - 22:00. Vui lòng quay lại sau!
+                </Typography>
+              </Alert>
+            ) : (
+              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <OperatingHours showDetails />
+              </Box>
+            )}
 
             <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
           </Box>
@@ -425,8 +420,27 @@ export const CheckoutPage = () => {
             size="large"
             loading={loading}
             onClick={handleSubmit(onSubmit)}
+            disabled={isStoreClosed}
+            sx={{
+              bgcolor: isStoreClosed
+                ? 'action.disabledBackground'
+                : paymentMethod === 'cash'
+                  ? 'success.main'
+                  : 'primary.main',
+              '&:hover': {
+                bgcolor: isStoreClosed
+                  ? 'action.disabledBackground'
+                  : paymentMethod === 'cash'
+                    ? 'success.dark'
+                    : 'primary.dark',
+              },
+            }}
           >
-            {paymentMethod === 'cash' ? 'Đặt hàng' : 'Thanh toán & Đặt hàng'}
+            {isStoreClosed
+              ? 'Quán đã đóng cửa'
+              : paymentMethod === 'cash'
+                ? 'Đặt đơn - Trả tiền mặt'
+                : 'Thanh toán & Đặt hàng'}
           </AppButton>
         </Paper>
       </Grid>

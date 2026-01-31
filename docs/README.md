@@ -34,6 +34,7 @@ npm run dev
 | **Kitchen Display (KDS)** | Real-time order tracking, status updates, prep management |
 | **Staff POS** | Mobile-first POS for staff, table management, quick order entry |
 | **Shipper Delivery** | Delivery routing, order pickup/drop-off status, maps integration |
+| **SEA SOPs Features** | COD priority ("Phổ biến"), Zalo Chat FAB, Trust Badges, Operating Hours Status |
 | **Admin Dashboard** | Sales reporting, menu management, staff accounts, system settings |
 
 ## 🏗 Development Setup

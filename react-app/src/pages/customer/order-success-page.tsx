@@ -1,7 +1,9 @@
 import { Box, Typography, Button, Paper, Divider } from '@mui/material';
-import { CheckCircleOutline, WhatsApp, Phone } from '@mui/icons-material';
+import { CheckCircleOutline, Phone } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { formatCurrency } from '@/shared/lib/formatters';
+import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
+import { TrustBadges } from '@/shared/ui/trust-badges';
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
@@ -20,8 +22,11 @@ export const OrderSuccessPage = () => {
         minHeight: '60vh',
         textAlign: 'center',
         p: 3,
+        position: 'relative', // For absolute positioning context if needed
       }}
     >
+      <ZaloChatFab />
+
       <CheckCircleOutline color="success" sx={{ fontSize: 80, mb: 2 }} />
       <Typography variant="h4" gutterBottom fontWeight="bold">
         Đặt hàng thành công!
@@ -46,7 +51,9 @@ export const OrderSuccessPage = () => {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
           <Typography color="text.secondary">Thời gian dự kiến:</Typography>
-          <Typography fontWeight="medium" color="primary">30-45 phút</Typography>
+          <Typography fontWeight="medium" color="primary">
+            30-45 phút
+          </Typography>
         </Box>
 
         {paymentMethod === 'cash' && totalAmount && (
@@ -73,20 +80,15 @@ export const OrderSuccessPage = () => {
         >
           Gọi quán
         </Button>
-        <Button
-          variant="outlined"
-          startIcon={<WhatsApp />}
-          href="https://wa.me/84123456789"
-          target="_blank"
-          sx={{ textTransform: 'none' }}
-        >
-          Chat Zalo/WhatsApp
-        </Button>
       </Box>
 
       <Button variant="contained" onClick={() => navigate('/')}>
         Tiếp tục đặt món
       </Button>
+
+      <Box sx={{ mt: 6, maxWidth: 600, width: '100%' }}>
+        <TrustBadges variant="checkout" />
+      </Box>
     </Box>
   );
 };

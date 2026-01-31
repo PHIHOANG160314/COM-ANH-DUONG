@@ -28,10 +28,19 @@ The React 19 application rebuild has been successfully completed, delivering a f
 | **12** | **Customer Loyalty & Profile** | ✅ Completed | Jan 31, 2026 |
 | **13** | **Advanced Reporting & Analytics** | ✅ Completed | Jan 31, 2026 |
 | **14** | **Operations Optimization** | ✅ Completed | Jan 31, 2026 |
+| **15** | **SEA SOPs Transformation** | ✅ Completed | Feb 01, 2026 |
 
 ## 3. Future Roadmap (Enhancements)
 
-### Phase 11: Payment & Integration (Completed)
+### Phase 15: SEA SOPs Transformation (Completed)
+Optimization for Southeast Asian market behaviors.
+- **Tasks:**
+  - [x] COD Payment Prominence
+  - [x] Trust Badges Integration
+  - [x] Zalo Chat Support FAB
+  - [x] Operating Hours Status Indicator
+
+### Phase 16: Native Mobile Apps (Q3 2026)
 Integration of digital payment gateways and financial tools.
 - **Tasks:**
   - [x] VNPay Integration
@@ -65,7 +74,7 @@ Improving operational efficiency.
   - [x] Automated Daily Reports (Edge Function + Cron)
   - [ ] Multi-branch Support (Deferred)
 
-### Phase 15: Native Mobile Apps (Q3 2026)
+### Phase 16: Native Mobile Apps (Q3 2026)
 Expanding reach with dedicated mobile applications.
 - **Tasks:**
   - [ ] React Native Setup
@@ -76,11 +85,8 @@ Expanding reach with dedicated mobile applications.
 
 | Phase | Duration | Target Delivery | Dependency |
 |-------|----------|-----------------|------------|
-| **11. Payments** | 2 Weeks | Feb 15, 2026 | Phase 06 |
-| **12. Loyalty** | 2 Weeks | Feb 28, 2026 | Phase 04 |
-| **13. Analytics** | 3 Weeks | Mar 20, 2026 | Phase 03 |
-| **14. Ops** | 4 Weeks | Apr 20, 2026 | Phase 03 |
-| **15. Mobile** | 8 Weeks | Jun 20, 2026 | Phase 03 |
+| **15. SEA SOPs** | 1 Week | Feb 01, 2026 | Phase 14 |
+| **16. Mobile** | 8 Weeks | Jun 20, 2026 | Phase 03 |
 
 ## 5. Success Metrics (KPIs)
 

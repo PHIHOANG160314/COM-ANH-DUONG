@@ -20,7 +20,11 @@ export const NotFoundPage = () => {
       >
         <SentimentDissatisfiedIcon sx={{ fontSize: 120, color: 'text.secondary' }} />
 
-        <Typography variant="h1" component="h1" sx={{ fontSize: { xs: '4rem', md: '6rem' }, fontWeight: 'bold' }}>
+        <Typography
+          variant="h1"
+          component="h1"
+          sx={{ fontSize: { xs: '4rem', md: '6rem' }, fontWeight: 'bold' }}
+        >
           404
         </Typography>
 
