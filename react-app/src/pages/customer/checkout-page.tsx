@@ -13,7 +13,10 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Chip,
+  Alert,
 } from '@mui/material';
+import { LocalShipping, VerifiedUser, AccessTime, Payments } from '@mui/icons-material';
 import { AppInput, AppButton } from '@/shared/ui';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { formatCurrency } from '@/shared/lib/formatters';
@@ -279,6 +282,36 @@ export const CheckoutPage = () => {
               rows={2}
               {...register('note')}
             />
+
+            {/* SEA F&B SOPs - Trust Elements */}
+            <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              <Chip
+                icon={<Payments />}
+                label="Thanh toán khi nhận hàng"
+                color="success"
+                sx={{ fontWeight: 'bold' }}
+              />
+              <Chip
+                icon={<LocalShipping />}
+                label="Giao 30-45 phút"
+                color="primary"
+                variant="outlined"
+              />
+              <Chip
+                icon={<VerifiedUser />}
+                label="Đảm bảo chất lượng"
+                color="info"
+                variant="outlined"
+              />
+            </Box>
+
+            <Alert 
+              severity="info" 
+              icon={<AccessTime />}
+              sx={{ mb: 2 }}
+            >
+              ⏰ Giờ mở cửa: <strong>06:00 - 21:00</strong> | TP. Sa Đéc, Đồng Tháp
+            </Alert>
 
             <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
           </Box>

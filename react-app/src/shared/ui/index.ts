@@ -4,3 +4,4 @@ export * from './app-input';
 export * from './app-loading';
 export * from './protected-route';
 export * from './error-boundary';
+export * from './zalo-widget';
