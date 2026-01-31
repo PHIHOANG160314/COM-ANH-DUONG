@@ -56,14 +56,53 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-mui': ['@mui/material', '@mui/icons-material'],
-          'vendor-motion': ['framer-motion'],
-          'vendor-supabase': ['@supabase/supabase-js'],
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@mui/material') || id.includes('@mui/system')) {
+              return 'vendor-mui-core';
+            }
+            if (id.includes('@mui/icons-material')) {
+              return 'vendor-mui-icons';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-motion';
+            }
+            if (id.includes('@supabase')) {
+              return 'vendor-supabase';
+            }
+            if (id.includes('zustand')) {
+              return 'vendor-state';
+            }
+            // Other vendors
+            return 'vendor-misc';
+          }
+
+          // Feature chunks
+          if (id.includes('/features/admin/')) {
+            return 'features-admin';
+          }
+          if (id.includes('/features/analytics/')) {
+            return 'features-analytics';
+          }
+          if (id.includes('/pages/admin/')) {
+            return 'pages-admin';
+          }
+          if (id.includes('/pages/kitchen/') || id.includes('/features/kds/')) {
+            return 'features-kitchen';
+          }
+          if (id.includes('/pages/staff/') || id.includes('/features/pos/')) {
+            return 'features-pos';
+          }
+          if (id.includes('/pages/shipper/') || id.includes('/features/delivery/')) {
+            return 'features-delivery';
+          }
         },
       },
     },
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 500,
   },
 });
