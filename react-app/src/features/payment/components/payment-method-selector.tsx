@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   Paper,
+  Chip,
 } from '@mui/material';
 import type { PaymentProvider } from '../api/payment-api';
 
@@ -30,11 +31,19 @@ export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodS
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="body1" fontWeight="medium">
-                    Tiền mặt khi nhận hàng (COD)
+                    💵 Tiền mặt khi nhận hàng (COD)
                   </Typography>
+                  <Chip label="Phổ biến" size="small" color="success" />
                 </Box>
               }
-              sx={{ mb: 1, p: 1, border: '1px solid #eee', borderRadius: 1, mx: 0 }}
+              sx={{
+                mb: 1,
+                p: 1,
+                border: '2px solid #4caf50',
+                borderRadius: 1,
+                mx: 0,
+                bgcolor: '#f1f8f4'
+              }}
             />
             <FormControlLabel
               value="vnpay"

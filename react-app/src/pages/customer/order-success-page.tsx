@@ -1,11 +1,14 @@
-import { Box, Typography, Button } from '@mui/material';
-import { CheckCircleOutline } from '@mui/icons-material';
+import { Box, Typography, Button, Paper, Divider } from '@mui/material';
+import { CheckCircleOutline, WhatsApp, Phone } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { formatCurrency } from '@/shared/lib/formatters';
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const orderId = location.state?.orderId;
+  const totalAmount = location.state?.totalAmount;
+  const paymentMethod = location.state?.paymentMethod;
 
   return (
     <Box
@@ -23,10 +26,64 @@ export const OrderSuccessPage = () => {
       <Typography variant="h4" gutterBottom fontWeight="bold">
         Đặt hàng thành công!
       </Typography>
-      <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 400 }}>
+      <Typography color="text.secondary" sx={{ mb: 2, maxWidth: 400 }}>
         Cảm ơn bạn đã đặt món tại Cơm Ánh Dương. Đơn hàng của bạn{' '}
         {orderId ? `(#${orderId.slice(0, 8)})` : ''} đang được xử lý.
       </Typography>
+
+      <Paper sx={{ p: 3, mb: 3, maxWidth: 400, width: '100%' }}>
+        <Typography variant="h6" gutterBottom fontWeight="bold">
+          Thông tin đơn hàng
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+
+        {orderId && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+            <Typography color="text.secondary">Mã đơn hàng:</Typography>
+            <Typography fontWeight="medium">#{orderId.slice(0, 8)}</Typography>
+          </Box>
+        )}
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+          <Typography color="text.secondary">Thời gian dự kiến:</Typography>
+          <Typography fontWeight="medium" color="primary">30-45 phút</Typography>
+        </Box>
+
+        {paymentMethod === 'cash' && totalAmount && (
+          <Box sx={{ mt: 2, p: 2, bgcolor: '#fff3e0', borderRadius: 1 }}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              💵 Chuẩn bị tiền mặt
+            </Typography>
+            <Typography variant="h5" fontWeight="bold" color="primary">
+              {formatCurrency(totalAmount)}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Vui lòng chuẩn bị số tiền để thanh toán khi nhận hàng
+            </Typography>
+          </Box>
+        )}
+      </Paper>
+
+      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+        <Button
+          variant="outlined"
+          startIcon={<Phone />}
+          href="tel:+84123456789"
+          sx={{ textTransform: 'none' }}
+        >
+          Gọi quán
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<WhatsApp />}
+          href="https://wa.me/84123456789"
+          target="_blank"
+          sx={{ textTransform: 'none' }}
+        >
+          Chat Zalo/WhatsApp
+        </Button>
+      </Box>
+
       <Button variant="contained" onClick={() => navigate('/')}>
         Tiếp tục đặt món
       </Button>

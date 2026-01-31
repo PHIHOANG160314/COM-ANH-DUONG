@@ -8,6 +8,30 @@ This document outlines the standard operating procedures for all stakeholder rol
 
 ## 1. Customer Flow
 
+### Customer Journey (COD Focus)
+
+**COD (Cash on Delivery) - Recommended Path:**
+
+1. **Browse menu** → Add items to cart
+2. **View cart** → Proceed to checkout (`/checkout`)
+3. **Fill delivery info** (auto-fill if logged in)
+   - Full name
+   - Phone number
+   - Delivery address
+   - Optional notes
+4. **Select COD** (default, highlighted with "Phổ biến" badge)
+   - Payment method is pre-selected as Cash on Delivery
+   - Clear visual prominence with green border and 💵 emoji
+5. **Click "Đặt hàng"**
+6. **Receive order confirmation** at `/order-success`
+   - View order number (e.g., #abc12345)
+   - See estimated delivery time (30-45 phút)
+   - Check COD amount to prepare
+   - Access contact buttons (Call/WhatsApp/Zalo)
+7. **Prepare cash** for delivery
+   - Amount clearly displayed on success page
+8. **Receive order** + **Pay on delivery**
+
 ### Browse Menu
 1. Navigate to homepage (`/`)
 2. View featured menu items and daily specials

@@ -26,6 +26,7 @@ import { paymentApi, type PaymentProvider } from '@/features/payment/api/payment
 import { useAddresses } from '@/features/profile/hooks/use-addresses';
 import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
 import { LocationOn, Star } from '@mui/icons-material';
+import { Debug } from '@/shared/utils/debug';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, 'Vui lòng nhập họ tên'),
@@ -160,7 +161,13 @@ export const CheckoutPage = () => {
       // 4. Process Payment
       if (paymentMethod === 'cash') {
         clearCart();
-        navigate('/order-success', { state: { orderId: orderData.id } });
+        navigate('/order-success', {
+          state: {
+            orderId: orderData.id,
+            totalAmount: finalTotal,
+            paymentMethod: 'cash',
+          },
+        });
       } else {
         // Online Payment
         const paymentResponse = await paymentApi.createPayment(
@@ -178,7 +185,7 @@ export const CheckoutPage = () => {
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      console.error('Checkout error:', err);
+      Debug.error('Checkout error:', err);
       alert(`Có lỗi xảy ra: ${errorMessage}`);
     } finally {
       setLoading(false);
