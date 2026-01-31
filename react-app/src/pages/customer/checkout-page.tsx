@@ -134,6 +134,7 @@ export const CheckoutPage = () => {
       // We need to cast payload because types might not be fully updated globally in IDE context
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .insert(orderPayload as any)
         .select()
         .single();
@@ -175,9 +176,10 @@ export const CheckoutPage = () => {
         clearCart();
         window.location.href = paymentResponse.paymentUrl;
       }
-    } catch (err: any) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Checkout error:', err);
-      alert(`Có lỗi xảy ra: ${err.message}`);
+      alert(`Có lỗi xảy ra: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -204,7 +206,12 @@ export const CheckoutPage = () => {
           {/* Saved Addresses Section */}
           {user && addresses.length > 0 && (
             <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                gutterBottom
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <LocationOn color="primary" fontSize="small" /> Chọn từ sổ địa chỉ
               </Typography>
               <RadioGroup
@@ -218,7 +225,8 @@ export const CheckoutPage = () => {
                     control={<Radio size="small" />}
                     label={
                       <Typography variant="body2">
-                        <strong>{addr.label}:</strong> {addr.address} {addr.phone ? `(${addr.phone})` : ''}
+                        <strong>{addr.label}:</strong> {addr.address}{' '}
+                        {addr.phone ? `(${addr.phone})` : ''}
                       </Typography>
                     }
                     sx={{ mb: 1 }}
@@ -291,8 +299,21 @@ export const CheckoutPage = () => {
 
           {/* Loyalty Points Redemption */}
           {user && stats && stats.points > 0 && (
-            <Box sx={{ mb: 2, p: 2, bgcolor: '#fffde7', borderRadius: 1, border: '1px dashed #fbc02d' }}>
-              <Typography variant="subtitle2" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              sx={{
+                mb: 2,
+                p: 2,
+                bgcolor: '#fffde7',
+                borderRadius: 1,
+                border: '1px dashed #fbc02d',
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                gutterBottom
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <Star sx={{ color: '#fbc02d' }} fontSize="small" /> Dùng điểm tích lũy
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
@@ -300,33 +321,33 @@ export const CheckoutPage = () => {
               </Typography>
 
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                 <TextField
-                    size="small"
-                    type="number"
-                    label="Nhập số điểm"
-                    value={pointsToRedeem > 0 ? pointsToRedeem : ''}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      if (val >= 0 && val <= stats.points) {
-                        setPointsToRedeem(val);
-                      }
-                    }}
-                    InputProps={{
-                      endAdornment: <InputAdornment position="end">điểm</InputAdornment>,
-                    }}
-                    sx={{ bgcolor: 'white' }}
-                 />
-                 <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => setPointsToRedeem(stats.points)}
-                 >
-                    Dùng tất cả
-                 </Button>
+                <TextField
+                  size="small"
+                  type="number"
+                  label="Nhập số điểm"
+                  value={pointsToRedeem > 0 ? pointsToRedeem : ''}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    if (val >= 0 && val <= stats.points) {
+                      setPointsToRedeem(val);
+                    }
+                  }}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">điểm</InputAdornment>,
+                  }}
+                  sx={{ bgcolor: 'white' }}
+                />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setPointsToRedeem(stats.points)}
+                >
+                  Dùng tất cả
+                </Button>
               </Box>
               {pointsToRedeem > 0 && (
                 <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
-                   Đã áp dụng giảm giá: -{formatCurrency(pointsToRedeem * 100)}
+                  Đã áp dụng giảm giá: -{formatCurrency(pointsToRedeem * 100)}
                 </Typography>
               )}
             </Box>
@@ -334,12 +355,17 @@ export const CheckoutPage = () => {
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="body1">Tạm tính</Typography>
-            <Typography variant="body1">
-              {formatCurrency(subtotal)}
-            </Typography>
+            <Typography variant="body1">{formatCurrency(subtotal)}</Typography>
           </Box>
           {discountAmount > 0 && (
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, color: 'success.main' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mb: 1,
+                color: 'success.main',
+              }}
+            >
               <Typography variant="body1">Giảm giá (Điểm)</Typography>
               <Typography variant="body1" fontWeight="bold">
                 -{formatCurrency(discountAmount)}

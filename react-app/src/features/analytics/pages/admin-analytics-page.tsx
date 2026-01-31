@@ -31,27 +31,25 @@ import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, subMonths } from 'dat
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
 export const AdminAnalyticsPage = () => {
-  const {
-    setDateRange,
-    revenueData,
-    topProducts,
-    statusDist,
-    loading,
-  } = useAnalytics();
+  const { setDateRange, revenueData, topProducts, statusDist, loading } = useAnalytics();
 
   const handleRangeChange = (value: string) => {
     const now = new Date();
     switch (value) {
       case 'this_week':
-        setDateRange({ from: startOfWeek(now, { weekStartsOn: 1 }), to: endOfWeek(now, { weekStartsOn: 1 }) });
+        setDateRange({
+          from: startOfWeek(now, { weekStartsOn: 1 }),
+          to: endOfWeek(now, { weekStartsOn: 1 }),
+        });
         break;
       case 'this_month':
         setDateRange({ from: startOfMonth(now), to: endOfMonth(now) });
         break;
-      case 'last_month':
+      case 'last_month': {
         const lastMonth = subMonths(now, 1);
         setDateRange({ from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) });
         break;
+      }
       default:
         break;
     }
@@ -137,7 +135,12 @@ export const AdminAnalyticsPage = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="period" />
                 <YAxis />
-                <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                <Tooltip
+                  formatter={(value: number | undefined) => [
+                    formatCurrency(value ?? 0),
+                    'Doanh thu',
+                  ]}
+                />
                 <Legend />
                 <Bar dataKey="total_revenue" name="Doanh thu" fill="#1976d2" />
               </BarChart>
@@ -181,11 +184,20 @@ export const AdminAnalyticsPage = () => {
               Top sản phẩm bán chạy
             </Typography>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={topProducts} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={topProducts}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
                 <YAxis dataKey="item_name" type="category" width={150} />
-                <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                <Tooltip
+                  formatter={(value: number | undefined) => [
+                    formatCurrency(value ?? 0),
+                    'Doanh thu',
+                  ]}
+                />
                 <Legend />
                 <Bar dataKey="revenue" name="Doanh thu" fill="#82ca9d" />
               </BarChart>

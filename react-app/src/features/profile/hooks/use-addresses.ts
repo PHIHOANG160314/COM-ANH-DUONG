@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/app/providers/auth-provider';
 import { addressApi, type CustomerAddress, type InsertAddress } from '../api/address-api';
 
@@ -8,27 +8,28 @@ export const useAddresses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     if (!user) {
-        setAddresses([]);
-        setLoading(false);
-        return;
+      setAddresses([]);
+      setLoading(false);
+      return;
     }
     try {
       setLoading(true);
       const data = await addressApi.getAddresses(user.id);
       setAddresses(data);
-    } catch (err: any) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Error fetching addresses:', err);
-      setError(err.message);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchAddresses();
-  }, [user]);
+  }, [fetchAddresses]);
 
   const addAddress = async (address: Omit<InsertAddress, 'customer_id'>) => {
     if (!user) return null;
@@ -37,8 +38,9 @@ export const useAddresses = () => {
       const newAddress = await addressApi.addAddress(user.id, address);
       await fetchAddresses(); // Refresh list
       return newAddress;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
       return null;
     } finally {
       setLoading(false);
@@ -51,8 +53,9 @@ export const useAddresses = () => {
       const updated = await addressApi.updateAddress(id, updates);
       await fetchAddresses();
       return updated;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
       return null;
     } finally {
       setLoading(false);
@@ -65,8 +68,9 @@ export const useAddresses = () => {
       await addressApi.deleteAddress(id);
       await fetchAddresses();
       return true;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);

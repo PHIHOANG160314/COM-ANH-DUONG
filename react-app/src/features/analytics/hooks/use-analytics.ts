@@ -1,5 +1,10 @@
-import { useState, useEffect } from 'react';
-import { analyticsApi, type RevenueData, type ProductData, type StatusData } from '../api/analytics-api';
+import { useState, useEffect, useCallback } from 'react';
+import {
+  analyticsApi,
+  type RevenueData,
+  type ProductData,
+  type StatusData,
+} from '../api/analytics-api';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 export const useAnalytics = () => {
@@ -14,7 +19,7 @@ export const useAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -26,17 +31,18 @@ export const useAnalytics = () => {
       setRevenueData(rev || []);
       setTopProducts(prod || []);
       setStatusDist(stat || []);
-    } catch (err: any) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       console.error('Analytics Error:', err);
-      setError(err.message);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange]);
 
   useEffect(() => {
     fetchData();
-  }, [dateRange]);
+  }, [fetchData]);
 
   return {
     dateRange,

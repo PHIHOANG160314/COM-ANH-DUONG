@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/app/providers/auth-provider';
 import { loyaltyApi, type LoyaltyStats, type LoyaltyTransaction } from '../api/loyalty-api';
 
@@ -9,7 +9,7 @@ export const useLoyalty = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchLoyaltyData = async () => {
+  const fetchLoyaltyData = useCallback(async () => {
     if (!user) return;
     try {
       setLoading(true);
@@ -19,17 +19,18 @@ export const useLoyalty = () => {
       ]);
       setStats(statsData);
       setHistory(historyData);
-    } catch (err: any) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Error fetching loyalty data:', err);
-      setError(err.message);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchLoyaltyData();
-  }, [user]);
+  }, [fetchLoyaltyData]);
 
   const redeemPoints = async (points: number) => {
     try {
@@ -38,8 +39,9 @@ export const useLoyalty = () => {
       // Refresh data
       await fetchLoyaltyData();
       return true;
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);
