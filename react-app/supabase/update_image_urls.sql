@@ -1,29 +1,19 @@
--- =====================================================
--- UPDATE IMAGE URLs - After uploading to Supabase Storage
--- =====================================================
+-- Update menu item image URLs to use newly generated AI images
+-- These images are located in /images/menu/ directory
 
--- Get your project ref from: npx supabase status
--- Replace YOUR_PROJECT_REF below
+-- Update based on Vietnamese dish names (matching existing menu items)
+UPDATE menu_items SET image_url = '/images/menu/bac_xiu.png' WHERE name ILIKE '%Bạc Xỉu%';
+UPDATE menu_items SET image_url = '/images/menu/ca_phe_sua_da.png' WHERE name ILIKE '%Cà Phê Sữa%';
+UPDATE menu_items SET image_url = '/images/menu/sua_chua_danh_da.png' WHERE name ILIKE '%Sữa Chua%';
+UPDATE menu_items SET image_url = '/images/menu/pho_bo_tai.png' WHERE name ILIKE '%Phở%';
+UPDATE menu_items SET image_url = '/images/menu/bun_bo_hue.png' WHERE name ILIKE '%Bún Bò%';
+UPDATE menu_items SET image_url = '/images/menu/com_suon_nuong.png' WHERE name ILIKE '%Cơm Sườn%';
+UPDATE menu_items SET image_url = '/images/menu/com_ga_xoi_mo.png' WHERE name ILIKE '%Cơm Gà%';
+UPDATE menu_items SET image_url = '/images/menu/banh_mi_dac_biet.png' WHERE name ILIKE '%Bánh Mì%';
 
-UPDATE public.products SET image_url = 
-  CASE name
-    WHEN 'Cơm Sườn Nướng' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/com_suon_nuong.webp'
-    WHEN 'Cơm Gà Xối Mỡ' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/com_ga_xoi_mo.webp'
-    WHEN 'Cơm Tấm Bì Chả' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/com_tam_bi_cha.webp'
-    WHEN 'Phở Bò Tái' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/pho_bo_tai.webp'
-    WHEN 'Phở Gà Ta' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/pho_ga_ta.webp'
-    WHEN 'Bún Bò Huế' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/bun_bo_hue.webp'
-    WHEN 'Bún Chả Hà Nội' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/bun_cha_ha_noi.webp'
-    WHEN 'Bánh Mì Đặc Biệt' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/banh_mi_dac_biet.webp'
-    WHEN 'Bánh Mì Ốp La' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/banh_mi_op_la.webp'
-    WHEN 'Bánh Mì Chảo' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/banh_mi_chao.webp'
-    WHEN 'Cà Phê Sữa Đá' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/ca_phe_sua_da.webp'
-    WHEN 'Trà Đào Cam Sả' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/tra_dao_cam_sa.webp'
-    WHEN 'Sinh Tố Bơ' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/sinh_to_bo.webp'
-    WHEN 'Chè Khúc Bạch' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/che_khuc_bach.webp'
-    WHEN 'Flan Caramel' THEN 'https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/menu-images/flan_caramel.webp'
-    ELSE image_url
-  END;
+-- Add more generic coffee images for items without specific images
+UPDATE menu_items SET image_url = '/images/menu/ca_phe_sua_da.png' 
+WHERE name ILIKE '%Cà Phê%' AND image_url IS NULL;
 
--- Verify update
-SELECT name, image_url FROM public.products;
+-- Verify updates
+SELECT id, name, image_url FROM menu_items WHERE image_url IS NOT NULL ORDER BY id;
