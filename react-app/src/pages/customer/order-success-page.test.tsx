@@ -6,11 +6,11 @@ import '@testing-library/jest-dom';
 
 // Mock child components to simplify testing
 vi.mock('@/shared/ui/zalo-chat-fab', () => ({
-  ZaloChatFab: () => <div data-testid="zalo-chat-fab">Zalo Chat</div>
+  ZaloChatFab: () => <div data-testid="zalo-chat-fab">Zalo Chat</div>,
 }));
 
 vi.mock('@/shared/ui/trust-badges', () => ({
-  TrustBadges: () => <div data-testid="trust-badges">Trust Badges</div>
+  TrustBadges: () => <div data-testid="trust-badges">Trust Badges</div>,
 }));
 
 const renderWithRouter = (state = {}) => {

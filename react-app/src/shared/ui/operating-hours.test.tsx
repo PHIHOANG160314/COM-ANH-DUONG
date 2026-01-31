@@ -59,7 +59,7 @@ describe('OperatingHours Component', () => {
   });
 
   it('renders correctly', () => {
-     // Set time to open
+    // Set time to open
     const date = new Date(2024, 0, 1, 14, 0, 0);
     vi.setSystemTime(date);
 
@@ -68,7 +68,7 @@ describe('OperatingHours Component', () => {
   });
 
   it('renders details when showDetails is true', () => {
-     // Set time to open
+    // Set time to open
     const date = new Date(2024, 0, 1, 14, 0, 0);
     vi.setSystemTime(date);
 

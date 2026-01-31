@@ -33,6 +33,8 @@ import { InstallPrompt } from '@/features/pwa/install-prompt';
 import { useAuth } from '@/features/auth/api/use-auth';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { OperatingHours } from '@/shared/ui/operating-hours';
+import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
+import { FooterCompliance } from '@/shared/ui/footer-compliance';
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -109,6 +111,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             <IconButton
               color="inherit"
               edge="start"
+              size="large" // A11y: 48px target
               onClick={() => setDrawerOpen(true)}
               sx={{ mr: 2 }}
             >
@@ -119,7 +122,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, fontWeight: 'bold', cursor: 'pointer' }}
+            sx={{ flexGrow: 1, fontWeight: 'bold', cursor: 'pointer', py: 1 }} // Add padding for touch target
             onClick={() => navigate('/')}
           >
             Cơm Ánh Dương
@@ -133,24 +136,42 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
           {!isMobile && (
             <>
-              <Button color="inherit" onClick={() => navigate('/menu')}>
+              <Button
+                color="inherit"
+                size="large" // A11y
+                onClick={() => navigate('/menu')}
+                sx={{ minHeight: 44 }} // A11y: 44px min height
+              >
                 Thực đơn
               </Button>
             </>
           )}
 
-          <IconButton color="inherit" onClick={() => navigate('/checkout')}>
+          <IconButton
+            color="inherit"
+            size="large" // A11y: 48px target
+            onClick={() => navigate('/checkout')}
+          >
             <Badge badgeContent={totalItems} color="error">
               <CartIcon />
             </Badge>
           </IconButton>
 
           {user ? (
-            <IconButton color="inherit" onClick={() => navigate('/profile')}>
+            <IconButton
+              color="inherit"
+              size="large" // A11y: 48px target
+              onClick={() => navigate('/profile')}
+            >
               <PersonIcon />
             </IconButton>
           ) : (
-            <Button color="inherit" onClick={() => navigate('/login')}>
+            <Button
+              color="inherit"
+              size="large" // A11y
+              onClick={() => navigate('/login')}
+              sx={{ minHeight: 44 }} // A11y: 44px min height
+            >
               Đăng nhập
             </Button>
           )}
@@ -192,21 +213,36 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5, // Touch target > 44px
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/menu')}
                 >
                   Thực đơn
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/checkout')}
                 >
                   Giỏ hàng
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/profile')}
                 >
                   Tài khoản
@@ -219,31 +255,51 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Quản lý
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/admin')}
                 >
                   Quản trị
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/kitchen')}
                 >
                   Bếp
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/pos')}
                 >
                   POS
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' },
+                    py: 1.5,
+                    display: 'block',
+                  }}
                   onClick={() => navigate('/delivery')}
                 >
                   Giao hàng
@@ -257,20 +313,29 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 Liên hệ
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Typography variant="body2">📞 0123 456 789</Typography>
-                <Typography variant="body2">📍 Hà Nội, Việt Nam</Typography>
-                <Typography variant="body2">🕐 8:00 - 22:00 hàng ngày</Typography>
+                <Typography variant="body2" sx={{ py: 0.5 }}>
+                  📞 0123 456 789
+                </Typography>
+                <Typography variant="body2" sx={{ py: 0.5 }}>
+                  📍 Hà Nội, Việt Nam
+                </Typography>
+                <Typography variant="body2" sx={{ py: 0.5 }}>
+                  🕐 8:00 - 22:00 hàng ngày
+                </Typography>
               </Box>
             </Box>
           </Box>
 
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)', mb: 2 }} />
+          <FooterCompliance />
+
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)', mb: 2, mt: 3 }} />
 
           <Typography variant="body2" sx={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
             © {new Date().getFullYear()} Cơm Ánh Dương. All rights reserved.
           </Typography>
         </Container>
       </Box>
+      <ZaloChatFab phoneNumber="0909000900" />
     </Box>
   );
 };

@@ -27,6 +27,11 @@ export const AppCard = ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 8,
+        },
         ...sx,
       }}
       {...props}
