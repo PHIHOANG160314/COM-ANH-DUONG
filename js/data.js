@@ -151,7 +151,17 @@ const menuItems = [
     { id: 117, name: "Bụng cá basa chiên", price: 30000, category: "food", subcategory: "homemade", icon: "🐟", cost: 10000 },
     { id: 118, name: "Canh chua cá tra", price: 30000, category: "food", subcategory: "homemade", icon: "🥣", cost: 10000 },
     { id: 119, name: "Canh khổ qua dồn thịt", price: 30000, category: "food", subcategory: "homemade", icon: "🥣", cost: 10000 },
-    { id: 120, name: "Đậu hũ chiên sả (chay)", price: 20000, category: "food", subcategory: "homemade", icon: "🍛", cost: 6000 }
+    { id: 120, name: "Đậu hũ chiên sả (chay)", price: 20000, category: "food", subcategory: "homemade", icon: "🍛", cost: 6000 },
+
+    // 🎁 COMBO - Tích hợp vào menu chính (121-128)
+    { id: 121, name: "Combo Sáng Vui Vẻ", price: 65000, originalPrice: 75000, category: "combo", subcategory: "combo-lunch", icon: "🌅", isCombo: true, comboItems: [51, 2], description: "Phở Bò Tái + Cà Phê Sữa Đá", savings: 10000 },
+    { id: 122, name: "Combo Trưa Năng Lượng", price: 70000, originalPrice: 80000, category: "combo", subcategory: "combo-lunch", icon: "☀️", isCombo: true, comboItems: [66, 22], description: "Cơm Sườn Nướng + Trà Đào Cam Sả", savings: 10000 },
+    { id: 123, name: "Combo Đôi Bạn", price: 75000, originalPrice: 90000, category: "combo", subcategory: "combo-drink", icon: "👫", isCombo: true, comboItems: [16, 16, 81], description: "2 Trà Sữa + Khoai Tây Chiên", savings: 15000 },
+    { id: 124, name: "Combo Gia Đình", price: 199000, originalPrice: 230000, category: "combo", subcategory: "combo-family", icon: "👨‍👩‍👧‍👦", isCombo: true, comboItems: [51, 52, 53, 2, 22, 36], description: "3 Phở + 3 Nước", savings: 31000 },
+    { id: 125, name: "Combo Cà Phê Sáng", price: 42000, originalPrice: 50000, category: "combo", subcategory: "combo-lunch", icon: "☕", isCombo: true, comboItems: [73, 2], description: "Bánh Mì Thịt + Cà Phê Sữa Đá", savings: 8000 },
+    { id: 126, name: "Combo Sinh Tố Khỏe", price: 70000, originalPrice: 80000, category: "combo", subcategory: "combo-drink", icon: "🥑", isCombo: true, comboItems: [36, 36], description: "2 Sinh Tố Bơ", savings: 10000 },
+    { id: 127, name: "Combo Bún Bò Party", price: 250000, originalPrice: 300000, category: "combo", subcategory: "combo-family", icon: "🎉", isCombo: true, comboItems: [55, 55, 55, 55, 9, 9, 9, 9], description: "4 Bún Bò Huế + 4 Nước Chanh", savings: 50000 },
+    { id: 128, name: "Combo Tráng Miệng", price: 35000, originalPrice: 40000, category: "combo", subcategory: "combo-drink", icon: "🍮", isCombo: true, comboItems: [90, 95], description: "Chè Thái + Bánh Flan", savings: 5000 }
 ];
 
 // Inventory Data
@@ -518,7 +528,7 @@ if (!loadedConfig) {
     localStorage.setItem('cad_cms_config', JSON.stringify(defaultAboutUsConfig));
 }
 
-window.saveAboutUsConfig = function(newConfig) {
+window.saveAboutUsConfig = function (newConfig) {
     window.AboutUsConfig = newConfig;
     localStorage.setItem('cad_cms_config', JSON.stringify(newConfig));
     // Dispatch event for realtime updates if needed

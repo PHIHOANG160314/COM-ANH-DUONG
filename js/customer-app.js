@@ -710,12 +710,8 @@ const CustomerApp = {
         const subcatContainer = document.getElementById('menuSubcategories');
         if (subcatContainer) subcatContainer.innerHTML = '';
 
-        // Render menu based on group
-        if (group === 'combo') {
-            this.renderCombos();
-        } else {
-            this.renderMenu(group === 'all' ? 'all' : this.mapGroupToCategory(group));
-        }
+        // Render menu based on group (unified for all including combo)
+        this.renderMenu(group === 'all' ? 'all' : this.mapGroupToCategory(group));
 
         // Haptic feedback
         if (typeof MobilePagination !== 'undefined') {
@@ -728,7 +724,8 @@ const CustomerApp = {
         const mapping = {
             'beverages': 'drinks',
             'food': 'food',
-            'dessert': 'dessert'
+            'dessert': 'dessert',
+            'combo': 'combo'
         };
         return mapping[group] || group;
     },
@@ -740,8 +737,8 @@ const CustomerApp = {
         const container = document.getElementById('menuCategories');
         if (!container) return;
 
-        // Hide if 'all' or 'combo' group
-        if (group === 'all' || group === 'combo') {
+        // Hide if 'all' group only - combo now shows its Level 2 categories
+        if (group === 'all') {
             container.innerHTML = '';
             return;
         }
@@ -1122,13 +1119,39 @@ const CustomerApp = {
     },
 
     renderMenuCard(item) {
+        // Combo items get special styling with savings badge
+        const isCombo = item.isCombo === true;
+        const comboClass = isCombo ? 'combo-item' : '';
+
+        // Build price HTML - different for combo vs regular items
+        let priceHTML = '';
+        if (isCombo && item.originalPrice) {
+            priceHTML = `
+                <div class="menu-card-price-combo">
+                    <span class="original-price">${this.formatPrice(item.originalPrice)}</span>
+                    <span class="combo-price" style="color: var(--primary-2026); font-weight: 700; font-size: 1.1rem;">${this.formatPrice(item.price)}</span>
+                </div>
+                <div class="combo-savings-tag" style="color: #22c55e; font-size: 0.75rem; font-weight: 600;">
+                    🎁 Tiết kiệm ${this.formatPrice(item.savings || (item.originalPrice - item.price))}
+                </div>
+            `;
+        } else {
+            priceHTML = `<div class="menu-card-price" style="color: var(--primary-2026); font-weight: 700;">${this.formatPrice(item.price)}</div>`;
+        }
+
+        // Build description for combo
+        const descHTML = isCombo && item.description ?
+            `<div class="combo-description" style="font-size: 0.75rem; opacity: 0.7; margin-top: 2px;">${item.description}</div>` : '';
+
         return `
-            <div class="menu-card glass-card animate-fadeInUp hover-lift" data-id="${item.id}"
-                 onclick="CustomerApp.showItemDetail(${item.id})" style="border: 1px solid rgba(255,255,255,0.1);">
+            <div class="menu-card glass-card animate-fadeInUp hover-lift ${comboClass}" data-id="${item.id}"
+                 onclick="CustomerApp.showItemDetail(${item.id})" style="border: 1px solid rgba(255,255,255,0.1); position: relative;">
+                ${isCombo ? `<div class="savings-badge">-${this.formatPrice(item.savings || (item.originalPrice - item.price))}</div>` : ''}
                 <div class="menu-card-image micro-scale">${item.icon || '🍽️'}</div>
                 <div class="menu-card-body">
                     <div class="menu-card-name" style="font-weight: 600;">${item.name}</div>
-                    <div class="menu-card-price" style="color: var(--primary-2026); font-weight: 700;">${this.formatPrice(item.price)}</div>
+                    ${descHTML}
+                    ${priceHTML}
                     <md-filled-tonal-button class="menu-card-add"
                             onclick="event.stopPropagation(); CustomerApp.addToCart(${item.id})">
                         ➕ Thêm
