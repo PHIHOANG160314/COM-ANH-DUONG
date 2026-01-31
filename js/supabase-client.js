@@ -1377,16 +1377,16 @@ const DailyMenuService = {
                 const config = JSON.parse(local);
                 const today = getVietnamDate();
                 const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
-                console.log(`🔍 DailyMenuService: Pre-check cache date: stored=${lastUpdated}, today=${today}`);
+                if (window.Debug) Debug.log(`🔍 DailyMenuService: Pre-check cache date: stored=${lastUpdated}, today=${today}`);
 
                 if (lastUpdated !== today) {
-                    console.log('🧹 DailyMenuService: Clearing stale daily menu cache before connection');
+                    if (window.Debug) Debug.log('🧹 DailyMenuService: Clearing stale daily menu cache before connection');
                     localStorage.removeItem('daily_menu_config');
                 } else {
-                    console.log('✅ DailyMenuService: Local cache is up to date');
+                    if (window.Debug) Debug.log('✅ DailyMenuService: Local cache is up to date');
                 }
             } else {
-                console.log('ℹ️ DailyMenuService: No local cache found');
+                if (window.Debug) Debug.log('ℹ️ DailyMenuService: No local cache found');
             }
         } catch (e) {
             console.error('⚠️ DailyMenuService: Error checking local cache:', e);
@@ -1400,7 +1400,7 @@ const DailyMenuService = {
                     const cached = JSON.parse(localCache);
                     const cachedDate = cached.lastUpdated?.split('T')[0];
                     if (cachedDate !== today) {
-                        console.log('Clearing stale cache from', cachedDate);
+                        if (window.Debug) Debug.log('Clearing stale cache from', cachedDate);
                         localStorage.removeItem('daily_menu_config');
                     }
                 } catch (e) { }
@@ -1415,10 +1415,10 @@ const DailyMenuService = {
                         // Check if cache is from today (VN Time)
                         const today = getVietnamDate();
                         const lastUpdated = config.lastUpdated ? config.lastUpdated.split('T')[0] : '';
-                        console.log(`📅 Date check: stored=${lastUpdated}, today=${today}`);
+                        if (window.Debug) Debug.log(`📅 Date check: stored=${lastUpdated}, today=${today}`);
 
                         if (lastUpdated !== today) {
-                            console.log('📅 Clearing old daily menu cache from localStorage');
+                            if (window.Debug) Debug.log('📅 Clearing old daily menu cache from localStorage');
                             localStorage.removeItem('daily_menu_config');
                             return createSuccessResponse({ active_items: [] });
                         }
@@ -1452,10 +1452,12 @@ const DailyMenuService = {
             const today = getVietnamDate();
 
             // CRITICAL DEBUG: Log everything
-            console.log('%c📅 DailyMenuService.saveConfig START', 'background: #4CAF50; color: white; font-size: 14px;');
-            console.log('📅 Today (VN):', today);
-            console.log('📅 Active Items:', JSON.stringify(activeItems));
-            console.log('📅 Supabase client:', supabase ? 'Available' : 'NOT AVAILABLE');
+            if (window.Debug) {
+                Debug.log('%c📅 DailyMenuService.saveConfig START', 'background: #4CAF50; color: white; font-size: 14px;');
+                Debug.log('📅 Today (VN):', today);
+                Debug.log('📅 Active Items:', JSON.stringify(activeItems));
+                Debug.log('📅 Supabase client:', supabase ? 'Available' : 'NOT AVAILABLE');
+            }
 
             // Always save to localStorage as fallback
             const localConfig = {
@@ -1464,7 +1466,7 @@ const DailyMenuService = {
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem('daily_menu_config', JSON.stringify(localConfig));
-            console.log('💾 Saved to localStorage');
+            if (window.Debug) Debug.log('💾 Saved to localStorage');
 
             // Also broadcast via BroadcastChannel for same-browser tabs
             if (typeof BroadcastChannel !== 'undefined') {
@@ -1484,7 +1486,7 @@ const DailyMenuService = {
                 active_items: activeItems,
                 updated_at: new Date().toISOString()
             };
-            console.log('📤 Upsert payload:', JSON.stringify(payload));
+            if (window.Debug) Debug.log('📤 Upsert payload:', JSON.stringify(payload));
 
             const { data, error } = await supabase
                 .from('daily_menu_config')
@@ -1497,7 +1499,7 @@ const DailyMenuService = {
                 return createErrorResponse(error, 'DailyMenuService.saveConfig');
             }
 
-            console.log('%c✅ SUPABASE SAVE SUCCESS', 'background: #4CAF50; color: white; font-size: 14px;', data);
+            if (window.Debug) Debug.log('%c✅ SUPABASE SAVE SUCCESS', 'background: #4CAF50; color: white; font-size: 14px;', data);
             if (window.Debug) Debug.info('📅 Daily menu saved:', activeItems.length, 'items');
             return createSuccessResponse(data);
         }, 'DailyMenuService.saveConfig');

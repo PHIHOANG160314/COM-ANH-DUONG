@@ -1,4 +1,4 @@
-/**
+﻿/**
  * F&B Master - Offline Manager
  * Author: Google DeepMind / Antigravity Team
  * Description: IndexedDB wrapper for offline data persistence and background sync.
@@ -90,8 +90,8 @@ const OfflineManager = {
                 indicator.id = 'offlineIndicator';
                 indicator.className = 'offline-indicator';
                 indicator.innerHTML = `
-                    <span class="offline-icon">📴</span>
-                    <span class="offline-text">Chế độ Offline</span>
+                    <span class="offline-icon">ðŸ“´</span>
+                    <span class="offline-text">Cháº¿ Ä‘á»™ Offline</span>
                 `;
                 document.body.appendChild(indicator);
             }
@@ -140,7 +140,7 @@ const OfflineManager = {
     // Add action to offline queue
     async enqueueAction(action, data) {
         if (!this.db) {
-            console.warn('DB not ready, using localStorage fallback');
+            if (window.Debug) Debug.warn('DB not ready, using localStorage fallback');
             // Simple fallback
             this.fallbackEnqueue(action, data);
             return;
@@ -160,7 +160,7 @@ const OfflineManager = {
             const request = store.add(item);
 
             request.onsuccess = () => {
-                if (window.Debug) Debug.info('📥 Queued offline action:', action);
+                if (window.Debug) Debug.info('ðŸ“¥ Queued offline action:', action);
                 this.registerBackgroundSync();
                 resolve(item);
             };
@@ -200,7 +200,7 @@ const OfflineManager = {
         if (queue.length === 0) return;
 
         this.syncInProgress = true;
-        if (window.Debug) Debug.info('🔄 Syncing', queue.length, 'offline actions...');
+        if (window.Debug) Debug.info('ðŸ”„ Syncing', queue.length, 'offline actions...');
 
         let successCount = 0;
 
@@ -212,10 +212,10 @@ const OfflineManager = {
                     // Success or fatal error -> remove from queue
                     await this.dequeueItem(item.id);
                     successCount++;
-                    if (result.success && window.Debug) Debug.info('✅ Synced action:', item.action);
+                    if (result.success && window.Debug) Debug.info('âœ… Synced action:', item.action);
                 } else {
                     // Retryable error -> keep in queue, maybe increment retry count
-                    if (window.Debug) Debug.warn('⚠️ Sync failed, keeping in queue:', item.action);
+                    if (window.Debug) Debug.warn('âš ï¸ Sync failed, keeping in queue:', item.action);
                 }
             } catch (e) {
                 console.error('Sync execution error:', e);
@@ -225,7 +225,7 @@ const OfflineManager = {
         this.syncInProgress = false;
 
         if (successCount > 0) {
-            this.showToast(`Đã đồng bộ ${successCount} dữ liệu offline`);
+            this.showToast(`ÄÃ£ Ä‘á»“ng bá»™ ${successCount} dá»¯ liá»‡u offline`);
         }
     },
 
@@ -241,7 +241,7 @@ const OfflineManager = {
             case 'upsertCustomer':
                 return await SupabaseService.upsertCustomer(item.data);
             default:
-                console.warn('Unknown offline action:', item.action);
+                if (window.Debug) Debug.warn('Unknown offline action:', item.action);
                 return { success: false, error: 'Unknown action' };
         }
     },
@@ -304,3 +304,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.OfflineManager = OfflineManager;
+

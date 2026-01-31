@@ -1,4 +1,4 @@
-/**
+﻿/**
  * F&B Master - Shipper Portal
  * Author: Google DeepMind / Antigravity Team
  * Description: Delivery management, order pickup, and location tracking for shippers.
@@ -24,7 +24,7 @@ const ShipperApp = {
 
     // Initialize the app
     init() {
-        if (window.Debug) Debug.info('🛵 Shipper Portal v2.0 initializing...');
+        if (window.Debug) Debug.info('ðŸ›µ Shipper Portal v2.0 initializing...');
 
         // Clear old legacy sessions (force re-login with new secure auth)
         localStorage.removeItem('shipper_session');
@@ -42,7 +42,7 @@ const ShipperApp = {
         // Setup PIN inputs
         this.setupLoginForm();
 
-        if (window.Debug) Debug.info('🛵 Shipper Portal ready!');
+        if (window.Debug) Debug.info('ðŸ›µ Shipper Portal ready!');
     },
 
     // Setup login form events
@@ -101,9 +101,9 @@ const ShipperApp = {
         if (!phone || phone.length < 10) {
             if (phoneInput) {
                 phoneInput.error = true;
-                phoneInput.errorText = 'SĐT không hợp lệ';
+                phoneInput.errorText = 'SÄT khÃ´ng há»£p lá»‡';
             } else {
-                this.showToast('Vui lòng nhập số điện thoại hợp lệ', 'error');
+                this.showToast('Vui lÃ²ng nháº­p sá»‘ Ä‘iá»‡n thoáº¡i há»£p lá»‡', 'error');
             }
             return;
         }
@@ -111,9 +111,9 @@ const ShipperApp = {
         if (!pin || pin.length < 4) {
             if (pinInput) {
                 pinInput.error = true;
-                pinInput.errorText = 'PIN phải có 4-6 số';
+                pinInput.errorText = 'PIN pháº£i cÃ³ 4-6 sá»‘';
             } else {
-                this.showToast('Vui lòng nhập mã PIN hợp lệ', 'error');
+                this.showToast('Vui lÃ²ng nháº­p mÃ£ PIN há»£p lá»‡', 'error');
             }
             return;
         }
@@ -122,7 +122,7 @@ const ShipperApp = {
         const loginBtn = document.querySelector('.btn-login');
         if (loginBtn) {
             loginBtn.disabled = true;
-            loginBtn.textContent = 'Đang đăng nhập...';
+            loginBtn.textContent = 'Äang Ä‘Äƒng nháº­p...';
         }
 
         try {
@@ -134,13 +134,13 @@ const ShipperApp = {
                     this.currentShipper = result.shipper;
                     this.onLoginSuccess();
                 } else {
-                    this.showToast(result.error || 'Đăng nhập thất bại', 'error');
+                    this.showToast(result.error || 'ÄÄƒng nháº­p tháº¥t báº¡i', 'error');
                 }
             } else if (!this.isSupabaseReady()) {
                 // Demo mode - use hardcoded shippers (for development only)
                 const demoShippers = {
                     '0901234567': { id: 'demo1', name: 'Shipper Demo', phone: '0901234567', pin: '1234', status: 'online', rating: 4.8, total_deliveries: 125, commission_rate: 15000 },
-                    '0909876543': { id: 'demo2', name: 'Nguyễn Văn Shipper', phone: '0909876543', pin: '5678', status: 'online', rating: 4.5, total_deliveries: 89, commission_rate: 15000 }
+                    '0909876543': { id: 'demo2', name: 'Nguyá»…n VÄƒn Shipper', phone: '0909876543', pin: '5678', status: 'online', rating: 4.5, total_deliveries: 89, commission_rate: 15000 }
                 };
 
                 const shipper = demoShippers[phone];
@@ -149,21 +149,21 @@ const ShipperApp = {
                     localStorage.setItem('shipper_session', JSON.stringify(shipper));
                     this.onLoginSuccess();
                 } else {
-                    this.showToast('Số điện thoại hoặc mã PIN không đúng', 'error');
+                    this.showToast('Sá»‘ Ä‘iá»‡n thoáº¡i hoáº·c mÃ£ PIN khÃ´ng Ä‘Ãºng', 'error');
                 }
             } else {
-                this.showToast('Lỗi kết nối, vui lòng thử lại', 'error');
+                this.showToast('Lá»—i káº¿t ná»‘i, vui lÃ²ng thá»­ láº¡i', 'error');
             }
         } catch (err) {
             console.error('Login error:', err);
-            this.showToast('Lỗi đăng nhập, vui lòng thử lại', 'error');
+            this.showToast('Lá»—i Ä‘Äƒng nháº­p, vui lÃ²ng thá»­ láº¡i', 'error');
         } finally {
             if (loginBtn) {
                 loginBtn.disabled = false;
-                // loginBtn.textContent = 'Đăng nhập'; // md-filled-button doesn't use textContent directly for label usually, but it has slot.
+                // loginBtn.textContent = 'ÄÄƒng nháº­p'; // md-filled-button doesn't use textContent directly for label usually, but it has slot.
                 // However, M3 button text is in the default slot. textContent works if it has no icon.
                 // Let's safe check.
-                loginBtn.textContent = 'Đăng nhập';
+                loginBtn.textContent = 'ÄÄƒng nháº­p';
             }
             if (pinInput) pinInput.value = '';
         }
@@ -171,7 +171,7 @@ const ShipperApp = {
 
     // After successful login
     async onLoginSuccess() {
-        this.showToast(`Chào mừng ${this.currentShipper.name}!`, 'success');
+        this.showToast(`ChÃ o má»«ng ${this.currentShipper.name}!`, 'success');
         this.showSection('dashboard');
         this.updateHeader();
         this.loadOrders();
@@ -210,7 +210,7 @@ const ShipperApp = {
         }
 
         this.showSection('login');
-        this.showToast('Đã đăng xuất');
+        this.showToast('ÄÃ£ Ä‘Äƒng xuáº¥t');
     },
 
     // ==================== STATUS MANAGEMENT ====================
@@ -226,13 +226,13 @@ const ShipperApp = {
             if (!result.error) {
                 this.currentShipper.status = newStatus;
                 this.updateStatusToggle();
-                this.showToast(newStatus === 'online' ? '🟢 Đang nhận đơn' : '⚪ Đã tắt nhận đơn');
+                this.showToast(newStatus === 'online' ? 'ðŸŸ¢ Äang nháº­n Ä‘Æ¡n' : 'âšª ÄÃ£ táº¯t nháº­n Ä‘Æ¡n');
             }
         } else {
             // Demo mode
             this.currentShipper.status = newStatus;
             this.updateStatusToggle();
-            this.showToast(newStatus === 'online' ? '🟢 Đang nhận đơn' : '⚪ Đã tắt nhận đơn');
+            this.showToast(newStatus === 'online' ? 'ðŸŸ¢ Äang nháº­n Ä‘Æ¡n' : 'âšª ÄÃ£ táº¯t nháº­n Ä‘Æ¡n');
         }
 
         // Update location tracking based on status
@@ -251,9 +251,9 @@ const ShipperApp = {
         if (statusEl) {
             const status = this.currentShipper?.status || 'offline';
             const statusMap = {
-                'online': '🟢 Online',
-                'offline': '⚪ Offline',
-                'busy': '🟡 Đang giao'
+                'online': 'ðŸŸ¢ Online',
+                'offline': 'âšª Offline',
+                'busy': 'ðŸŸ¡ Äang giao'
             };
             statusEl.textContent = statusMap[status] || status;
             statusEl.className = `shipper-status ${status}`;
@@ -269,14 +269,14 @@ const ShipperApp = {
     // Start GPS location tracking
     startLocationTracking() {
         if (!navigator.geolocation) {
-            console.warn('Geolocation not supported');
+            if (window.Debug) Debug.warn('Geolocation not supported');
             return;
         }
 
         // Watch position changes
         this.locationWatchId = navigator.geolocation.watchPosition(
             (position) => this.onLocationUpdate(position),
-            (error) => console.warn('Location error:', error.message),
+            (error) => if (window.Debug) Debug.warn('Location error:', error.message),
             {
                 enableHighAccuracy: true,
                 timeout: 30000,
@@ -288,11 +288,11 @@ const ShipperApp = {
         this.locationUpdateInterval = setInterval(() => {
             navigator.geolocation.getCurrentPosition(
                 (position) => this.onLocationUpdate(position),
-                (error) => console.warn('Location update error:', error.message)
+                (error) => if (window.Debug) Debug.warn('Location update error:', error.message)
             );
         }, 30000);
 
-        console.log('📍 Location tracking started');
+        if (window.Debug) Debug.log('ðŸ“ Location tracking started');
     },
 
     // Handle location update
@@ -323,7 +323,7 @@ const ShipperApp = {
             this.locationUpdateInterval = null;
         }
 
-        console.log('📍 Location tracking stopped');
+        if (window.Debug) Debug.log('ðŸ“ Location tracking stopped');
     },
 
     // ==================== ORDERS & DELIVERIES ====================
@@ -333,7 +333,7 @@ const ShipperApp = {
         const container = document.getElementById('ordersList');
 
         try {
-            console.log('🛵 Loading orders...');
+            if (window.Debug) Debug.log('ðŸ›µ Loading orders...');
 
             if (!this.isSupabaseReady()) {
                 this.orders = this.getDemoOrders();
@@ -348,14 +348,14 @@ const ShipperApp = {
                 console.error('Failed to load orders', result.error);
                 this.orders = [];
                 if (container) {
-                    container.innerHTML = '<p class="no-orders">⚠️ Lỗi tải đơn hàng. Kéo xuống để thử lại.</p>';
+                    container.innerHTML = '<p class="no-orders">âš ï¸ Lá»—i táº£i Ä‘Æ¡n hÃ ng. KÃ©o xuá»‘ng Ä‘á»ƒ thá»­ láº¡i.</p>';
                 }
                 this.updateStats();
                 return;
             }
 
             this.orders = result.data || [];
-            console.log('🛵 Loaded', this.orders.length, 'available orders');
+            if (window.Debug) Debug.log('ðŸ›µ Loaded', this.orders.length, 'available orders');
             this.renderOrders();
             this.updateStats();
 
@@ -363,7 +363,7 @@ const ShipperApp = {
             console.error('Error loading orders', err);
             this.orders = [];
             if (container) {
-                container.innerHTML = '<p class="no-orders">⚠️ Không thể tải đơn hàng</p>';
+                container.innerHTML = '<p class="no-orders">âš ï¸ KhÃ´ng thá»ƒ táº£i Ä‘Æ¡n hÃ ng</p>';
             }
             this.updateStats();
         }
@@ -394,18 +394,18 @@ const ShipperApp = {
     // Subscribe to realtime order updates
     subscribeToUpdates() {
         if (!this.isSupabaseReady()) {
-            console.log('🛵 Cannot subscribe - Supabase not ready');
+            if (window.Debug) Debug.log('ðŸ›µ Cannot subscribe - Supabase not ready');
             return;
         }
 
         // Subscribe to order changes
         SupabaseService.subscribeToOrders((payload) => {
-            console.log('🛵 Order update:', payload.eventType);
+            if (window.Debug) Debug.log('ðŸ›µ Order update:', payload.eventType);
             if (payload.new?.order_type === 'delivery') {
                 this.loadOrders();
 
                 if (payload.eventType === 'INSERT') {
-                    this.showToast('🆕 Có đơn giao mới!', 'success');
+                    this.showToast('ðŸ†• CÃ³ Ä‘Æ¡n giao má»›i!', 'success');
                     this.playNotificationSound();
                 }
             }
@@ -414,13 +414,13 @@ const ShipperApp = {
         // Subscribe to my assignments
         if (this.currentShipper?.id) {
             SupabaseService.subscribeToShipperAssignments(this.currentShipper.id, (payload) => {
-                console.log('🛵 My assignment update:', payload.eventType);
+                if (window.Debug) Debug.log('ðŸ›µ My assignment update:', payload.eventType);
                 this.loadMyDeliveries();
                 this.loadEarnings();
             });
         }
 
-        console.log('🛵 Subscribed to realtime updates');
+        if (window.Debug) Debug.log('ðŸ›µ Subscribed to realtime updates');
     },
 
     // ==================== RENDERING ====================
@@ -431,7 +431,7 @@ const ShipperApp = {
         const ratingEl = document.getElementById('shipperRating');
 
         if (nameEl) nameEl.textContent = this.currentShipper?.name || 'Shipper';
-        if (ratingEl) ratingEl.textContent = `⭐ ${this.currentShipper?.rating?.toFixed(1) || '5.0'}`;
+        if (ratingEl) ratingEl.textContent = `â­ ${this.currentShipper?.rating?.toFixed(1) || '5.0'}`;
 
         this.updateStatusToggle();
     },
@@ -451,7 +451,7 @@ const ShipperApp = {
         }
 
         if (filteredOrders.length === 0) {
-            container.innerHTML = '<p class="no-orders">Không có đơn hàng mới</p>';
+            container.innerHTML = '<p class="no-orders">KhÃ´ng cÃ³ Ä‘Æ¡n hÃ ng má»›i</p>';
             return;
         }
 
@@ -464,7 +464,7 @@ const ShipperApp = {
         if (!container) return;
 
         if (this.deliveries.length === 0) {
-            container.innerHTML = '<p class="no-orders">Không có đơn đang giao</p>';
+            container.innerHTML = '<p class="no-orders">KhÃ´ng cÃ³ Ä‘Æ¡n Ä‘ang giao</p>';
             return;
         }
 
@@ -476,10 +476,10 @@ const ShipperApp = {
     // Render single order card
     renderOrderCard(order) {
         const statusLabels = {
-            'pending': '⏳ Chờ xác nhận',
-            'confirmed': '✅ Đã xác nhận',
-            'preparing': '👨‍🍳 Đang chuẩn bị',
-            'ready': '📦 Sẵn sàng giao'
+            'pending': 'â³ Chá» xÃ¡c nháº­n',
+            'confirmed': 'âœ… ÄÃ£ xÃ¡c nháº­n',
+            'preparing': 'ðŸ‘¨â€ðŸ³ Äang chuáº©n bá»‹',
+            'ready': 'ðŸ“¦ Sáºµn sÃ ng giao'
         };
 
         let items = [];
@@ -489,8 +489,8 @@ const ShipperApp = {
             items = [];
         }
 
-        const itemsText = items.map(item => `${item.name} x${item.qty || item.quantity || 1}`).join(', ') || 'Không có thông tin';
-        const address = order.notes || order.address || 'Không có địa chỉ';
+        const itemsText = items.map(item => `${item.name} x${item.qty || item.quantity || 1}`).join(', ') || 'KhÃ´ng cÃ³ thÃ´ng tin';
+        const address = order.notes || order.address || 'KhÃ´ng cÃ³ Ä‘á»‹a chá»‰';
 
         return `
             <div class="order-card" data-order-id="${order.id}">
@@ -503,34 +503,34 @@ const ShipperApp = {
                 </div>
                 
                 <div class="order-customer">
-                    <div class="customer-name">👤 ${order.customer_name || 'Khách hàng'}</div>
+                    <div class="customer-name">ðŸ‘¤ ${order.customer_name || 'KhÃ¡ch hÃ ng'}</div>
                     <div class="customer-phone">
-                        📞 <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
+                        ðŸ“ž <a href="tel:${order.customer_phone}">${order.customer_phone || 'KhÃ´ng cÃ³ SÄT'}</a>
                     </div>
                 </div>
                 
                 <div class="order-address">
-                    <div class="address-label">📍 Địa chỉ giao hàng</div>
+                    <div class="address-label">ðŸ“ Äá»‹a chá»‰ giao hÃ ng</div>
                     <div class="address-text">${address}</div>
                 </div>
                 
                 <div class="order-items">
-                    <div class="order-items-title">🍽️ Món ăn</div>
+                    <div class="order-items-title">ðŸ½ï¸ MÃ³n Äƒn</div>
                     <div class="order-items-list">${itemsText}</div>
                 </div>
                 
                 <div class="order-total">
-                    <span class="total-label">Tổng tiền:</span>
+                    <span class="total-label">Tá»•ng tiá»n:</span>
                     <span class="total-value">${this.formatPrice(order.total)}</span>
                 </div>
                 
                 <div class="order-actions">
                     <md-filled-button class="btn-action" onclick="ShipperApp.pickupOrder('${order.id}')">
-                        📦 Nhận đơn
+                        ðŸ“¦ Nháº­n Ä‘Æ¡n
                     </md-filled-button>
                     <md-outlined-button class="btn-action" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank"
                         onclick="window.open(this.href, '_blank'); return false;">
-                        🗺️ Chỉ đường
+                        ðŸ—ºï¸ Chá»‰ Ä‘Æ°á»ng
                     </md-outlined-button>
                 </div>
             </div>
@@ -541,9 +541,9 @@ const ShipperApp = {
     renderDeliveryCard(delivery) {
         const order = delivery.order || {};
         const statusLabels = {
-            'assigned': '📌 Đã nhận',
-            'picked_up': '🏃 Đã lấy hàng',
-            'delivering': '🚀 Đang giao'
+            'assigned': 'ðŸ“Œ ÄÃ£ nháº­n',
+            'picked_up': 'ðŸƒ ÄÃ£ láº¥y hÃ ng',
+            'delivering': 'ðŸš€ Äang giao'
         };
 
         let items = [];
@@ -554,19 +554,19 @@ const ShipperApp = {
         }
 
         const itemsText = items.map(item => `${item.name} x${item.qty || item.quantity || 1}`).join(', ');
-        const address = order.notes || order.address || 'Không có địa chỉ';
+        const address = order.notes || order.address || 'KhÃ´ng cÃ³ Ä‘á»‹a chá»‰';
 
         let actionsHtml = '';
         if (delivery.status === 'assigned') {
             actionsHtml = `
                 <md-filled-button onclick="ShipperApp.updateDelivery('${delivery.id}', 'picked_up')">
-                    🏃 Đã lấy hàng
+                    ðŸƒ ÄÃ£ láº¥y hÃ ng
                 </md-filled-button>
             `;
         } else if (delivery.status === 'picked_up' || delivery.status === 'delivering') {
             actionsHtml = `
                 <md-filled-button class="btn-success" style="--md-sys-color-primary: var(--shipper-success);" onclick="ShipperApp.completeDelivery('${delivery.id}')">
-                    ✅ Đã giao xong
+                    âœ… ÄÃ£ giao xong
                 </md-filled-button>
             `;
         }
@@ -584,23 +584,23 @@ const ShipperApp = {
                 </div>
 
                 <div class="order-customer">
-                    <div class="customer-name">👤 ${order.customer_name || 'Khách hàng'}</div>
+                    <div class="customer-name">ðŸ‘¤ ${order.customer_name || 'KhÃ¡ch hÃ ng'}</div>
                     <div class="customer-phone">
-                        📞 <a href="tel:${order.customer_phone}">${order.customer_phone || 'Không có SĐT'}</a>
+                        ðŸ“ž <a href="tel:${order.customer_phone}">${order.customer_phone || 'KhÃ´ng cÃ³ SÄT'}</a>
                     </div>
                 </div>
 
                 <div class="order-address">
-                    <div class="address-label">📍 Địa chỉ giao hàng</div>
+                    <div class="address-label">ðŸ“ Äá»‹a chá»‰ giao hÃ ng</div>
                     <div class="address-text">${address}</div>
                 </div>
 
                 <div class="order-items">
-                    <div class="order-items-title">🍽️ ${itemsText}</div>
+                    <div class="order-items-title">ðŸ½ï¸ ${itemsText}</div>
                 </div>
 
                 <div class="order-total">
-                    <span class="total-label">Thu hộ:</span>
+                    <span class="total-label">Thu há»™:</span>
                     <span class="total-value">${this.formatPrice(order.total)}</span>
                 </div>
 
@@ -608,10 +608,10 @@ const ShipperApp = {
                     ${actionsHtml}
                     <md-outlined-button href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank"
                         onclick="window.open(this.href, '_blank'); return false;">
-                        🗺️ Chỉ đường
+                        ðŸ—ºï¸ Chá»‰ Ä‘Æ°á»ng
                     </md-outlined-button>
                     <md-outlined-button href="tel:${order.customer_phone}" onclick="window.location.href=this.href; return false;">
-                        📞 Gọi
+                        ðŸ“ž Gá»i
                     </md-outlined-button>
                 </div>
             </div>
@@ -623,7 +623,7 @@ const ShipperApp = {
     // Pickup/accept an order
     async pickupOrder(orderId) {
         if (!this.currentShipper) {
-            this.showToast('Vui lòng đăng nhập', 'error');
+            this.showToast('Vui lÃ²ng Ä‘Äƒng nháº­p', 'error');
             return;
         }
 
@@ -645,7 +645,7 @@ const ShipperApp = {
                     this.renderOrders();
                     this.renderMyDeliveries();
                     this.updateStats();
-                    this.showToast('Đã nhận đơn!', 'success');
+                    this.showToast('ÄÃ£ nháº­n Ä‘Æ¡n!', 'success');
                 }
                 return;
             }
@@ -653,17 +653,17 @@ const ShipperApp = {
             // Real assignment
             const result = await SupabaseService.assignShipperToDelivery(orderId, this.currentShipper.id);
             if (result.error) {
-                this.showToast('Lỗi nhận đơn: ' + result.error, 'error');
+                this.showToast('Lá»—i nháº­n Ä‘Æ¡n: ' + result.error, 'error');
             } else {
                 // Update order status to delivering
                 await SupabaseService.updateOrderStatus(orderId, 'delivering');
-                this.showToast('Đã nhận đơn!', 'success');
+                this.showToast('ÄÃ£ nháº­n Ä‘Æ¡n!', 'success');
                 this.loadOrders();
                 this.loadMyDeliveries();
             }
         } catch (err) {
             console.error('Error picking up order', err);
-            this.showToast('Lỗi nhận đơn', 'error');
+            this.showToast('Lá»—i nháº­n Ä‘Æ¡n', 'error');
         }
     },
 
@@ -676,27 +676,27 @@ const ShipperApp = {
                 if (delivery) {
                     delivery.status = newStatus;
                     this.renderMyDeliveries();
-                    this.showToast('Đã cập nhật trạng thái!', 'success');
+                    this.showToast('ÄÃ£ cáº­p nháº­t tráº¡ng thÃ¡i!', 'success');
                 }
                 return;
             }
 
             const result = await SupabaseService.updateDeliveryStatus(assignmentId, newStatus);
             if (result.error) {
-                this.showToast('Lỗi cập nhật: ' + result.error, 'error');
+                this.showToast('Lá»—i cáº­p nháº­t: ' + result.error, 'error');
             } else {
-                this.showToast('Đã cập nhật!', 'success');
+                this.showToast('ÄÃ£ cáº­p nháº­t!', 'success');
                 this.loadMyDeliveries();
             }
         } catch (err) {
             console.error('Error updating delivery', err);
-            this.showToast('Lỗi cập nhật', 'error');
+            this.showToast('Lá»—i cáº­p nháº­t', 'error');
         }
     },
 
     // Complete delivery
     async completeDelivery(assignmentId) {
-        if (!confirm('Xác nhận đã giao hàng thành công?')) return;
+        if (!confirm('XÃ¡c nháº­n Ä‘Ã£ giao hÃ ng thÃ nh cÃ´ng?')) return;
 
         try {
             if (!this.isSupabaseReady()) {
@@ -705,7 +705,7 @@ const ShipperApp = {
                 this.renderMyDeliveries();
                 this.updateStats();
                 this.loadEarnings();
-                this.showToast('✅ Giao hàng thành công!', 'success');
+                this.showToast('âœ… Giao hÃ ng thÃ nh cÃ´ng!', 'success');
                 this.playSuccessSound();
                 return;
             }
@@ -713,13 +713,13 @@ const ShipperApp = {
             // Real completion
             const result = await SupabaseService.completeDelivery(assignmentId);
             if (result.error) {
-                this.showToast('Lỗi hoàn thành: ' + result.error, 'error');
+                this.showToast('Lá»—i hoÃ n thÃ nh: ' + result.error, 'error');
             } else {
                 // Update order status
                 if (result.data?.order_id) {
                     await SupabaseService.updateOrderStatus(result.data.order_id, 'completed');
                 }
-                this.showToast('✅ Giao hàng thành công!', 'success');
+                this.showToast('âœ… Giao hÃ ng thÃ nh cÃ´ng!', 'success');
                 this.playSuccessSound();
                 this.loadMyDeliveries();
                 this.loadEarnings();
@@ -727,7 +727,7 @@ const ShipperApp = {
             }
         } catch (err) {
             console.error('Error completing delivery', err);
-            this.showToast('Lỗi hoàn thành', 'error');
+            this.showToast('Lá»—i hoÃ n thÃ nh', 'error');
         }
     },
 
@@ -873,30 +873,30 @@ const ShipperApp = {
         const container = document.getElementById('historyList');
         if (!container) return;
 
-        container.innerHTML = '<p class="loading">Đang tải lịch sử...</p>';
+        container.innerHTML = '<p class="loading">Äang táº£i lá»‹ch sá»­...</p>';
 
         try {
             if (!this.isSupabaseReady() || !this.currentShipper?.id) {
-                container.innerHTML = '<p class="no-orders">Đăng nhập để xem lịch sử</p>';
+                container.innerHTML = '<p class="no-orders">ÄÄƒng nháº­p Ä‘á»ƒ xem lá»‹ch sá»­</p>';
                 return;
             }
 
             const result = await SupabaseService.getShipperDeliveries(this.currentShipper.id, 'completed');
             if (result.error) {
-                container.innerHTML = '<p class="no-orders">Lỗi tải lịch sử</p>';
+                container.innerHTML = '<p class="no-orders">Lá»—i táº£i lá»‹ch sá»­</p>';
                 return;
             }
 
             const deliveries = (result.data || []).slice(0, 20);
             if (deliveries.length === 0) {
-                container.innerHTML = '<p class="no-orders">Chưa có đơn nào hoàn thành</p>';
+                container.innerHTML = '<p class="no-orders">ChÆ°a cÃ³ Ä‘Æ¡n nÃ o hoÃ n thÃ nh</p>';
                 return;
             }
 
             container.innerHTML = deliveries.map(d => this.renderHistoryCard(d)).join('');
         } catch (err) {
             console.error('Error loading history', err);
-            container.innerHTML = '<p class="no-orders">Lỗi tải lịch sử</p>';
+            container.innerHTML = '<p class="no-orders">Lá»—i táº£i lá»‹ch sá»­</p>';
         }
     },
 
@@ -910,12 +910,12 @@ const ShipperApp = {
                     <span class="history-date">${this.formatDate(delivery.delivered_at)}</span>
                 </div>
                 <div class="history-details">
-                    <span class="history-customer">👤 ${order.customer_name || 'Khách hàng'}</span>
+                    <span class="history-customer">ðŸ‘¤ ${order.customer_name || 'KhÃ¡ch hÃ ng'}</span>
                     <span class="history-total">${this.formatPrice(order.total)}</span>
                 </div>
                 <div class="history-commission">
-                    💰 Hoa hồng: <strong>${this.formatPrice(delivery.commission || 15000)}</strong>
-                    ${delivery.customer_rating ? `<span class="history-rating">⭐ ${delivery.customer_rating}</span>` : ''}
+                    ðŸ’° Hoa há»“ng: <strong>${this.formatPrice(delivery.commission || 15000)}</strong>
+                    ${delivery.customer_rating ? `<span class="history-rating">â­ ${delivery.customer_rating}</span>` : ''}
                 </div>
             </div>
         `;
@@ -923,7 +923,7 @@ const ShipperApp = {
 
     // Refresh orders
     refreshOrders() {
-        this.showToast('Đang làm mới...');
+        this.showToast('Äang lÃ m má»›i...');
         this.loadOrders();
         this.loadMyDeliveries();
     },
@@ -935,12 +935,12 @@ const ShipperApp = {
             {
                 id: 'demo1',
                 order_number: 'AD260110-0001',
-                customer_name: 'Nguyễn Văn Khách',
+                customer_name: 'Nguyá»…n VÄƒn KhÃ¡ch',
                 customer_phone: '0901234567',
-                notes: '123 Nguyễn Huệ, Q1, TP.HCM',
+                notes: '123 Nguyá»…n Huá»‡, Q1, TP.HCM',
                 items: JSON.stringify([
-                    { name: 'Cơm tấm', qty: 2 },
-                    { name: 'Trà đá', qty: 2 }
+                    { name: 'CÆ¡m táº¥m', qty: 2 },
+                    { name: 'TrÃ  Ä‘Ã¡', qty: 2 }
                 ]),
                 total: 85000,
                 status: 'ready',
@@ -950,11 +950,11 @@ const ShipperApp = {
             {
                 id: 'demo2',
                 order_number: 'AD260110-0002',
-                customer_name: 'Trần Thị Mai',
+                customer_name: 'Tráº§n Thá»‹ Mai',
                 customer_phone: '0909876543',
-                notes: '456 Lê Lợi, Q3, TP.HCM',
+                notes: '456 LÃª Lá»£i, Q3, TP.HCM',
                 items: JSON.stringify([
-                    { name: 'Phở bò', qty: 1 }
+                    { name: 'Phá»Ÿ bÃ²', qty: 1 }
                 ]),
                 total: 55000,
                 status: 'ready',
@@ -976,7 +976,7 @@ const ShipperApp = {
     },
 
     formatPrice(amount) {
-        return window.utils ? window.utils.formatPrice(amount) : new Intl.NumberFormat('vi-VN').format(amount || 0) + 'đ';
+        return window.utils ? window.utils.formatPrice(amount) : new Intl.NumberFormat('vi-VN').format(amount || 0) + 'Ä‘';
     },
 
     showToast(message, type = 'info') {
@@ -1028,3 +1028,4 @@ const ShipperApp = {
 document.addEventListener('DOMContentLoaded', () => {
     ShipperApp.init();
 });
+
