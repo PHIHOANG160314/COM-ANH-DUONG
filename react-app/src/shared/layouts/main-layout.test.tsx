@@ -36,7 +36,7 @@ vi.mock('@/shared/ui/footer-compliance', () => ({
 }));
 
 // Mock ResizeObserver for MUI
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
