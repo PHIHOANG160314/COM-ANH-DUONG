@@ -57,6 +57,50 @@ grep -r "TODO\|FIXME" src | wc -l  # TODOs
 grep -r ": any" src | wc -l  # Type safety
 ```
 
+## 🚀 GO-LIVE Verification (MANDATORY)
+
+Before ANY deployment, CC CLI MUST verify:
+
+### CI/CD Checklist
+
+```bash
+# 1. Git status clean
+git status --porcelain | wc -l  # Must be 0
+
+# 2. Build passes
+npm run build 2>&1 | tail -5  # Must show ✓
+
+# 3. Tests pass
+npm run test -- --run 2>&1 | tail -3  # Must show all passed
+
+# 4. Vercel deployment (if applicable)
+# Check https://vercel.com/dashboard for green status
+```
+
+### Vercel Verification
+
+- [ ] Latest commit pushed to `origin/main`
+- [ ] Vercel auto-deploy triggered
+- [ ] Build status: ✅ Ready
+- [ ] Preview URL accessible
+- [ ] No console errors on production
+
+### GitHub Actions
+
+```bash
+# Check latest workflow run
+gh run list -L 1 --json status,conclusion 2>/dev/null || echo "Check GitHub manually"
+```
+
+### Production Health
+
+- [ ] Homepage loads < 3s
+- [ ] No 404 errors
+- [ ] All API endpoints responding
+- [ ] Mobile responsive verified
+
+---
+
 ## Commit Convention
 
 ```
