@@ -1,98 +1,147 @@
-# Cơm Ánh Dương - Food Ordering Platform
+# Cơm Ánh Dương - Restaurant POS System
 
-A modern web application for "Cơm Ánh Dương" built with React 19, TypeScript, and Vite, featuring a complete ordering system, kitchen display, and payment integration.
+A complete O2O (Online-to-Offline) restaurant ordering platform built with React 19, TypeScript, Vite, and Supabase.
 
-## Features
+## 🚀 Features
 
--   **Customer Ordering:** Browse menu, customize items, and place orders.
--   **Payment Integration:** Secure online payments via VNPay and MoMo.
--   **Staff POS:** Tablet-friendly point-of-sale for staff.
--   **Kitchen Display System (KDS):** Real-time order management for the kitchen.
--   **Shipper Portal:** Delivery management interface.
--   **PWA Support:** Installable as a mobile app.
+### Customer Experience
+-   📱 **Mobile-First Ordering** - Browse menu, customize items, and place orders
+-   💵 **Multiple Payment Options:**
+    - 💰 Cash on Delivery (COD) - Default, no setup required
+    - 🏦 VNPay - Bank cards and QR code payments (optional)
+    - 📲 MoMo E-Wallet - Mobile wallet payments (optional)
+-   🔔 **Real-time Order Tracking** - Live status updates
+-   📦 **Order History** - View past orders
+-   📱 **PWA Support** - Install as mobile app
 
-## Payment System
+### Staff & Operations
+-   🖥️ **Staff POS** - Tablet-friendly point-of-sale interface
+-   👨‍🍳 **Kitchen Display System (KDS)** - Real-time order management for kitchen
+-   🚚 **Shipper Portal** - Delivery tracking and management
+-   📊 **Order Management** - Complete order lifecycle tracking
 
-The application supports real-time payments using Supabase Edge Functions:
+### Technical Features
+-   ⚡ **React 19** with React Compiler (automatic memoization)
+-   🎨 **Material UI v6** - Material Design 3 components
+-   🗄️ **Supabase** - PostgreSQL database, authentication, realtime, Edge Functions
+-   🔒 **Row Level Security (RLS)** - Secure data access
+-   🌐 **PWA Ready** - Offline support, installable
+-   🚀 **Vercel Deployment** - One-click deploy
 
--   **VNPay:** Domestic card and QR code payments.
--   **MoMo:** E-wallet payments.
--   **Sandbox Mode:** Test payments safely in development.
+## 📦 Quick Start
 
-For deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md) and [PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md).
+### Prerequisites
+- Node.js 18+
+- Supabase account (free tier)
+- Vercel account (free tier)
 
-## Development Setup
-
-### React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Clone Repository
+```bash
+git clone https://github.com/your-username/com-anh-duong-10x.git
+cd com-anh-duong-10x/react-app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Install Dependencies
+```bash
+npm install
 ```
+
+### 3. Setup Environment
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your Supabase credentials:
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+## 📚 Documentation
+
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete deployment guide
+- **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database structure and RLS policies
+- **[PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md)** - Payment gateway integration (optional)
+- **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** - Supabase configuration
+- **[SEED_DATA.md](./SEED_DATA.md)** - Sample data for testing
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- React 19 with TypeScript
+- Vite 6 (Rolldown bundler)
+- Material UI v6 (Material Design 3)
+- TanStack Query v5 (server state)
+- Zustand (client state)
+- React Hook Form + Zod (forms)
+
+**Backend:**
+- Supabase (PostgreSQL + Auth + Realtime + Edge Functions)
+- Row Level Security (RLS)
+- Edge Functions for payments
+
+**Deployment:**
+- Vercel (frontend hosting)
+- Supabase (backend services)
+
+## 🎯 Use Cases
+
+**For Customers:**
+1. Browse menu with photos and descriptions
+2. Add items to cart, customize orders
+3. Choose delivery/takeaway/dine-in
+4. Pay with COD (or VNPay/MoMo if configured)
+5. Track order status in real-time
+
+**For Restaurant Staff:**
+1. View incoming orders in real-time
+2. Manage order status (preparing → ready → completed)
+3. Update menu availability
+4. Process POS orders
+
+**For Kitchen:**
+1. View orders on Kitchen Display System
+2. Mark items as prepared
+3. Prioritize orders by time
+
+**For Delivery:**
+1. View assigned deliveries
+2. Update delivery status
+3. Track delivery completion
+
+## 💳 Payment Integration
+
+### COD (Cash on Delivery) - Default ✅
+Enabled by default, no configuration needed. Customers pay when receiving order.
+
+### VNPay / MoMo - Optional
+For online payment integration, see [PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md)
+
+## 🚀 Deployment
+
+See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for complete instructions.
+
+**Quick Deploy:**
+1. Create Supabase project
+2. Run database migrations
+3. Add environment variables to Vercel
+4. Deploy from GitHub
+
+## 📄 License
+
+MIT License - feel free to use for your restaurant!
+
+## 🙏 Acknowledgments
+
+Built with modern web technologies and best practices for restaurant operations.
+
+---
+
+**Ready to deploy?** Follow [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) to get started!
