@@ -1,9 +1,17 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { useDailyMenu, useCategories } from './use-menu';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import * as SupabaseClient from '@/shared/api/supabase-client';
+
+// Type for our mock helper
+interface MocksType {
+  mockFrom: Mock;
+  mockSelect: Mock;
+  mockEq: Mock;
+  mockOrder: Mock;
+}
 
 // Mock the supabase client module
 vi.mock('@/shared/api/supabase-client', () => {
@@ -60,7 +68,7 @@ describe('useMenu Hooks', () => {
     it('returns demo data when Supabase returns an error', async () => {
       // Access the mocked functions
       // We need to cast to any to access the hidden _mocks property we added
-      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       // Setup mock to return error
       _mocks.mockOrder.mockResolvedValue({
@@ -79,7 +87,7 @@ describe('useMenu Hooks', () => {
     });
 
     it('returns demo data when fetch throws an exception', async () => {
-      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       // Setup mock to throw
       _mocks.mockOrder.mockRejectedValue(new Error('Network error'));
@@ -94,7 +102,7 @@ describe('useMenu Hooks', () => {
     });
 
     it('returns real data when Supabase succeeds', async () => {
-      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       const realData = [{ id: 'real-1', name: 'Real Food', categories: { id: 'c1' } }];
 
@@ -121,7 +129,7 @@ describe('useMenu Hooks', () => {
 
       // They use the same chain structure, so our mock works for both.
 
-      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       _mocks.mockOrder.mockResolvedValue({
         data: null,
