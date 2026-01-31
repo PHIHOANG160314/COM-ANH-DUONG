@@ -30,8 +30,8 @@ vi.mock('@/shared/api/supabase-client', () => {
       mockFrom,
       mockSelect,
       mockEq,
-      mockOrder
-    }
+      mockOrder,
+    },
   };
 });
 
@@ -44,11 +44,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
       },
     },
   });
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
 describe('useMenu Hooks', () => {
@@ -64,12 +60,12 @@ describe('useMenu Hooks', () => {
     it('returns demo data when Supabase returns an error', async () => {
       // Access the mocked functions
       // We need to cast to any to access the hidden _mocks property we added
-      const { _mocks } = SupabaseClient as any;
+      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
 
       // Setup mock to return error
       _mocks.mockOrder.mockResolvedValue({
         data: null,
-        error: { message: 'Connection refused' }
+        error: { message: 'Connection refused' },
       });
 
       const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
@@ -83,7 +79,7 @@ describe('useMenu Hooks', () => {
     });
 
     it('returns demo data when fetch throws an exception', async () => {
-      const { _mocks } = SupabaseClient as any;
+      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
 
       // Setup mock to throw
       _mocks.mockOrder.mockRejectedValue(new Error('Network error'));
@@ -98,16 +94,14 @@ describe('useMenu Hooks', () => {
     });
 
     it('returns real data when Supabase succeeds', async () => {
-      const { _mocks } = SupabaseClient as any;
+      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
 
-      const realData = [
-        { id: 'real-1', name: 'Real Food', categories: { id: 'c1' } }
-      ];
+      const realData = [{ id: 'real-1', name: 'Real Food', categories: { id: 'c1' } }];
 
       // Setup mock to return data
       _mocks.mockOrder.mockResolvedValue({
         data: realData,
-        error: null
+        error: null,
       });
 
       const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
@@ -120,27 +114,27 @@ describe('useMenu Hooks', () => {
 
   describe('useCategories', () => {
     it('returns demo data when Supabase returns an error', async () => {
-        // The chain for useCategories is slightly different: .from().select().eq().order()
-        // It matches the same chain structure we mocked: from -> select -> eq -> order
-        // NOTE: useCategories implementation: from('categories').select('*').eq('is_active', true).order('sort_order')
-        // useDailyMenu implementation: from('products').select(...).eq('is_active', true).order('name')
+      // The chain for useCategories is slightly different: .from().select().eq().order()
+      // It matches the same chain structure we mocked: from -> select -> eq -> order
+      // NOTE: useCategories implementation: from('categories').select('*').eq('is_active', true).order('sort_order')
+      // useDailyMenu implementation: from('products').select(...).eq('is_active', true).order('name')
 
-        // They use the same chain structure, so our mock works for both.
+      // They use the same chain structure, so our mock works for both.
 
-        const { _mocks } = SupabaseClient as any;
+      const { _mocks } = SupabaseClient as unknown as { _mocks: typeof mockSupabase };
 
-        _mocks.mockOrder.mockResolvedValue({
-          data: null,
-          error: { message: 'Auth error' }
-        });
-
-        const { result } = renderHook(() => useCategories(), { wrapper: Wrapper });
-
-        await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-        expect(result.current.data).toBeDefined();
-        expect(result.current.data?.length).toBeGreaterThan(0);
-        expect(result.current.data?.[0].id).toContain('cat');
+      _mocks.mockOrder.mockResolvedValue({
+        data: null,
+        error: { message: 'Auth error' },
       });
+
+      const { result } = renderHook(() => useCategories(), { wrapper: Wrapper });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      expect(result.current.data).toBeDefined();
+      expect(result.current.data?.length).toBeGreaterThan(0);
+      expect(result.current.data?.[0].id).toContain('cat');
+    });
   });
 });

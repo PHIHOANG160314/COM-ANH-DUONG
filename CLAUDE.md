@@ -17,7 +17,8 @@ Khi thực hiện task, hãy:
 ## Workflows có sẵn
 
 - `/run` - Khởi động proxy và Claude Code CLI tự động
-- `/design` - Tạo UI/UX designs
+- `/design` - Tạo UI/UX designs (Use `/pencil` for High-Fidelity/Strategic work)
+- `/pencil` - Strategic Design Generator (Binh Phap integrated)
 - `/supabase` - Setup Supabase database
 - `/watzup` - Weekly status report
 - `/binh-phap` - Strategy planning

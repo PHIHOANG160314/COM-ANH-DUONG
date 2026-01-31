@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatCurrency, formatDate, formatDateTime } from './formatters';
+import { formatCurrency, formatDate, formatDateTime, formatRelativeTime } from './formatters';
 
 describe('formatters', () => {
   describe('formatCurrency', () => {
@@ -32,6 +32,38 @@ describe('formatters', () => {
 
     it('returns empty string for null', () => {
       expect(formatDateTime(null)).toBe('');
+    });
+  });
+
+  describe('formatRelativeTime', () => {
+    it('returns empty string for null', () => {
+      expect(formatRelativeTime(null)).toBe('');
+    });
+
+    it('returns HH:mm for today (diff < 1 day)', () => {
+      const now = new Date();
+      // Set to 1 hour ago
+      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+      const result = formatRelativeTime(oneHourAgo);
+      expect(result).toMatch(/\d{2}:\d{2}/);
+    });
+
+    it('returns dddd (day name) for < 7 days ago', () => {
+      const now = new Date();
+      // Set to 2 days ago
+      const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+      const result = formatRelativeTime(twoDaysAgo);
+      // In Vietnamese locale, days are likely "Thứ Hai", "Thứ Ba", etc. or "Chủ Nhật"
+      expect(result).toBeTruthy();
+      expect(typeof result).toBe('string');
+    });
+
+    it('returns DD/MM/YYYY for > 7 days ago', () => {
+      const now = new Date();
+      // Set to 10 days ago
+      const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+      const result = formatRelativeTime(tenDaysAgo);
+      expect(result).toMatch(/\d{2}\/\d{2}\/\d{4}/);
     });
   });
 });

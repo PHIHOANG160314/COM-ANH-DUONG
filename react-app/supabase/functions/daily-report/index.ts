@@ -68,13 +68,10 @@ serve(async (req) => {
       type: 'info',
     });
 
-    return new Response(
-      JSON.stringify({ success: true, report }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ success: true, report }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
   } catch (error) {
     console.error('Daily Report Error:', error);
     return new Response(JSON.stringify({ error: error.message }), {

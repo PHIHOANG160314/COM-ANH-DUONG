@@ -13,8 +13,8 @@ export const hasSupabaseConfig =
   !isPlaceholder(supabaseAnonKey);
 
 if (!hasSupabaseConfig) {
-  console.error('Missing Supabase environment variables');
-  console.error('Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  console.warn('Missing Supabase environment variables - using demo mode');
+  console.warn('Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for real data');
 }
 
 // Create client with fallback to prevent crashes

@@ -94,7 +94,12 @@ export const ProfilePage = () => {
         {/* Content Area */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Paper sx={{ p: 3, borderRadius: 2, mb: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            >
               <History /> Lịch sử tích điểm
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -105,7 +110,9 @@ export const ProfilePage = () => {
                   <ListItem key={txn.id} sx={{ px: 0 }}>
                     <ListItemText
                       primary={txn.description}
-                      secondary={format(new Date(txn.created_at), 'dd/MM/yyyy HH:mm', { locale: vi })}
+                      secondary={format(new Date(txn.created_at), 'dd/MM/yyyy HH:mm', {
+                        locale: vi,
+                      })}
                     />
                     <Typography
                       variant="body2"

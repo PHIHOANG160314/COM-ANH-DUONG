@@ -64,10 +64,7 @@ export const addressApi = {
 
   // Delete address
   deleteAddress: async (id: string) => {
-    const { error } = await supabase
-      .from('customer_addresses')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('customer_addresses').delete().eq('id', id);
 
     if (error) throw error;
   },

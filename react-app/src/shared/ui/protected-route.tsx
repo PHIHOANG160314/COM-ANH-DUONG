@@ -12,7 +12,11 @@ interface ProtectedRouteProps {
   children?: ReactNode;
 }
 
-export const ProtectedRoute = ({ allowedRoles, redirectPath = '/login', children }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({
+  allowedRoles,
+  redirectPath = '/login',
+  children,
+}: ProtectedRouteProps) => {
   const { user, role, loading } = useAuth();
   const location = useLocation();
 

@@ -1,6 +1,6 @@
 # Payment Gateway Integration Plan
 
-**Status:** Draft
+**Status:** Completed
 **Priority:** High
 **Context:** Integration of VNPay and MoMo payment gateways into the Restaurant POS.
 
