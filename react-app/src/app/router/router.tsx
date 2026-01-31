@@ -17,6 +17,7 @@ import { AdminAnalyticsPage } from '@/features/analytics/pages/admin-analytics-p
 import { AdminProductsPage } from '@/pages/admin/admin-products-page';
 import { AdminMenuPage } from '@/pages/admin/admin-menu-page';
 import { AdminOrdersPage } from '@/pages/admin/admin-orders-page';
+import { MenuShowcase } from '@/features/menu/components/menu-showcase';
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: 'checkout',
         element: <CheckoutPage />,
+      },
+      {
+        path: 'menu',
+        element: <MenuShowcase />,
       },
       {
         path: 'checkout/result',

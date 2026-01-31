@@ -43,9 +43,9 @@ react-app/src/
 | Layer | Responsibility | Examples |
 |-------|----------------|----------|
 | **App** | Global initialization | `App.tsx`, `providers/`, `router/` |
-| **Pages** | Route entry points | `HomePage`, `AdminDashboard`, `KitchenPage` |
+| **Pages** | Route entry points | `HomePage`, `AdminDashboard`, `MenuShowcase` |
 | **Widgets** | Large UI components | `OrderList`, `MenuGrid`, `Navbar` |
-| **Features** | User interactions | `AddToCart`, `Login`, `UpdateOrderStatus` |
+| **Features** | User interactions | `AddToCart`, `Login`, `MenuShowcase` |
 | **Entities** | Business logic/data | `User`, `Product`, `Order` (stores, types) |
 | **Shared** | Reusable primitives | `ui/`, `api/`, `utils/`, `hooks/` |
 

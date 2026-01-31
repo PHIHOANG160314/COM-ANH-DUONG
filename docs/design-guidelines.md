@@ -1,4 +1,4 @@
-# Cơm Ánh Dương - Design Guidelines & System (MUI v6 + Material Design 3)
+# Cơm Ánh Dương - Design Guidelines & System (MUI v7 + Material Design 3)
 
 ## 1. Brand Identity
 - **Philosophy**: "Delicious Food, Fast Service, Warm Atmosphere"
@@ -57,7 +57,7 @@ Based on HCT color space.
 - **Medium**: `12px` (Small Cards, Images)
 - **Small**: `8px` (Text Fields, Tooltips)
 
-## 6. Components (MUI v6 Customization)
+## 6. Components (MUI v7 Customization)
 
 ### Buttons
 - **Filled**: Primary background, full rounded corners. Shadow on hover.

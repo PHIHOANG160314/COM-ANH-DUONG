@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-01-31
 
 ### Added
+- **Menu Showcase**: Dedicated `/menu` page showcasing the full menu with "masonry" layout using Material UI Grid v2, optimized for visual appeal.
 - **Marketing Strategy**: Comprehensive marketing plan for Sa Đéc launch.
 - **Marketing Assets**: Created ready-to-use Facebook posts, GMB guide, discount codes, and print menu formats.
 - **Location Update**: Updated all marketing materials to target Sa Đéc, Đồng Tháp instead of HCM.

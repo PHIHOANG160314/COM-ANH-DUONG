@@ -17,7 +17,7 @@
 
 ## UI & Styling
 
-- **UI Library**: Material UI v6 (MUI)
+- **UI Library**: Material UI v7 (MUI)
   - Material Design 3 components
   - Responsive design system
   - Customizable theming
@@ -29,7 +29,7 @@
 
 ## Routing & Navigation
 
-- **Router**: React Router v6
+- **Router**: React Router v7
   - File-based routing structure
   - Nested routes for layouts
   - Protected routes for authentication
