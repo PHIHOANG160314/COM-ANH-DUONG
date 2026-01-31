@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
   }
 
@@ -58,11 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <br />- VITE_SUPABASE_ANON_KEY
               </Typography>
             </Box>
-            <Button
-              variant="contained"
-              onClick={() => window.location.reload()}
-              sx={{ mt: 2 }}
-            >
+            <Button variant="contained" onClick={() => window.location.reload()} sx={{ mt: 2 }}>
               Thử lại
             </Button>
           </Box>
@@ -101,11 +97,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Typography>
               </Box>
             )}
-            <Button
-              variant="contained"
-              onClick={() => window.location.reload()}
-              sx={{ mt: 2 }}
-            >
+            <Button variant="contained" onClick={() => window.location.reload()} sx={{ mt: 2 }}>
               Tải lại trang
             </Button>
           </Box>
