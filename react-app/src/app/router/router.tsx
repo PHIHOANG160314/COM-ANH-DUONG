@@ -17,7 +17,9 @@ import { AdminAnalyticsPage } from '@/features/analytics/pages/admin-analytics-p
 import { AdminProductsPage } from '@/pages/admin/admin-products-page';
 import { AdminMenuPage } from '@/pages/admin/admin-menu-page';
 import { AdminOrdersPage } from '@/pages/admin/admin-orders-page';
+import { AdminSettingsPage } from '@/pages/admin/admin-settings-page';
 import { MenuShowcase } from '@/features/menu/components/menu-showcase';
+import { NotFoundPage } from '@/pages/not-found-page';
 
 export const router = createBrowserRouter([
   {
@@ -97,7 +99,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'settings',
-            element: <div>Settings</div>,
+            element: <AdminSettingsPage />,
           },
         ],
       },
@@ -147,7 +149,7 @@ export const router = createBrowserRouter([
     path: '*',
     element: (
       <MainLayout>
-        <div>404 Not Found</div>
+        <NotFoundPage />
       </MainLayout>
     ),
   },

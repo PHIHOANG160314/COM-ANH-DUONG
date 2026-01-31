@@ -1,14 +1,34 @@
-import { Box, Container, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import {
+  Box,
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Badge,
+} from '@mui/material';
+import {
+  ShoppingCart as CartIcon,
+  Person as PersonIcon,
+  Restaurant as MenuIcon,
+} from '@mui/icons-material';
 import type { ReactNode } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
 import { InstallPrompt } from '@/features/pwa/install-prompt';
+import { useAuth } from '@/features/auth/api/use-auth';
+import { useCartStore } from '@/features/cart/model/cart-store';
 
 interface MainLayoutProps {
   children?: ReactNode;
 }
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const totalItems = useCartStore((state) => state.totalItems());
+
   return (
     <Box
       sx={{
@@ -22,10 +42,34 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <InstallPrompt />
       <AppBar position="sticky" color="primary" elevation={0}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => navigate('/')}
+          >
             Cơm Ánh Dương
           </Typography>
-          <Button color="inherit">Đăng nhập</Button>
+
+          <IconButton color="inherit" onClick={() => navigate('/menu')}>
+            <MenuIcon />
+          </IconButton>
+
+          <IconButton color="inherit" onClick={() => navigate('/checkout')}>
+            <Badge badgeContent={totalItems} color="error">
+              <CartIcon />
+            </Badge>
+          </IconButton>
+
+          {user ? (
+            <IconButton color="inherit" onClick={() => navigate('/profile')}>
+              <PersonIcon />
+            </IconButton>
+          ) : (
+            <Button color="inherit" onClick={() => navigate('/login')}>
+              Đăng nhập
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
 
