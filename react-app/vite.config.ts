@@ -18,7 +18,7 @@ export default defineConfig({
         name: 'Cơm Ánh Dương',
         short_name: 'Cơm Ánh Dương',
         description: 'Ứng dụng đặt cơm trưa văn phòng, quản lý đơn hàng và giao hàng nhanh chóng.',
-        theme_color: '#1976d2',
+        theme_color: '#4ade80',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [

@@ -178,7 +178,7 @@ export const DailyMenuPlanner = () => {
 
             {(!groupedProducts || Object.keys(groupedProducts).length === 0) && (
               <Box sx={{ p: 4, textAlign: 'center' }}>
-                <Typography color="text.secondary">Chưa có món ăn nào trong hệ thống.</Typography>
+                <Typography sx={{ color: '#666' }}>Chưa có món ăn nào trong hệ thống.</Typography>
                 <Button href="/admin/products" sx={{ mt: 1 }}>
                   Quản lý sản phẩm
                 </Button>

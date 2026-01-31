@@ -58,8 +58,8 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
         {product.description && (
           <Typography
             variant="body2"
-            color="text.secondary"
             sx={{
+              color: '#666',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',

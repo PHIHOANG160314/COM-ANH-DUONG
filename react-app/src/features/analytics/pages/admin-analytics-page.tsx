@@ -87,7 +87,7 @@ export const AdminAnalyticsPage = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary" gutterBottom>
+              <Typography sx={{ color: '#666' }} gutterBottom>
                 Doanh thu
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">
@@ -99,7 +99,7 @@ export const AdminAnalyticsPage = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary" gutterBottom>
+              <Typography sx={{ color: '#666' }} gutterBottom>
                 Tổng đơn hàng
               </Typography>
               <Typography variant="h4" fontWeight="bold">
@@ -111,7 +111,7 @@ export const AdminAnalyticsPage = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary" gutterBottom>
+              <Typography sx={{ color: '#666' }} gutterBottom>
                 Giá trị trung bình/đơn
               </Typography>
               <Typography variant="h4" fontWeight="bold">

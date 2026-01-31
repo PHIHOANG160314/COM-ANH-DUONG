@@ -64,7 +64,7 @@ const OrderRow = ({ order, onStatusChange }: OrderRowProps) => {
         <TableCell>
           {order.profiles?.full_name || order.profiles?.username || 'Khách vãng lai'}
           {order.contact_phone && (
-            <Typography variant="caption" display="block" color="text.secondary">
+            <Typography variant="caption" display="block" sx={{ color: '#666' }}>
               {order.contact_phone}
             </Typography>
           )}
@@ -120,7 +120,7 @@ const OrderRow = ({ order, onStatusChange }: OrderRowProps) => {
                       <TableCell component="th" scope="row">
                         {item.products?.name}
                         {item.note && (
-                          <Typography variant="caption" display="block" color="text.secondary">
+                          <Typography variant="caption" display="block" sx={{ color: '#666' }}>
                             Ghi chú: {item.note}
                           </Typography>
                         )}

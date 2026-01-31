@@ -79,7 +79,7 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
               animate={{ opacity: 1, y: 0 }}
               sx={{ textAlign: 'center', py: 4 }}
             >
-              <Typography color="text.secondary">Giỏ hàng trống</Typography>
+              <Typography sx={{ color: '#666' }}>Giỏ hàng trống</Typography>
               <Button onClick={onClose} sx={{ mt: 2 }}>
                 Xem thực đơn
               </Button>

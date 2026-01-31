@@ -37,7 +37,7 @@ export const PosCart = ({ tableId, onClearTable, onSubmitOrder, loading }: PosCa
       <List sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
         {items.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography color="text.secondary">Chưa có món nào</Typography>
+            <Typography sx={{ color: '#666' }}>Chưa có món nào</Typography>
           </Box>
         ) : (
           items.map((item) => (

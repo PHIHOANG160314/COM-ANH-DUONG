@@ -53,7 +53,7 @@ export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodS
                   <Typography variant="body1" fontWeight="medium">
                     Thanh toán qua VNPay
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" sx={{ color: '#666' }}>
                     (ATM / Visa / Mastercard / QR)
                   </Typography>
                 </Box>

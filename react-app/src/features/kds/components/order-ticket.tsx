@@ -80,7 +80,7 @@ export const OrderTicket = ({ order }: OrderTicketProps) => {
             <Typography variant="h6" fontWeight="bold">
               #{order.id.slice(0, 6).toUpperCase()}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#666' }}>
               {formatRelativeTime(order.created_at)}
             </Typography>
           </Box>

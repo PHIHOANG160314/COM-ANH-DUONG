@@ -90,7 +90,7 @@ export const LoginForm = () => {
         </AppButton>
 
         <Box sx={{ textAlign: 'center', mt: 1 }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ color: '#666' }}>
             Chưa có tài khoản?{' '}
             <Link
               component="button"
