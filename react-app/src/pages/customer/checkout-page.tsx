@@ -138,7 +138,6 @@ export const CheckoutPage = () => {
         clearCart();
         window.location.href = paymentResponse.paymentUrl;
       }
-
     } catch (err) {
       console.error('Checkout error:', err);
       alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
@@ -201,10 +200,7 @@ export const CheckoutPage = () => {
               {...register('note')}
             />
 
-            <PaymentMethodSelector
-              value={paymentMethod}
-              onChange={setPaymentMethod}
-            />
+            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
           </Box>
         </Paper>
       </Grid>

@@ -41,8 +41,8 @@ export const PaymentResultPage = () => {
       } else if (momoResultCode) {
         // MoMo
         if (momoResultCode === '0' || momoResultCode === '9000') {
-           // 0 = Success, 9000 = Authorized (Hold)
-           initialStatus = 'success';
+          // 0 = Success, 9000 = Authorized (Hold)
+          initialStatus = 'success';
         } else {
           initialStatus = 'failed';
           setMessage(`Thanh toán thất bại (Mã lỗi: ${momoResultCode})`);
@@ -58,14 +58,14 @@ export const PaymentResultPage = () => {
       // Ideally, frontend should just poll the order status.
 
       if (initialStatus === 'success') {
-          // Poll DB for confirmed status
-          // For now, let's just set success. In real app, we might wait for webhook.
-          setStatus('success');
-          setMessage('Thanh toán thành công! Cảm ơn bạn đã đặt hàng.');
+        // Poll DB for confirmed status
+        // For now, let's just set success. In real app, we might wait for webhook.
+        setStatus('success');
+        setMessage('Thanh toán thành công! Cảm ơn bạn đã đặt hàng.');
       } else if (initialStatus === 'failed') {
-          setStatus('failed');
+        setStatus('failed');
       } else {
-          setStatus('processing');
+        setStatus('processing');
       }
     };
 
@@ -103,7 +103,7 @@ export const PaymentResultPage = () => {
               {message}
             </Typography>
             <Box sx={{ display: 'flex', gap: 2 }}>
-               <AppButton variant="outlined" onClick={() => navigate('/checkout')}>
+              <AppButton variant="outlined" onClick={() => navigate('/checkout')}>
                 Thử Lại
               </AppButton>
               <AppButton variant="text" onClick={() => navigate('/')}>

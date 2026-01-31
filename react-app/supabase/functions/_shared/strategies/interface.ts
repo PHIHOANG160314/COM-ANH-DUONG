@@ -1,4 +1,5 @@
-import { PaymentRequest, PaymentResponse } from "../types.ts";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { PaymentRequest, PaymentResponse } from '../types.ts';
 
 export interface TransactionStatusUpdate {
   status: 'success' | 'failed';

@@ -15,11 +15,7 @@ interface PaymentMethodSelectorProps {
   error?: string;
 }
 
-export const PaymentMethodSelector = ({
-  value,
-  onChange,
-  error,
-}: PaymentMethodSelectorProps) => {
+export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodSelectorProps) => {
   return (
     <Box sx={{ mt: 3 }}>
       <Typography variant="h6" gutterBottom fontWeight="bold">
@@ -27,10 +23,7 @@ export const PaymentMethodSelector = ({
       </Typography>
       <Paper sx={{ p: 2 }}>
         <FormControl component="fieldset" error={!!error} fullWidth>
-          <RadioGroup
-            value={value}
-            onChange={(e) => onChange(e.target.value as PaymentProvider)}
-          >
+          <RadioGroup value={value} onChange={(e) => onChange(e.target.value as PaymentProvider)}>
             <FormControlLabel
               value="cash"
               control={<Radio />}
