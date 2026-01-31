@@ -38,7 +38,7 @@ describe('MenuShowcase', () => {
     expect(screen.getByText(/Ưu Đãi Hôm Nay/i)).toBeInTheDocument();
 
     // Footer
-    expect(screen.getByText(/Sa Đéc, Đồng Tháp/i)).toBeInTheDocument();
+    expect(screen.getByText(/Phường Sa Đéc, Tỉnh Đồng Tháp/i)).toBeInTheDocument();
   });
 
   it('renders loading state correctly', () => {

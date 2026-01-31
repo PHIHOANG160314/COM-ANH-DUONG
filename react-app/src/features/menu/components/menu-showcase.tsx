@@ -139,7 +139,7 @@ export const MenuShowcase = () => {
             Hương Vị Quê Hương
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600 }}>
-            Cơm nhà mẹ nấu - Giao nhanh trong 30 phút tại Sa Đéc
+            Cơm nhà mẹ nấu - Giao nhanh trong 30 phút tại Phường Sa Đéc
           </Typography>
         </Box>
       </Box>
@@ -296,7 +296,7 @@ export const MenuShowcase = () => {
         }}
       >
         <Typography variant="body1" color="text.secondary">
-          📞 [SỐ HOTLINE] • 📍 Sa Đéc, Đồng Tháp
+          📞 [SỐ HOTLINE] • 📍 Phường Sa Đéc, Tỉnh Đồng Tháp
         </Typography>
         <Typography variant="body2" color="text.secondary">
           ⏰ T2-T7: 10h-14h, 17h-20h | CN: 10h-20h
