@@ -3,6 +3,7 @@ import { LocalDining, AccessTime, LocalFlorist } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CONTACT_INFO } from '@/shared/config/contact';
+import { QuickOrderForm } from './quick-order-form';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
@@ -232,6 +233,11 @@ export const HeroSection = () => {
               </Button>
             </motion.div>
           </Box>
+        </Box>
+
+        {/* Quick Order Form */}
+        <Box component={motion.div} variants={itemVariants} sx={{ mt: 4, maxWidth: 'lg', mx: 'auto', px: 3 }}>
+          <QuickOrderForm />
         </Box>
       </Box>
 
