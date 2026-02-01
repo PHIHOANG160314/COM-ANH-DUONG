@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
-import { OperatingHours, getStoreStatus } from './operating-hours';
+import { OperatingHours } from './operating-hours';
+import { getStoreStatus } from '../utils/store-hours';
 import '@testing-library/jest-dom';
 
 describe('getStoreStatus', () => {

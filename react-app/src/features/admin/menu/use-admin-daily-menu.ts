@@ -6,6 +6,14 @@ import type { Database } from '@/shared/types/database.types';
 export type DailyMenu = Database['public']['Tables']['daily_menus']['Row'];
 export type DailyMenuInsert = Database['public']['Tables']['daily_menus']['Insert'];
 
+export interface ProductWithCategory {
+  id: string;
+  name: string;
+  category_id: string | null;
+  is_active: boolean;
+  categories: { name: string } | { name: string }[] | null;
+}
+
 export const useAdminDailyMenu = (date: string) => {
   const queryClient = useQueryClient();
   const formattedDate = dayjs(date).format('YYYY-MM-DD');
@@ -21,7 +29,8 @@ export const useAdminDailyMenu = (date: string) => {
         .order('name');
 
       if (error) throw error;
-      return data;
+      // Cast to expected type to handle the joined property safely
+      return data as unknown as ProductWithCategory[];
     },
   });
 

@@ -30,7 +30,7 @@ import type { ReactNode } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
 import { InstallPrompt } from '@/features/pwa/install-prompt';
-import { useAuth } from '@/features/auth/api/use-auth';
+import { useAuth } from '@/app/providers/use-auth';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { OperatingHours } from '@/shared/ui/operating-hours';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';

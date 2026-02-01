@@ -1,27 +1,20 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, useRef, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase, hasSupabaseConfig } from '@/shared/api/supabase-client';
 import { AppLoading } from '@/shared/ui/app-loading';
-import type { Database } from '@/shared/types/database.types';
 import { Debug } from '@/shared/utils/debug';
-
-type UserRole = Database['public']['Tables']['profiles']['Row']['role'];
-
-interface AuthContextType {
-  session: Session | null;
-  user: User | null;
-  role: UserRole | null;
-  loading: boolean;
-  signOut: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext, type UserRole } from './auth-context';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
+  const loadingRef = useRef(loading);
+
+  useEffect(() => {
+    loadingRef.current = loading;
+  }, [loading]);
 
   useEffect(() => {
     // If Supabase is not configured, skip auth check
@@ -33,11 +26,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Timeout to prevent infinite loading if Supabase is misconfigured
     const timeout = setTimeout(() => {
-      if (loading) {
+      if (loadingRef.current) {
         Debug.warn('Auth check timed out - continuing without authentication');
         setLoading(false);
       }
     }, 5000);
+
+    const fetchUserRole = async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', userId)
+          .single();
+
+        if (error) {
+          Debug.error('Error fetching user role:', error);
+          // Fallback or handle error (e.g., set default role if applicable)
+        } else {
+          setRole(data?.role as UserRole);
+        }
+      } catch (err) {
+        Debug.error('Unexpected error fetching role:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     // Get initial session
     supabase.auth
@@ -74,29 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTimeout(timeout);
       subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const fetchUserRole = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        Debug.error('Error fetching user role:', error);
-        // Fallback or handle error (e.g., set default role if applicable)
-      } else {
-        setRole(data?.role as UserRole);
-      }
-    } catch (err) {
-      Debug.error('Unexpected error fetching role:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -118,13 +110,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

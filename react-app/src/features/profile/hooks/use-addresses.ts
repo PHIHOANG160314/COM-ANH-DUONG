@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { addressApi, type CustomerAddress, type InsertAddress } from '../api/address-api';
 import { Debug } from '@/shared/utils/debug';
 

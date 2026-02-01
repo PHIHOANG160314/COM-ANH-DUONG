@@ -9,7 +9,7 @@ import { RegionalSpecialties } from '@/features/home/components/regional-special
 import { TrustSignals } from '@/features/home/components/trust-signals';
 import { CustomerTestimonials } from '@/features/home/components/customer-testimonials';
 import { UrgencyBanner } from '@/features/home/components/urgency-banner';
-import { useAuth } from '@/features/auth/api/use-auth';
+import { useAuth } from '@/app/providers/use-auth';
 
 export const CustomerHomePage = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);

@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { AppLoading } from '@/shared/ui';
 import type { Database } from '@/shared/types/database.types';
 import { type ReactNode } from 'react';

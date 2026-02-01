@@ -5,7 +5,7 @@ import { MenuGrid } from '@/features/menu/components/menu-grid';
 import { PosCart } from '@/features/pos/components/pos-cart';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { supabase } from '@/shared/api/supabase-client';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { Debug } from '@/shared/utils/debug';
 
 export const StaffMobilePosPage = () => {

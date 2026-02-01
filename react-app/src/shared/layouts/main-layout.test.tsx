@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MainLayout } from './main-layout';
 import { BrowserRouter } from 'react-router-dom';
-import * as useAuthHook from '@/features/auth/api/use-auth';
+import * as useAuthHook from '@/app/providers/use-auth';
 import * as cartStore from '@/features/cart/model/cart-store';
 import type { CartState } from '@/features/cart/model/cart-store';
 
@@ -17,7 +17,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 // Mock dependencies
-vi.mock('@/features/auth/api/use-auth');
+vi.mock('@/app/providers/use-auth');
 vi.mock('@/features/cart/model/cart-store');
 vi.mock('@/features/pwa/reload-prompt', () => ({
   ReloadPrompt: () => <div data-testid="reload-prompt">Reload Prompt</div>,

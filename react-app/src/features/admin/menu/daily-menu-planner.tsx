@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { ContentCopy as CopyIcon } from '@mui/icons-material';
-import { useAdminDailyMenu } from './use-admin-daily-menu';
+import { useAdminDailyMenu, type ProductWithCategory } from './use-admin-daily-menu';
 
 export const DailyMenuPlanner = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs().add(1, 'day')); // Default to tomorrow
@@ -34,8 +34,7 @@ export const DailyMenuPlanner = () => {
   const groupedProducts = products?.reduce(
     (acc, product) => {
       // Handle potential array or object for categories relation
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const categories = product.categories as any;
+      const categories = product.categories;
       const categoryName = Array.isArray(categories)
         ? categories[0]?.name
         : categories?.name || 'Khác';
@@ -46,7 +45,7 @@ export const DailyMenuPlanner = () => {
       acc[categoryName].push(product);
       return acc;
     },
-    {} as Record<string, typeof products>
+    {} as Record<string, ProductWithCategory[]>
   );
 
   const isSelected = (productId: string) => {

@@ -3,7 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { RouterProvider } from 'react-router-dom';
-import { ThemeProvider } from '@/shared/theme/theme-context';
+import { ThemeProvider } from '@/shared/theme/theme-provider';
 import { ToastProvider } from '@/shared/ui/toast-notification';
 import { InstallPrompt } from '@/shared/ui/install-prompt';
 import { AuthProvider } from './auth-provider';

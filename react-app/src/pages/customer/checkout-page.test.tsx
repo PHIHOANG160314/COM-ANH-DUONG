@@ -19,7 +19,7 @@ vi.mock('@/features/cart/model/cart-store', () => ({
   useCartStore: vi.fn(),
 }));
 
-vi.mock('@/app/providers/auth-provider', () => ({
+vi.mock('@/app/providers/use-auth', () => ({
   useAuth: vi.fn(),
 }));
 
@@ -57,8 +57,11 @@ vi.mock('@/features/payment/api/payment-api', () => ({
   },
 }));
 
-vi.mock('@/shared/ui/operating-hours', () => ({
+vi.mock('@/shared/utils/store-hours', () => ({
   getStoreStatus: vi.fn(() => ({ status: 'open', message: 'Open' })),
+}));
+
+vi.mock('@/shared/ui/operating-hours', () => ({
   OperatingHours: () => <div data-testid="operating-hours">Operating Hours</div>,
 }));
 
@@ -80,7 +83,7 @@ vi.mock('@/features/payment/components/payment-method-selector', () => ({
 }));
 
 import { useCartStore } from '@/features/cart/model/cart-store';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { useAddresses } from '@/features/profile/hooks/use-addresses';
 import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
 import { paymentApi } from '@/features/payment/api/payment-api';

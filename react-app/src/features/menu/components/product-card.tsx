@@ -3,7 +3,7 @@ import { AddShoppingCart } from '@mui/icons-material';
 import { useState, useEffect, useRef } from 'react';
 import { AppButton } from '@/shared/ui';
 import { formatCurrency } from '@/shared/lib/formatters';
-import { useToast } from '@/shared/ui/toast-notification';
+import { useToast } from '@/shared/ui/use-toast';
 import { useHaptic } from '@/shared/hooks/use-haptic';
 import type { Database } from '@/shared/types/database.types';
 

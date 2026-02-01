@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { loyaltyApi, type LoyaltyStats, type LoyaltyTransaction } from '../api/loyalty-api';
 import { Debug } from '@/shared/utils/debug';
 

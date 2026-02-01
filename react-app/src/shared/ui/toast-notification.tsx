@@ -1,13 +1,8 @@
 import { Snackbar, Alert } from '@mui/material';
 import type { AlertColor } from '@mui/material';
-import { createContext, useContext, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
-
-interface ToastContextType {
-  showToast: (message: string, severity?: AlertColor, duration?: number) => void;
-}
-
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+import { ToastContext } from './toast-provider';
 
 interface ToastProviderProps {
   children: ReactNode;
@@ -71,12 +66,4 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
       </Snackbar>
     </ToastContext.Provider>
   );
-};
-
-export const useToast = () => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within ToastProvider');
-  }
-  return context;
 };

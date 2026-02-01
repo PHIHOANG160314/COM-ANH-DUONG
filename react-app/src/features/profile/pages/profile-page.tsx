@@ -14,11 +14,11 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { History, Person, LocationOn, Star, DarkMode, LightMode } from '@mui/icons-material';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/app/providers/use-auth';
 import { useLoyalty } from '../hooks/use-loyalty';
 import { LoyaltyCard } from '../components/loyalty-card';
 import { AppLoading } from '@/shared/ui/app-loading';
-import { useTheme } from '@/shared/theme/theme-context';
+import { useTheme } from '@/shared/theme/use-theme';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 

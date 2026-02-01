@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { MainLayout, AuthLayout } from '@/shared/layouts';
 import { LoginForm } from '@/features/auth/login-form';
 import { RegisterForm } from '@/features/auth/register-form';
@@ -11,7 +11,7 @@ import { PaymentResultPage } from '@/pages/customer/payment-result-page';
 import { MenuShowcase } from '@/features/menu/components/menu-showcase';
 import { NotFoundPage } from '@/pages/not-found-page';
 import { OfflinePage } from '@/pages/offline';
-import { CircularProgress, Box } from '@mui/material';
+import { LazyPage } from '@/shared/ui/lazy-page';
 
 // Lazy load heavy pages for code splitting
 const ProfilePage = lazy(() =>
@@ -48,18 +48,6 @@ const AdminOrdersPage = lazy(() =>
 );
 const AdminSettingsPage = lazy(() =>
   import('@/pages/admin/admin-settings-page').then((m) => ({ default: m.AdminSettingsPage }))
-);
-
-// Loading fallback component
-const LazyLoading = () => (
-  <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-    <CircularProgress />
-  </Box>
-);
-
-// Wrapper for lazy components
-const LazyPage = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<LazyLoading />}>{children}</Suspense>
 );
 
 export const router = createBrowserRouter([

@@ -1,6 +1,6 @@
 import { IconButton, Tooltip } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { useTheme } from '@/shared/theme/theme-context';
+import { useTheme } from '@/shared/theme/use-theme';
 
 export const ThemeToggle = () => {
   const { mode, toggleTheme } = useTheme();

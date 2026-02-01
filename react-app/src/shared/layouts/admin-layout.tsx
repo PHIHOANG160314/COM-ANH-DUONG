@@ -29,7 +29,7 @@ import {
   Logout as LogoutIcon,
   BarChart as AnalyticsIcon,
 } from '@mui/icons-material';
-import { useAuth } from '@/features/auth/api/use-auth';
+import { useAuth } from '@/app/providers/use-auth';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
 
 const drawerWidth = 240;

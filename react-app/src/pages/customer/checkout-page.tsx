@@ -1,243 +1,37 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import {
-  Box,
-  Typography,
-  Grid,
-  Paper,
-  Divider,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Button,
-  TextField,
-  InputAdornment,
-  Alert,
-} from '@mui/material';
-import { AccessTime } from '@mui/icons-material';
-import { AppInput, AppButton } from '@/shared/ui';
-import { useCartStore } from '@/features/cart/model/cart-store';
-import { formatCurrency } from '@/shared/lib/formatters';
+import { Box, Typography, Grid } from '@mui/material';
+import { AppButton } from '@/shared/ui';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/shared/api/supabase-client';
-import { useAuth } from '@/app/providers/auth-provider';
-import { PaymentMethodSelector } from '@/features/payment/components/payment-method-selector';
-import { paymentApi, type PaymentProvider } from '@/features/payment/api/payment-api';
-import { useAddresses } from '@/features/profile/hooks/use-addresses';
-import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
-import { LocationOn, Star } from '@mui/icons-material';
-import { Debug } from '@/shared/utils/debug';
-import DOMPurify from 'dompurify';
-import { getStoreStatus, OperatingHours } from '@/shared/ui/operating-hours';
-import { TrustBadges } from '@/shared/ui/trust-badges';
-
-const checkoutSchema = z.object({
-  fullName: z.string().min(2, 'Vui lòng nhập họ tên'),
-  phone: z.string().min(10, 'Số điện thoại không hợp lệ'),
-  address: z.string().min(5, 'Vui lòng nhập địa chỉ giao hàng'),
-  note: z.string().optional(),
-});
-
-type CheckoutFormData = z.infer<typeof checkoutSchema>;
+import { useCheckout } from '@/features/checkout/hooks/use-checkout';
+import { AddressSection } from '@/features/checkout/components/address-section';
+import { OrderSummary } from '@/features/checkout/components/order-summary';
+import { getStoreStatus } from '@/shared/utils/store-hours';
 
 export const CheckoutPage = () => {
-  const { items, totalAmount, clearCart, updateItemPrice } = useCartStore();
-  const { user } = useAuth();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentProvider>('cash');
+  const {
+    form: {
+      register,
+      formState: { errors },
+    },
+    items,
+    user,
+    loading,
+    paymentMethod,
+    setPaymentMethod,
+    addresses,
+    selectedAddressId,
+    handleAddressSelect,
+    stats,
+    pointsToRedeem,
+    setPointsToRedeem,
+    subtotal,
+    discountAmount,
+    finalTotal,
+    onSubmit,
+  } = useCheckout();
 
-  // Operating Hours Check
   const storeStatus = getStoreStatus();
   const isStoreClosed = storeStatus.status === 'closed';
-
-  // Loyalty & Addresses
-  const { addresses } = useAddresses();
-  const { stats } = useLoyalty();
-  const [useSavedAddress, setUseSavedAddress] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
-  const [pointsToRedeem, setPointsToRedeem] = useState(0);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CheckoutFormData>({
-    resolver: zodResolver(checkoutSchema),
-    defaultValues: {
-      fullName: user?.user_metadata?.full_name || '',
-      phone: '',
-      address: '',
-    },
-  });
-
-  // Watch address field to uncheck saved address if user types manually
-  const addressValue = watch('address');
-  useEffect(() => {
-    if (useSavedAddress && selectedAddressId) {
-      const selected = addresses.find((a) => a.id === selectedAddressId);
-      if (selected && addressValue !== selected.address) {
-        // User modified the address manually
-        // We can keep useSavedAddress true or false, but logically it's now a custom address
-        // setUseSavedAddress(false); // Optional: reset selection
-      }
-    }
-  }, [addressValue, useSavedAddress, selectedAddressId, addresses]);
-
-  // Handle Address Selection
-  const handleAddressSelect = (addressId: string) => {
-    const selected = addresses.find((a) => a.id === addressId);
-    if (selected) {
-      setSelectedAddressId(addressId);
-      setUseSavedAddress(true);
-      setValue('address', selected.address, { shouldValidate: true });
-      if (selected.phone) {
-        setValue('phone', selected.phone, { shouldValidate: true });
-      }
-    }
-  };
-
-  // Calculations
-  const subtotal = totalAmount();
-  const discountAmount = pointsToRedeem * 100; // 1 Point = 100 VND
-  const finalTotal = Math.max(0, subtotal - discountAmount);
-
-  const onSubmit = async (data: CheckoutFormData) => {
-    if (items.length === 0 || loading) return;
-    setLoading(true);
-
-    try {
-      // Validate current prices match cart prices
-      const menuItemIds = items.map((item) => Number(item.id));
-      const { data: currentPrices } = await supabase
-        .from('menu_items')
-        .select('id, price')
-        .in('id', menuItemIds);
-
-      if (currentPrices) {
-        const pricesMismatch = items.some((item) => {
-          const current = currentPrices.find((p) => p.id === Number(item.id));
-          return current && current.price !== item.price;
-        });
-
-        if (pricesMismatch) {
-          // Update cart with new prices
-          currentPrices.forEach((p) => {
-            const item = items.find((i) => Number(i.id) === p.id);
-            if (item && item.price !== p.price) {
-              updateItemPrice(item.id, p.price);
-            }
-          });
-
-          alert('Giá món ăn đã thay đổi. Vui lòng kiểm tra lại giỏ hàng.');
-          setLoading(false);
-          return;
-        }
-      }
-
-      // 1. Get Customer ID (if logged in)
-      let customerId = null;
-      if (user) {
-        const { data: customer } = await supabase
-          .from('customers')
-          .select('id')
-          .eq('auth_user_id', user.id)
-          .single();
-        if (customer) {
-          customerId = customer.id;
-        }
-      }
-
-      // 2. Prepare Payloads
-      const orderPayload = {
-        customer_id: customerId,
-        customer_name: DOMPurify.sanitize(data.fullName.trim()),
-        customer_phone: DOMPurify.sanitize(data.phone.replace(/\s/g, '')),
-        delivery_address: DOMPurify.sanitize(data.address.trim()),
-        notes: DOMPurify.sanitize(data.note?.trim() || ''),
-        total: finalTotal,
-        subtotal: subtotal,
-        discount: discountAmount,
-        points_redeemed: pointsToRedeem,
-        status: 'pending',
-        payment_method: paymentMethod,
-        payment_status: 'pending',
-        order_type: 'delivery',
-      };
-
-      const orderItemsPayload = items.map((item) => ({
-        menu_item_id: Number(item.id),
-        quantity: item.quantity,
-        unit_price: item.price,
-        total_price: item.price * item.quantity,
-        item_name: item.name,
-        notes: item.note,
-      }));
-
-      // 3. Call Atomic Transaction RPC
-      // Use RPC to ensure order and items are created in a single transaction
-      const { data: orderData, error: orderError } = await supabase.rpc('create_order_atomic', {
-        p_order_payload: orderPayload,
-        p_items_payload: orderItemsPayload,
-      });
-
-      if (orderError) throw orderError;
-      if (!orderData) throw new Error('Không thể tạo đơn hàng');
-
-      // The RPC returns the created order object directly
-      // Cast to any to access properties since RPC returns Json type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const createdOrder = orderData as any;
-
-      // 4. Process Payment
-      if (paymentMethod === 'cash') {
-        clearCart();
-        navigate('/order-success', {
-          state: {
-            orderId: createdOrder.id,
-            totalAmount: finalTotal,
-            paymentMethod: 'cash',
-          },
-        });
-      } else {
-        // Online Payment
-        const paymentResponse = await paymentApi.createPayment(
-          createdOrder.id,
-          finalTotal, // Use discounted total
-          paymentMethod
-        );
-
-        if (!paymentResponse || !paymentResponse.paymentUrl) {
-          throw new Error('Không thể tạo liên kết thanh toán. Vui lòng thử lại.');
-        }
-
-        // Do NOT clear cart here. Wait for payment success callback.
-        window.location.href = paymentResponse.paymentUrl;
-      }
-    } catch (err) {
-      // Handle Supabase PostgrestError and standard Error objects
-      let errorMessage = 'Có lỗi không xác định xảy ra';
-
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (err && typeof err === 'object' && 'message' in err) {
-        // Supabase PostgrestError has a message property
-        errorMessage = (err as { message: string }).message;
-      } else if (err && typeof err === 'object' && 'error' in err) {
-        // Some Supabase errors might be in this format
-        errorMessage = (err as { error: string }).error;
-      }
-
-      Debug.error('Checkout error:', err);
-      alert(`Có lỗi xảy ra: ${errorMessage}`);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (items.length === 0) {
     return (
@@ -261,100 +55,17 @@ export const CheckoutPage = () => {
         >
           Thông tin giao hàng
         </Typography>
-        <Paper sx={{ p: 3 }}>
-          {/* Saved Addresses Section */}
-          {user && addresses.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              <Typography
-                variant="subtitle1"
-                fontWeight="bold"
-                gutterBottom
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <LocationOn color="primary" fontSize="small" /> Chọn từ sổ địa chỉ
-              </Typography>
-              <RadioGroup
-                value={selectedAddressId}
-                onChange={(e) => handleAddressSelect(e.target.value)}
-              >
-                {addresses.map((addr) => (
-                  <FormControlLabel
-                    key={addr.id}
-                    value={addr.id}
-                    control={<Radio size="small" />}
-                    label={
-                      <Typography variant="body2">
-                        <strong>{addr.label}:</strong> {addr.address}{' '}
-                        {addr.phone ? `(${addr.phone})` : ''}
-                      </Typography>
-                    }
-                    sx={{ mb: 1 }}
-                  />
-                ))}
-              </RadioGroup>
-              <Divider sx={{ my: 2 }} />
-            </Box>
-          )}
-
-          <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-          >
-            <AppInput
-              label="Họ và tên"
-              fullWidth
-              error={!!errors.fullName}
-              helperText={errors.fullName?.message}
-              {...register('fullName')}
-            />
-            <AppInput
-              label="Số điện thoại"
-              fullWidth
-              error={!!errors.phone}
-              helperText={errors.phone?.message}
-              {...register('phone')}
-            />
-            <AppInput
-              label="Địa chỉ nhận hàng"
-              fullWidth
-              multiline
-              rows={2}
-              error={!!errors.address}
-              helperText={errors.address?.message}
-              {...register('address')}
-            />
-            <AppInput
-              label="Ghi chú cho quán/tài xế"
-              fullWidth
-              multiline
-              rows={2}
-              {...register('note')}
-            />
-
-            {/* SEA F&B SOPs - Trust Elements */}
-            <Box sx={{ mb: 2 }}>
-              <TrustBadges variant="minimal" />
-            </Box>
-
-            {isStoreClosed ? (
-              <Alert severity="error" icon={<AccessTime />} sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" fontWeight="bold">
-                  Quán đang đóng cửa
-                </Typography>
-                <Typography variant="body2">
-                  Giờ mở cửa: 10:00 - 22:00. Vui lòng quay lại sau!
-                </Typography>
-              </Alert>
-            ) : (
-              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                <OperatingHours showDetails />
-              </Box>
-            )}
-
-            <PaymentMethodSelector value={paymentMethod} onChange={setPaymentMethod} />
-          </Box>
-        </Paper>
+        <AddressSection
+          user={user}
+          addresses={addresses}
+          selectedAddressId={selectedAddressId}
+          onAddressSelect={handleAddressSelect}
+          register={register}
+          errors={errors}
+          isStoreClosed={isStoreClosed}
+          paymentMethod={paymentMethod}
+          onPaymentMethodChange={setPaymentMethod}
+        />
       </Grid>
 
       <Grid size={{ xs: 12, md: 5 }}>
@@ -366,133 +77,20 @@ export const CheckoutPage = () => {
         >
           Đơn hàng của bạn
         </Typography>
-        <Paper sx={{ p: 3 }}>
-          {items.map((item) => (
-            <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Box>
-                <Typography variant="subtitle2">
-                  {item.quantity}x {item.name}
-                </Typography>
-              </Box>
-              <Typography variant="subtitle2" fontWeight="bold">
-                {formatCurrency(item.price * item.quantity)}
-              </Typography>
-            </Box>
-          ))}
-          <Box sx={{ my: 2, borderTop: '1px solid #eee' }} />
-
-          {/* Loyalty Points Redemption */}
-          {user && stats && stats.points > 0 && (
-            <Box
-              sx={{
-                mb: 2,
-                p: 2,
-                bgcolor: 'warning.light',
-                borderRadius: 1,
-                border: '1px dashed',
-                borderColor: 'warning.main',
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                gutterBottom
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <Star sx={{ color: 'warning.main' }} fontSize="small" /> Dùng điểm tích lũy
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                Bạn có <strong>{stats.points} điểm</strong>. (100đ = 1 điểm)
-              </Typography>
-
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Nhập số điểm"
-                  value={pointsToRedeem > 0 ? pointsToRedeem : ''}
-                  onChange={(e) => {
-                    const val = Number(e.target.value);
-                    if (val >= 0 && val <= stats.points) {
-                      setPointsToRedeem(val);
-                    }
-                  }}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">điểm</InputAdornment>,
-                  }}
-                  sx={{ bgcolor: 'background.paper' }}
-                />
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => setPointsToRedeem(stats.points)}
-                >
-                  Dùng tất cả
-                </Button>
-              </Box>
-              {pointsToRedeem > 0 && (
-                <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
-                  Đã áp dụng giảm giá: -{formatCurrency(pointsToRedeem * 100)}
-                </Typography>
-              )}
-            </Box>
-          )}
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body1">Tạm tính</Typography>
-            <Typography variant="body1">{formatCurrency(subtotal)}</Typography>
-          </Box>
-          {discountAmount > 0 && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                mb: 1,
-                color: 'success.main',
-              }}
-            >
-              <Typography variant="body1">Giảm giá (Điểm)</Typography>
-              <Typography variant="body1" fontWeight="bold">
-                -{formatCurrency(discountAmount)}
-              </Typography>
-            </Box>
-          )}
-          <Box sx={{ my: 1, borderTop: '1px solid #eee' }} />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-            <Typography variant="h6">Tổng cộng</Typography>
-            <Typography variant="h6" color="primary" fontWeight="bold">
-              {formatCurrency(finalTotal)}
-            </Typography>
-          </Box>
-          <AppButton
-            variant="contained"
-            fullWidth
-            size="large"
-            loading={loading}
-            onClick={handleSubmit(onSubmit)}
-            disabled={isStoreClosed || loading}
-            sx={{
-              bgcolor: isStoreClosed
-                ? 'action.disabledBackground'
-                : paymentMethod === 'cash'
-                  ? 'success.main'
-                  : 'primary.main',
-              '&:hover': {
-                bgcolor: isStoreClosed
-                  ? 'action.disabledBackground'
-                  : paymentMethod === 'cash'
-                    ? 'success.dark'
-                    : 'primary.dark',
-              },
-            }}
-          >
-            {isStoreClosed
-              ? 'Quán đã đóng cửa'
-              : paymentMethod === 'cash'
-                ? 'Đặt đơn - Trả tiền mặt'
-                : 'Thanh toán & Đặt hàng'}
-          </AppButton>
-        </Paper>
+        <OrderSummary
+          items={items}
+          user={user}
+          loyaltyStats={stats}
+          pointsToRedeem={pointsToRedeem}
+          onPointsChange={setPointsToRedeem}
+          subtotal={subtotal}
+          discountAmount={discountAmount}
+          finalTotal={finalTotal}
+          loading={loading}
+          isStoreClosed={isStoreClosed}
+          paymentMethod={paymentMethod}
+          onSubmit={onSubmit}
+        />
       </Grid>
     </Grid>
   );
