@@ -1,83 +1,61 @@
-import { useState, useEffect } from 'react';
-import { Button, Snackbar, Alert } from '@mui/material';
-import { Download as InstallIcon } from '@mui/icons-material';
-import { Debug } from '@/shared/utils/debug';
+import { Button, Snackbar, Alert, Slide, IconButton, Stack } from '@mui/material';
+import type { SlideProps } from '@mui/material';
+import { Download as InstallIcon, Close as CloseIcon } from '@mui/icons-material';
+import { usePwaInstallPrompt } from './hooks/use-pwa-install-prompt';
+import { IosInstallModal } from './ios-install-modal';
 
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
+function SlideTransition(props: SlideProps) {
+  return <Slide {...props} direction="up" />;
 }
 
 export const InstallPrompt = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showPrompt, setShowPrompt] = useState(false);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Update UI notify the user they can install the PWA
-      setShowPrompt(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handler);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    // Show the install prompt
-    deferredPrompt.prompt();
-
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-      Debug.log('User accepted the install prompt');
-    } else {
-      Debug.log('User dismissed the install prompt');
-    }
-
-    setDeferredPrompt(null);
-    setShowPrompt(false);
-  };
-
-  const handleClose = () => {
-    setShowPrompt(false);
-  };
+  const { showPrompt, showIosPrompt, promptInstall, dismissPrompt, closeIosPrompt } =
+    usePwaInstallPrompt();
 
   if (!showPrompt) return null;
 
   return (
-    <Snackbar
-      open={showPrompt}
-      autoHideDuration={10000}
-      onClose={handleClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      sx={{ bottom: { xs: 90, sm: 24 } }} // Adjust for mobile bottom nav if needed
-    >
-      <Alert
-        onClose={handleClose}
-        severity="info"
-        icon={<InstallIcon />}
-        action={
-          <Button color="inherit" size="small" onClick={handleInstallClick}>
-            Cài đặt
-          </Button>
-        }
+    <>
+      <Snackbar
+        open={showPrompt}
+        // Removed autoHideDuration to ensure user sees it until dismissed
+        // or we can keep it if we want it to be transient.
+        // Requirement said "Show prompt only after...", didn't specify it should auto-hide.
+        // Usually prompts stick around until interacting.
+        onClose={dismissPrompt}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        TransitionComponent={SlideTransition}
+        sx={{ bottom: { xs: 90, sm: 24 } }}
       >
-        Cài đặt ứng dụng để trải nghiệm tốt hơn!
-      </Alert>
-    </Snackbar>
+        <Alert
+          severity="info"
+          icon={<InstallIcon />}
+          elevation={6}
+          variant="filled"
+          action={
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Button color="inherit" size="small" onClick={promptInstall}>
+                Cài đặt
+              </Button>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={dismissPrompt}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Stack>
+          }
+          sx={{
+            width: '100%',
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText',
+            '& .MuiAlert-icon': {
+              color: 'inherit',
+            },
+          }}
+        >
+          Cài đặt ứng dụng Cơm Ánh Dương để đặt món nhanh hơn!
+        </Alert>
+      </Snackbar>
+
+      <IosInstallModal open={showIosPrompt} onClose={closeIosPrompt} />
+    </>
   );
 };
