@@ -1,13 +1,13 @@
 import { Typography, Box } from '@mui/material';
-import { DailyMenuPlanner } from '@/features/admin/menu/daily-menu-planner';
+import { DynamicMenuManager } from '@/features/admin/menu/dynamic-menu-manager';
 
 export const AdminMenuPage = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Thực đơn hàng ngày
+        Quản lý thực đơn
       </Typography>
-      <DailyMenuPlanner />
+      <DynamicMenuManager />
     </Box>
   );
 };
