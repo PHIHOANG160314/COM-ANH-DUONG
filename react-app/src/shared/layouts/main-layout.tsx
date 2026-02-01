@@ -134,7 +134,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           >
             <Box
               component="img"
-              src="/images/brand-logo-header.png"
+              src="/brand-logo-header.png"
               alt="Cơm Ánh Dương Logo"
               sx={{
                 width: 36,
