@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Master - Cơm Ánh Dương</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Admin Master - Quản lý tổng hợp hệ thống Cơm Ánh Dương">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/adminmaster.css">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="logo-landing.png" alt="Ánh Dương" class="login-logo">
+                <h1>Admin Master</h1>
+                <p>Đăng nhập với tài khoản Super Admin</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-login">
+                    <span class="btn-text">Đăng Nhập</span>
+                    <span class="btn-loading" style="display: none;">⏳</span>
+                </button>
+                <div id="loginError" class="login-error" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- Header -->
+        <header class="master-header">
+            <div class="header-left">
+                <img src="logo-landing.png" alt="Ánh Dương" class="header-logo">
+                <div class="header-title">
+                    <h1>Admin Master</h1>
+                    <span class="header-subtitle">Command Center</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span>System Online</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="currentTime" class="current-time"></span>
+                <button id="logoutBtn" class="btn-logout" title="Đăng xuất">🚪</button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="master-nav">
+            <button class="nav-tab active" data-panel="overview">📊 Tổng Quan</button>
+            <button class="nav-tab" data-panel="admin">🛒 Admin</button>
+            <button class="nav-tab" data-panel="kitchen">👨‍🍳 Kitchen</button>
+            <button class="nav-tab" data-panel="customer">👥 Customer</button>
+            <button class="nav-tab" data-panel="shipper">🚚 Shipper</button>
+            <button class="nav-tab" data-panel="tools">🔧 Tools</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="master-content">
+            <!-- Overview Panel -->
+            <section id="panel-overview" class="panel active">
+                <div class="overview-grid">
+                    <!-- KPI Cards -->
+                    <div class="kpi-section">
+                        <h2>📈 Thống Kê Realtime</h2>
+                        <div class="kpi-cards">
+                            <div class="kpi-card revenue">
+                                <div class="kpi-icon">💰</div>
+                                <div class="kpi-info">
+                                    <span class="kpi-value" id="kpiRevenue">0đ</span>
+                                    <span class="kpi-label">Doanh thu hôm nay</span>
+                                </div>
+                            </div>
+                            <div class="kpi-card orders">
+                                <div class="kpi-icon">📋</div>
+                                <div class="kpi-info">
+                                    <span class="kpi-value" id="kpiOrders">0</span>
+                                    <span class="kpi-label">Đơn hàng</span>
+                                </div>
+                            </div>
+                            <div class="kpi-card staff">
+                                <div class="kpi-icon">👥</div>
+                                <div class="kpi-info">
+                                    <span class="kpi-value" id="kpiStaff">0</span>
+                                    <span class="kpi-label">Nhân viên online</span>
+                                </div>
+                            </div>
+                            <div class="kpi-card kitchen">
+                                <div class="kpi-icon">🔥</div>
+                                <div class="kpi-info">
+                                    <span class="kpi-value" id="kpiKitchen">0</span>
+                                    <span class="kpi-label">Món đang nấu</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="quick-links-section">
+                        <h2>⚡ Quick Access</h2>
+                        <div class="quick-links">
+                            <a href="admin.html" target="_blank" class="quick-link">
+                                <span class="link-icon">🛒</span>
+                                <span>Mở Admin</span>
+                            </a>
+                            <a href="kitchen.html" target="_blank" class="quick-link">
+                                <span class="link-icon">👨‍🍳</span>
+                                <span>Mở Kitchen</span>
+                            </a>
+                            <a href="customer.html" target="_blank" class="quick-link">
+                                <span class="link-icon">📱</span>
+                                <span>Mở Customer</span>
+                            </a>
+                            <a href="shipper.html" target="_blank" class="quick-link">
+                                <span class="link-icon">🚚</span>
+                                <span>Mở Shipper</span>
+                            </a>
+                            <a href="staff-mobile.html" target="_blank" class="quick-link">
+                                <span class="link-icon">👤</span>
+                                <span>Mở Staff</span>
+                            </a>
+                            <a href="landing.html" target="_blank" class="quick-link">
+                                <span class="link-icon">🏠</span>
+                                <span>Landing Page</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- System Alerts -->
+                    <div class="alerts-section">
+                        <h2>⚠️ Cảnh Báo Hệ Thống</h2>
+                        <div id="alertsList" class="alerts-list">
+                            <div class="alert-item info">
+                                <span class="alert-icon">ℹ️</span>
+                                <span>Hệ thống hoạt động bình thường</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Panel -->
+            <section id="panel-admin" class="panel">
+                <div class="iframe-container">
+                    <iframe src="admin.html" id="adminFrame" title="Admin Panel"></iframe>
+                </div>
+            </section>
+
+            <!-- Kitchen Panel -->
+            <section id="panel-kitchen" class="panel">
+                <div class="iframe-container">
+                    <iframe src="kitchen.html" id="kitchenFrame" title="Kitchen Display"></iframe>
+                </div>
+            </section>
+
+            <!-- Customer Panel -->
+            <section id="panel-customer" class="panel">
+                <div class="iframe-container">
+                    <iframe src="customer.html" id="customerFrame" title="Customer App"></iframe>
+                </div>
+            </section>
+
+            <!-- Shipper Panel -->
+            <section id="panel-shipper" class="panel">
+                <div class="iframe-container">
+                    <iframe src="shipper.html" id="shipperFrame" title="Shipper App"></iframe>
+                </div>
+            </section>
+
+            <!-- Tools Panel -->
+            <section id="panel-tools" class="panel">
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3>🗄️ Database</h3>
+                        <p>Quản lý Supabase Database</p>
+                        <a href="https://supabase.com/dashboard" target="_blank" class="btn-tool">
+                            Mở Supabase Studio
+                        </a>
+                    </div>
+                    <div class="tool-card">
+                        <h3>🧹 Cache</h3>
+                        <p>Xóa cache và dữ liệu tạm</p>
+                        <button id="clearCacheBtn" class="btn-tool">
+                            Xóa Cache
+                        </button>
+                    </div>
+                    <div class="tool-card">
+                        <h3>📋 Logs</h3>
+                        <p>Xem logs hệ thống</p>
+                        <button id="viewLogsBtn" class="btn-tool">
+                            Xem Logs
+                        </button>
+                    </div>
+                    <div class="tool-card">
+                        <h3>🔄 Sync</h3>
+                        <p>Đồng bộ dữ liệu</p>
+                        <button id="syncDataBtn" class="btn-tool">
+                            Đồng Bộ
+                        </button>
+                    </div>
+                    <div class="tool-card">
+                        <h3>💾 Backup</h3>
+                        <p>Sao lưu dữ liệu</p>
+                        <button id="backupBtn" class="btn-tool">
+                            Tạo Backup
+                        </button>
+                    </div>
+                    <div class="tool-card">
+                        <h3>⚙️ Settings</h3>
+                        <p>Cấu hình hệ thống</p>
+                        <button id="settingsBtn" class="btn-tool">
+                            Cài Đặt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Logs Viewer -->
+                <div id="logsViewer" class="logs-viewer" style="display: none;">
+                    <div class="logs-header">
+                        <h3>📋 System Logs</h3>
+                        <button id="closeLogsBtn" class="btn-close">✕</button>
+                    </div>
+                    <div id="logsContent" class="logs-content">
+                        <pre>Loading logs...</pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/adminmaster.js"></script>
+</body>
+
+</html>
