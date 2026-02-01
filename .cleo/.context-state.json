@@ -1,17 +1,17 @@
 {
   "$schema": "https://cleo-dev.com/schemas/v1/context-state.schema.json",
   "version": "1.0.0",
-  "timestamp": "2026-02-01T02:54:46Z",
+  "timestamp": "2026-02-01T02:58:33Z",
   "staleAfterMs": 5000,
   "contextWindow": {
     "maxTokens": 200000,
-    "currentTokens": 284,
+    "currentTokens": 190,
     "percentage": 0,
     "breakdown": {
-      "inputTokens": 284,
+      "inputTokens": 190,
       "outputTokens": 0,
       "cacheCreationTokens": 0,
-      "cacheReadTokens": 104411
+      "cacheReadTokens": 106757
     }
   },
   "thresholds": {

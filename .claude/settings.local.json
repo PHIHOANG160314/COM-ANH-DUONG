@@ -19,7 +19,8 @@
       "Bash(do node --check:*)",
       "Bash(done)",
       "Bash(claude:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(gh run list:*)"
     ]
   }
 }

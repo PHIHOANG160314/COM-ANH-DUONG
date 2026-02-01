@@ -1,54 +1,64 @@
 -- =====================================================
 -- SEED DATA - PRODUCTS TABLE
--- Cơm Ánh Dương F&B
+-- Quán Cơm Ánh Dương F&B
+-- Updated: 2026-02-01 (from handwritten menu)
 -- =====================================================
 
 -- Clear existing products (be careful in production!)
 -- TRUNCATE TABLE public.products CASCADE;
 
 -- =====================================================
--- INSERT PRODUCTS
--- Matching the demo data from use-menu.ts
+-- INSERT PRODUCTS - MÓN CHÍNH (20 món)
+-- From handwritten menu dated 12/11/25
 -- =====================================================
 
--- Cơm Phần Category
+-- Món Thịt Heo
 INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
-('Cơm Sườn Nướng', 'Sườn heo nướng than hồng, ăn kèm dưa leo, cà chua', 45000, '/images/menu/com_suon_nuong.png', 'com', true, false),
-('Cơm Gà Xối Mỡ', 'Đùi gà chiên giòn, nước mắm tỏi ớt đặc biệt', 40000, '/images/menu/com_ga_xoi_mo.png', 'com', true, false),
-('Cơm Tấm Bì Chả', 'Bì heo, chả trứng, mỡ hành, đồ chua', 35000, '/images/menu/com_tam_bi_cha.png', 'com', true, false),
-('Cơm Thịt Kho Trứng', 'Cơm trắng, thịt kho tàu mềm rục, trứng kho', 38000, 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80', 'com', true, false),
-('Cơm Cá Kho Tộ', 'Cơm trắng, cá lóc kho tộ đậm đà', 42000, 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80', 'com', true, false),
-('Cơm Rang Dưa Bò', 'Cơm rang giòn hạt, dưa chua bò mềm', 45000, 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80', 'com', true, false);
+('Heo Quay Xào Dưa Cải', 'Heo quay giòn xào cùng dưa cải chua', 40000, '/images/menu/heo_quay_xao_dua_cai.png', 'com', true, false),
+('Ba Sọi Chiên Nước Mắm', 'Ba sọi chiên giòn, nước mắm tỏi ớt', 35000, '/images/menu/ba_soi_chien_nuoc_mam.png', 'com', true, false),
+('Sườn Cốt Lết Chiên', 'Sườn cốt lết chiên vàng giòn', 30000, '/images/menu/suon_cot_let_chien.png', 'com', true, false),
+('Ruột Heo Khìa Nước Dừa', 'Ruột heo khìa nước dừa thơm béo', 30000, '/images/menu/ruot_heo_khia_nuoc_dua.png', 'com', true, false),
+('Thịt Kho Tiêu', 'Thịt heo kho tiêu đậm đà', 30000, '/images/menu/thit_kho_tieu.png', 'com', true, false),
+('Thịt Kho Trứng', 'Thịt heo kho tàu kèm trứng', 30000, '/images/menu/thit_kho_trung.png', 'com', true, false);
 
--- Phở & Bún Category
+-- Món Bò
 INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
-('Phở Bò Tái', 'Phở bò tái mềm ngọt, nước dùng ninh xương 24h', 55000, '/images/menu/pho_bo_tai.png', 'pho', true, false),
-('Phở Gà Ta', 'Phở gà ta da giòn, thịt dai ngọt', 50000, 'https://images.unsplash.com/photo-1582878826618-c05326eff935?auto=format&fit=crop&w=800&q=80', 'pho', true, false),
-('Bún Bò Huế', 'Bún bò Huế đậm đà, chuẩn vị Cố Đô', 60000, '/images/menu/bun_bo_hue.png', 'pho', true, false),
-('Bún Chả Hà Nội', 'Bún chả nướng than hoa thơm lừng', 55000, 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=800&q=80', 'pho', true, false);
+('Bò Xào Đậu Hòng', 'Bò xào đậu hòng giòn ngọt', 35000, '/images/menu/bo_xao_dau_hong.png', 'com', true, false);
 
--- Bánh Mì Category
+-- Món Hải Sản
 INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
-('Bánh Mì Đặc Biệt', 'Full topping: chả, thịt nguội, pate, bơ', 35000, '/images/menu/banh_mi_dac_biet.png', 'banh-mi', true, false),
-('Bánh Mì Ốp La', '2 trứng ốp la, pate, xì dầu', 25000, 'https://images.unsplash.com/photo-1600628421060-939639517883?auto=format&fit=crop&w=800&q=80', 'banh-mi', true, false),
-('Bánh Mì Chảo', 'Pate, trứng, xúc xích, khoai tây, sốt tiêu đen', 55000, 'https://images.unsplash.com/photo-1600628421060-939639517883?auto=format&fit=crop&w=800&q=80', 'banh-mi', true, false);
+('Tép Gạo Ram Mặn Ngọt', 'Tép gạo ram mặn ngọt giòn rụm', 30000, '/images/menu/tep_gao_ram_man_ngot.png', 'com', true, false);
 
--- Drinks Category
+-- Món Gà & Vịt
 INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
-('Cà Phê Sữa Đá', 'Cà phê Robusta đậm đặc, sữa đặc Ngôi Sao', 25000, '/images/menu/ca_phe_sua_da.png', 'drinks', true, false),
-('Bạc Xỉu', 'Cà phê sữa ít đắng, nhiều sữa', 30000, '/images/menu/bac_xiu.png', 'drinks', true, false),
-('Trà Đào Cam Sả', 'Trà đào thanh mát, có miếng đào giòn', 45000, 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80', 'drinks', true, false),
-('Sinh Tố Bơ', 'Bơ sáp dẻo quánh, sữa đặc', 40000, 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80', 'drinks', true, false);
+('Đùi Gà Chiên Nước Mắm', 'Đùi gà chiên giòn, nước mắm tỏi ớt', 30000, '/images/menu/dui_ga_chien_nuoc_mam.png', 'com', true, false),
+('Vịt Xào Gừng', 'Vịt xào gừng thơm nồng', 30000, '/images/menu/vit_xao_gung.png', 'com', true, false),
+('Gà Xào Sả Ớt', 'Gà xào sả ớt cay nhẹ', 30000, '/images/menu/ga_xao_sa_ot.png', 'com', true, false);
 
--- Dessert Category
+-- Món Cá
 INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
-('Chè Khúc Bạch', 'Khúc bạch phô mai, hạnh nhân, nhãn', 35000, 'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80', 'dessert', true, false),
-('Sữa Chua Đánh Đá', 'Sữa chua đánh đá mát lạnh', 25000, '/images/menu/sua_chua_danh_da.png', 'dessert', true, false),
-('Flan Caramel', 'Bánh flan mềm mịn, caramen thơm đắng', 15000, 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80', 'dessert', true, false);
+('Cá Rô Kho Mỡ Hành', 'Cá rô kho mỡ hành đậm đà', 30000, '/images/menu/ca_ro_kho_mo_hanh.png', 'com', true, false),
+('Cá Ngừ Kho Khóm', 'Cá ngừ kho khóm chua ngọt', 30000, '/images/menu/ca_ngu_kho_khom.png', 'com', true, false),
+('Bún Cá Basa Kho', 'Bún ăn kèm cá basa kho đậm đà', 30000, '/images/menu/bun_ca_basa_kho.png', 'pho', true, false),
+('Cá Lóc Muối Chiên', 'Cá lóc muối chiên giòn', 30000, '/images/menu/ca_loc_muoi_chien.png', 'com', true, false),
+('Khô Cá Diều Chiên', 'Khô cá diều chiên giòn rụm', 30000, '/images/menu/kho_ca_dieu_chien.png', 'com', true, false);
+
+-- Món Khác
+INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
+('Đậu Hủ Dồn Thịt Sốt Cà', 'Đậu hủ dồn thịt sốt cà chua', 30000, '/images/menu/dau_hu_don_thit_sot_ca.png', 'com', true, false);
+
+-- Canh
+INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
+('Canh Chua Cá Ba', 'Canh chua cá ba thanh mát', 30000, '/images/menu/canh_chua_ca_ba.png', 'canh', true, false),
+('Canh Khổ Qua Dồn Thịt - Cá Chả', 'Canh khổ qua dồn thịt và cá chả', 30000, '/images/menu/canh_kho_qua_don_thit.png', 'canh', true, false);
+
+-- Cơm Chay
+INSERT INTO public.products (name, description, price, image_url, category_id, is_active, is_sold_out) VALUES
+('Đậu Hủ Chiên Sả', 'Đậu hủ chiên sả, dành cho cơm chay', 20000, '/images/menu/dau_hu_chien_sa.png', 'chay', true, false);
 
 -- =====================================================
 -- Verify seed data
 -- =====================================================
 -- Run this to check:
 -- SELECT * FROM public.products ORDER BY category_id, name;
--- SELECT COUNT(*) FROM public.products; -- Should be ~18 items
+-- SELECT COUNT(*) FROM public.products; -- Should be 20 items
