@@ -120,14 +120,31 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </IconButton>
           )}
 
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: 'bold', cursor: 'pointer', py: 1 }} // Add padding for touch target
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              flexGrow: 1,
+              cursor: 'pointer',
+              py: 1,
+            }}
             onClick={() => navigate('/')}
           >
-            Cơm Ánh Dương
-          </Typography>
+            <Box
+              component="img"
+              src="/apple-touch-icon.png"
+              alt="Cơm Ánh Dương Logo"
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: 1,
+              }}
+            />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+              Cơm Ánh Dương
+            </Typography>
+          </Box>
 
           {!isMobile && (
             <Box sx={{ mr: 2 }}>
