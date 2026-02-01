@@ -38,6 +38,7 @@ import { FooterCompliance } from '@/shared/ui/footer-compliance';
 import { BottomNavigation } from '@/shared/ui/bottom-navigation';
 import { FloatingCtaBar } from '@/shared/ui/floating-cta-bar';
 import { LeadCapturePopup } from '@/shared/ui/lead-capture-popup';
+import { ThemeToggle } from '@/shared/ui/theme-toggle';
 import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface MainLayoutProps {
@@ -168,6 +169,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </>
           )}
 
+          <ThemeToggle />
+
           <IconButton
             color="inherit"
             size="large" // A11y: 48px target
@@ -221,8 +224,10 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           py: 4,
           px: 3,
           mt: 'auto',
-          backgroundColor: '#1a1a2e',
-          color: '#fff',
+          backgroundColor: 'background.paper',
+          color: 'text.primary',
+          borderTop: 1,
+          borderColor: 'divider',
         }}
       >
         <Container maxWidth="lg">
@@ -360,9 +365,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
           <FooterCompliance />
 
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)', mb: 2, mt: 3 }} />
+          <Divider sx={{ mb: 2, mt: 3 }} />
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+          <Typography variant="body2" sx={{ textAlign: 'center', opacity: 0.7 }}>
             © {new Date().getFullYear()} Cơm Ánh Dương. All rights reserved.
           </Typography>
         </Container>

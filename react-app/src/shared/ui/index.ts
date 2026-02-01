@@ -8,3 +8,4 @@ export * from './zalo-widget';
 export * from './operating-hours';
 export * from './zalo-chat-fab';
 export * from './trust-badges';
+export * from './theme-toggle';

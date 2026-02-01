@@ -80,7 +80,7 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
             alt={product.name}
             onLoad={() => setIsImageLoaded(true)}
             sx={{
-              objectFit: 'cover',
+              objectFit: 'contain',
               opacity: isImageLoaded ? 1 : 0,
               transition: 'opacity 0.3s ease-in-out',
             }}
