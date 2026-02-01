@@ -48,6 +48,30 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Cơm Ánh Dương" />
 
+    <!-- iOS UX Optimizations -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style>
+      /* iOS touch optimizations */
+      * {
+        -webkit-tap-highlight-color: rgba(74, 222, 128, 0.2); /* Green-400 with 20% opacity */
+        -webkit-touch-callout: none; /* Disable long-press context menu */
+        -webkit-user-select: none; /* Prevent text selection on tap */
+        user-select: none;
+      }
+
+      /* Allow text selection for input fields and text content */
+      input, textarea, [contenteditable] {
+        -webkit-user-select: text;
+        user-select: text;
+      }
+
+      /* Smooth scrolling on iOS */
+      html {
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
     <!-- iOS Splash Screens -->
     <link rel="apple-touch-startup-image" href="/apple-splash-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <link rel="apple-touch-startup-image" href="/apple-splash-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
