@@ -34,10 +34,10 @@ export const TrustSignals = () => {
     <Box sx={{ py: 6, bgcolor: '#fafafa' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom color="text.primary">
+          <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ color: '#1a1a1a' }}>
             Tại sao chọn Cơm Ánh Dương?
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" sx={{ color: '#333' }}>
             Cam kết chất lượng - An toàn - Nhanh chóng
           </Typography>
         </Box>
