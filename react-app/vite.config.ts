@@ -21,6 +21,37 @@ export default defineConfig({
         theme_color: '#4ade80',
         background_color: '#ffffff',
         display: 'standalone',
+        orientation: 'portrait',
+        id: '/',
+        categories: ['food', 'ordering', 'utilities'],
+        shortcuts: [
+          {
+            name: 'Đặt món',
+            short_name: 'Đặt món',
+            description: 'Đặt món ngay',
+            url: '/menu',
+            icons: [
+              {
+                src: 'pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+              },
+            ],
+          },
+          {
+            name: 'Giỏ hàng',
+            short_name: 'Giỏ hàng',
+            description: 'Xem giỏ hàng',
+            url: '/checkout',
+            icons: [
+              {
+                src: 'pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+              },
+            ],
+          },
+        ],
         icons: [
           {
             src: 'pwa-64x64.png',
