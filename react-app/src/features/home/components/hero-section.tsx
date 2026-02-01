@@ -329,9 +329,6 @@ export const HeroSection = () => {
             >
               {CONTACT_INFO.phone}
             </Typography>
-            <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 'bold', mt: 0.5 }}>
-              ☎️ Nhấn để gọi ngay
-            </Typography>
           </Paper>
         </motion.div>
       </Box>
