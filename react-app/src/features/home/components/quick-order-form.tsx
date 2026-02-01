@@ -108,9 +108,9 @@ export const QuickOrderForm = () => {
           helperText={phoneError}
           sx={{
             '& .MuiOutlinedInput-root': {
-              bgcolor: 'white',
-              '&:hover fieldset': { borderColor: '#4ade80' },
-              '&.Mui-focused fieldset': { borderColor: '#4ade80' },
+              bgcolor: 'background.paper',
+              '&:hover fieldset': { borderColor: 'success.light' },
+              '&.Mui-focused fieldset': { borderColor: 'success.light' },
             },
           }}
         />
@@ -130,9 +130,9 @@ export const QuickOrderForm = () => {
           helperText={addressError}
           sx={{
             '& .MuiOutlinedInput-root': {
-              bgcolor: 'white',
-              '&:hover fieldset': { borderColor: '#4ade80' },
-              '&.Mui-focused fieldset': { borderColor: '#4ade80' },
+              bgcolor: 'background.paper',
+              '&:hover fieldset': { borderColor: 'success.light' },
+              '&.Mui-focused fieldset': { borderColor: 'success.light' },
             },
           }}
         />
@@ -146,17 +146,17 @@ export const QuickOrderForm = () => {
         fullWidth
         startIcon={<LocalDining />}
         sx={{
-          bgcolor: '#10b981',
-          color: 'white',
+          bgcolor: 'success.main',
+          color: 'success.contrastText',
           fontWeight: 'bold',
           fontSize: { xs: '1rem', md: '1.1rem' },
           py: 1.5,
           minHeight: 56,
-          boxShadow: '0 4px 12px rgba(16,185,129,0.4)',
+          boxShadow: 3,
           '&:hover': {
-            bgcolor: '#059669',
+            bgcolor: 'success.dark',
             transform: 'translateY(-2px)',
-            boxShadow: '0 6px 16px rgba(16,185,129,0.5)',
+            boxShadow: 4,
           },
           transition: 'all 0.3s ease',
         }}

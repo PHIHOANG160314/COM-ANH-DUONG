@@ -40,7 +40,8 @@ export const HeroSection = () => {
   return (
     <Box
       sx={{
-        background: 'linear-gradient(135deg, #4ade80 0%, #10b981 100%)',
+        background: (theme) =>
+          `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`,
         color: 'white',
         py: { xs: 4, md: 6 },
         px: 3,
@@ -130,7 +131,7 @@ export const HeroSection = () => {
               label="✅ 5000+ đơn hàng"
               sx={{
                 bgcolor: 'rgba(255,255,255,0.95)',
-                color: '#10b981',
+                color: 'success.main',
                 fontWeight: 'bold',
                 fontSize: '0.875rem',
               }}
@@ -139,7 +140,7 @@ export const HeroSection = () => {
               label="⭐ 4.9/5 đánh giá"
               sx={{
                 bgcolor: 'rgba(255,255,255,0.95)',
-                color: '#f59e0b',
+                color: 'warning.main',
                 fontWeight: 'bold',
                 fontSize: '0.875rem',
               }}
@@ -148,7 +149,7 @@ export const HeroSection = () => {
               label="🚀 Giao 30 phút"
               sx={{
                 bgcolor: 'rgba(255,255,255,0.95)',
-                color: '#3b82f6',
+                color: 'primary.main',
                 fontWeight: 'bold',
                 fontSize: '0.875rem',
               }}
@@ -183,18 +184,18 @@ export const HeroSection = () => {
                 startIcon={<LocalDining />}
                 onClick={() => navigate('/menu')}
                 sx={{
-                  bgcolor: '#fbbf24',
-                  color: '#1a1a1a',
+                  bgcolor: 'warning.main',
+                  color: 'warning.contrastText',
                   fontWeight: 'bold',
                   fontSize: '1.1rem',
                   px: 5,
                   py: 1.5,
                   minHeight: 56,
                   width: '100%',
-                  boxShadow: '0 8px 20px rgba(251,191,36,0.5)',
+                  boxShadow: 3,
                   position: 'relative',
                   overflow: 'hidden',
-                  '&:hover': { bgcolor: '#f59e0b' },
+                  '&:hover': { bgcolor: 'warning.dark' },
                   '&::before': {
                     content: '""',
                     position: 'absolute',
@@ -303,7 +304,8 @@ export const HeroSection = () => {
                 right: 0,
                 bottom: 0,
                 borderRadius: 1,
-                background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                background: (theme) =>
+                  `linear-gradient(135deg, ${theme.palette.warning.main} 0%, ${theme.palette.error.main} 100%)`,
                 opacity: 0.1,
                 animation: 'pulse 2s ease-in-out infinite',
               },
@@ -319,7 +321,7 @@ export const HeroSection = () => {
             <Typography variant="h4" sx={{ animation: 'phoneBounce 1s ease-in-out infinite' }}>
               📞
             </Typography>
-            <Typography fontWeight="bold" sx={{ color: '#ef4444', fontSize: '1.1rem' }}>
+            <Typography fontWeight="bold" sx={{ color: 'error.main', fontSize: '1.1rem' }}>
               Hotline
             </Typography>
             <Typography

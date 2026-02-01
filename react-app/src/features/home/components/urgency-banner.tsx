@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export const UrgencyBanner = () => {
   return (
-    <Box sx={{ py: 4, bgcolor: '#fef3c7' }}>
+    <Box sx={{ py: 4, bgcolor: 'warning.light' }}>
       <Container maxWidth="lg">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -16,8 +16,8 @@ export const UrgencyBanner = () => {
             elevation={0}
             sx={{
               p: 4,
-              bgcolor: '#fbbf24',
-              color: 'white',
+              bgcolor: 'warning.main',
+              color: 'warning.contrastText',
               textAlign: 'center',
               borderRadius: 2,
             }}

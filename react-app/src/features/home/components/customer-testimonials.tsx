@@ -27,7 +27,7 @@ const testimonials = [
 
 export const CustomerTestimonials = () => {
   return (
-    <Box sx={{ py: 6, bgcolor: 'white' }}>
+    <Box sx={{ py: 6, bgcolor: 'background.paper' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -62,7 +62,7 @@ export const CustomerTestimonials = () => {
               >
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ bgcolor: '#10b981', mr: 2, fontSize: 28 }}>
+                    <Avatar sx={{ bgcolor: 'success.main', mr: 2, fontSize: 28 }}>
                       {testimonial.avatar}
                     </Avatar>
                     <Box>

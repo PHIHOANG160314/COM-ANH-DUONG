@@ -360,9 +360,10 @@ export const CheckoutPage = () => {
               sx={{
                 mb: 2,
                 p: 2,
-                bgcolor: '#fffde7',
+                bgcolor: 'warning.light',
                 borderRadius: 1,
-                border: '1px dashed #fbc02d',
+                border: '1px dashed',
+                borderColor: 'warning.main',
               }}
             >
               <Typography
@@ -371,7 +372,7 @@ export const CheckoutPage = () => {
                 gutterBottom
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <Star sx={{ color: '#fbc02d' }} fontSize="small" /> Dùng điểm tích lũy
+                <Star sx={{ color: 'warning.main' }} fontSize="small" /> Dùng điểm tích lũy
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
                 Bạn có <strong>{stats.points} điểm</strong>. (100đ = 1 điểm)
@@ -392,7 +393,7 @@ export const CheckoutPage = () => {
                   InputProps={{
                     endAdornment: <InputAdornment position="end">điểm</InputAdornment>,
                   }}
-                  sx={{ bgcolor: 'white' }}
+                  sx={{ bgcolor: 'background.paper' }}
                 />
                 <Button
                   variant="outlined"

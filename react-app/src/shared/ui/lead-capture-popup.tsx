@@ -113,7 +113,7 @@ export const LeadCapturePopup = () => {
       PaperProps={{
         sx: {
           borderRadius: 3,
-          background: 'linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%)',
+          bgcolor: 'warning.light',
           overflow: 'visible',
           position: 'relative',
           m: 2,
@@ -127,7 +127,7 @@ export const LeadCapturePopup = () => {
           position: 'absolute',
           right: 8,
           top: 8,
-          color: '#78350f',
+          color: 'warning.dark',
           zIndex: 1,
         }}
       >
@@ -143,7 +143,7 @@ export const LeadCapturePopup = () => {
               fontWeight="bold"
               align="center"
               sx={{
-                color: '#78350f',
+                color: 'warning.dark',
                 mb: 1,
                 fontSize: { xs: '1.5rem', sm: '2rem' },
               }}
@@ -155,7 +155,7 @@ export const LeadCapturePopup = () => {
             <Typography
               variant="body1"
               align="center"
-              sx={{ color: '#92400e', mb: 3, fontSize: '1rem' }}
+              sx={{ color: 'text.secondary', mb: 3, fontSize: '1rem' }}
             >
               Để lại số điện thoại để nhận mã giảm giá
             </Typography>
@@ -170,11 +170,11 @@ export const LeadCapturePopup = () => {
                 fullWidth
                 variant="outlined"
                 sx={{
-                  bgcolor: 'white',
+                  bgcolor: 'background.paper',
                   borderRadius: 1,
                   '& .MuiOutlinedInput-root': {
-                    '&:hover fieldset': { borderColor: '#f59e0b' },
-                    '&.Mui-focused fieldset': { borderColor: '#f59e0b' },
+                    '&:hover fieldset': { borderColor: 'warning.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'warning.main' },
                   },
                 }}
               />
@@ -191,11 +191,11 @@ export const LeadCapturePopup = () => {
                 error={!!error}
                 helperText={error}
                 sx={{
-                  bgcolor: 'white',
+                  bgcolor: 'background.paper',
                   borderRadius: 1,
                   '& .MuiOutlinedInput-root': {
-                    '&:hover fieldset': { borderColor: '#f59e0b' },
-                    '&.Mui-focused fieldset': { borderColor: '#f59e0b' },
+                    '&:hover fieldset': { borderColor: 'warning.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'warning.main' },
                   },
                 }}
               />
@@ -207,17 +207,15 @@ export const LeadCapturePopup = () => {
                 size="large"
                 fullWidth
                 sx={{
-                  bgcolor: '#10b981',
-                  color: 'white',
+                  bgcolor: 'success.main',
+                  color: 'success.contrastText',
                   fontWeight: 'bold',
                   fontSize: '1.1rem',
                   py: 1.5,
                   borderRadius: 2,
-                  boxShadow: '0 4px 12px rgba(16,185,129,0.4)',
                   '&:hover': {
-                    bgcolor: '#059669',
+                    bgcolor: 'success.dark',
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 6px 16px rgba(16,185,129,0.5)',
                   },
                   transition: 'all 0.3s ease',
                 }}
@@ -233,7 +231,7 @@ export const LeadCapturePopup = () => {
               sx={{
                 display: 'block',
                 mt: 2,
-                color: '#92400e',
+                color: 'text.secondary',
                 fontSize: '0.75rem',
               }}
             >
@@ -243,11 +241,11 @@ export const LeadCapturePopup = () => {
         ) : (
           // Success State
           <Box textAlign="center" py={3}>
-            <CheckCircle sx={{ fontSize: 80, color: '#10b981', mb: 2 }} />
-            <Typography variant="h5" fontWeight="bold" sx={{ color: '#78350f', mb: 1 }}>
+            <CheckCircle sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
+            <Typography variant="h5" fontWeight="bold" sx={{ color: 'warning.dark', mb: 1 }}>
               Cảm ơn bạn! 🎉
             </Typography>
-            <Typography variant="body1" sx={{ color: '#92400e' }}>
+            <Typography variant="body1" sx={{ color: 'text.secondary' }}>
               Mã giảm giá 10% đã được gửi đến số điện thoại của bạn
             </Typography>
           </Box>

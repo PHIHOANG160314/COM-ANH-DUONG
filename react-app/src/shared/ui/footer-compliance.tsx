@@ -34,7 +34,7 @@ export const FooterCompliance: React.FC = () => {
           <Typography
             variant="caption"
             display="block"
-            sx={{ lineHeight: 1.2, color: 'rgba(255,255,255,0.7)' }}
+            sx={{ lineHeight: 1.2, color: 'text.secondary' }}
           >
             Đạt chuẩn
           </Typography>
@@ -55,7 +55,7 @@ export const FooterCompliance: React.FC = () => {
           <Typography
             variant="caption"
             display="block"
-            sx={{ lineHeight: 1.2, color: 'rgba(255,255,255,0.7)' }}
+            sx={{ lineHeight: 1.2, color: 'text.secondary' }}
           >
             Bộ Công Thương
           </Typography>

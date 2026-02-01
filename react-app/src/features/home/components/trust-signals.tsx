@@ -7,37 +7,37 @@ const trustItems = [
     icon: Verified,
     title: 'ATTP đảm bảo',
     description: 'Giấy phép vệ sinh ATTP đầy đủ',
-    color: '#10b981',
+    color: 'success.main',
   },
   {
     icon: LocalShipping,
     title: 'Giao nhanh 30 phút',
     description: 'Miễn phí ship nội thành',
-    color: '#3b82f6',
+    color: 'primary.main',
   },
   {
     icon: ThumbUp,
     title: '5000+ đơn hàng',
     description: 'Khách hàng hài lòng',
-    color: '#f59e0b',
+    color: 'warning.main',
   },
   {
     icon: LocalDining,
     title: 'Nguyên liệu tươi',
     description: 'Chọn lọc kỹ mỗi ngày',
-    color: '#8b5cf6',
+    color: 'secondary.main',
   },
 ];
 
 export const TrustSignals = () => {
   return (
-    <Box sx={{ py: 6, bgcolor: '#fafafa' }}>
+    <Box sx={{ py: 6, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ color: '#1a1a1a' }}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom color="text.primary">
             Tại sao chọn Cơm Ánh Dương?
           </Typography>
-          <Typography variant="body1" sx={{ color: '#333' }}>
+          <Typography variant="body1" color="text.secondary">
             Cam kết chất lượng - An toàn - Nhanh chóng
           </Typography>
         </Box>

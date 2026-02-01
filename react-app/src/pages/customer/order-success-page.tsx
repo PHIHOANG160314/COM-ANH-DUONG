@@ -58,7 +58,7 @@ export const OrderSuccessPage = () => {
         </Box>
 
         {paymentMethod === 'cash' && totalAmount && (
-          <Box sx={{ mt: 2, p: 2, bgcolor: '#fff3e0', borderRadius: 1 }}>
+          <Box sx={{ mt: 2, p: 2, bgcolor: 'warning.light', borderRadius: 1 }}>
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               💵 Chuẩn bị tiền mặt
             </Typography>
