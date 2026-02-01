@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Container, Paper, Chip, Stack } from '@mui/material';
+import { Box, Typography, Button, Paper, Chip, Stack } from '@mui/material';
 import { LocalDining, AccessTime, Verified, LocalShipping } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -41,19 +41,25 @@ export const HeroSection = () => {
         background: 'linear-gradient(135deg, #4ade80 0%, #10b981 100%)',
         color: 'white',
         py: { xs: 4, md: 6 },
+        px: 3,
         mb: 4,
+        mx: -3, // Negative margin to break out of Container's 24px padding
         borderRadius: { xs: 0, md: 2 },
         overflow: 'hidden',
       }}
     >
-      <Container maxWidth="lg">
-        <Box
-          component={motion.div}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          sx={{ textAlign: 'center' }}
-        >
+      <Box
+        component={motion.div}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        sx={{
+          textAlign: 'center',
+          maxWidth: 'lg',
+          mx: 'auto',
+          px: 3,
+        }}
+      >
           {/* Restaurant Name */}
           <Box component={motion.div} variants={itemVariants}>
             <Typography
@@ -162,6 +168,9 @@ export const HeroSection = () => {
             gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
             gap: 2,
             mt: 4,
+            maxWidth: 'lg',
+            mx: 'auto',
+            px: 3,
           }}
         >
           <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
@@ -198,7 +207,6 @@ export const HeroSection = () => {
             </Paper>
           </motion.div>
         </Box>
-      </Container>
-    </Box>
+      </Box>
   );
 };
