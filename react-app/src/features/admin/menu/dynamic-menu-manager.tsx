@@ -40,19 +40,20 @@ export const DynamicMenuManager = () => {
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [editingPrice, setEditingPrice] = useState<string | null>(null);
   const [tempPrice, setTempPrice] = useState<string>('');
-  const [overrides, setOverrides] = useState<Record<string, ProductOverride>>({});
 
-  // Load overrides from localStorage on mount
-  useEffect(() => {
+  // Load overrides from localStorage on mount (lazy initialization)
+  const [overrides, setOverrides] = useState<Record<string, ProductOverride>>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setOverrides(JSON.parse(stored));
+        return JSON.parse(stored);
       } catch (e) {
         console.error('Failed to parse stored overrides:', e);
+        return {};
       }
     }
-  }, []);
+    return {};
+  });
 
   // Save overrides to localStorage whenever they change
   useEffect(() => {
@@ -149,8 +150,8 @@ export const DynamicMenuManager = () => {
     <Box>
       <Paper sx={{ mb: 2, p: 2 }}>
         <Typography variant="body2" color="text.secondary">
-          💡 <strong>Hướng dẫn:</strong> Click vào giá để chỉnh sửa. Bật/tắt trạng thái bằng
-          switch. Tất cả thay đổi được lưu tự động vào LocalStorage.
+          💡 <strong>Hướng dẫn:</strong> Click vào giá để chỉnh sửa. Bật/tắt trạng thái bằng switch.
+          Tất cả thay đổi được lưu tự động vào LocalStorage.
         </Typography>
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
           📊 Tổng số món: {products.length} | Đang hiển thị: {paginatedProducts.length}
@@ -225,7 +226,14 @@ export const DynamicMenuManager = () => {
                       </IconButton>
                     </Box>
                   ) : (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-end' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        justifyContent: 'flex-end',
+                      }}
+                    >
                       <Typography variant="body2" fontWeight="bold" color="primary">
                         {formatCurrency(product.price)}
                       </Typography>

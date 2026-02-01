@@ -7,12 +7,7 @@ export const ThemeToggle = () => {
 
   return (
     <Tooltip title={mode === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}>
-      <IconButton
-        color="inherit"
-        size="large"
-        onClick={toggleTheme}
-        aria-label="toggle theme"
-      >
+      <IconButton color="inherit" size="large" onClick={toggleTheme} aria-label="toggle theme">
         {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
       </IconButton>
     </Tooltip>

@@ -202,7 +202,8 @@ export const HeroSection = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
+                    background:
+                      'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
                     animation: 'pulse 2s ease-in-out infinite',
                   },
                   '@keyframes pulse': {
@@ -236,7 +237,11 @@ export const HeroSection = () => {
         </Box>
 
         {/* Quick Order Form */}
-        <Box component={motion.div} variants={itemVariants} sx={{ mt: 4, maxWidth: 'lg', mx: 'auto', px: 3 }}>
+        <Box
+          component={motion.div}
+          variants={itemVariants}
+          sx={{ mt: 4, maxWidth: 'lg', mx: 'auto', px: 3 }}
+        >
           <QuickOrderForm />
         </Box>
       </Box>

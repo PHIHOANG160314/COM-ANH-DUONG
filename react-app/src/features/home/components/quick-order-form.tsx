@@ -90,21 +90,11 @@ export const QuickOrderForm = () => {
         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
       }}
     >
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        align="center"
-        color="text.primary"
-        sx={{ mb: 3 }}
-      >
+      <Typography variant="h6" fontWeight="bold" align="center" color="text.primary" sx={{ mb: 3 }}>
         ⚡ Đặt hàng nhanh - Giao trong 30 phút
       </Typography>
 
-      <Stack
-        direction={{ xs: 'column', md: 'row' }}
-        spacing={2}
-        sx={{ mb: 2 }}
-      >
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 2 }}>
         {/* Phone Number */}
         <TextField
           label="Số điện thoại *"
