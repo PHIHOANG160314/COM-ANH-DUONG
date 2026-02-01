@@ -12,6 +12,7 @@ import { MenuGrid } from '@/features/menu/components/menu-grid';
 import { CartDrawer } from '@/features/cart/components/cart-drawer';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { HeroSection } from '@/features/home/components/hero-section';
+import { RegionalSpecialties } from '@/features/home/components/regional-specialties';
 import { useAuth } from '@/features/auth/api/use-auth';
 
 export const CustomerHomePage = () => {
@@ -26,6 +27,9 @@ export const CustomerHomePage = () => {
     <>
       {/* Hero Banner */}
       <HeroSection />
+
+      {/* Regional Specialties */}
+      <RegionalSpecialties />
 
       {/* Quick Access Links for Staff */}
       {isStaff && (
@@ -47,43 +51,43 @@ export const CustomerHomePage = () => {
                 gap: 2,
               }}
             >
-            <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <AdminPanelSettings sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-                <Typography variant="body1" fontWeight="bold">
-                  Quản trị
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/kitchen')}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <Restaurant sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
-                <Typography variant="body1" fontWeight="bold">
-                  Bếp
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/pos')}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <PointOfSale sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
-                <Typography variant="body1" fontWeight="bold">
-                  POS
-                </Typography>
-              </CardContent>
-            </Card>
-            {user?.role === 'shipper' && (
-              <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/delivery')}>
+              <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>
                 <CardContent sx={{ textAlign: 'center' }}>
-                  <DeliveryDining sx={{ fontSize: 40, color: 'info.main', mb: 1 }} />
+                  <AdminPanelSettings sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                   <Typography variant="body1" fontWeight="bold">
-                    Giao hàng
+                    Quản trị
                   </Typography>
                 </CardContent>
               </Card>
-            )}
+              <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/kitchen')}>
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <Restaurant sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
+                  <Typography variant="body1" fontWeight="bold">
+                    Bếp
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/pos')}>
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <PointOfSale sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
+                  <Typography variant="body1" fontWeight="bold">
+                    POS
+                  </Typography>
+                </CardContent>
+              </Card>
+              {user?.role === 'shipper' && (
+                <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/delivery')}>
+                  <CardContent sx={{ textAlign: 'center' }}>
+                    <DeliveryDining sx={{ fontSize: 40, color: 'info.main', mb: 1 }} />
+                    <Typography variant="body1" fontWeight="bold">
+                      Giao hàng
+                    </Typography>
+                  </CardContent>
+                </Card>
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
       )}
 
       {/* Menu Section */}

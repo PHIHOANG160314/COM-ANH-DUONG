@@ -317,7 +317,10 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                   📞 0123 456 789
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  📍 Sa Đéc, Đồng Tháp
+                  📍 Đường Nguyễn Huệ, Phường 1, TP. Sa Đéc, Đồng Tháp
+                </Typography>
+                <Typography variant="body2" sx={{ py: 0.5 }}>
+                  🌸 Cạnh Làng Hoa Sa Đéc
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
                   🕐 8:00 - 22:00 hàng ngày

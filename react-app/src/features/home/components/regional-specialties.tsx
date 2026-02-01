@@ -1,0 +1,83 @@
+import { Box, Card, CardContent, CardMedia, Typography, Container } from '@mui/material';
+import { motion } from 'framer-motion';
+
+const specialties = [
+  {
+    title: 'Hủ Tiếu Sa Đéc',
+    description: 'Sợi hủ tiếu dai ngon đặc trưng, nước dùng ngọt thanh từ xương hầm.',
+    image:
+      'https://images.unsplash.com/photo-1631700611307-37dbcb89ef7e?q=80&w=600&auto=format&fit=crop', // Noodle soup
+    delay: 0,
+  },
+  {
+    title: 'Cá Lóc Nướng Lá Sen',
+    description: 'Cá lóc đồng nướng trui thơm lừng, cuốn cùng lá sen non tươi mát.',
+    image:
+      'https://images.unsplash.com/photo-1585507421865-06c303f295b6?q=80&w=600&auto=format&fit=crop', // Grilled fish representative
+    delay: 0.1,
+  },
+  {
+    title: 'Bánh Phồng Tôm Sa Giang',
+    description: 'Đặc sản trứ danh, giòn rụm, đậm đà hương vị tôm đất miền Tây.',
+    image:
+      'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=600&auto=format&fit=crop', // Chips/Crackers
+    delay: 0.2,
+  },
+];
+
+export const RegionalSpecialties = () => {
+  return (
+    <Box sx={{ py: 6, bgcolor: '#f0fdf4' }}>
+      <Container maxWidth="lg">
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography variant="h4" fontWeight="bold" sx={{ color: '#166534', mb: 1 }}>
+            Đặc Sản Vùng Đất Sen Hồng
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#666' }}>
+            Khám phá hương vị ẩm thực độc đáo chỉ có tại Sa Đéc
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+            gap: 4,
+          }}
+        >
+          {specialties.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: item.delay }}
+            >
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-8px)' },
+                  borderRadius: 2,
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                }}
+              >
+                <CardMedia component="img" height="200" image={item.image} alt={item.title} />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography gutterBottom variant="h6" component="div" fontWeight="bold">
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </Box>
+      </Container>
+    </Box>
+  );
+};

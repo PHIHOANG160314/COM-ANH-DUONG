@@ -157,3 +157,23 @@ When reporting GO-LIVE status, MUST include:
 ```
 refactor: 10x bootstrap - [specific change]
 ```
+
+---
+
+## CC CLI Input Protocol
+
+**QUAN TRỌNG**: Khi gửi lệnh cho CC CLI qua `send_command_input`:
+
+- **Dòng 1**: Lệnh/text
+- **Dòng 2**: `\n` (Enter riêng)
+- **KHÔNG** gộp chung lệnh + enter → CC CLI không hiểu
+
+```typescript
+// ❌ SAI
+Input: "git commit -m 'message'\n";
+
+// ✅ ĐÚNG
+Input: "git commit -m 'message'";
+// wait for response...
+Input: "\n"; // Enter riêng
+```

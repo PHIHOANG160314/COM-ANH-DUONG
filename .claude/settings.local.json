@@ -20,7 +20,17 @@
       "Bash(done)",
       "Bash(claude:*)",
       "WebSearch",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(git restore:*)",
+      "Bash(convert:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/generate-pwa-icons.sh)",
+      "Bash(for size in \"640x1136:iphone5\" \"750x1334:iphone6\" \"1242x2208:iphoneplus\" \"1125x2436:iphonex\" \"828x1792:iphonexr\" \"1242x2688:iphonexsmax\" \"1170x2532:iphone12\" \"1080x2340:iphone12mini\" \"1170x2532:iphone12pro\" \"1284x2778:iphone12promax\" \"1179x2556:iphone14pro\" \"1290x2796:iphone14promax\")",
+      "Bash(do:*)",
+      "Bash(dims=:*)",
+      "Bash(name=\"$size#*:\")",
+      "Bash(magick:*)",
+      "Bash(wc:*)"
     ]
   }
 }
