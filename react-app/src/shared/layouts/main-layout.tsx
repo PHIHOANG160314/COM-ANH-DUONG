@@ -36,6 +36,7 @@ import { OperatingHours } from '@/shared/ui/operating-hours';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { FooterCompliance } from '@/shared/ui/footer-compliance';
 import { BottomNavigation } from '@/shared/ui/bottom-navigation';
+import { FloatingCtaBar } from '@/shared/ui/floating-cta-bar';
 import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface MainLayoutProps {
@@ -367,6 +368,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       </Box>
       <ZaloChatFab phoneNumber={CONTACT_INFO.zalo} />
       <BottomNavigation />
+      <FloatingCtaBar />
     </Box>
   );
 };

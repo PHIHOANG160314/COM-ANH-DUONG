@@ -116,6 +116,45 @@ export const HeroSection = () => {
           </Stack>
         </Box>
 
+        {/* Mini Trust Badges Row */}
+        <Box component={motion.div} variants={itemVariants}>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            flexWrap="wrap"
+            sx={{ mb: 3, gap: 1 }}
+          >
+            <Chip
+              label="✅ 5000+ đơn hàng"
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.95)',
+                color: '#10b981',
+                fontWeight: 'bold',
+                fontSize: '0.875rem',
+              }}
+            />
+            <Chip
+              label="⭐ 4.9/5 đánh giá"
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.95)',
+                color: '#f59e0b',
+                fontWeight: 'bold',
+                fontSize: '0.875rem',
+              }}
+            />
+            <Chip
+              label="🚀 Giao 30 phút"
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.95)',
+                color: '#3b82f6',
+                fontWeight: 'bold',
+                fontSize: '0.875rem',
+              }}
+            />
+          </Stack>
+        </Box>
+
         {/* CTA Buttons */}
         <Box component={motion.div} variants={itemVariants}>
           <Box
@@ -127,13 +166,15 @@ export const HeroSection = () => {
               flexDirection: { xs: 'column', sm: 'row' },
               alignItems: 'center',
               width: '100%',
-              maxWidth: { xs: '280px', sm: 'none' },
+              maxWidth: { xs: '320px', sm: 'none' },
               mx: 'auto',
             }}
           >
+            {/* Prominent ĐẶT HÀNG NGAY Button with Pulse */}
             <motion.div
-              whileHover={{ scale: 1.05, boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}
+              whileHover={{ scale: 1.08, boxShadow: '0 12px 28px rgba(0,0,0,0.25)' }}
               whileTap={{ scale: 0.95 }}
+              style={{ width: '100%', maxWidth: '280px' }}
             >
               <Button
                 variant="contained"
@@ -141,34 +182,53 @@ export const HeroSection = () => {
                 startIcon={<LocalDining />}
                 onClick={() => navigate('/menu')}
                 sx={{
-                  bgcolor: 'white',
-                  color: '#10b981',
+                  bgcolor: '#fbbf24',
+                  color: '#1a1a1a',
                   fontWeight: 'bold',
-                  px: 4,
-                  minHeight: 48, // A11y: touch target
-                  width: { xs: '100%', sm: 'auto' },
-                  '&:hover': { bgcolor: '#f5f5f5' },
+                  fontSize: '1.1rem',
+                  px: 5,
+                  py: 1.5,
+                  minHeight: 56,
+                  width: '100%',
+                  boxShadow: '0 8px 20px rgba(251,191,36,0.5)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:hover': { bgcolor: '#f59e0b' },
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
+                    animation: 'pulse 2s ease-in-out infinite',
+                  },
+                  '@keyframes pulse': {
+                    '0%, 100%': { opacity: 0.6, transform: 'scale(1)' },
+                    '50%': { opacity: 1, transform: 'scale(1.1)' },
+                  },
                 }}
               >
-                Xem Thực Đơn
+                🔥 ĐẶT HÀNG NGAY
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outlined"
                 size="large"
-                onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/menu')}
                 sx={{
                   borderColor: 'white',
                   color: 'white',
                   fontWeight: 'bold',
                   px: 4,
-                  minHeight: 48, // A11y: touch target
-                  width: { xs: '100%', sm: 'auto' },
+                  minHeight: 48,
+                  width: { xs: '280px', sm: 'auto' },
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
                 }}
               >
-                Đặt Hàng Ngay
+                Xem Thực Đơn
               </Button>
             </motion.div>
           </Box>
