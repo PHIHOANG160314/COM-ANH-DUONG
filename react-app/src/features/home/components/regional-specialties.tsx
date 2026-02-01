@@ -5,22 +5,19 @@ const specialties = [
   {
     title: 'Hủ Tiếu Sa Đéc',
     description: 'Sợi hủ tiếu dai ngon đặc trưng, nước dùng ngọt thanh từ xương hầm.',
-    image:
-      'https://images.unsplash.com/photo-1631700611307-37dbcb89ef7e?q=80&w=600&auto=format&fit=crop', // Noodle soup
+    image: '/images/specialties/hu-tieu-sa-dec.png',
     delay: 0,
   },
   {
     title: 'Cá Lóc Nướng Lá Sen',
     description: 'Cá lóc đồng nướng trui thơm lừng, cuốn cùng lá sen non tươi mát.',
-    image:
-      'https://images.unsplash.com/photo-1585507421865-06c303f295b6?q=80&w=600&auto=format&fit=crop', // Grilled fish representative
+    image: '/images/specialties/ca-loc-nuong-la-sen.png',
     delay: 0.1,
   },
   {
     title: 'Bánh Phồng Tôm Sa Giang',
     description: 'Đặc sản trứ danh, giòn rụm, đậm đà hương vị tôm đất miền Tây.',
-    image:
-      'https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=600&auto=format&fit=crop', // Chips/Crackers
+    image: '/images/specialties/banh-phong-tom-sa-giang.png',
     delay: 0.2,
   },
 ];

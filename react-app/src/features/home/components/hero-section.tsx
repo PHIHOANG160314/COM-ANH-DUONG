@@ -2,6 +2,7 @@ import { Box, Typography, Button, Paper, Chip, Stack } from '@mui/material';
 import { LocalDining, AccessTime, LocalFlorist } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { CONTACT_INFO } from '@/shared/config/contact';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
@@ -180,7 +181,7 @@ export const HeroSection = () => {
               Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: '#666' }}>
-              581C Hùng Vương, Tân Phú Đông
+              {CONTACT_INFO.address.short}
             </Typography>
           </Paper>
         </motion.div>
@@ -191,7 +192,7 @@ export const HeroSection = () => {
               Giờ mở cửa
             </Typography>
             <Typography variant="body2" sx={{ color: '#666' }}>
-              6:00 - 21:00 hàng ngày
+              {CONTACT_INFO.hours}
             </Typography>
           </Paper>
         </motion.div>
@@ -202,7 +203,7 @@ export const HeroSection = () => {
               Hotline
             </Typography>
             <Typography variant="body2" sx={{ color: '#666' }}>
-              0123 456 789
+              {CONTACT_INFO.phone}
             </Typography>
           </Paper>
         </motion.div>

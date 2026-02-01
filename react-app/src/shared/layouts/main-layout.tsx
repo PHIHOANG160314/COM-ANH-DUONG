@@ -35,6 +35,7 @@ import { useCartStore } from '@/features/cart/model/cart-store';
 import { OperatingHours } from '@/shared/ui/operating-hours';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { FooterCompliance } from '@/shared/ui/footer-compliance';
+import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface MainLayoutProps {
   children?: ReactNode;
@@ -314,16 +315,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  📞 0123 456 789
+                  📞 {CONTACT_INFO.phone}
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  📍 581C, Hùng Vương, Xã Tân Phú Đông, Đồng Tháp
+                  📍 {CONTACT_INFO.address.full}
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  ☕ Đối diện Viva Start Coffee
+                  ☕ {CONTACT_INFO.landmark}
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  🕐 8:00 - 22:00 hàng ngày
+                  🕐 {CONTACT_INFO.hours}
                 </Typography>
               </Box>
             </Box>
@@ -338,7 +339,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           </Typography>
         </Container>
       </Box>
-      <ZaloChatFab phoneNumber="0909000900" />
+      <ZaloChatFab phoneNumber={CONTACT_INFO.zalo} />
     </Box>
   );
 };
