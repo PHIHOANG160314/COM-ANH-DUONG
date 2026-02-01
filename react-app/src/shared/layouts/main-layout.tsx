@@ -35,6 +35,7 @@ import { useCartStore } from '@/features/cart/model/cart-store';
 import { OperatingHours } from '@/shared/ui/operating-hours';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { FooterCompliance } from '@/shared/ui/footer-compliance';
+import { BottomNavigation } from '@/shared/ui/bottom-navigation';
 import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface MainLayoutProps {
@@ -200,7 +201,15 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         {drawer}
       </Drawer>
 
-      <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{
+          flexGrow: 1,
+          py: 4,
+          pb: { xs: '72px', md: 4 }, // Extra bottom padding for mobile bottom nav (56px + 16px)
+        }}
+      >
         {children || <Outlet />}
       </Container>
 
@@ -357,6 +366,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         </Container>
       </Box>
       <ZaloChatFab phoneNumber={CONTACT_INFO.zalo} />
+      <BottomNavigation />
     </Box>
   );
 };

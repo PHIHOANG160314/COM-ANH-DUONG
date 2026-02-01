@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Fab, Badge, Typography, Box, Card, CardContent } from '@mui/material';
+import { Typography, Box, Card, CardContent } from '@mui/material';
 import {
-  ShoppingCart,
   AdminPanelSettings,
   Restaurant,
   PointOfSale,
@@ -9,8 +8,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { MenuGrid } from '@/features/menu/components/menu-grid';
-import { CartDrawer } from '@/features/cart/components/cart-drawer';
-import { useCartStore } from '@/features/cart/model/cart-store';
+import { CartSheet } from '@/features/cart/components/cart-sheet';
 import { HeroSection } from '@/features/home/components/hero-section';
 import { RegionalSpecialties } from '@/features/home/components/regional-specialties';
 import { TrustSignals } from '@/features/home/components/trust-signals';
@@ -20,7 +18,6 @@ import { useAuth } from '@/features/auth/api/use-auth';
 
 export const CustomerHomePage = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const totalItems = useCartStore((state) => state.totalItems());
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -118,22 +115,7 @@ export const CustomerHomePage = () => {
         </Box>
       </Box>
 
-      <Fab
-        color="primary"
-        aria-label="cart"
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-        }}
-        onClick={() => setIsCartOpen(true)}
-      >
-        <Badge badgeContent={totalItems} color="error">
-          <ShoppingCart />
-        </Badge>
-      </Fab>
-
-      <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartSheet open={isCartOpen} onClose={() => setIsCartOpen(false)} onOpen={() => setIsCartOpen(true)} />
     </>
   );
 };
