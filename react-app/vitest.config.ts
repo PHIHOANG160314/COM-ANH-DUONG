@@ -13,7 +13,10 @@ export default defineConfig({
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
     alias: {
       '@': path.resolve(__dirname, './src'),
-      'virtual:pwa-register/react': path.resolve(__dirname, './src/test/mocks/pwa-register-react.ts'),
+      'virtual:pwa-register/react': path.resolve(
+        __dirname,
+        './src/test/mocks/pwa-register-react.ts'
+      ),
     },
   },
   resolve: {

@@ -20,45 +20,50 @@ vi.mock('react-router-dom', async () => {
 vi.mock('@/features/auth/api/use-auth');
 vi.mock('@/features/cart/model/cart-store');
 vi.mock('@/features/pwa/reload-prompt', () => ({
-  ReloadPrompt: () => <div data-testid="reload-prompt">Reload Prompt</div>
+  ReloadPrompt: () => <div data-testid="reload-prompt">Reload Prompt</div>,
 }));
 vi.mock('@/features/pwa/install-prompt', () => ({
-  InstallPrompt: () => <div data-testid="install-prompt">Install Prompt</div>
+  InstallPrompt: () => <div data-testid="install-prompt">Install Prompt</div>,
 }));
 vi.mock('@/shared/ui/operating-hours', () => ({
-  OperatingHours: () => <div data-testid="operating-hours">Operating Hours</div>
+  OperatingHours: () => <div data-testid="operating-hours">Operating Hours</div>,
 }));
 vi.mock('@/shared/ui/zalo-chat-fab', () => ({
-  ZaloChatFab: () => <div data-testid="zalo-chat-fab">Zalo Chat</div>
+  ZaloChatFab: () => <div data-testid="zalo-chat-fab">Zalo Chat</div>,
 }));
 vi.mock('@/shared/ui/footer-compliance', () => ({
-  FooterCompliance: () => <div data-testid="footer-compliance">Compliance Footer</div>
+  FooterCompliance: () => <div data-testid="footer-compliance">Compliance Footer</div>,
 }));
 
 // Mock ResizeObserver for MUI
-(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+interface ResizeObserverMock {
+  observe: ReturnType<typeof vi.fn>;
+  unobserve: ReturnType<typeof vi.fn>;
+  disconnect: ReturnType<typeof vi.fn>;
+}
+
+(globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = vi.fn().mockImplementation(
+  (): ResizeObserverMock => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  })
+);
 
 describe('MainLayout', () => {
   const mockUseAuth = vi.spyOn(useAuthHook, 'useAuth');
-  // @ts-ignore
   const mockUseCartStore = vi.spyOn(cartStore, 'useCartStore');
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseAuth.mockReturnValue({ user: null } as any);
-    mockUseCartStore.mockImplementation((selector: (state: CartState) => unknown) => selector({ totalItems: () => 0 } as unknown as CartState));
+    mockUseAuth.mockReturnValue({ user: null } as ReturnType<typeof useAuthHook.useAuth>);
+    mockUseCartStore.mockImplementation((selector: (state: CartState) => unknown) =>
+      selector({ totalItems: () => 0 } as unknown as CartState)
+    );
   });
 
   const renderWithRouter = (component: React.ReactNode) => {
-    return render(
-      <BrowserRouter>
-        {component}
-      </BrowserRouter>
-    );
+    return render(<BrowserRouter>{component}</BrowserRouter>);
   };
 
   it('renders app title and navigation items', () => {
@@ -81,7 +86,7 @@ describe('MainLayout', () => {
   });
 
   it('displays login button when user is not authenticated', () => {
-    mockUseAuth.mockReturnValue({ user: null } as any);
+    mockUseAuth.mockReturnValue({ user: null } as ReturnType<typeof useAuthHook.useAuth>);
     renderWithRouter(<MainLayout />);
     expect(screen.getAllByText('Đăng nhập')[0]).toBeInTheDocument();
   });
@@ -91,28 +96,28 @@ describe('MainLayout', () => {
 
     // Find footer link "Thực đơn"
     const menuLinks = screen.getAllByText('Thực đơn');
-    const footerMenuLink = menuLinks.find(el => el.tagName === 'P'); // Footer links are Typography (p)
+    const footerMenuLink = menuLinks.find((el) => el.tagName === 'P'); // Footer links are Typography (p)
 
     if (footerMenuLink) {
       fireEvent.click(footerMenuLink);
       expect(mockNavigate).toHaveBeenCalledWith('/menu');
     } else {
       // Fallback if structure changes (MUI Typography component="p" by default for body1/body2)
-       const fallbackLink = screen.getByText('Thực đơn', { selector: 'p' });
-       fireEvent.click(fallbackLink);
-       expect(mockNavigate).toHaveBeenCalledWith('/menu');
+      const fallbackLink = screen.getByText('Thực đơn', { selector: 'p' });
+      fireEvent.click(fallbackLink);
+      expect(mockNavigate).toHaveBeenCalledWith('/menu');
     }
   });
 
   it('buttons have sufficient touch target size', () => {
     renderWithRouter(<MainLayout />);
     const menuButtons = screen.queryAllByText('Thực đơn');
-    const appBarButton = menuButtons.find(el => el.closest('header'));
+    const appBarButton = menuButtons.find((el) => el.closest('header'));
 
     if (appBarButton) {
       const button = appBarButton.closest('button');
       if (button) {
-         expect(button).toHaveStyle({ minHeight: '44px' });
+        expect(button).toHaveStyle({ minHeight: '44px' });
       }
     }
   });

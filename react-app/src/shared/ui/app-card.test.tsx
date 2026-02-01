@@ -15,10 +15,7 @@ describe('AppCard', () => {
 
   it('renders title and subheader', () => {
     render(
-      <AppCard
-        title="Card Title"
-        subheader="Card Subheader"
-      >
+      <AppCard title="Card Title" subheader="Card Subheader">
         <div>Content</div>
       </AppCard>
     );
@@ -28,9 +25,7 @@ describe('AppCard', () => {
 
   it('renders action element', () => {
     render(
-      <AppCard
-        action={<Button>Action</Button>}
-      >
+      <AppCard action={<Button>Action</Button>}>
         <div>Content</div>
       </AppCard>
     );
@@ -39,9 +34,7 @@ describe('AppCard', () => {
 
   it('renders footer', () => {
     render(
-      <AppCard
-        footer={<div>Footer Content</div>}
-      >
+      <AppCard footer={<div>Footer Content</div>}>
         <div>Content</div>
       </AppCard>
     );
