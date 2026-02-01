@@ -39,6 +39,7 @@ vi.mock('@/shared/api/supabase-client', () => ({
         eq: vi.fn(() => ({
           single: vi.fn().mockResolvedValue({ data: { id: 'customer-123' } }),
         })),
+        in: vi.fn().mockResolvedValue({ data: [{ id: 1, price: 50000 }] }),
       })),
       insert: vi.fn(() => ({
         select: vi.fn(() => ({
@@ -46,6 +47,7 @@ vi.mock('@/shared/api/supabase-client', () => ({
         })),
       })),
     })),
+    rpc: vi.fn().mockResolvedValue({ data: { id: 'order-123' }, error: null }),
   },
 }));
 
@@ -67,8 +69,8 @@ vi.mock('@/shared/ui/trust-badges', () => ({
 vi.mock('@/features/payment/components/payment-method-selector', () => ({
   PaymentMethodSelector: ({ onChange }: { onChange: (val: string) => void }) => (
     <div data-testid="payment-selector">
-      <button onClick={() => onChange('cash')}>Select Cash</button>
-      <button onClick={() => onChange('vnpay')}>Select VNPay</button>
+      <button type="button" onClick={() => onChange('cash')}>Select Cash</button>
+      <button type="button" onClick={() => onChange('vnpay')}>Select VNPay</button>
     </div>
   ),
 }));
@@ -77,12 +79,16 @@ import { useCartStore } from '@/features/cart/model/cart-store';
 import { useAuth } from '@/app/providers/auth-provider';
 import { useAddresses } from '@/features/profile/hooks/use-addresses';
 import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
+import { paymentApi } from '@/features/payment/api/payment-api';
 
 describe('CheckoutPage', () => {
   const mockClearCart = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Reset paymentApi mock
+    vi.mocked(paymentApi.createPayment).mockReset();
 
     // Default mocks - using type-safe casting pattern
     vi.mocked(useCartStore).mockReturnValue({
@@ -163,5 +169,52 @@ describe('CheckoutPage', () => {
 
     // Total label
     expect(screen.getByText('Tổng cộng')).toBeInTheDocument();
+  });
+
+  it('does NOT clear cart for online payment redirect', async () => {
+    // Setup online payment return
+    vi.mocked(paymentApi.createPayment).mockResolvedValue({
+      paymentUrl: 'https://payment.url',
+      transactionId: '123',
+    });
+
+    // Mock window.location
+    const originalLocation = window.location;
+    delete (window as any).location;
+    window.location = { href: '' } as any;
+
+    render(
+      <MemoryRouter>
+        <CheckoutPage />
+      </MemoryRouter>
+    );
+
+    // Fill form
+    fireEvent.change(screen.getByLabelText(/Họ và tên/i), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByLabelText(/Số điện thoại/i), { target: { value: '0909090909' } });
+    fireEvent.change(screen.getByLabelText(/Địa chỉ nhận hàng/i), {
+      target: { value: '123 Test St' },
+    });
+
+    // Select VNPay (assuming PaymentMethodSelector renders buttons as mocked)
+    fireEvent.click(screen.getByText('Select VNPay'));
+
+    // Submit
+    const submitBtn = screen.getByText('Thanh toán & Đặt hàng');
+    fireEvent.click(submitBtn);
+
+    await waitFor(() => {
+      expect(paymentApi.createPayment).toHaveBeenCalled();
+    });
+
+    // Check clearCart was NOT called
+    expect(mockClearCart).not.toHaveBeenCalled();
+    expect(window.location.href).toBe('https://payment.url');
+
+    // Restore window.location
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: originalLocation,
+    });
   });
 });

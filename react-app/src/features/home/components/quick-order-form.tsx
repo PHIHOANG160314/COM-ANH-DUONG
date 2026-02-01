@@ -36,16 +36,13 @@ export const QuickOrderForm = () => {
 
     if (hasError) return;
 
-    // Create order object
-    const order = {
-      phone: cleanPhone,
-      address: address.trim(),
-      timestamp: new Date().toISOString(),
-      source: 'hero_quick_order_form',
-    };
-
-    // Console log for debugging
-    console.log('🍚 Quick Order Received:', order);
+    // Create order object (placeholder for future API integration)
+    // const order = {
+    //   phone: DOMPurify.sanitize(cleanPhone),
+    //   address: DOMPurify.sanitize(address.trim()),
+    //   timestamp: new Date().toISOString(),
+    //   source: 'hero_quick_order_form',
+    // };
 
     // Show thank you message
     setSubmitted(true);

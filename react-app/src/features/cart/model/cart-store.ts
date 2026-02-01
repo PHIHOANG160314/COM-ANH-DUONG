@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { Debug } from '@/shared/utils/debug';
 import type { Database } from '@/shared/types/database.types';
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -14,6 +15,7 @@ export interface CartState {
   addItem: (product: Product, quantity?: number, note?: string) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+  updateItemPrice: (productId: string, price: number) => void;
   clearCart: () => void;
   totalAmount: () => number;
   totalItems: () => number;
@@ -50,6 +52,11 @@ export const useCartStore = create<CartState>()(
             .filter((item) => item.quantity > 0),
         }));
       },
+      updateItemPrice: (productId, price) => {
+        set((state) => ({
+          items: state.items.map((item) => (item.id === productId ? { ...item, price } : item)),
+        }));
+      },
       clearCart: () => {
         set({ items: [] });
       },
@@ -62,6 +69,24 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'cart-storage',
+      storage: createJSONStorage(() => ({
+        getItem: (name) => localStorage.getItem(name),
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, value);
+          } catch (e) {
+            if (
+              e instanceof Error &&
+              (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+            ) {
+              Debug.error('Cart storage quota exceeded');
+              alert('Giỏ hàng đầy. Vui lòng xóa bớt sản phẩm để tiếp tục mua sắm.');
+            }
+            throw e;
+          }
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      })),
     }
   )
 );

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCartStore } from './cart-store';
 import { act } from '@testing-library/react';
 
@@ -116,5 +116,49 @@ describe('cartStore', () => {
     expect(useCartStore.getState().items).toHaveLength(0);
     expect(useCartStore.getState().totalItems()).toBe(0);
     expect(useCartStore.getState().totalAmount()).toBe(0);
+  });
+
+  it('handles localStorage quota exceeded gracefully', () => {
+    // Mock console.error
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Mock alert
+    const alertMock = vi.fn();
+    vi.stubGlobal('alert', alertMock);
+
+    // Mock localStorage.setItem to throw QuotaExceededError
+    // We spy on the instance method directly to be sure
+    const setItemSpy = vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
+      const error = new Error('Quota exceeded');
+      error.name = 'QuotaExceededError';
+      throw error;
+    });
+
+    // Verify the mock works directly
+    try {
+      window.localStorage.setItem('test', 'value');
+    } catch (e) {
+      // expected
+    }
+    expect(setItemSpy).toHaveBeenCalled();
+    setItemSpy.mockClear();
+
+    // We need to force a write to storage.
+    // Zustand persist middleware writes on state change.
+    try {
+      act(() => {
+        useCartStore.getState().addItem(mockProduct1);
+      });
+    } catch (e) {
+      // The error is re-thrown by our implementation, so we expect it here
+      expect(e).toBeDefined();
+    }
+
+    expect(consoleSpy).toHaveBeenCalledWith('Cart storage quota exceeded');
+    expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('Giỏ hàng đầy'));
+
+    // Cleanup
+    consoleSpy.mockRestore();
+    setItemSpy.mockRestore();
+    vi.unstubAllGlobals();
   });
 });
