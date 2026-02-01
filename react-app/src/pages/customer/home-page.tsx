@@ -29,7 +29,7 @@ export const CustomerHomePage = () => {
 
       {/* Quick Access Links for Staff */}
       {isStaff && (
-        <Box sx={{ px: { xs: 2, md: 4 }, py: 3 }}>
+        <Box sx={{ py: 3 }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
             ⚡ Truy cập nhanh
           </Typography>
@@ -79,7 +79,7 @@ export const CustomerHomePage = () => {
       )}
 
       {/* Menu Section */}
-      <Box sx={{ px: { xs: 2, md: 4 }, pb: 4 }}>
+      <Box sx={{ pb: 4 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
           🍽️ Thực đơn hôm nay
         </Typography>
