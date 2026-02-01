@@ -182,7 +182,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         {drawer}
       </Drawer>
 
-      <Container component="main" maxWidth="md" sx={{ flexGrow: 1, py: 4 }}>
+      <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
         {children || <Outlet />}
       </Container>
 
@@ -196,7 +196,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           color: '#fff',
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Box
             sx={{
               display: 'grid',
