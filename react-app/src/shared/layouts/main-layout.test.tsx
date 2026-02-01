@@ -34,6 +34,9 @@ vi.mock('@/shared/ui/zalo-chat-fab', () => ({
 vi.mock('@/shared/ui/footer-compliance', () => ({
   FooterCompliance: () => <div data-testid="footer-compliance">Compliance Footer</div>,
 }));
+vi.mock('@/shared/ui/theme-toggle', () => ({
+  ThemeToggle: () => <div data-testid="theme-toggle">Theme Toggle</div>,
+}));
 
 // Mock ResizeObserver for MUI
 interface ResizeObserverMock {
