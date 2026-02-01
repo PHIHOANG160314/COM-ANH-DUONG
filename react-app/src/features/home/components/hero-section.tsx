@@ -68,7 +68,7 @@ export const HeroSection = () => {
             fontWeight="bold"
             sx={{ fontSize: { xs: '2rem', md: '3rem' }, mb: 1 }}
           >
-            🍚 Cơm Ánh Dương - Sa Đéc
+            🍚 Cơm Ánh Dương - Tân Phú Đông
           </Typography>
         </Box>
 
@@ -78,7 +78,7 @@ export const HeroSection = () => {
             variant="h5"
             sx={{ opacity: 0.9, mb: 3, fontSize: { xs: '1rem', md: '1.25rem' } }}
           >
-            Hương vị Vùng đất Sen Hồng - Giao nhanh tận nơi 🛵
+            Cơm ngon, giá tốt - Giao nhanh tận nơi 🛵
           </Typography>
         </Box>
 
@@ -94,7 +94,7 @@ export const HeroSection = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Chip
                 icon={<LocalFlorist sx={{ color: 'white !important' }} />}
-                label="Gần Làng hoa 700ha"
+                label="Đối diện Viva Coffee"
                 sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
               />
             </motion.div>
@@ -108,7 +108,7 @@ export const HeroSection = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Chip
                 icon={<AccessTime sx={{ color: 'white !important' }} />}
-                label="Giao nhanh Sa Đéc"
+                label="Giao nhanh Tân Phú Đông"
                 sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
               />
             </motion.div>
@@ -180,7 +180,7 @@ export const HeroSection = () => {
               Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: '#666' }}>
-              Làng hoa Sa Đéc, Đồng Tháp
+              581C Hùng Vương, Tân Phú Đông
             </Typography>
           </Paper>
         </motion.div>

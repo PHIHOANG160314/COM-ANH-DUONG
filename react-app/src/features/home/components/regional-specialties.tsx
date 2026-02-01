@@ -31,10 +31,10 @@ export const RegionalSpecialties = () => {
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 6 }}>
           <Typography variant="h4" fontWeight="bold" sx={{ color: '#166534', mb: 1 }}>
-            Đặc Sản Vùng Đất Sen Hồng
+            Đặc Sản Miền Tây
           </Typography>
           <Typography variant="body1" sx={{ color: '#666' }}>
-            Khám phá hương vị ẩm thực độc đáo chỉ có tại Sa Đéc
+            Khám phá hương vị ẩm thực độc đáo miền Đồng Tháp
           </Typography>
         </Box>
 

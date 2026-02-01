@@ -30,7 +30,10 @@
       "Bash(dims=:*)",
       "Bash(name=\"$size#*:\")",
       "Bash(magick:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(Cơm Trưa Văn Phòng Sa Đéc - Đồng Tháp\"\n- Meta description: \"vùng đất Sen Hồng\" + \"chuẩn vị miền Tây\"\n- Open Graph tags for Zalo/Facebook sharing\n- JSON-LD structured data with Sa Đéc geocoordinates \\(10.2925, 105.7562\\)\n\n**Contact Info Update \\(Phase 4\\)**:\n- Footer location: \"Đường Nguyễn Huệ, Phường 1, TP. Sa Đéc, Đồng Tháp\"\n- Landmark: \"🌸 Cạnh Làng Hoa Sa Đéc\"\n\n**Verification**:\n- Tests: 79/79 passed\n- Binh Pháp: 0/0/0 \\(console.log, TODO, any types\\)\n- Build: 137ms\nEOF\n\\)\")",
+      "Bash(vercel ls:*)",
+      "Bash(gh run view:*)"
     ]
   }
 }
