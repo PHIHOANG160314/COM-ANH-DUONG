@@ -34,7 +34,7 @@ export const TrustSignals = () => {
     <Box sx={{ py: 6, bgcolor: '#fafafa' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
+          <Typography variant="h4" fontWeight="bold" gutterBottom color="text.primary">
             Tại sao chọn Cơm Ánh Dương?
           </Typography>
           <Typography variant="body1" color="text.secondary">
