@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 interface UseInstallPromptReturn {
   promptInstall: () => Promise<boolean>;
   canInstall: boolean;
@@ -8,23 +13,17 @@ interface UseInstallPromptReturn {
 }
 
 export const useInstallPrompt = (): UseInstallPromptReturn => {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isIOS, setIsIOS] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+
+  // Compute iOS and installed status without setState in useEffect
+  const isIOS = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+  const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
 
   useEffect(() => {
-    // Detect iOS
-    const ios = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-    setIsIOS(ios);
-
-    // Check if already installed (standalone mode)
-    const installed = window.matchMedia('(display-mode: standalone)').matches;
-    setIsInstalled(installed);
-
     // Android install prompt (beforeinstallprompt event)
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener('beforeinstallprompt', handler);

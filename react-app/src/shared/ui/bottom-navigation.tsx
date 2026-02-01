@@ -1,4 +1,9 @@
-import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Badge, Paper } from '@mui/material';
+import {
+  BottomNavigation as MuiBottomNavigation,
+  BottomNavigationAction,
+  Badge,
+  Paper,
+} from '@mui/material';
 import {
   Home as HomeIcon,
   HomeOutlined as HomeOutlinedIcon,

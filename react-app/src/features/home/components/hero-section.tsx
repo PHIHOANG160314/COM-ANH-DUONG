@@ -118,7 +118,19 @@ export const HeroSection = () => {
 
         {/* CTA Buttons */}
         <Box component={motion.div} variants={itemVariants}>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', width: '100%', maxWidth: { xs: '280px', sm: 'none' }, mx: 'auto' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: 'center',
+              width: '100%',
+              maxWidth: { xs: '280px', sm: 'none' },
+              mx: 'auto',
+            }}
+          >
             <motion.div
               whileHover={{ scale: 1.05, boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}
               whileTap={{ scale: 0.95 }}

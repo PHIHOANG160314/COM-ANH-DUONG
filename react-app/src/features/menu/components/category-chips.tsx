@@ -6,7 +6,11 @@ interface CategoryChipsProps {
   onCategorySelect: (category: string) => void;
 }
 
-export const CategoryChips = ({ categories, selectedCategory, onCategorySelect }: CategoryChipsProps) => {
+export const CategoryChips = ({
+  categories,
+  selectedCategory,
+  onCategorySelect,
+}: CategoryChipsProps) => {
   return (
     <Box
       sx={{

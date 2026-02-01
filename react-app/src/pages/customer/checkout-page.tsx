@@ -226,7 +226,12 @@ export const CheckoutPage = () => {
   return (
     <Grid container spacing={4} sx={{ pb: { xs: 12, md: 4 } }}>
       <Grid size={{ xs: 12, md: 7 }}>
-        <Typography variant="h5" gutterBottom fontWeight="bold" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          fontWeight="bold"
+          sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+        >
           Thông tin giao hàng
         </Typography>
         <Paper sx={{ p: 3 }}>
@@ -326,7 +331,12 @@ export const CheckoutPage = () => {
       </Grid>
 
       <Grid size={{ xs: 12, md: 5 }}>
-        <Typography variant="h5" gutterBottom fontWeight="bold" sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          fontWeight="bold"
+          sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+        >
           Đơn hàng của bạn
         </Typography>
         <Paper sx={{ p: 3 }}>

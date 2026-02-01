@@ -51,7 +51,15 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
       />
 
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, pb: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          px: 2,
+          pb: 1,
+        }}
+      >
         <Typography variant="h6" fontWeight="bold">
           Giỏ hàng ({items.length})
         </Typography>

@@ -93,9 +93,7 @@ export const ProfilePage = () => {
               </ListItem>
               <Divider />
               <ListItem>
-                <ListItemIcon>
-                  {mode === 'dark' ? <DarkMode /> : <LightMode />}
-                </ListItemIcon>
+                <ListItemIcon>{mode === 'dark' ? <DarkMode /> : <LightMode />}</ListItemIcon>
                 <FormControlLabel
                   control={<Switch checked={mode === 'dark'} onChange={toggleTheme} />}
                   label={mode === 'dark' ? 'Chế độ tối' : 'Chế độ sáng'}

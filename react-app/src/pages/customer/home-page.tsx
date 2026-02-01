@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Typography, Box, Card, CardContent } from '@mui/material';
-import {
-  AdminPanelSettings,
-  Restaurant,
-  PointOfSale,
-  DeliveryDining,
-} from '@mui/icons-material';
+import { AdminPanelSettings, Restaurant, PointOfSale, DeliveryDining } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { MenuGrid } from '@/features/menu/components/menu-grid';
 import { CartSheet } from '@/features/cart/components/cart-sheet';
@@ -115,7 +110,11 @@ export const CustomerHomePage = () => {
         </Box>
       </Box>
 
-      <CartSheet open={isCartOpen} onClose={() => setIsCartOpen(false)} onOpen={() => setIsCartOpen(true)} />
+      <CartSheet
+        open={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onOpen={() => setIsCartOpen(true)}
+      />
     </>
   );
 };
