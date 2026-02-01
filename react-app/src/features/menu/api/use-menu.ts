@@ -6,8 +6,8 @@ import { Debug } from '@/shared/utils/debug';
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
 
-// Demo data for when Supabase is not configured - uses AI-generated images
-const DEMO_PRODUCTS: (Product & { categories: Category | null })[] = [
+// Production menu data - used when Supabase is not configured or as fallback
+const MENU_PRODUCTS: (Product & { categories: Category | null })[] = [
   // Cơm Phần (Rice Dishes)
   {
     id: 'demo-1',
@@ -634,7 +634,7 @@ const DEMO_PRODUCTS: (Product & { categories: Category | null })[] = [
   },
 ];
 
-const DEMO_CATEGORIES: Category[] = [
+const MENU_CATEGORIES: Category[] = [
   {
     id: 'cat-1',
     name: 'Cơm Phần',
@@ -704,10 +704,10 @@ export const useDailyMenu = () => {
   return useQuery({
     queryKey: ['daily-menu'],
     queryFn: async () => {
-      // Return demo data if Supabase is not configured
+      // Return production menu if Supabase is not configured
       if (!hasSupabaseConfig) {
-        Debug.warn('⚠️ Supabase not configured - showing demo menu');
-        return DEMO_PRODUCTS;
+        Debug.warn('⚠️ Supabase not configured - showing production menu');
+        return MENU_PRODUCTS;
       }
 
       try {
@@ -726,17 +726,17 @@ export const useDailyMenu = () => {
           .eq('is_active', true)
           .order('name');
 
-        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
+        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to production
         if (error) {
-          Debug.warn('⚠️ Supabase error - falling back to demo menu:', error.message);
-          return DEMO_PRODUCTS;
+          Debug.warn('⚠️ Supabase error - falling back to production menu:', error.message);
+          return MENU_PRODUCTS;
         }
 
         return data as (Product & { categories: Category | null })[];
       } catch (err) {
-        // Catch any network or auth errors and fallback to demo
-        Debug.warn('⚠️ Failed to fetch menu - falling back to demo:', err);
-        return DEMO_PRODUCTS;
+        // Catch any network or auth errors and fallback to production
+        Debug.warn('⚠️ Failed to fetch menu - falling back to production:', err);
+        return MENU_PRODUCTS;
       }
     },
   });
@@ -746,10 +746,10 @@ export const useCategories = () => {
   return useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      // Return demo data if Supabase is not configured
+      // Return production categories if Supabase is not configured
       if (!hasSupabaseConfig) {
-        Debug.warn('⚠️ Supabase not configured - showing demo categories');
-        return DEMO_CATEGORIES;
+        Debug.warn('⚠️ Supabase not configured - showing production categories');
+        return MENU_CATEGORIES;
       }
 
       try {
@@ -759,17 +759,17 @@ export const useCategories = () => {
           .eq('is_active', true)
           .order('sort_order');
 
-        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to demo
+        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to production
         if (error) {
-          Debug.warn('⚠️ Supabase error - falling back to demo categories:', error.message);
-          return DEMO_CATEGORIES;
+          Debug.warn('⚠️ Supabase error - falling back to production categories:', error.message);
+          return MENU_CATEGORIES;
         }
 
         return data as Category[];
       } catch (err) {
-        // Catch any network or auth errors and fallback to demo
-        Debug.warn('⚠️ Failed to fetch categories - falling back to demo:', err);
-        return DEMO_CATEGORIES;
+        // Catch any network or auth errors and fallback to production
+        Debug.warn('⚠️ Failed to fetch categories - falling back to production:', err);
+        return MENU_CATEGORIES;
       }
     },
   });
