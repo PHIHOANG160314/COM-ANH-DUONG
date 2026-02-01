@@ -1,15 +1,26 @@
-import { Grid, Typography, Box, Tabs, Tab } from '@mui/material';
+import { Grid, Typography, Box, CircularProgress } from '@mui/material';
 import { useState, useMemo } from 'react';
 import { ProductCard } from './product-card';
 import { useDailyMenu, useCategories } from '../api/use-menu';
 import { useCartStore } from '@/features/cart/model/cart-store';
-import { AppLoading } from '@/shared/ui';
+import { MenuSkeleton } from './menu-skeleton';
+import { CategoryChips } from './category-chips';
+import { usePullToRefresh } from '../hooks/use-pull-to-refresh';
 
 export const MenuGrid = () => {
-  const { data: products, isLoading: loadingProducts } = useDailyMenu();
+  const { data: products, isLoading: loadingProducts, refetch } = useDailyMenu();
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const addItem = useCartStore((state) => state.addItem);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Pull-to-refresh
+  const { isPulling, isRefreshing, pullDistance } = usePullToRefresh({
+    onRefresh: async () => {
+      await refetch();
+    },
+    threshold: 80,
+    enabled: true,
+  });
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -17,12 +28,12 @@ export const MenuGrid = () => {
     return products.filter((p) => p.category_id === selectedCategory);
   }, [products, selectedCategory]);
 
-  const handleCategoryChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setSelectedCategory(newValue);
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
   };
 
   if (loadingProducts || loadingCategories) {
-    return <AppLoading message="Đang tải thực đơn..." />;
+    return <MenuSkeleton count={6} />;
   }
 
   if (!products?.length) {
@@ -36,21 +47,44 @@ export const MenuGrid = () => {
   }
 
   return (
-    <Box>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="menu categories"
+    <Box sx={{ position: 'relative' }}>
+      {/* Pull-to-refresh indicator */}
+      {(isPulling || isRefreshing) && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: Math.min(pullDistance, 60),
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            transition: isRefreshing ? 'top 0.3s ease' : 'none',
+          }}
         >
-          <Tab label="Tất cả" value="all" />
-          {categories?.map((cat) => (
-            <Tab key={cat.id} label={cat.name} value={cat.id} />
-          ))}
-        </Tabs>
-      </Box>
+          <CircularProgress
+            size={40}
+            sx={{
+              opacity: isRefreshing ? 1 : pullDistance / 80,
+            }}
+          />
+        </Box>
+      )}
+
+      {/* Category chips - horizontal scroll */}
+      <CategoryChips
+        categories={categories?.map((cat) => cat.name) || []}
+        selectedCategory={selectedCategory}
+        onCategorySelect={(category) => {
+          if (category === 'all') {
+            handleCategorySelect('all');
+          } else {
+            // Find category ID by name
+            const cat = categories?.find((c) => c.name === category);
+            if (cat) {
+              handleCategorySelect(cat.id);
+            }
+          }
+        }}
+      />
 
       <Grid container spacing={2}>
         {filteredProducts.map((product) => (

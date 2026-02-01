@@ -1,5 +1,6 @@
 import { Card, CardMedia, CardContent, Typography, CardActions, Box, Chip } from '@mui/material';
 import { AddShoppingCart } from '@mui/icons-material';
+import { useState, useEffect, useRef } from 'react';
 import { AppButton } from '@/shared/ui';
 import { formatCurrency } from '@/shared/lib/formatters';
 import type { Database } from '@/shared/types/database.types';
@@ -12,6 +13,36 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string>('');
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    // Lazy load image using Intersection Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !imageSrc) {
+            setImageSrc(product.image_url || '/placeholder-food.png');
+          }
+        });
+      },
+      {
+        rootMargin: '50px', // Load 50px before visible
+      }
+    );
+
+    if (imageRef.current) {
+      observer.observe(imageRef.current);
+    }
+
+    return () => {
+      if (imageRef.current) {
+        observer.unobserve(imageRef.current);
+      }
+    };
+  }, [product.image_url, imageSrc]);
+
   return (
     <Card
       sx={{
@@ -22,13 +53,60 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
         position: 'relative',
       }}
     >
-      <CardMedia
-        component="img"
-        height="160"
-        image={product.image_url || '/placeholder-food.png'} // Fallback image needed
-        alt={product.name}
-        sx={{ objectFit: 'cover' }}
-      />
+      <Box
+        ref={imageRef}
+        sx={{
+          position: 'relative',
+          height: 160,
+          bgcolor: 'rgba(0,0,0,0.05)',
+          overflow: 'hidden',
+        }}
+      >
+        {imageSrc && (
+          <CardMedia
+            component="img"
+            height="160"
+            image={imageSrc}
+            alt={product.name}
+            onLoad={() => setIsImageLoaded(true)}
+            sx={{
+              objectFit: 'cover',
+              opacity: isImageLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out',
+            }}
+          />
+        )}
+        {!isImageLoaded && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              bgcolor: 'rgba(0,0,0,0.05)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {/* Blur placeholder effect */}
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 1.5s infinite',
+                '@keyframes shimmer': {
+                  '0%': { backgroundPosition: '200% 0' },
+                  '100%': { backgroundPosition: '-200% 0' },
+                },
+              }}
+            />
+          </Box>
+        )}
+      </Box>
       {product.is_sold_out && (
         <Box
           sx={{
