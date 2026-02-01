@@ -13,6 +13,9 @@ import { CartDrawer } from '@/features/cart/components/cart-drawer';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { HeroSection } from '@/features/home/components/hero-section';
 import { RegionalSpecialties } from '@/features/home/components/regional-specialties';
+import { TrustSignals } from '@/features/home/components/trust-signals';
+import { CustomerTestimonials } from '@/features/home/components/customer-testimonials';
+import { UrgencyBanner } from '@/features/home/components/urgency-banner';
 import { useAuth } from '@/features/auth/api/use-auth';
 
 export const CustomerHomePage = () => {
@@ -28,8 +31,17 @@ export const CustomerHomePage = () => {
       {/* Hero Banner */}
       <HeroSection />
 
+      {/* Urgency Banner - CRO Element */}
+      <UrgencyBanner />
+
       {/* Regional Specialties */}
       <RegionalSpecialties />
+
+      {/* Trust Signals - CRO Element */}
+      <TrustSignals />
+
+      {/* Customer Testimonials - CRO Element */}
+      <CustomerTestimonials />
 
       {/* Quick Access Links for Staff */}
       {isStaff && (
