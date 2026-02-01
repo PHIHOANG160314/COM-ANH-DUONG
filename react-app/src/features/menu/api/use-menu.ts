@@ -6,8 +6,11 @@ import { Debug } from '@/shared/utils/debug';
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
 
+// Type for fallback data structure (compatible with old products table)
+type MenuItemWithCategory = Product & { categories: Category | null };
+
 // Production menu data - used when Supabase is not configured or as fallback
-const MENU_PRODUCTS: (Product & { categories: Category | null })[] = [
+const MENU_PRODUCTS: MenuItemWithCategory[] = [
   // Cơm Phần (Rice Dishes)
   {
     id: 'demo-1',
@@ -711,28 +714,63 @@ export const useDailyMenu = () => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('products')
+        // Try to fetch from menu_items table first (new schema with 110 items)
+        const { data: menuData, error: menuError } = await supabase
+          .from('menu_items')
           .select(
             `
-          *,
-          categories (
-            id,
-            name,
-            sort_order
-          )
-        `
+            *,
+            categories (
+              id,
+              name,
+              slug,
+              sort_order
+            )
+          `
           )
           .eq('is_active', true)
           .order('name');
 
-        // If error from Supabase (e.g., 401 with placeholder credentials), fallback to production
-        if (error) {
-          Debug.warn('⚠️ Supabase error - falling back to production menu:', error.message);
+        if (!menuError && menuData) {
+          Debug.log(`✅ Loaded ${menuData.length} items from menu_items table`);
+          // Convert menu_items format to Product format for compatibility
+          return menuData.map((item) => ({
+            id: item.id.toString(), // Convert number to string
+            category_id: item.category_id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            image_url: item.image_url,
+            is_active: item.is_active,
+            is_sold_out: item.is_sold_out,
+            created_at: item.created_at,
+            updated_at: item.updated_at,
+            categories: item.categories as Category | null,
+          })) as MenuItemWithCategory[];
+        }
+
+        // Fallback to old products table if menu_items doesn't exist
+        const { data: productsData, error: productsError } = await supabase
+          .from('products')
+          .select(
+            `
+            *,
+            categories (
+              id,
+              name,
+              sort_order
+            )
+          `
+          )
+          .eq('is_active', true)
+          .order('name');
+
+        if (productsError) {
+          Debug.warn('⚠️ Supabase error - falling back to production menu:', productsError.message);
           return MENU_PRODUCTS;
         }
 
-        return data as (Product & { categories: Category | null })[];
+        return productsData as MenuItemWithCategory[];
       } catch (err) {
         // Catch any network or auth errors and fallback to production
         Debug.warn('⚠️ Failed to fetch menu - falling back to production:', err);

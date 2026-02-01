@@ -35,7 +35,12 @@
       "Bash(vercel ls:*)",
       "Bash(gh run view:*)",
       "Bash(find:*)",
-      "Bash(gh run watch:*)"
+      "Bash(gh run watch:*)",
+      "Bash(if [ -f .env.local ])",
+      "Bash(then:*)",
+      "Bash(elif:*)",
+      "Bash(else echo \"No .env file found\")",
+      "Bash(fi)"
     ]
   }
 }

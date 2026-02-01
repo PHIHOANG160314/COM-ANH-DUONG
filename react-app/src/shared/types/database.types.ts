@@ -254,6 +254,44 @@ export interface Database {
           updated_at?: string;
         };
       };
+      menu_items: {
+        Row: {
+          id: number;
+          category_id: string | null;
+          name: string;
+          description: string | null;
+          price: number;
+          image_url: string | null;
+          is_active: boolean;
+          is_sold_out: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          category_id?: string | null;
+          name: string;
+          description?: string | null;
+          price: number;
+          image_url?: string | null;
+          is_active?: boolean;
+          is_sold_out?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          category_id?: string | null;
+          name?: string;
+          description?: string | null;
+          price?: number;
+          image_url?: string | null;
+          is_active?: boolean;
+          is_sold_out?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       saved_items: {
         Row: {
           id: string;
