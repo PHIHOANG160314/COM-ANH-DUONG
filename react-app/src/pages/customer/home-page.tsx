@@ -29,17 +29,24 @@ export const CustomerHomePage = () => {
 
       {/* Quick Access Links for Staff */}
       {isStaff && (
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
-            ⚡ Truy cập nhanh
-          </Typography>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-              gap: 2,
-            }}
-          >
+        <Box
+          sx={{
+            py: 3,
+            mx: -3, // Negative margin to break out of Container padding
+            px: 3, // Add back padding
+          }}
+        >
+          <Box sx={{ maxWidth: 'lg', mx: 'auto', px: 3 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              ⚡ Truy cập nhanh
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                gap: 2,
+              }}
+            >
             <Card sx={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>
               <CardContent sx={{ textAlign: 'center' }}>
                 <AdminPanelSettings sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
@@ -76,14 +83,23 @@ export const CustomerHomePage = () => {
             )}
           </Box>
         </Box>
+      </Box>
       )}
 
       {/* Menu Section */}
-      <Box sx={{ pb: 4 }}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
-          🍽️ Thực đơn hôm nay
-        </Typography>
-        <MenuGrid />
+      <Box
+        sx={{
+          pb: 4,
+          mx: -3, // Negative margin to break out of Container padding
+          px: 3, // Add back padding
+        }}
+      >
+        <Box sx={{ maxWidth: 'lg', mx: 'auto', px: 3 }}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
+            🍽️ Thực đơn hôm nay
+          </Typography>
+          <MenuGrid />
+        </Box>
       </Box>
 
       <Fab
