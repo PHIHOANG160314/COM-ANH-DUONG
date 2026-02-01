@@ -177,3 +177,30 @@ Input: "git commit -m 'message'";
 // wait for response...
 Input: "\n"; // Enter riêng
 ```
+
+---
+
+## 🚨 HTML Structure Validation (CRITICAL)
+
+**Incident 260201-1200**: Truncated `index.html` caused blank page in production.
+
+**BẮT BUỘC** trước khi push bất kỳ thay đổi `index.html`:
+
+1. **Verify closing tags exist**:
+
+   ```bash
+   grep -E "</head>|</body>|</html>|<div id=\"root\">" index.html | wc -l
+   # Must be >= 4
+   ```
+
+2. **Check HTML không bị truncate**:
+
+   ```bash
+   tail -5 index.html  # Phải thấy </body></html>
+   ```
+
+3. **Build PHẢI pass** + **verify HTML structure in dist/index.html**
+
+4. **Nếu PWA warning xuất hiện → DỪNG LẠI, investigate ngay**
+
+> ⚠️ **KHÔNG ĐƯỢC** push nếu thiếu closing tags - gây blank page production!
