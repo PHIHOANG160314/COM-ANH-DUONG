@@ -180,6 +180,37 @@ Input: "\n"; // Enter riêng
 
 ---
 
+## 🚨 CC CLI Task Delegation (CRITICAL)
+
+**QUAN TRỌNG**: Khi giao task cho CC CLI, PHẢI đính kèm `/command`!
+
+### ❌ SAI - ClaudeKit KHÔNG chạy:
+
+```
+"Scan all security issues and fix them"
+"Review codebase for edge cases"
+```
+
+### ✅ ĐÚNG - ClaudeKit SẼ chạy:
+
+```
+"/review:codebase:parallel scan all security issues"
+"/code fix all TypeScript errors"
+"/plan create implementation for new feature"
+```
+
+### Available Commands:
+
+- `/code` - Execute code changes
+- `/plan` - Create implementation plan
+- `/review:codebase:parallel` - Parallel codebase review
+- `/commit` - Commit changes with message
+- `/test` - Run tests
+
+> 🚨 **CẤM QUÊN /command** - Task không có /command = ClaudeKit IGNORE!
+
+---
+
 ## 🚨 HTML Structure Validation (CRITICAL)
 
 **Incident 260201-1200**: Truncated `index.html` caused blank page in production.

@@ -92,10 +92,6 @@ export const LeadCapturePopup = () => {
     existingLeads.push(lead);
     localStorage.setItem('captured_leads', JSON.stringify(existingLeads));
 
-    // Console log for now (Supabase integration later)
-    console.log('📞 New Lead Captured:', lead);
-    console.log('💾 All Leads:', existingLeads);
-
     setSubmitted(true);
     setTimeout(() => {
       handleClose();

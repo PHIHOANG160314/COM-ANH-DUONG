@@ -69,8 +69,12 @@ vi.mock('@/shared/ui/trust-badges', () => ({
 vi.mock('@/features/payment/components/payment-method-selector', () => ({
   PaymentMethodSelector: ({ onChange }: { onChange: (val: string) => void }) => (
     <div data-testid="payment-selector">
-      <button type="button" onClick={() => onChange('cash')}>Select Cash</button>
-      <button type="button" onClick={() => onChange('vnpay')}>Select VNPay</button>
+      <button type="button" onClick={() => onChange('cash')}>
+        Select Cash
+      </button>
+      <button type="button" onClick={() => onChange('vnpay')}>
+        Select VNPay
+      </button>
     </div>
   ),
 }));
@@ -180,7 +184,9 @@ describe('CheckoutPage', () => {
 
     // Mock window.location
     const originalLocation = window.location;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (window as any).location;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     window.location = { href: '' } as any;
 
     render(

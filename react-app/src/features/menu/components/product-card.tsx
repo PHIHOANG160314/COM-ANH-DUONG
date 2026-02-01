@@ -40,9 +40,11 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
       observer.observe(imageRef.current);
     }
 
+    const currentImageRef = imageRef.current;
+
     return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
+      if (currentImageRef) {
+        observer.unobserve(currentImageRef);
       }
     };
   }, [product.image_url, imageSrc]);

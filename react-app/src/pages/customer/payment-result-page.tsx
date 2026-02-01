@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, CircularProgress } from '@mui/material';
 import { AppButton } from '@/shared/ui';
 import { CheckCircle, Error } from '@mui/icons-material';
+import { useCartStore } from '@/features/cart/model/cart-store';
 
 type PaymentStatus = 'success' | 'failed' | 'processing' | 'unknown';
 
@@ -11,6 +12,7 @@ export const PaymentResultPage = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<PaymentStatus>('processing');
   const [message, setMessage] = useState('Đang xử lý kết quả thanh toán...');
+  const { clearCart } = useCartStore();
 
   useEffect(() => {
     const checkPaymentStatus = async () => {
@@ -62,6 +64,7 @@ export const PaymentResultPage = () => {
         // For now, let's just set success. In real app, we might wait for webhook.
         setStatus('success');
         setMessage('Thanh toán thành công! Cảm ơn bạn đã đặt hàng.');
+        clearCart(); // Clear cart only on confirmed success
       } else if (initialStatus === 'failed') {
         setStatus('failed');
       } else {
@@ -70,7 +73,7 @@ export const PaymentResultPage = () => {
     };
 
     checkPaymentStatus();
-  }, [searchParams]);
+  }, [searchParams, clearCart]);
 
   const renderContent = () => {
     switch (status) {

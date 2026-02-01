@@ -136,7 +136,7 @@ describe('cartStore', () => {
     // Verify the mock works directly
     try {
       window.localStorage.setItem('test', 'value');
-    } catch (e) {
+    } catch {
       // expected
     }
     expect(setItemSpy).toHaveBeenCalled();

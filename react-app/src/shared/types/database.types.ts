@@ -344,6 +344,13 @@ export interface Database {
       };
     };
     Functions: {
+      create_order_atomic: {
+        Args: {
+          p_order_payload: Json;
+          p_items_payload: Json;
+        };
+        Returns: Json;
+      };
       [_: string]: {
         Args: {
           [key: string]: Json;

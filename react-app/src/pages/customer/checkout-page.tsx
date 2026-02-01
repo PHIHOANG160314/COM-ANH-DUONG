@@ -29,6 +29,7 @@ import { useAddresses } from '@/features/profile/hooks/use-addresses';
 import { useLoyalty } from '@/features/profile/hooks/use-loyalty';
 import { LocationOn, Star } from '@mui/icons-material';
 import { Debug } from '@/shared/utils/debug';
+import DOMPurify from 'dompurify';
 import { getStoreStatus, OperatingHours } from '@/shared/ui/operating-hours';
 import { TrustBadges } from '@/shared/ui/trust-badges';
 
@@ -42,7 +43,7 @@ const checkoutSchema = z.object({
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 export const CheckoutPage = () => {
-  const { items, totalAmount, clearCart } = useCartStore();
+  const { items, totalAmount, clearCart, updateItemPrice } = useCartStore();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -106,10 +107,38 @@ export const CheckoutPage = () => {
   const finalTotal = Math.max(0, subtotal - discountAmount);
 
   const onSubmit = async (data: CheckoutFormData) => {
-    if (items.length === 0) return;
+    if (items.length === 0 || loading) return;
     setLoading(true);
 
     try {
+      // Validate current prices match cart prices
+      const menuItemIds = items.map((item) => Number(item.id));
+      const { data: currentPrices } = await supabase
+        .from('menu_items')
+        .select('id, price')
+        .in('id', menuItemIds);
+
+      if (currentPrices) {
+        const pricesMismatch = items.some((item) => {
+          const current = currentPrices.find((p) => p.id === Number(item.id));
+          return current && current.price !== item.price;
+        });
+
+        if (pricesMismatch) {
+          // Update cart with new prices
+          currentPrices.forEach((p) => {
+            const item = items.find((i) => Number(i.id) === p.id);
+            if (item && item.price !== p.price) {
+              updateItemPrice(item.id, p.price);
+            }
+          });
+
+          alert('Giá món ăn đã thay đổi. Vui lòng kiểm tra lại giỏ hàng.');
+          setLoading(false);
+          return;
+        }
+      }
+
       // 1. Get Customer ID (if logged in)
       let customerId = null;
       if (user) {
@@ -123,13 +152,13 @@ export const CheckoutPage = () => {
         }
       }
 
-      // 2. Create Order
+      // 2. Prepare Payloads
       const orderPayload = {
         customer_id: customerId,
-        customer_name: data.fullName,
-        customer_phone: data.phone,
-        delivery_address: data.address,
-        notes: data.note,
+        customer_name: DOMPurify.sanitize(data.fullName.trim()),
+        customer_phone: DOMPurify.sanitize(data.phone.replace(/\s/g, '')),
+        delivery_address: DOMPurify.sanitize(data.address.trim()),
+        notes: DOMPurify.sanitize(data.note?.trim() || ''),
         total: finalTotal,
         subtotal: subtotal,
         discount: discountAmount,
@@ -140,20 +169,7 @@ export const CheckoutPage = () => {
         order_type: 'delivery',
       };
 
-      // We need to cast payload because types might not be fully updated globally in IDE context
-      const { data: orderData, error: orderError } = await supabase
-        .from('orders')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .insert(orderPayload as any)
-        .select()
-        .single();
-
-      if (orderError) throw orderError;
-      if (!orderData) throw new Error('Không thể tạo đơn hàng');
-
-      // 3. Create Order Items
-      const orderItems = items.map((item) => ({
-        order_id: orderData.id,
+      const orderItemsPayload = items.map((item) => ({
         menu_item_id: Number(item.id),
         quantity: item.quantity,
         unit_price: item.price,
@@ -162,16 +178,27 @@ export const CheckoutPage = () => {
         notes: item.note,
       }));
 
-      const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
+      // 3. Call Atomic Transaction RPC
+      // Use RPC to ensure order and items are created in a single transaction
+      const { data: orderData, error: orderError } = await supabase.rpc('create_order_atomic', {
+        p_order_payload: orderPayload,
+        p_items_payload: orderItemsPayload,
+      });
 
-      if (itemsError) throw itemsError;
+      if (orderError) throw orderError;
+      if (!orderData) throw new Error('Không thể tạo đơn hàng');
+
+      // The RPC returns the created order object directly
+      // Cast to any to access properties since RPC returns Json type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const createdOrder = orderData as any;
 
       // 4. Process Payment
       if (paymentMethod === 'cash') {
         clearCart();
         navigate('/order-success', {
           state: {
-            orderId: orderData.id,
+            orderId: createdOrder.id,
             totalAmount: finalTotal,
             paymentMethod: 'cash',
           },
@@ -179,7 +206,7 @@ export const CheckoutPage = () => {
       } else {
         // Online Payment
         const paymentResponse = await paymentApi.createPayment(
-          orderData.id,
+          createdOrder.id,
           finalTotal, // Use discounted total
           paymentMethod
         );
@@ -188,7 +215,7 @@ export const CheckoutPage = () => {
           throw new Error('Không thể tạo liên kết thanh toán. Vui lòng thử lại.');
         }
 
-        clearCart();
+        // Do NOT clear cart here. Wait for payment success callback.
         window.location.href = paymentResponse.paymentUrl;
       }
     } catch (err) {
@@ -443,7 +470,7 @@ export const CheckoutPage = () => {
             size="large"
             loading={loading}
             onClick={handleSubmit(onSubmit)}
-            disabled={isStoreClosed}
+            disabled={isStoreClosed || loading}
             sx={{
               bgcolor: isStoreClosed
                 ? 'action.disabledBackground'

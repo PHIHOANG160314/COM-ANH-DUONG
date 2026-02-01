@@ -19,6 +19,7 @@ import {
 import { Save as SaveIcon, Edit as EditIcon } from '@mui/icons-material';
 import { useDailyMenu } from '@/features/menu/api/use-menu';
 import { formatCurrency } from '@/shared/lib/formatters';
+import { Debug } from '@/shared/utils/debug';
 import type { Database } from '@/shared/types/database.types';
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -48,7 +49,7 @@ export const DynamicMenuManager = () => {
       try {
         return JSON.parse(stored);
       } catch (e) {
-        console.error('Failed to parse stored overrides:', e);
+        Debug.error('Failed to parse stored overrides:', e);
         return {};
       }
     }

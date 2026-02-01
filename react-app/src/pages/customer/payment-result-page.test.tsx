@@ -32,13 +32,15 @@ describe('PaymentResultPage', () => {
     render(
       <MemoryRouter initialEntries={['/checkout/result?vnp_ResponseCode=00&vnp_TxnRef=123']}>
         <Routes>
-           <Route path="/checkout/result" element={<PaymentResultPage />} />
+          <Route path="/checkout/result" element={<PaymentResultPage />} />
         </Routes>
       </MemoryRouter>
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Thanh toán thành công! Cảm ơn bạn đã đặt hàng.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Thanh toán thành công! Cảm ơn bạn đã đặt hàng.')
+      ).toBeInTheDocument();
     });
 
     expect(mockClearCart).toHaveBeenCalled();
@@ -48,7 +50,7 @@ describe('PaymentResultPage', () => {
     render(
       <MemoryRouter initialEntries={['/checkout/result?vnp_ResponseCode=99&vnp_TxnRef=123']}>
         <Routes>
-           <Route path="/checkout/result" element={<PaymentResultPage />} />
+          <Route path="/checkout/result" element={<PaymentResultPage />} />
         </Routes>
       </MemoryRouter>
     );
