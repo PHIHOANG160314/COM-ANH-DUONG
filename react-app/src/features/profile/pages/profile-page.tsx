@@ -10,18 +10,22 @@ import {
   ListItemText,
   ListItemIcon,
   Divider,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
-import { History, Person, LocationOn, Star } from '@mui/icons-material';
+import { History, Person, LocationOn, Star, DarkMode, LightMode } from '@mui/icons-material';
 import { useAuth } from '@/app/providers/auth-provider';
 import { useLoyalty } from '../hooks/use-loyalty';
 import { LoyaltyCard } from '../components/loyalty-card';
 import { AppLoading } from '@/shared/ui/app-loading';
+import { useTheme } from '@/shared/theme/theme-context';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
 export const ProfilePage = () => {
   const { user } = useAuth();
   const { stats, history, loading } = useLoyalty();
+  const { mode, toggleTheme } = useTheme();
 
   if (loading) return <AppLoading />;
 
@@ -86,6 +90,17 @@ export const ProfilePage = () => {
                   </ListItemIcon>
                   <ListItemText primary="Thông tin cá nhân" />
                 </ListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemIcon>
+                  {mode === 'dark' ? <DarkMode /> : <LightMode />}
+                </ListItemIcon>
+                <FormControlLabel
+                  control={<Switch checked={mode === 'dark'} onChange={toggleTheme} />}
+                  label={mode === 'dark' ? 'Chế độ tối' : 'Chế độ sáng'}
+                  sx={{ flexGrow: 1, ml: 0 }}
+                />
               </ListItem>
             </List>
           </Paper>

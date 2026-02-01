@@ -3,6 +3,8 @@ import { AddShoppingCart } from '@mui/icons-material';
 import { useState, useEffect, useRef } from 'react';
 import { AppButton } from '@/shared/ui';
 import { formatCurrency } from '@/shared/lib/formatters';
+import { useToast } from '@/shared/ui/toast-notification';
+import { useHaptic } from '@/shared/hooks/use-haptic';
 import type { Database } from '@/shared/types/database.types';
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -16,6 +18,8 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
   const imageRef = useRef<HTMLImageElement>(null);
+  const { showToast } = useToast();
+  const { trigger } = useHaptic();
 
   useEffect(() => {
     // Lazy load image using Intersection Observer
@@ -42,6 +46,12 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
       }
     };
   }, [product.image_url, imageSrc]);
+
+  const handleAddToCart = () => {
+    onAdd(product);
+    trigger('light'); // Haptic feedback
+    showToast(`Đã thêm "${product.name}" vào giỏ hàng`, 'success', 2000);
+  };
 
   return (
     <Card
@@ -158,7 +168,7 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
           variant="contained"
           startIcon={<AddShoppingCart />}
           disabled={product.is_sold_out}
-          onClick={() => onAdd(product)}
+          onClick={handleAddToCart}
         >
           Thêm vào giỏ
         </AppButton>

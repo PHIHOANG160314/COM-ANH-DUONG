@@ -1,10 +1,10 @@
-import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { RouterProvider } from 'react-router-dom';
-import theme from '@/shared/theme/theme';
+import { ThemeProvider } from '@/shared/theme/theme-context';
+import { ToastProvider } from '@/shared/ui/toast-notification';
 import { AuthProvider } from './auth-provider';
 import { router } from '../router/router';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
@@ -26,11 +26,13 @@ export const AppProvider = () => {
   return (
     <ErrorBoundary>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider>
           <CssBaseline />
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
+          </ToastProvider>
         </ThemeProvider>
       </PersistQueryClientProvider>
     </ErrorBoundary>
