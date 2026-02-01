@@ -133,7 +133,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           >
             <Box
               component="img"
-              src="/apple-touch-icon.png"
+              src="/images/logo-optimized.jpg"
               alt="Cơm Ánh Dương Logo"
               sx={{
                 width: 36,
