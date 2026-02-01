@@ -22,8 +22,9 @@ export const ZaloChatFab: React.FC<ZaloChatFabProps> = ({
     <Box
       sx={{
         position: 'fixed',
-        bottom: 100, // Moved up to avoid overlapping with cart FAB
-        right: 24,
+        bottom: { xs: 24, sm: 100 }, // Lower on mobile to avoid blocking content
+        left: { xs: 16, sm: 'auto' }, // Move to LEFT on mobile
+        right: { xs: 'auto', sm: 24 }, // Keep right on desktop
         zIndex: 1000,
         display: 'flex',
         flexDirection: 'column',

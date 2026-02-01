@@ -118,12 +118,12 @@ export const MenuShowcase = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          minHeight: 600,
+          minHeight: { xs: 300, md: 600 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          py: { xs: 8, md: 10 },
+          py: { xs: 4, md: 10 },
           px: { xs: 3, md: 15 },
         }}
       >

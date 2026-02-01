@@ -118,7 +118,7 @@ export const HeroSection = () => {
 
         {/* CTA Buttons */}
         <Box component={motion.div} variants={itemVariants}>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', width: '100%', maxWidth: { xs: '280px', sm: 'none' }, mx: 'auto' }}>
             <motion.div
               whileHover={{ scale: 1.05, boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}
               whileTap={{ scale: 0.95 }}
@@ -133,6 +133,8 @@ export const HeroSection = () => {
                   color: '#10b981',
                   fontWeight: 'bold',
                   px: 4,
+                  minHeight: 48, // A11y: touch target
+                  width: { xs: '100%', sm: 'auto' },
                   '&:hover': { bgcolor: '#f5f5f5' },
                 }}
               >
@@ -149,6 +151,8 @@ export const HeroSection = () => {
                   color: 'white',
                   fontWeight: 'bold',
                   px: 4,
+                  minHeight: 48, // A11y: touch target
+                  width: { xs: '100%', sm: 'auto' },
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
                 }}
               >
