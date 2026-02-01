@@ -53,8 +53,8 @@ export const usePullToRefresh = ({
         setIsRefreshing(true);
         try {
           await onRefresh();
-        } catch (error) {
-          console.error('Refresh failed:', error);
+        } catch {
+          // Silent failure - UX should handle errors via toast/notification
         } finally {
           setIsRefreshing(false);
         }

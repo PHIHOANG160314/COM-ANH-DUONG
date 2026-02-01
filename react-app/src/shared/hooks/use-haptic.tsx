@@ -22,8 +22,8 @@ export const useHaptic = (): UseHapticReturn => {
 
       try {
         navigator.vibrate(patterns[intensity]);
-      } catch (error) {
-        console.warn('Haptic feedback failed:', error);
+      } catch {
+        // Silent failure - haptic feedback is optional UX enhancement
       }
     },
     [isSupported]
