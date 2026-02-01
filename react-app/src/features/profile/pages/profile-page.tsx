@@ -35,7 +35,7 @@ export const ProfilePage = () => {
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Xin chào, {user?.user_metadata?.full_name || 'Bạn'}! 👋
         </Typography>
-        <Typography variant="body1" sx={{ color: '#666' }}>
+        <Typography variant="body1" color="text.secondary">
           Quản lý tài khoản và điểm tích lũy của bạn
         </Typography>
       </Box>

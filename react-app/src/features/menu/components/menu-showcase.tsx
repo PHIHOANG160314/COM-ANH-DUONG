@@ -100,7 +100,7 @@ const FeaturedItemCard = ({ name, price, imageUrl, description }: FeaturedItemPr
         {price.toLocaleString('vi-VN')}đ
       </Typography>
       {description && (
-        <Typography variant="body2" sx={{ color: '#666', lineHeight: 1.5 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
           {description}
         </Typography>
       )}
@@ -138,7 +138,7 @@ export const MenuShowcase = () => {
           >
             Hương Vị Quê Hương
           </Typography>
-          <Typography variant="body1" sx={{ color: '#666', maxWidth: 600 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600 }}>
             Cơm nhà mẹ nấu - Giao nhanh trong 30 phút tại Phường Sa Đéc
           </Typography>
         </Box>
@@ -179,7 +179,7 @@ export const MenuShowcase = () => {
             </Grid>
           ) : productsLoading ? (
             <Grid size={{ xs: 12 }}>
-              <Typography variant="body1" sx={{ color: '#666', py: 6 }} textAlign="center">
+              <Typography variant="body1" color="text.secondary" sx={{ py: 6 }} textAlign="center">
                 Đang tải món ăn...
               </Typography>
             </Grid>
@@ -273,7 +273,7 @@ export const MenuShowcase = () => {
           >
             Đặt Cơm Ngay
           </Button>
-          <Typography variant="body1" sx={{ color: '#666' }}>
+          <Typography variant="body1" color="text.secondary">
             Giao nhanh 30 phút • Freeship &gt;50k
           </Typography>
         </Box>
@@ -295,13 +295,13 @@ export const MenuShowcase = () => {
           px: { xs: 3, md: 15 },
         }}
       >
-        <Typography variant="body1" sx={{ color: '#666' }}>
+        <Typography variant="body1" color="text.secondary">
           📞 [SỐ HOTLINE] • 📍 Phường Sa Đéc, Tỉnh Đồng Tháp
         </Typography>
-        <Typography variant="body2" sx={{ color: '#666' }}>
+        <Typography variant="body2" color="text.secondary">
           ⏰ T2-T7: 10h-14h, 17h-20h | CN: 10h-20h
         </Typography>
-        <Typography variant="body2" sx={{ color: '#666' }}>
+        <Typography variant="body2" color="text.secondary">
           © 2026 Cơm Ánh Dương - Hương vị quê hương
         </Typography>
       </Paper>

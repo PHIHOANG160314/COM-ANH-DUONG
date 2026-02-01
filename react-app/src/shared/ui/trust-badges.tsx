@@ -60,7 +60,7 @@ export const TrustBadges: React.FC<TrustBadgesProps> = ({ variant = 'minimal' })
 
   // Checkout or Footer Full Version
   return (
-    <Paper variant="outlined" sx={{ p: 2, bgcolor: '#f9fafb', borderRadius: 2 }}>
+    <Paper variant="outlined" sx={{ p: 2, bgcolor: 'action.hover', borderRadius: 2 }}>
       <Grid container spacing={2}>
         <Grid size={{ xs: 6, sm: 3 }}>
           <TrustBadgeItem

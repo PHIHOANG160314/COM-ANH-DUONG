@@ -126,7 +126,7 @@ export const RegisterForm = () => {
         </AppButton>
 
         <Box sx={{ textAlign: 'center', mt: 1 }}>
-          <Typography variant="body2" sx={{ color: '#666' }}>
+          <Typography variant="body2" color="text.secondary">
             Đã có tài khoản?{' '}
             <Link
               component="button"

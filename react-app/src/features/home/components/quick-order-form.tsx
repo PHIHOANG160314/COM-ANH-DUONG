@@ -63,16 +63,16 @@ export const QuickOrderForm = () => {
       <Paper
         sx={{
           p: 4,
-          bgcolor: 'rgba(255,255,255,0.95)',
+          bgcolor: 'background.paper',
           borderRadius: 3,
           boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
           textAlign: 'center',
         }}
       >
-        <Typography variant="h5" fontWeight="bold" sx={{ color: '#10b981', mb: 1 }}>
+        <Typography variant="h5" fontWeight="bold" color="success.main" sx={{ mb: 1 }}>
           ✅ Cảm ơn bạn!
         </Typography>
-        <Typography variant="body1" sx={{ color: '#666' }}>
+        <Typography variant="body1" color="text.secondary">
           Chúng tôi sẽ gọi lại xác nhận đơn hàng trong vài phút
         </Typography>
       </Paper>
@@ -85,7 +85,7 @@ export const QuickOrderForm = () => {
       onSubmit={handleSubmit}
       sx={{
         p: { xs: 3, md: 4 },
-        bgcolor: 'rgba(255,255,255,0.95)',
+        bgcolor: 'background.paper',
         borderRadius: 3,
         boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
       }}
@@ -94,7 +94,8 @@ export const QuickOrderForm = () => {
         variant="h6"
         fontWeight="bold"
         align="center"
-        sx={{ color: '#1a1a1a', mb: 3 }}
+        color="text.primary"
+        sx={{ mb: 3 }}
       >
         ⚡ Đặt hàng nhanh - Giao trong 30 phút
       </Typography>
@@ -177,10 +178,10 @@ export const QuickOrderForm = () => {
       <Typography
         variant="caption"
         align="center"
+        color="text.secondary"
         sx={{
           display: 'block',
           mt: 2,
-          color: '#666',
           fontSize: '0.75rem',
         }}
       >

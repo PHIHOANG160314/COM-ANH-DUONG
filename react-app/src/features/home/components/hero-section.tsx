@@ -257,23 +257,23 @@ export const HeroSection = () => {
         }}
       >
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
+          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper' }}>
             <Typography variant="h4">📍</Typography>
-            <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
+            <Typography fontWeight="bold" color="text.primary">
               Địa chỉ
             </Typography>
-            <Typography variant="body2" sx={{ color: '#666' }}>
+            <Typography variant="body2" color="text.secondary">
               {CONTACT_INFO.address.short}
             </Typography>
           </Paper>
         </motion.div>
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
+          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper' }}>
             <Typography variant="h4">⏰</Typography>
-            <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
+            <Typography fontWeight="bold" color="text.primary">
               Giờ mở cửa
             </Typography>
-            <Typography variant="body2" sx={{ color: '#666' }}>
+            <Typography variant="body2" color="text.secondary">
               {CONTACT_INFO.hours}
             </Typography>
           </Paper>
@@ -285,7 +285,7 @@ export const HeroSection = () => {
             sx={{
               p: 2,
               textAlign: 'center',
-              bgcolor: 'white',
+              bgcolor: 'background.paper',
               textDecoration: 'none',
               display: 'block',
               cursor: 'pointer',
@@ -319,8 +319,8 @@ export const HeroSection = () => {
             </Typography>
             <Typography
               variant="body2"
+              color="text.primary"
               sx={{
-                color: '#1a1a1a',
                 fontWeight: 600,
                 fontSize: '1rem',
                 textDecoration: 'underline',

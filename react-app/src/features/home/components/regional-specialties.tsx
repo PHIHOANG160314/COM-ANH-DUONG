@@ -24,13 +24,13 @@ const specialties = [
 
 export const RegionalSpecialties = () => {
   return (
-    <Box sx={{ py: 6, bgcolor: '#f0fdf4' }}>
+    <Box sx={{ py: 6, bgcolor: 'action.hover' }}>
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h4" fontWeight="bold" sx={{ color: '#166534', mb: 1 }}>
+          <Typography variant="h4" fontWeight="bold" color="primary" sx={{ mb: 1 }}>
             Đặc Sản Miền Tây
           </Typography>
-          <Typography variant="body1" sx={{ color: '#666' }}>
+          <Typography variant="body1" color="text.secondary">
             Khám phá hương vị ẩm thực độc đáo miền Đồng Tháp
           </Typography>
         </Box>
