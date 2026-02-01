@@ -213,13 +213,58 @@ export const HeroSection = () => {
           </Paper>
         </motion.div>
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'white' }}>
-            <Typography variant="h4">📞</Typography>
-            <Typography fontWeight="bold" sx={{ color: '#1a1a2e' }}>
+          <Paper
+            component="a"
+            href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
+            sx={{
+              p: 2,
+              textAlign: 'center',
+              bgcolor: 'white',
+              textDecoration: 'none',
+              display: 'block',
+              cursor: 'pointer',
+              position: 'relative',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: 1,
+                background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                opacity: 0.1,
+                animation: 'pulse 2s ease-in-out infinite',
+              },
+              '@keyframes pulse': {
+                '0%, 100%': { opacity: 0.1, transform: 'scale(1)' },
+                '50%': { opacity: 0.2, transform: 'scale(1.05)' },
+              },
+              '&:hover::before': {
+                opacity: 0.25,
+              },
+            }}
+          >
+            <Typography variant="h4" sx={{ animation: 'phoneBounce 1s ease-in-out infinite' }}>
+              📞
+            </Typography>
+            <Typography fontWeight="bold" sx={{ color: '#ef4444', fontSize: '1.1rem' }}>
               Hotline
             </Typography>
-            <Typography variant="body2" sx={{ color: '#666' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#1a1a1a',
+                fontWeight: 600,
+                fontSize: '1rem',
+                textDecoration: 'underline',
+                textUnderlineOffset: '3px',
+              }}
+            >
               {CONTACT_INFO.phone}
+            </Typography>
+            <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 'bold', mt: 0.5 }}>
+              ☎️ Nhấn để gọi ngay
             </Typography>
           </Paper>
         </motion.div>

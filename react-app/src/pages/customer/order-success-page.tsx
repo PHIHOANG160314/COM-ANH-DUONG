@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { TrustBadges } from '@/shared/ui/trust-badges';
+import { CONTACT_INFO } from '@/shared/config/contact';
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const OrderSuccessPage = () => {
         position: 'relative', // For absolute positioning context if needed
       }}
     >
-      <ZaloChatFab />
+      <ZaloChatFab phoneNumber={CONTACT_INFO.zalo} />
 
       <CheckCircleOutline color="success" sx={{ fontSize: 80, mb: 2 }} />
       <Typography variant="h4" gutterBottom fontWeight="bold">
@@ -75,7 +76,7 @@ export const OrderSuccessPage = () => {
         <Button
           variant="outlined"
           startIcon={<Phone />}
-          href="tel:+84123456789"
+          href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
           sx={{ textTransform: 'none' }}
         >
           Gọi quán
