@@ -204,3 +204,42 @@ Input: "\n"; // Enter riêng
 4. **Nếu PWA warning xuất hiện → DỪNG LẠI, investigate ngay**
 
 > ⚠️ **KHÔNG ĐƯỢC** push nếu thiếu closing tags - gây blank page production!
+
+---
+
+## 🚫 CI/CD ENFORCEMENT (CRITICAL - ZERO TOLERANCE)
+
+**Incident 260201-1240**: Agent bypassed CI/CD by deploying directly via `vercel --prod`.
+
+### TUYỆT ĐỐI CẤM:
+
+```bash
+# ❌ FORBIDDEN - NEVER USE THESE:
+vercel --prod
+vercel deploy
+vercel --force
+npx vercel
+```
+
+### QUY TRÌNH BẮT BUỘC:
+
+```bash
+# ✅ ONLY WAY TO DEPLOY:
+git add .
+git commit -m "message"
+git push origin main
+# → GitHub Actions tự trigger → Vercel auto-deploy
+```
+
+### LÝ DO:
+
+1. **Traceability**: CI/CD có audit trail, direct deploy không
+2. **Consistency**: CI/CD chạy tests, lint, build verification
+3. **Rollback**: CI/CD dễ rollback, direct deploy gây chaos
+4. **Security**: CI/CD có secrets management, direct deploy expose credentials
+
+### PENALTY:
+
+> 🔴 **TÁI PHẠM = IMMEDIATE TERMINATION**
+>
+> Agent vi phạm sẽ bị terminate session ngay lập tức. Không có exception.
