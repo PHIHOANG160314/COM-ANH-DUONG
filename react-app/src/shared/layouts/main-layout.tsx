@@ -37,6 +37,7 @@ import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { FooterCompliance } from '@/shared/ui/footer-compliance';
 import { BottomNavigation } from '@/shared/ui/bottom-navigation';
 import { FloatingCtaBar } from '@/shared/ui/floating-cta-bar';
+import { LeadCapturePopup } from '@/shared/ui/lead-capture-popup';
 import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface MainLayoutProps {
@@ -369,6 +370,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <ZaloChatFab phoneNumber={CONTACT_INFO.zalo} />
       <BottomNavigation />
       <FloatingCtaBar />
+      <LeadCapturePopup />
     </Box>
   );
 };
