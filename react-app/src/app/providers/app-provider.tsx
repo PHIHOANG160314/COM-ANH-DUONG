@@ -5,6 +5,7 @@ import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persist
 import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from '@/shared/theme/theme-context';
 import { ToastProvider } from '@/shared/ui/toast-notification';
+import { InstallPrompt } from '@/shared/ui/install-prompt';
 import { AuthProvider } from './auth-provider';
 import { router } from '../router/router';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
@@ -31,6 +32,7 @@ export const AppProvider = () => {
           <ToastProvider>
             <AuthProvider>
               <RouterProvider router={router} />
+              <InstallPrompt />
             </AuthProvider>
           </ToastProvider>
         </ThemeProvider>

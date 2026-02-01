@@ -10,6 +10,7 @@ import { OrderSuccessPage } from '@/pages/customer/order-success-page';
 import { PaymentResultPage } from '@/pages/customer/payment-result-page';
 import { MenuShowcase } from '@/features/menu/components/menu-showcase';
 import { NotFoundPage } from '@/pages/not-found-page';
+import { OfflinePage } from '@/pages/offline';
 import { CircularProgress, Box } from '@mui/material';
 
 // Lazy load heavy pages for code splitting
@@ -219,6 +220,11 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  // Offline page
+  {
+    path: 'offline',
+    element: <OfflinePage />,
   },
   // Fallback
   {
