@@ -192,7 +192,19 @@ export const CheckoutPage = () => {
         window.location.href = paymentResponse.paymentUrl;
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      // Handle Supabase PostgrestError and standard Error objects
+      let errorMessage = 'Có lỗi không xác định xảy ra';
+
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (err && typeof err === 'object' && 'message' in err) {
+        // Supabase PostgrestError has a message property
+        errorMessage = (err as { message: string }).message;
+      } else if (err && typeof err === 'object' && 'error' in err) {
+        // Some Supabase errors might be in this format
+        errorMessage = (err as { error: string }).error;
+      }
+
       Debug.error('Checkout error:', err);
       alert(`Có lỗi xảy ra: ${errorMessage}`);
     } finally {

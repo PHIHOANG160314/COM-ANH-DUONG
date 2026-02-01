@@ -65,14 +65,15 @@ export const TrustSignals = () => {
                     textAlign: 'center',
                     height: '100%',
                     transition: 'transform 0.2s',
+                    bgcolor: 'background.paper',
                     '&:hover': { transform: 'translateY(-8px)' },
                   }}
                 >
                   <Icon sx={{ fontSize: 48, color: item.color, mb: 2 }} />
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom color="text.primary">
                     {item.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
                     {item.description}
                   </Typography>
                 </Paper>

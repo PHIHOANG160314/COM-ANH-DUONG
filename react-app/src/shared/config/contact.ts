@@ -3,8 +3,8 @@
  * Single source of truth for all contact details across the app
  */
 export const CONTACT_INFO = {
-  phone: '0123 456 789',
-  zalo: '0909000900',
+  phone: '0947 717 315',
+  zalo: '0389 017 360',
   address: {
     full: '581C Hùng Vương, Xã Tân Phú Đông, Đồng Tháp',
     short: '581C Hùng Vương, Tân Phú Đông',
