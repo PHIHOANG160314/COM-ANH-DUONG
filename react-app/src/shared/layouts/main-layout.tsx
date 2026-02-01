@@ -317,7 +317,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                   📞 0123 456 789
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
-                  📍 Hà Nội, Việt Nam
+                  📍 Sa Đéc, Đồng Tháp
                 </Typography>
                 <Typography variant="body2" sx={{ py: 0.5 }}>
                   🕐 8:00 - 22:00 hàng ngày
