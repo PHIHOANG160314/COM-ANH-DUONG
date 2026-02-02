@@ -26,7 +26,8 @@ describe('getStoreStatus', () => {
 
   it('returns open status when within open hours', () => {
     // 14:00 (2 PM) - Within 8-22
-    const date = new Date(2024, 0, 1, 14, 0, 0);
+    // Use ISO with +07:00 to ensure consistent timezone interpretation
+    const date = new Date('2024-01-01T14:00:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('open');
@@ -35,7 +36,7 @@ describe('getStoreStatus', () => {
 
   it('returns closing status when 30 mins before close', () => {
     // 21:45 (9:45 PM) - Close is 22:00
-    const date = new Date(2024, 0, 1, 21, 45, 0);
+    const date = new Date('2024-01-01T21:45:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closing');
@@ -44,7 +45,7 @@ describe('getStoreStatus', () => {
 
   it('returns closed status when after close hours', () => {
     // 23:00 (11 PM)
-    const date = new Date(2024, 0, 1, 23, 0, 0);
+    const date = new Date('2024-01-01T23:00:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closed');
@@ -53,7 +54,7 @@ describe('getStoreStatus', () => {
 
   it('returns closed status when before open hours', () => {
     // 07:00 (7 AM) - Open is 08:00
-    const date = new Date(2024, 0, 1, 7, 0, 0);
+    const date = new Date('2024-01-01T07:00:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closed');
