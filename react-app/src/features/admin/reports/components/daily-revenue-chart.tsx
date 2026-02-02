@@ -47,8 +47,7 @@ export const DailyRevenueChart: React.FC<DailyRevenueChartProps> = ({ data }) =>
           />
           <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => value.toString()} />
           <Tooltip
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            formatter={(value: any, name: any) => {
+            formatter={(value: number | string | Array<number | string>, name: string) => {
               if (value === undefined) return ['0', name];
               const val = Number(value);
               if (isNaN(val)) return ['0', name];
