@@ -2,10 +2,12 @@ import { Box, Typography, Grid, Paper } from '@mui/material';
 import { useKitchenOrders, useOrdersSubscription } from '@/features/kds/api/use-kitchen-orders';
 import { OrderTicket } from '@/features/kds/components/order-ticket';
 import { AppLoading } from '@/shared/ui';
+import { useOrderNotifications } from '@/features/orders/hooks/use-order-notifications';
 
 export const KitchenDisplayPage = () => {
   const { data: orders, isLoading } = useKitchenOrders();
   useOrdersSubscription();
+  useOrderNotifications(); // Enable sound/toast notifications
 
   if (isLoading) {
     return <AppLoading fullScreen message="Đang tải danh sách đơn hàng..." />;

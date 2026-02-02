@@ -18,6 +18,9 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useState } from 'react';
 import { formatCurrency, formatDateTime } from '@/shared/lib/formatters';
 import type { Order } from './use-admin-orders';
+import { PrintReceipt } from '@/features/orders/components/print-receipt';
+// We can assert compatibility since types are structurally identical
+import type { OrderDetail } from '@/features/orders/api/use-order';
 
 interface OrderRowProps {
   order: Order;
@@ -102,9 +105,19 @@ const OrderRow = ({ order, onStatusChange }: OrderRowProps) => {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Chi tiết đơn hàng
-              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6" component="div">
+                  Chi tiết đơn hàng
+                </Typography>
+                <PrintReceipt order={order as unknown as OrderDetail} variant="button" />
+              </Box>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>

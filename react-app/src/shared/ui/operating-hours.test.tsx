@@ -4,6 +4,17 @@ import { OperatingHours } from './operating-hours';
 import { getStoreStatus } from '../utils/store-hours';
 import '@testing-library/jest-dom';
 
+// Mock useStoreStatus for the component tests
+vi.mock('@/shared/hooks/use-store-status', () => ({
+  useStoreStatus: vi.fn(() => ({
+    status: 'open',
+    message: 'Đang mở cửa',
+    details: 'Mở cửa từ 8:00 - 22:00',
+    color: 'success',
+    config: { openHour: 8, closeHour: 22 },
+  })),
+}));
+
 describe('getStoreStatus', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -14,7 +25,7 @@ describe('getStoreStatus', () => {
   });
 
   it('returns open status when within open hours', () => {
-    // 14:00 (2 PM)
+    // 14:00 (2 PM) - Within 8-22
     const date = new Date(2024, 0, 1, 14, 0, 0);
     vi.setSystemTime(date);
     const status = getStoreStatus();
@@ -23,7 +34,7 @@ describe('getStoreStatus', () => {
   });
 
   it('returns closing status when 30 mins before close', () => {
-    // 21:45 (9:45 PM) - Assuming close is 22:00
+    // 21:45 (9:45 PM) - Close is 22:00
     const date = new Date(2024, 0, 1, 21, 45, 0);
     vi.setSystemTime(date);
     const status = getStoreStatus();
@@ -41,8 +52,8 @@ describe('getStoreStatus', () => {
   });
 
   it('returns closed status when before open hours', () => {
-    // 08:00 (8 AM) - Assuming open is 10:00
-    const date = new Date(2024, 0, 1, 8, 0, 0);
+    // 07:00 (7 AM) - Open is 08:00
+    const date = new Date(2024, 0, 1, 7, 0, 0);
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closed');
@@ -51,29 +62,13 @@ describe('getStoreStatus', () => {
 });
 
 describe('OperatingHours Component', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('renders correctly', () => {
-    // Set time to open
-    const date = new Date(2024, 0, 1, 14, 0, 0);
-    vi.setSystemTime(date);
-
     render(<OperatingHours />);
     expect(screen.getByText('Đang mở cửa')).toBeInTheDocument();
   });
 
   it('renders details when showDetails is true', () => {
-    // Set time to open
-    const date = new Date(2024, 0, 1, 14, 0, 0);
-    vi.setSystemTime(date);
-
     render(<OperatingHours showDetails={true} />);
-    expect(screen.getByText(/10:00 - 22:00/)).toBeInTheDocument();
+    expect(screen.getByText(/8:00 - 22:00/)).toBeInTheDocument();
   });
 });

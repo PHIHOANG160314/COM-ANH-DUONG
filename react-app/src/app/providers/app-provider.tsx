@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/shared/theme/theme-provider';
 import { ToastProvider } from '@/shared/ui/toast-notification';
 import { InstallPrompt } from '@/shared/ui/install-prompt';
 import { AuthProvider } from './auth-provider';
+import { OrderNotificationProvider } from '@/features/orders/hooks/use-order-notifications';
 import { router } from '../router/router';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 
@@ -31,8 +32,10 @@ export const AppProvider = () => {
           <CssBaseline />
           <ToastProvider>
             <AuthProvider>
-              <RouterProvider router={router} />
-              <InstallPrompt />
+              <OrderNotificationProvider>
+                <RouterProvider router={router} />
+                <InstallPrompt />
+              </OrderNotificationProvider>
             </AuthProvider>
           </ToastProvider>
         </ThemeProvider>

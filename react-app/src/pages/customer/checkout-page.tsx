@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCheckout } from '@/features/checkout/hooks/use-checkout';
 import { AddressSection } from '@/features/checkout/components/address-section';
 import { OrderSummary } from '@/features/checkout/components/order-summary';
-import { getStoreStatus } from '@/shared/utils/store-hours';
+import { useStoreStatus } from '@/shared/hooks/use-store-status';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -30,8 +30,8 @@ export const CheckoutPage = () => {
     onSubmit,
   } = useCheckout();
 
-  const storeStatus = getStoreStatus();
-  const isStoreClosed = storeStatus.status === 'closed';
+  const { status } = useStoreStatus();
+  const isStoreClosed = status === 'closed';
 
   if (items.length === 0) {
     return (

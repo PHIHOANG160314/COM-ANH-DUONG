@@ -57,8 +57,14 @@ vi.mock('@/features/payment/api/payment-api', () => ({
   },
 }));
 
-vi.mock('@/shared/utils/store-hours', () => ({
-  getStoreStatus: vi.fn(() => ({ status: 'open', message: 'Open' })),
+vi.mock('@/shared/hooks/use-store-status', () => ({
+  useStoreStatus: vi.fn(() => ({
+    status: 'open',
+    message: 'Đang mở cửa',
+    details: 'Mở cửa từ 8:00 - 22:00',
+    color: 'success',
+    config: { openHour: 8, closeHour: 22 },
+  })),
 }));
 
 vi.mock('@/shared/ui/operating-hours', () => ({

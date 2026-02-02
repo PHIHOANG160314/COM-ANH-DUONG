@@ -6,6 +6,7 @@ export * from './protected-route';
 export * from './error-boundary';
 export * from './zalo-widget';
 export * from './operating-hours';
+export * from './countdown-timer';
 export * from './zalo-chat-fab';
 export * from './trust-badges';
 export * from './theme-toggle';

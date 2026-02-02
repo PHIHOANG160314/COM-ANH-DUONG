@@ -1,10 +1,12 @@
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, Button, Paper, Divider } from '@mui/material';
 import { CheckCircleOutline, Phone } from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { ZaloChatFab } from '@/shared/ui/zalo-chat-fab';
 import { TrustBadges } from '@/shared/ui/trust-badges';
 import { CONTACT_INFO } from '@/shared/config/contact';
+import { useOrder } from '@/features/orders/api/use-order';
+import { PrintReceipt } from '@/features/orders/components/print-receipt';
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
@@ -12,6 +14,8 @@ export const OrderSuccessPage = () => {
   const orderId = location.state?.orderId;
   const totalAmount = location.state?.totalAmount;
   const paymentMethod = location.state?.paymentMethod;
+
+  const { data: order } = useOrder(orderId);
 
   return (
     <Box
@@ -34,7 +38,7 @@ export const OrderSuccessPage = () => {
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 2, maxWidth: 400 }}>
         Cảm ơn bạn đã đặt món tại Cơm Ánh Dương. Đơn hàng của bạn{' '}
-        {orderId ? `(#${orderId.slice(0, 8)})` : ''} đang được xử lý.
+        {orderId ? `(#${orderId.slice(0, 8).toUpperCase()})` : ''} đang được xử lý.
       </Typography>
 
       <Paper sx={{ p: 3, mb: 3, maxWidth: 400, width: '100%' }}>
@@ -46,7 +50,7 @@ export const OrderSuccessPage = () => {
         {orderId && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography color="text.secondary">Mã đơn hàng:</Typography>
-            <Typography fontWeight="medium">#{orderId.slice(0, 8)}</Typography>
+            <Typography fontWeight="medium">#{orderId.slice(0, 8).toUpperCase()}</Typography>
           </Box>
         )}
 
@@ -81,6 +85,7 @@ export const OrderSuccessPage = () => {
         >
           Gọi quán
         </Button>
+        {order && <PrintReceipt order={order} />}
       </Box>
 
       <Button variant="contained" onClick={() => navigate('/')}>

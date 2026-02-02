@@ -131,12 +131,12 @@ export const AddressSection = ({
               Quán đang đóng cửa
             </Typography>
             <Typography variant="body2">
-              Giờ mở cửa: 10:00 - 22:00. Vui lòng quay lại sau!
+              Giờ mở cửa: 08:00 - 22:00. Vui lòng quay lại sau!
             </Typography>
           </Alert>
         ) : (
           <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <OperatingHours showDetails />
+            <OperatingHours showDetails showCountdown={false} />
           </Box>
         )}
 

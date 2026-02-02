@@ -11,15 +11,32 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { Debug } from '@/shared/utils/debug';
+import { useOrderNotifications } from '@/features/orders/hooks/use-order-notifications';
+import { useToast } from '@/shared/ui/use-toast';
 
 export const AdminSettingsPage = () => {
-  const [notifications, setNotifications] = useState(true);
+  const { enabled, setEnabled, requestPermission, permission } = useOrderNotifications();
+  const { showToast } = useToast();
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [autoBackup, setAutoBackup] = useState(true);
 
+  const handleNotificationChange = async (checked: boolean) => {
+    setEnabled(checked);
+    if (checked && permission === 'default') {
+      const result = await requestPermission();
+      if (result === 'granted') {
+        showToast('Đã bật thông báo', 'success');
+      } else if (result === 'denied') {
+        showToast('Vui lòng cấp quyền thông báo trong trình duyệt', 'warning');
+      }
+    }
+  };
+
   const handleSave = () => {
+    // Other settings would be saved here
+    showToast('Đã lưu cài đặt', 'success');
     Debug.log('Settings saved:', {
-      notifications,
+      notifications: enabled,
       emailAlerts,
       autoBackup,
     });
@@ -44,11 +61,11 @@ export const AdminSettingsPage = () => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={notifications}
-                    onChange={(e) => setNotifications(e.target.checked)}
+                    checked={enabled}
+                    onChange={(e) => handleNotificationChange(e.target.checked)}
                   />
                 }
-                label="Thông báo đơn hàng mới"
+                label="Thông báo đơn hàng mới (Âm thanh & Popup)"
               />
 
               <FormControlLabel

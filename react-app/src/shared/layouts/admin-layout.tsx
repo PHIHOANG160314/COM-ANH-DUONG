@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '@/app/providers/use-auth';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
+import { useOrderNotifications } from '@/features/orders/hooks/use-order-notifications';
 
 const drawerWidth = 240;
 
@@ -57,6 +58,9 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { signOut, user } = useAuth();
+
+  // Initialize order notifications
+  useOrderNotifications();
 
   const handleDrawerToggle = () => {
     setOpen(!open);

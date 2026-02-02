@@ -53,12 +53,6 @@ export const useOrdersSubscription = () => {
           Debug.log('Realtime update:', payload);
           // Simple invalidation for now. Optimistic updates can be added later.
           queryClient.invalidateQueries({ queryKey: ['kitchen-orders'] });
-
-          // Play sound on new order
-          if (payload.eventType === 'INSERT') {
-            const audio = new Audio('/notification.mp3'); // We'll need to add this file
-            audio.play().catch((e) => Debug.log('Audio play failed', e));
-          }
         }
       )
       .subscribe();

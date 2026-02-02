@@ -16,7 +16,8 @@
     "preview": "vite preview",
     "supabase:types": "npx supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/supabase.ts",
     "seed": "tsx scripts/seed-database.ts",
-    "seed:reset": "tsx scripts/seed-database.ts --reset"
+    "seed:reset": "tsx scripts/seed-database.ts --reset",
+    "upload-images": "tsx scripts/upload-menu-images.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -40,6 +41,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
     "react-router-dom": "^7.13.0",
+    "react-to-print": "^3.2.0",
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6",

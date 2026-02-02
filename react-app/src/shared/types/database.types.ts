@@ -9,7 +9,7 @@ export interface Database {
           username: string | null;
           full_name: string | null;
           avatar_url: string | null;
-          role: 'admin' | 'staff' | 'customer' | 'shipper';
+          role: 'admin' | 'staff' | 'customer' | 'shipper' | 'kitchen';
           created_at: string;
           updated_at: string;
         };
@@ -18,7 +18,7 @@ export interface Database {
           username?: string | null;
           full_name?: string | null;
           avatar_url?: string | null;
-          role?: 'admin' | 'staff' | 'customer' | 'shipper';
+          role?: 'admin' | 'staff' | 'customer' | 'shipper' | 'kitchen';
           created_at?: string;
           updated_at?: string;
         };
@@ -27,7 +27,7 @@ export interface Database {
           username?: string | null;
           full_name?: string | null;
           avatar_url?: string | null;
-          role?: 'admin' | 'staff' | 'customer' | 'shipper';
+          role?: 'admin' | 'staff' | 'customer' | 'shipper' | 'kitchen';
           created_at?: string;
           updated_at?: string;
         };
