@@ -1,18 +1,10 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/shared/api/supabase-client';
 import { useToast } from '@/shared/ui/use-toast';
 import { Debug } from '@/shared/utils/debug';
 import { useAuth } from '@/app/providers/use-auth';
-
-interface OrderNotificationContextType {
-  permission: NotificationPermission;
-  requestPermission: () => Promise<NotificationPermission>;
-  enabled: boolean;
-  setEnabled: (enabled: boolean) => void;
-}
-
-const OrderNotificationContext = createContext<OrderNotificationContextType | undefined>(undefined);
+import { OrderNotificationContext } from './order-notification-context';
 
 export const OrderNotificationProvider = ({ children }: { children: ReactNode }) => {
   const { showToast } = useToast();
@@ -119,12 +111,4 @@ export const OrderNotificationProvider = ({ children }: { children: ReactNode })
       {children}
     </OrderNotificationContext.Provider>
   );
-};
-
-export const useOrderNotifications = () => {
-  const context = useContext(OrderNotificationContext);
-  if (context === undefined) {
-    throw new Error('useOrderNotifications must be used within a OrderNotificationProvider');
-  }
-  return context;
 };

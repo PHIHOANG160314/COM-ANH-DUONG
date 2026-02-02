@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/shared/theme/theme-provider';
 import { ToastProvider } from '@/shared/ui/toast-notification';
 import { InstallPrompt } from '@/shared/ui/install-prompt';
 import { AuthProvider } from './auth-provider';
-import { OrderNotificationProvider } from '@/features/orders/hooks/use-order-notifications';
+import { OrderNotificationProvider } from '@/features/orders/context/order-notification-provider';
 import { router } from '../router/router';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 
