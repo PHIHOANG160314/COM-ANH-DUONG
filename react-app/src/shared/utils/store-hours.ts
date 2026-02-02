@@ -1,5 +1,7 @@
 import { CONTACT_INFO } from '@/shared/config/contact';
 
+import { Debug } from '@/shared/utils/debug';
+
 export type StoreStatus = 'open' | 'closing' | 'closed';
 
 interface StoreTimeConfig {
@@ -20,7 +22,7 @@ const parseHours = (hoursString: string): { open: number; close: number } => {
       };
     }
   } catch (e) {
-    console.error('Failed to parse store hours', e);
+    Debug.error('Failed to parse store hours', e);
   }
   // Fallback default
   return { open: 8, close: 22 };
