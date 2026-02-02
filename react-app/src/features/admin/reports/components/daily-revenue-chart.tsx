@@ -47,10 +47,13 @@ export const DailyRevenueChart: React.FC<DailyRevenueChartProps> = ({ data }) =>
           />
           <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => value.toString()} />
           <Tooltip
-            formatter={(value: number | string | Array<number | string>, name: string) => {
-              if (value === undefined) return ['0', name];
+            formatter={(
+              value: number | string | Array<number | string> | undefined,
+              name: string | number | undefined
+            ) => {
+              if (value === undefined) return ['0', String(name)];
               const val = Number(value);
-              if (isNaN(val)) return ['0', name];
+              if (isNaN(val)) return ['0', String(name)];
               if (name === 'revenue') return [formatCurrency(val), 'Doanh thu'];
               return [val, 'Đơn hàng'];
             }}
