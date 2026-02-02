@@ -1,8 +1,20 @@
+/**
+ * Upload Menu Images to Supabase Storage
+ *
+ * This script uploads all menu images from public/images/menu to Supabase Storage bucket "menu-images"
+ *
+ * Usage: npm run upload-images
+ *
+ * Requirements:
+ * - VITE_SUPABASE_URL in .env.local
+ * - SUPABASE_SERVICE_ROLE_KEY in .env.local (get from Supabase Dashboard > Settings > API)
+ */
+
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 
 // Load environment variables
 const __filename = fileURLToPath(import.meta.url);
@@ -10,205 +22,136 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-// Constants
-const IMAGES_DIR = path.resolve(__dirname, '../public/images/menu');
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const BUCKET_NAME = 'menu-images';
+const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images', 'menu');
 
-// Helper to normalize strings for matching
-// e.g., "Bánh Mì Đặc Biệt" -> "banh_mi_dac_biet"
-function normalizeName(str: string): string {
-  return str
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[đĐ]/g, 'd')
-    .replace(/[^a-z0-9]/g, '_')
-    .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '');
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+    console.error('❌ Error: Missing environment variables');
+    console.error('   Required: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local');
+    console.error('   Get SERVICE_ROLE_KEY from: Supabase Dashboard → Settings → API → service_role key');
+    process.exit(1);
 }
 
-const main = async () => {
-  if (!supabaseUrl || !supabaseServiceKey) {
-    console.error('❌ Error: Missing Supabase credentials.');
-    console.error(
-      'Please ensure VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in .env or .env.local'
-    );
+if (SERVICE_ROLE_KEY.includes('KHÁCH') || SERVICE_ROLE_KEY.includes('<')) {
+    console.error('❌ Error: SUPABASE_SERVICE_ROLE_KEY is still a placeholder');
+    console.error('   Please replace it with your actual service_role key from Supabase Dashboard');
     process.exit(1);
-  }
+}
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
-  console.log(`Connecting to Supabase at ${supabaseUrl}...`);
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+    auth: { persistSession: false },
+});
 
-  // 1. Ensure bucket exists
-  console.log(`Checking bucket '${BUCKET_NAME}'...`);
-  const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+interface Bucket {
+    name: string;
+}
 
-  if (bucketError) {
-    console.error('Error listing buckets:', bucketError);
-    return;
-  }
+async function ensureBucketExists() {
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
 
-  const bucketExists = buckets.find((b) => b.name === BUCKET_NAME);
-  if (!bucketExists) {
-    console.log(`Creating bucket '${BUCKET_NAME}'...`);
+    if (listError) {
+        console.error('❌ Error listing buckets:', listError.message);
+        process.exit(1);
+    }
+
+    const bucketExists = buckets?.some((b: Bucket) => b.name === BUCKET_NAME);
+
+    if (bucketExists) {
+        console.log('✅ Bucket exists:', BUCKET_NAME);
+        return;
+    }
+
+    // Create bucket
     const { error: createError } = await supabase.storage.createBucket(BUCKET_NAME, {
-      public: true,
-      fileSizeLimit: 5242880, // 5MB
-      allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+        public: true,
+        fileSizeLimit: 5242880, // 5MB
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/gif'],
     });
 
     if (createError) {
-      console.error('Error creating bucket:', createError);
-      return;
-    }
-    console.log('✅ Bucket created.');
-  } else {
-    console.log('✅ Bucket exists.');
-  }
-
-  // 2. Read local images
-  if (!fs.existsSync(IMAGES_DIR)) {
-    console.error(`❌ Images directory not found: ${IMAGES_DIR}`);
-    return;
-  }
-
-  const files = fs.readdirSync(IMAGES_DIR).filter((file) => file.match(/\.(png|jpg|jpeg)$/i));
-  console.log(`Found ${files.length} images to upload.`);
-
-  // 3. Upload images and update DB
-  let uploadedCount = 0;
-  let updatedDbCount = 0;
-
-  // Get all menu items first to minimize queries
-  const { data: menuItems, error: fetchError } = await supabase
-    .from('menu_items')
-    .select('id, name, image_url');
-
-  if (fetchError) {
-    console.error('Error fetching menu items:', fetchError);
-    // Continue with upload even if DB fetch fails?
-    // Maybe we just want to upload.
-  }
-
-  for (const file of files) {
-    const filePath = path.join(IMAGES_DIR, file);
-    const fileBuffer = fs.readFileSync(filePath);
-    const fileMime = file.endsWith('.png') ? 'image/png' : 'image/jpeg';
-
-    console.log(`Processing ${file}...`);
-
-    // Upload
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(file, fileBuffer, {
-        contentType: fileMime,
-        upsert: true,
-      });
-
-    if (uploadError) {
-      console.error(`  ❌ Upload failed for ${file}:`, uploadError.message);
-      continue;
+        console.error('❌ Error creating bucket:', createError.message);
+        process.exit(1);
     }
 
-    uploadedCount++;
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from(BUCKET_NAME).getPublicUrl(file);
+    console.log('✅ Bucket created:', BUCKET_NAME);
+}
 
-    console.log(`  ✅ Uploaded: ${publicUrl}`);
-
-    // Update Database
-    if (menuItems) {
-      // Find matching item
-      const fileNameWithoutExt = file.replace(/\.(png|jpg|jpeg)$/i, '');
-
-      const matchedItems = menuItems.filter((item) => {
-        // Match by exact filename in current URL
-        if (item.image_url && item.image_url.includes(file)) return true;
-
-        // Match by normalized name
-        const normalizedItemName = normalizeName(item.name);
-        if (normalizedItemName === fileNameWithoutExt) return true;
-
-        return false;
-      });
-
-      if (matchedItems.length > 0) {
-        for (const item of matchedItems) {
-          if (item.image_url === publicUrl) {
-            console.log(`  ℹ️  DB (menu_items) already up to date for "${item.name}"`);
-            continue;
-          }
-
-          const { error: updateError } = await supabase
-            .from('menu_items')
-            .update({ image_url: publicUrl })
-            .eq('id', item.id);
-
-          if (updateError) {
-            console.error(
-              `  ❌ DB (menu_items) update failed for "${item.name}":`,
-              updateError.message
-            );
-          } else {
-            console.log(`  ✨ DB (menu_items) updated for "${item.name}"`);
-            updatedDbCount++;
-          }
-        }
-      }
+async function uploadImages() {
+    // Check if images directory exists
+    if (!fs.existsSync(IMAGES_DIR)) {
+        console.error('❌ Error: Images directory not found:', IMAGES_DIR);
+        process.exit(1);
     }
 
-    // Also update 'products' table (legacy/admin) if it exists
-    const { data: products, error: productsError } = await supabase
-      .from('products')
-      .select('id, name, image_url');
+    // Get all image files
+    const files = fs.readdirSync(IMAGES_DIR).filter((file: string) => /\.(png|jpg|jpeg|webp|gif)$/i.test(file));
 
-    if (!productsError && products) {
-      const fileNameWithoutExt = file.replace(/\.(png|jpg|jpeg)$/i, '');
+    console.log(`📁 Images Found: ${files.length}`);
 
-      const matchedProducts = products.filter((item) => {
-        // Match by exact filename in current URL
-        if (item.image_url && item.image_url.includes(file)) return true;
+    if (files.length === 0) {
+        console.log('⚠️ No images found to upload');
+        return;
+    }
 
-        // Match by normalized name
-        const normalizedItemName = normalizeName(item.name);
-        if (normalizedItemName === fileNameWithoutExt) return true;
+    let uploaded = 0;
+    let errors = 0;
 
-        return false;
-      });
+    const contentTypeMap: Record<string, string> = {
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.webp': 'image/webp',
+        '.gif': 'image/gif',
+    };
 
-      for (const item of matchedProducts) {
-        if (item.image_url === publicUrl) {
-          // console.log(`  ℹ️  DB (products) already up to date for "${item.name}"`);
-          continue;
-        }
+    for (const file of files) {
+        const filePath = path.join(IMAGES_DIR, file);
+        const fileBuffer = fs.readFileSync(filePath);
 
-        const { error: updateError } = await supabase
-          .from('products')
-          .update({ image_url: publicUrl })
-          .eq('id', item.id);
+        // Determine content type
+        const ext = path.extname(file).toLowerCase();
+        const contentType = contentTypeMap[ext] || 'image/png';
 
-        if (updateError) {
-          console.error(
-            `  ❌ DB (products) update failed for "${item.name}":`,
-            updateError.message
-          );
+        const { error } = await supabase.storage.from(BUCKET_NAME).upload(file, fileBuffer, {
+            contentType,
+            upsert: true, // Overwrite if exists
+        });
+
+        if (error) {
+            console.error(`❌ Error uploading ${file}:`, error.message);
+            errors++;
         } else {
-          console.log(`  ✨ DB (products) updated for "${item.name}"`);
-          updatedDbCount++;
+            console.log(`✅ Uploaded: ${file}`);
+            uploaded++;
         }
-      }
     }
-  }
 
-  console.log('-----------------------------------');
-  console.log(`Summary:`);
-  console.log(`- Images Found: ${files.length}`);
-  console.log(`- Uploaded: ${uploadedCount}`);
-  console.log(`- DB Records Updated: ${updatedDbCount}`);
-};
+    console.log('\n📊 Summary:');
+    console.log(`   Uploaded: ${uploaded}`);
+    console.log(`   Errors: ${errors}`);
+
+    if (errors === 0) {
+        console.log('\n🎉 All images uploaded successfully!');
+
+        // Print public URLs
+        console.log('\n📎 Public URLs:');
+        for (const file of files) {
+            const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(file);
+            console.log(`   ${file}: ${data.publicUrl}`);
+        }
+    }
+}
+
+async function main() {
+    console.log('🚀 Starting Menu Images Upload...\n');
+    console.log(`   Supabase URL: ${SUPABASE_URL}`);
+    console.log(`   Bucket: ${BUCKET_NAME}`);
+    console.log(`   Images Dir: ${IMAGES_DIR}\n`);
+
+    await ensureBucketExists();
+    await uploadImages();
+}
 
 main().catch(console.error);
