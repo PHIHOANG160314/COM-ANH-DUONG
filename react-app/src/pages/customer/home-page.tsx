@@ -9,6 +9,7 @@ import { RegionalSpecialties } from '@/features/home/components/regional-special
 import { TrustSignals } from '@/features/home/components/trust-signals';
 import { CustomerTestimonials } from '@/features/home/components/customer-testimonials';
 import { UrgencyBanner } from '@/features/home/components/urgency-banner';
+import { BestsellerSection } from '@/features/bestseller/components/bestseller-section';
 import { useAuth } from '@/app/providers/use-auth';
 
 export const CustomerHomePage = () => {
@@ -25,6 +26,13 @@ export const CustomerHomePage = () => {
 
       {/* Urgency Banner - CRO Element */}
       <UrgencyBanner />
+
+      {/* Bestseller Section - Social Proof */}
+      <Box sx={{ mx: -3, px: 3 }}>
+        <Box sx={{ maxWidth: 'lg', mx: 'auto', px: 3 }}>
+          <BestsellerSection />
+        </Box>
+      </Box>
 
       {/* Regional Specialties */}
       <RegionalSpecialties />
