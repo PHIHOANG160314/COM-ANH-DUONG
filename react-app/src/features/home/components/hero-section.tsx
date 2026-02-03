@@ -260,6 +260,7 @@ export const HeroSection = () => {
           maxWidth: 'lg',
           mx: 'auto',
           px: 3,
+          color: 'initial', // Reset color inheritance from parent green box
         }}
       >
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
