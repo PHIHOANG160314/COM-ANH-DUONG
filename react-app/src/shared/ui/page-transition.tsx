@@ -1,28 +1,24 @@
-import type { ReactNode } from 'react';
-import { Box } from '@mui/material';
-import { keyframes } from '@mui/system';
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 interface PageTransitionProps {
   children: ReactNode;
 }
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-export const PageTransition = ({ children }: PageTransitionProps) => {
-  return (
-    <Box
-      sx={{
-        animation: `${fadeIn} 0.2s ease-in-out`,
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
+/**
+ * Page transition component using Framer Motion
+ * - Fade + slide animation (0.25s)
+ * - Smooth easeOut timing
+ * - Used with AnimatePresence for route transitions
+ */
+export const PageTransition = ({ children }: PageTransitionProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.25, ease: "easeOut" }}
+    style={{ width: "100%" }}
+  >
+    {children}
+  </motion.div>
+);

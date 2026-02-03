@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CONTACT_INFO } from '@/shared/config/contact';
 import { QuickOrderForm } from './quick-order-form';
+import { ExpressOrderForm } from './express-order-form';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
@@ -235,6 +236,26 @@ export const HeroSection = () => {
               </Button>
             </motion.div>
           </Box>
+        </Box>
+
+        {/* Express Order Form */}
+        <Box
+          component={motion.div}
+          variants={itemVariants}
+          sx={{ mt: 4, maxWidth: 400, mx: 'auto' }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 2,
+              color: 'white',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}
+          >
+            ⚡ Đặt nhanh - Giao trong 30 phút
+          </Typography>
+          <ExpressOrderForm />
         </Box>
 
         {/* Quick Order Form */}

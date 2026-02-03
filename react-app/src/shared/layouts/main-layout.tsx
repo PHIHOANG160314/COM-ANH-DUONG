@@ -27,7 +27,8 @@ import {
   Login as LoginIcon,
 } from '@mui/icons-material';
 import type { ReactNode } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { ReloadPrompt } from '@/features/pwa/reload-prompt';
 import { InstallPrompt } from '@/features/pwa/install-prompt';
 import { useAuth } from '@/app/providers/use-auth';
@@ -47,6 +48,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const totalItems = useCartStore((state) => state.totalItems());
   const theme = useTheme();
@@ -215,7 +217,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           pb: { xs: '140px', md: 4 }, // Extra bottom padding for FloatingCtaBar (80px) + BottomNav (56px) + spacing
         }}
       >
-        {children || <Outlet />}
+        <AnimatePresence mode="wait">
+          {children || <Outlet key={location.pathname} />}
+        </AnimatePresence>
       </Container>
 
       <Box

@@ -70,3 +70,34 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* ========================================
+   iOS & Mobile Native App-Like Polish
+   SEA F&B Standard v3.15
+   ======================================== */
+
+/* Custom Tap Highlight - Green brand color */
+* {
+  -webkit-tap-highlight-color: rgba(74, 222, 128, 0.2);
+  -webkit-touch-callout: none;
+}
+
+/* UI Text Selection Control */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable selection for data-rich fields */
+input,
+textarea,
+[contenteditable],
+.selectable-text {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Native Inertial Scrolling */
+html {
+  -webkit-overflow-scrolling: touch;
+}
