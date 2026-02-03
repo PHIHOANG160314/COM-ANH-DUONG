@@ -260,27 +260,26 @@ export const HeroSection = () => {
           maxWidth: 'lg',
           mx: 'auto',
           px: 3,
-          color: 'initial', // Reset color inheritance from parent green box
         }}
       >
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper' }}>
+          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper', color: 'text.primary' }}>
             <Typography variant="h4">📍</Typography>
-            <Typography fontWeight="bold" color="text.primary">
+            <Typography fontWeight="bold" sx={{ color: (theme) => theme.palette.text.primary }}>
               Địa chỉ
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: (theme) => theme.palette.text.secondary }}>
               {CONTACT_INFO.address.short}
             </Typography>
           </Paper>
         </motion.div>
         <motion.div variants={cardVariants} whileHover={{ y: -5 }}>
-          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper' }}>
+          <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'background.paper', color: 'text.primary' }}>
             <Typography variant="h4">⏰</Typography>
-            <Typography fontWeight="bold" color="text.primary">
+            <Typography fontWeight="bold" sx={{ color: (theme) => theme.palette.text.primary }}>
               Giờ mở cửa
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: (theme) => theme.palette.text.secondary }}>
               {CONTACT_INFO.hours}
             </Typography>
           </Paper>
@@ -293,6 +292,7 @@ export const HeroSection = () => {
               p: 2,
               textAlign: 'center',
               bgcolor: 'background.paper',
+              color: 'text.primary',
               textDecoration: 'none',
               display: 'block',
               cursor: 'pointer',
@@ -322,13 +322,13 @@ export const HeroSection = () => {
             <Typography variant="h4" sx={{ animation: 'phoneBounce 1s ease-in-out infinite' }}>
               📞
             </Typography>
-            <Typography fontWeight="bold" sx={{ color: 'error.main', fontSize: '1.1rem' }}>
+            <Typography fontWeight="bold" sx={{ color: (theme) => theme.palette.error.main, fontSize: '1.1rem' }}>
               Hotline
             </Typography>
             <Typography
               variant="body2"
-              color="text.primary"
               sx={{
+                color: (theme) => theme.palette.text.primary,
                 fontWeight: 600,
                 fontSize: '1rem',
                 textDecoration: 'underline',
