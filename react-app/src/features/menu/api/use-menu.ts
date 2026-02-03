@@ -21,7 +21,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 40,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -43,7 +43,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 17,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -65,7 +65,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 49,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -87,7 +87,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 6,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -109,7 +109,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 36,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -131,7 +131,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 20,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -153,7 +153,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 44,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -175,7 +175,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 7,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -197,7 +197,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-1',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 22,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -219,7 +219,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 19,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -241,7 +241,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 10,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -263,7 +263,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 21,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -285,7 +285,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 18,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -307,7 +307,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 31,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -329,7 +329,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 0,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -351,7 +351,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 25,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -373,7 +373,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 14,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -395,7 +395,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 43,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -417,7 +417,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 9,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -439,7 +439,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 9,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -461,7 +461,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 20,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -483,7 +483,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 16,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -505,7 +505,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 35,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -527,7 +527,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 38,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -549,7 +549,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 13,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -571,7 +571,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 47,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -593,7 +593,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 43,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -615,7 +615,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 34,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -637,7 +637,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 24,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -659,7 +659,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 49,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -681,7 +681,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-2',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 50,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -703,7 +703,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 37,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -725,7 +725,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 22,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -747,7 +747,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 8,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -769,7 +769,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 11,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -791,7 +791,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 41,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -813,7 +813,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-3',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 22,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -835,7 +835,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-4',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 29,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -857,7 +857,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-4',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 26,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -879,7 +879,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-4',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 48,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -901,7 +901,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 22,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -923,7 +923,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 0,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -945,7 +945,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 19,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -967,7 +967,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 47,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -989,7 +989,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 50,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1011,7 +1011,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 24,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1033,7 +1033,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 13,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1055,7 +1055,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-5',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 8,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1077,7 +1077,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 5,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1099,7 +1099,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 20,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1121,7 +1121,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 43,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1143,7 +1143,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 11,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1165,7 +1165,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 6,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1187,7 +1187,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-6',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 24,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1209,7 +1209,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-7',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 44,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1231,7 +1231,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-7',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 39,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1253,7 +1253,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-7',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 40,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
@@ -1275,7 +1275,7 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     category_id: 'cat-7',
     is_active: true,
     is_sold_out: false,
-    stock_quantity: null,
+    stock_quantity: 26,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     categories: {
