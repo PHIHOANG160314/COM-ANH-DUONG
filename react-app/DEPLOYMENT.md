@@ -1,111 +1,33 @@
-# Deployment Guide for Cơm Ánh Dương
+# Deployment Checklist
 
-This guide provides instructions for deploying the Cơm Ánh Dương React application to Vercel.
+## Pre-Deployment Setup
 
-## Prerequisites
-
-1.  **Vercel Account:** Create an account at [vercel.com](https://vercel.com).
-2.  **GitHub Repository:** Ensure your code is pushed to a GitHub repository.
-3.  **Supabase Project:** You need a Supabase project for the backend.
-
-## Environment Variables
-
-The following environment variables are required for the application to function correctly. **ALL** variables used in the React app must start with `VITE_`.
-
-| Variable | Description |
-| :--- | :--- |
-| `VITE_SUPABASE_URL` | The URL of your Supabase project (e.g., `https://xyz.supabase.co`) |
-| `VITE_SUPABASE_ANON_KEY` | The anonymous public key for your Supabase project |
-| `VITE_APP_NAME` | (Optional) Application name, defaults to "Cơm Ánh Dương" |
-| `VITE_ENABLE_ANALYTICS` | (Optional) Set to `true` to enable analytics (if configured) |
-| `VITE_PAYMENT_SANDBOX_MODE` | Set to `true` to enable payment sandbox mode (simulated payments) |
-
-## Payment Configuration
-
-This application supports VNPay and MoMo payments via Supabase Edge Functions.
-
-### 1. Supabase Edge Functions
-
-The payment logic resides in Supabase Edge Functions. You must deploy these functions for payments to work.
-
+### 1. Supabase Configuration
+Update `.env` with real Supabase credentials:
 ```bash
-# Login to Supabase CLI
-npx supabase login
-
-# Deploy functions
-npx supabase functions deploy create-payment
-npx supabase functions deploy handle-webhook
-npx supabase functions deploy reconcile-transactions
-
-# Set secrets (Production)
-npx supabase secrets set --env-file ./supabase/.env.production
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
-### 2. Payment Secrets (Supabase)
+### 2. Upload Menu Images
+After configuring Supabase credentials:
+```bash
+npm run upload-images
+```
 
-The following secrets must be set in your Supabase project (NOT in Vercel):
+This uploads product images from `public/images/specialties/` to Supabase Storage.
 
-- `VNPAY_TMN_CODE`: Your VNPay Terminal Code
-- `VNPAY_HASH_SECRET`: Your VNPay Hash Secret
-- `VNPAY_URL`: Payment Gateway URL (Sandbox or Production)
-- `MOMO_PARTNER_CODE`: Your MoMo Partner Code
-- `MOMO_ACCESS_KEY`: Your MoMo Access Key
-- `MOMO_SECRET_KEY`: Your MoMo Secret Key
-- `MOMO_ENDPOINT`: Payment Endpoint
+### 3. Build for Production
+```bash
+npm run build
+```
 
-### 3. IPN / Webhook Configuration
+### 4. Deploy
+Deploy the `dist/` folder to your hosting platform (Vercel, Netlify, etc.)
 
-You need to register the `handle-webhook` function URL with the payment providers (VNPay/MoMo) to receive payment status updates.
-
-- **Supabase Function URL:** `https://<project-ref>.supabase.co/functions/v1/handle-webhook`
-
-## Deploying to Vercel
-
-### Option 1: Vercel Dashboard (Recommended)
-
-1.  Log in to the Vercel Dashboard.
-2.  Click **"Add New..."** -> **"Project"**.
-3.  Import your GitHub repository `com-anh-duong-10x`.
-4.  In the **Configure Project** step:
-    *   **Framework Preset:** Select `Vite`.
-    *   **Root Directory:** Select `react-app` (since the app is in a subdirectory).
-    *   **Build Command:** `npm run build` (should be auto-detected).
-    *   **Output Directory:** `dist` (should be auto-detected).
-    *   **Install Command:** `npm install` (should be auto-detected).
-5.  **Environment Variables:**
-    *   Expand the **Environment Variables** section.
-    *   Add `VITE_SUPABASE_URL` and your value.
-    *   Add `VITE_SUPABASE_ANON_KEY` and your value.
-6.  Click **"Deploy"**.
-
-### Option 2: Vercel CLI
-
-1.  Install Vercel CLI: `npm i -g vercel`
-2.  Run `vercel login`
-3.  Navigate to the `react-app` directory: `cd react-app`
-4.  Run `vercel` to deploy a preview.
-5.  Run `vercel --prod` to deploy to production.
-
-## Post-Deployment Checklist
-
-- [ ] **Verify SPA Routing:** Refresh the page on a route like `/login` or `/menu`. It should not 404.
-- [ ] **Check PWA:** Open the app on a mobile device or inspect the Application tab in DevTools. The service worker should register.
-- [ ] **Test Database Connection:** Verify that menu items load and you can log in (if applicable).
-- [ ] **Security Headers:** Check Network tab to ensure headers like `X-Frame-Options` and `X-Content-Type-Options` are present.
-
-## Custom Domain (Optional)
-
-1.  Go to your Project Settings in Vercel.
-2.  Select **Domains**.
-3.  Add your custom domain (e.g., `app.comanhduong.com`).
-4.  Follow the DNS configuration instructions provided by Vercel.
-
-## Troubleshooting
-
-*   **404 on Refresh:** Ensure `vercel.json` contains the `rewrites` rule mapping `/(.*)` to `/index.html`.
-*   **Env Vars Missing:** Double-check that all env vars start with `VITE_` and are added in Vercel Project Settings. Re-deploy after changing env vars.
-*   **Build Errors:** Run `npm run build` locally to debug. Ensure all dependencies are in `package.json`.
-
-## CI/CD
-
-A GitHub Actions workflow is available in `.github/workflows/deploy.yml` (if configured) to automatically deploy changes pushed to the `main` branch.
+## Post-Deployment
+- Verify operating hours: 6:00 - 21:00
+- Test COD payment flow
+- Confirm Zalo chat widget works
+- Verify all images load from Supabase Storage
