@@ -183,6 +183,12 @@ export const MenuShowcase = () => {
                 Đang tải món ăn...
               </Typography>
             </Grid>
+          ) : featuredProducts.length === 0 ? (
+            <Grid size={{ xs: 12 }}>
+              <Alert severity="info" sx={{ mb: 4 }}>
+                📋 Hôm nay chưa có thực đơn. Vui lòng quay lại sau hoặc gọi hotline để biết thêm chi tiết!
+              </Alert>
+            </Grid>
           ) : (
             featuredProducts.map((product) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>

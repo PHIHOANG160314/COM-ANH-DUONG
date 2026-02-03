@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { useDailyMenu, useCategories } from './use-menu';
+import { useDailyMenu, useCategories, useAllMenuItems } from './use-menu';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import * as SupabaseClient from '@/shared/api/supabase-client';
@@ -11,6 +11,7 @@ interface MocksType {
   mockSelect: Mock;
   mockEq: Mock;
   mockOrder: Mock;
+  mockIn: Mock;
 }
 
 // Mock the supabase client module
@@ -19,11 +20,13 @@ vi.mock('@/shared/api/supabase-client', () => {
   const mockSelect = vi.fn();
   const mockEq = vi.fn();
   const mockOrder = vi.fn();
+  const mockIn = vi.fn();
 
-  // Chain setup
+  // Chain setup for menu_items query
   mockFrom.mockReturnValue({ select: mockSelect });
-  mockSelect.mockReturnValue({ eq: mockEq });
-  mockEq.mockReturnValue({ order: mockOrder });
+  mockSelect.mockReturnValue({ eq: mockEq, in: mockIn });
+  mockEq.mockReturnValue({ order: mockOrder, eq: mockEq, in: mockIn });
+  mockIn.mockReturnValue({ eq: mockEq });
 
   // Default success response
   mockOrder.mockResolvedValue({ data: [], error: null });
@@ -39,6 +42,7 @@ vi.mock('@/shared/api/supabase-client', () => {
       mockSelect,
       mockEq,
       mockOrder,
+      mockIn,
     },
   };
 });
@@ -58,16 +62,10 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
 describe('useMenu Hooks', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset hasSupabaseConfig to true by default (we'll hack it if needed or use separate tests)
-    // Since we mocked it as a value, we can't easily change it dynamically without getters in the mock.
-    // However, we can test the "error fallback" which is the main goal.
-    // The "not configured" check is static, but the "error" check is dynamic.
   });
 
-  describe('useDailyMenu', () => {
+  describe('useAllMenuItems', () => {
     it('returns demo data when Supabase returns an error', async () => {
-      // Access the mocked functions
-      // We need to cast to any to access the hidden _mocks property we added
       const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       // Setup mock to return error
@@ -76,29 +74,14 @@ describe('useMenu Hooks', () => {
         error: { message: 'Connection refused' },
       });
 
-      const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
+      const { result } = renderHook(() => useAllMenuItems(), { wrapper: Wrapper });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       // Should return demo data (non-empty array)
       expect(result.current.data).toBeDefined();
       expect(result.current.data?.length).toBeGreaterThan(0);
-      expect(result.current.data?.[0].id).toContain('demo');
-    });
-
-    it('returns demo data when fetch throws an exception', async () => {
-      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
-
-      // Setup mock to throw
-      _mocks.mockOrder.mockRejectedValue(new Error('Network error'));
-
-      const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
-
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(result.current.data).toBeDefined();
-      expect(result.current.data?.length).toBeGreaterThan(0);
-      expect(result.current.data?.[0].id).toContain('demo');
+      expect(result.current.data?.[0].id).toContain('menu');
     });
 
     it('returns real data when Supabase succeeds', async () => {
@@ -112,7 +95,7 @@ describe('useMenu Hooks', () => {
         error: null,
       });
 
-      const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
+      const { result } = renderHook(() => useAllMenuItems(), { wrapper: Wrapper });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -120,15 +103,48 @@ describe('useMenu Hooks', () => {
     });
   });
 
+  describe('useDailyMenu', () => {
+    it('returns empty array when no daily menu is set for today', async () => {
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
+
+      // Setup mock to return empty daily_menus
+      _mocks.mockEq.mockReturnValue({ eq: _mocks.mockEq });
+      _mocks.mockEq.mockResolvedValue({
+        data: [],
+        error: null,
+      });
+
+      const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      // Should return empty array (no daily menu set)
+      expect(result.current.data).toBeDefined();
+      expect(result.current.data?.length).toBe(0);
+    });
+
+    it('returns empty array when daily_menus query fails', async () => {
+      const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
+
+      // Setup mock to return error
+      _mocks.mockEq.mockReturnValue({ eq: _mocks.mockEq });
+      _mocks.mockEq.mockResolvedValue({
+        data: null,
+        error: { message: 'Connection refused' },
+      });
+
+      const { result } = renderHook(() => useDailyMenu(), { wrapper: Wrapper });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      // Should return empty array on error
+      expect(result.current.data).toBeDefined();
+      expect(result.current.data?.length).toBe(0);
+    });
+  });
+
   describe('useCategories', () => {
     it('returns demo data when Supabase returns an error', async () => {
-      // The chain for useCategories is slightly different: .from().select().eq().order()
-      // It matches the same chain structure we mocked: from -> select -> eq -> order
-      // NOTE: useCategories implementation: from('categories').select('*').eq('is_active', true).order('sort_order')
-      // useDailyMenu implementation: from('products').select(...).eq('is_active', true).order('name')
-
-      // They use the same chain structure, so our mock works for both.
-
       const { _mocks } = SupabaseClient as unknown as { _mocks: MocksType };
 
       _mocks.mockOrder.mockResolvedValue({

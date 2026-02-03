@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase, hasSupabaseConfig } from '@/shared/api/supabase-client';
 import type { Database } from '@/shared/types/database.types';
 import { Debug } from '@/shared/utils/debug';
+import dayjs from 'dayjs';
 
 type Product = Database['public']['Tables']['products']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
@@ -1297,9 +1298,9 @@ const MENU_CATEGORIES: Category[] = [
   },
 ];
 
-export const useDailyMenu = () => {
+export const useAllMenuItems = () => {
   return useQuery({
-    queryKey: ['daily-menu'],
+    queryKey: ['all-menu-items'],
     queryFn: async () => {
       // Return production menu if Supabase is not configured
       if (!hasSupabaseConfig) {
@@ -1369,6 +1370,105 @@ export const useDailyMenu = () => {
         // Catch any network or auth errors and fallback to production
         Debug.warn('⚠️ Failed to fetch menu - falling back to production:', err);
         return MENU_PRODUCTS;
+      }
+    },
+  });
+};
+
+// Hook for /menu page - shows only items selected by admin for TODAY
+export const useDailyMenu = () => {
+  const today = dayjs().format('YYYY-MM-DD');
+
+  return useQuery({
+    queryKey: ['daily-menu', today],
+    queryFn: async () => {
+      // In demo mode (no Supabase), show all items as daily menu
+      if (!hasSupabaseConfig) {
+        Debug.warn('⚠️ Supabase not configured - showing all items as daily menu');
+        return MENU_PRODUCTS;
+      }
+
+      try {
+        // Step 1: Fetch today's daily menu selections from daily_menus table
+        const { data: dailySelections, error: dailyError } = await supabase
+          .from('daily_menus')
+          .select('product_id')
+          .eq('date', today)
+          .eq('is_active', true);
+
+        // If error or no daily menu set for today, return empty array
+        if (dailyError) {
+          Debug.warn('⚠️ Error fetching daily menu:', dailyError.message);
+          return [];
+        }
+
+        if (!dailySelections || dailySelections.length === 0) {
+          Debug.log('📋 No daily menu set for today - showing empty state');
+          return [];
+        }
+
+        // Step 2: Fetch the actual product details for today's selections
+        const productIds = dailySelections.map((d) => d.product_id);
+
+        // Try menu_items first
+        const { data: menuData, error: menuError } = await supabase
+          .from('menu_items')
+          .select(
+            `
+            *,
+            categories (
+              id,
+              name,
+              slug,
+              sort_order
+            )
+          `
+          )
+          .in('id', productIds)
+          .eq('is_active', true);
+
+        if (!menuError && menuData && menuData.length > 0) {
+          Debug.log(`✅ Loaded ${menuData.length} daily menu items`);
+          return menuData.map((item) => ({
+            id: item.id.toString(),
+            category_id: item.category_id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            image_url: item.image_url,
+            is_active: item.is_active,
+            is_sold_out: item.is_sold_out,
+            created_at: item.created_at,
+            updated_at: item.updated_at,
+            categories: item.categories as Category | null,
+          })) as MenuItemWithCategory[];
+        }
+
+        // Fallback to products table
+        const { data: productsData, error: productsError } = await supabase
+          .from('products')
+          .select(
+            `
+            *,
+            categories (
+              id,
+              name,
+              sort_order
+            )
+          `
+          )
+          .in('id', productIds)
+          .eq('is_active', true);
+
+        if (productsError || !productsData) {
+          Debug.warn('⚠️ Error fetching products:', productsError?.message);
+          return [];
+        }
+
+        return productsData as MenuItemWithCategory[];
+      } catch (err) {
+        Debug.warn('⚠️ Failed to fetch daily menu:', err);
+        return [];
       }
     },
   });

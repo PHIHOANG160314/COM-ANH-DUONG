@@ -1,7 +1,7 @@
 import { Grid, Typography, Box, CircularProgress, Pagination, Stack } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ProductCard } from './product-card';
-import { useDailyMenu, useCategories } from '../api/use-menu';
+import { useAllMenuItems, useCategories } from '../api/use-menu';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
@@ -10,7 +10,7 @@ import { usePullToRefresh } from '../hooks/use-pull-to-refresh';
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
 
 export const MenuGrid = () => {
-  const { data: products, isLoading: loadingProducts, refetch } = useDailyMenu();
+  const { data: products, isLoading: loadingProducts, refetch } = useAllMenuItems();
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const addItem = useCartStore((state) => state.addItem);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
