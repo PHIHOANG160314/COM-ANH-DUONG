@@ -12,6 +12,7 @@ import {
   Alert,
 } from '@mui/material';
 import { useDailyMenu } from '../api/use-menu';
+import { CONTACT_INFO } from '@/shared/config/contact';
 
 interface CategoryCardProps {
   icon: string;
@@ -290,7 +291,7 @@ export const MenuShowcase = () => {
       <Paper
         elevation={0}
         sx={{
-          backgroundColor: 'grey.100',
+          bgcolor: 'background.paper',
           minHeight: 300,
           display: 'flex',
           flexDirection: 'column',
@@ -302,13 +303,13 @@ export const MenuShowcase = () => {
           px: { xs: 3, md: 15 },
         }}
       >
-        <Typography variant="body1" color="text.secondary">
-          📞 [SỐ HOTLINE] • 📍 Phường Sa Đéc, Tỉnh Đồng Tháp
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.text.primary }}>
+          📞 {CONTACT_INFO.phone} • 📍 {CONTACT_INFO.address.short}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          ⏰ T2-T7: 10h-14h, 17h-20h | CN: 10h-20h
+        <Typography variant="body2" sx={{ color: (theme) => theme.palette.text.secondary }}>
+          ⏰ {CONTACT_INFO.hours}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" sx={{ color: (theme) => theme.palette.text.secondary }}>
           © 2026 Cơm Ánh Dương - Hương vị quê hương
         </Typography>
       </Paper>
