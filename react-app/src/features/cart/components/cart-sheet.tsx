@@ -1,5 +1,5 @@
-import { SwipeableDrawer, Box, Typography, IconButton, Divider, Button } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Drawer, Box, Typography, IconButton, Divider, Button } from '@mui/material';
+import { Close as CloseIcon, Add, Remove } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../model/cart-store';
 import { formatCurrency } from '@/shared/lib/formatters';
@@ -7,10 +7,17 @@ import { formatCurrency } from '@/shared/lib/formatters';
 interface CartSheetProps {
   open: boolean;
   onClose: () => void;
-  onOpen: () => void;
 }
 
-export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
+/**
+ * Bottom drawer shopping cart with gesture support
+ * - Rounded corners for modern mobile UX
+ * - Sticky checkout button at bottom
+ * - Quantity controls with +/- buttons
+ * - Dark mode compatible via theme tokens
+ * - Max height 90vh for safe area
+ */
+export const CartSheet = ({ open, onClose }: CartSheetProps) => {
   const navigate = useNavigate();
   const { items, totalAmount, removeItem, updateQuantity } = useCartStore();
 
@@ -20,21 +27,22 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
   };
 
   return (
-    <SwipeableDrawer
+    <Drawer
       anchor="bottom"
       open={open}
       onClose={onClose}
-      onOpen={onOpen}
-      disableSwipeToOpen={false}
       ModalProps={{
         keepMounted: true, // Better mobile performance
       }}
       PaperProps={{
         sx: {
-          maxHeight: '85vh',
+          maxHeight: '90vh',
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           paddingBottom: 'env(safe-area-inset-bottom)',
+          display: 'flex',
+          flexDirection: 'column',
+          bgcolor: 'background.paper', // Theme token
         },
       }}
     >
@@ -74,7 +82,7 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
 
       <Divider />
 
-      {/* Cart items */}
+      {/* Scrollable cart items */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, py: 2 }}>
         {items.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
@@ -93,9 +101,12 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
                 pb: 2,
                 borderBottom: '1px solid',
                 borderColor: 'divider',
+                '&:last-child': {
+                  borderBottom: 'none',
+                },
               }}
             >
-              {/* Image */}
+              {/* Product image */}
               <Box
                 component="img"
                 src={item.image_url || '/images/menu/default.png'}
@@ -105,10 +116,11 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
                   height: 60,
                   borderRadius: 1,
                   objectFit: 'cover',
+                  bgcolor: 'action.hover', // Fallback background
                 }}
               />
 
-              {/* Info */}
+              {/* Product info */}
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   {item.name}
@@ -128,9 +140,14 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
                         removeItem(item.id);
                       }
                     }}
-                    sx={{ minWidth: 32, minHeight: 32 }}
+                    sx={{
+                      minWidth: 32,
+                      minHeight: 32,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    }}
                   >
-                    -
+                    <Remove fontSize="small" />
                   </IconButton>
                   <Typography variant="body2" sx={{ minWidth: 24, textAlign: 'center' }}>
                     {item.quantity}
@@ -138,15 +155,20 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
                   <IconButton
                     size="small"
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    sx={{ minWidth: 32, minHeight: 32 }}
+                    sx={{
+                      minWidth: 32,
+                      minHeight: 32,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    }}
                   >
-                    +
+                    <Add fontSize="small" />
                   </IconButton>
                 </Box>
               </Box>
 
-              {/* Price */}
-              <Typography variant="subtitle2" fontWeight="bold">
+              {/* Item total price */}
+              <Typography variant="subtitle2" fontWeight="bold" color="primary.main">
                 {formatCurrency(item.price * item.quantity)}
               </Typography>
             </Box>
@@ -154,37 +176,44 @@ export const CartSheet = ({ open, onClose, onOpen }: CartSheetProps) => {
         )}
       </Box>
 
-      {/* Footer */}
+      {/* Sticky footer with checkout button */}
       {items.length > 0 && (
-        <>
-          <Divider />
-          <Box sx={{ px: 2, py: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="subtitle1" fontWeight="bold">
-                Tổng cộng
-              </Typography>
-              <Typography variant="h6" fontWeight="bold" color="primary">
-                {formatCurrency(totalAmount())}
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              onClick={handleCheckout}
-              sx={{
-                minHeight: 48, // Touch target
-                borderRadius: 2,
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-              }}
-            >
-              Thanh toán
-            </Button>
+        <Box
+          sx={{
+            position: 'sticky',
+            bottom: 0,
+            bgcolor: 'background.paper',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            px: 2,
+            py: 2,
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Tổng cộng
+            </Typography>
+            <Typography variant="h6" fontWeight="bold" color="primary.main">
+              {formatCurrency(totalAmount())}
+            </Typography>
           </Box>
-        </>
+          <Button
+            variant="contained"
+            fullWidth
+            size="large"
+            onClick={handleCheckout}
+            sx={{
+              minHeight: 48, // Touch target
+              borderRadius: 2,
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+            }}
+          >
+            Thanh toán
+          </Button>
+        </Box>
       )}
-    </SwipeableDrawer>
+    </Drawer>
   );
 };

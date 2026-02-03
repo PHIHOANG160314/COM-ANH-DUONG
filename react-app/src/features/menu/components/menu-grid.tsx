@@ -1,4 +1,4 @@
-import { Grid, Typography, Box, CircularProgress, Pagination, Stack } from '@mui/material';
+import { Grid, Typography, Box, Pagination, Stack } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ProductCard } from './product-card';
 import { useAllMenuItems, useCategories } from '../api/use-menu';
@@ -6,12 +6,11 @@ import { useFavorites, useToggleFavorite } from '../api/use-favorites';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
-import { usePullToRefresh } from '../hooks/use-pull-to-refresh';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
 
 export const MenuGrid = () => {
-  const { data: products, isLoading: loadingProducts, refetch } = useAllMenuItems();
+  const { data: products, isLoading: loadingProducts } = useAllMenuItems();
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const { data: favorites } = useFavorites();
   const { mutate: toggleFavorite } = useToggleFavorite();
@@ -19,15 +18,6 @@ export const MenuGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
-
-  // Pull-to-refresh
-  const { isPulling, isRefreshing, pullDistance } = usePullToRefresh({
-    onRefresh: async () => {
-      await refetch();
-    },
-    threshold: 80,
-    enabled: true,
-  });
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -76,27 +66,6 @@ export const MenuGrid = () => {
 
   return (
     <Box sx={{ position: 'relative' }}>
-      {/* Pull-to-refresh indicator */}
-      {(isPulling || isRefreshing) && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: Math.min(pullDistance, 60),
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            transition: isRefreshing ? 'top 0.3s ease' : 'none',
-          }}
-        >
-          <CircularProgress
-            size={40}
-            sx={{
-              opacity: isRefreshing ? 1 : pullDistance / 80,
-            }}
-          />
-        </Box>
-      )}
-
       {/* Scroll anchor for pagination */}
       <div ref={gridTopRef} style={{ scrollMarginTop: '80px' }} />
 

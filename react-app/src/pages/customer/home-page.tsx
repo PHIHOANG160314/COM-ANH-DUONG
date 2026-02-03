@@ -121,7 +121,6 @@ export const CustomerHomePage = () => {
       <CartSheet
         open={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onOpen={() => setIsCartOpen(true)}
       />
     </>
   );

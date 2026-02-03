@@ -1,86 +1,54 @@
-import { Grid, Card, CardContent, Skeleton, Box } from '@mui/material';
+import { Grid, Box, Skeleton } from '@mui/material';
+import { ProductCardSkeleton } from './product-card-skeleton';
 
 interface MenuSkeletonProps {
   count?: number;
 }
 
+/**
+ * Menu grid skeleton with category chips and product cards
+ * - 6-item grid layout (2 columns on mobile)
+ * - Category chips skeleton row (4 chips, 60px each)
+ * - Uses ProductCardSkeleton for consistency
+ * - Theme-aware colors via action.hover
+ */
 export const MenuSkeleton = ({ count = 6 }: MenuSkeletonProps) => {
   return (
-    <Grid container spacing={2}>
-      {Array.from({ length: count }).map((_, index) => (
-        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-          <Card
+    <Box>
+      {/* Category chips skeleton row */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 1,
+          mb: 3,
+          overflowX: 'auto',
+          py: 1,
+        }}
+      >
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            variant="rectangular"
+            width={60}
+            height={32}
+            animation="wave"
             sx={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
+              bgcolor: 'action.hover',
+              borderRadius: 2,
+              flexShrink: 0,
             }}
-          >
-            {/* Image skeleton */}
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              height={160}
-              animation="wave"
-              sx={{ bgcolor: 'rgba(255,255,255,0.1)' }}
-            />
+          />
+        ))}
+      </Box>
 
-            <CardContent sx={{ flexGrow: 1 }}>
-              {/* Category chip skeleton */}
-              <Skeleton
-                variant="rounded"
-                width={80}
-                height={24}
-                animation="wave"
-                sx={{ mb: 1, bgcolor: 'rgba(255,255,255,0.1)' }}
-              />
-
-              {/* Title skeleton */}
-              <Skeleton
-                variant="text"
-                width="90%"
-                height={28}
-                animation="wave"
-                sx={{ mb: 1, bgcolor: 'rgba(255,255,255,0.1)' }}
-              />
-
-              {/* Description skeleton */}
-              <Skeleton
-                variant="text"
-                width="100%"
-                height={20}
-                animation="wave"
-                sx={{ mb: 0.5, bgcolor: 'rgba(255,255,255,0.1)' }}
-              />
-              <Skeleton
-                variant="text"
-                width="80%"
-                height={20}
-                animation="wave"
-                sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.1)' }}
-              />
-
-              {/* Price and button skeleton */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Skeleton
-                  variant="text"
-                  width={100}
-                  height={32}
-                  animation="wave"
-                  sx={{ bgcolor: 'rgba(255,255,255,0.1)' }}
-                />
-                <Skeleton
-                  variant="rounded"
-                  width={120}
-                  height={36}
-                  animation="wave"
-                  sx={{ bgcolor: 'rgba(255,255,255,0.1)' }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+      {/* Product grid - 2 columns mobile, 3+ desktop */}
+      <Grid container spacing={2}>
+        {Array.from({ length: count }).map((_, index) => (
+          <Grid size={{ xs: 6, sm: 4, md: 4 }} key={index}>
+            <ProductCardSkeleton />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
