@@ -3,6 +3,8 @@ import { useAuth } from '@/app/providers/use-auth';
 import { addressApi, type CustomerAddress, type InsertAddress } from '../api/address-api';
 import { Debug } from '@/shared/utils/debug';
 
+export type { CustomerAddress, InsertAddress };
+
 export const useAddresses = () => {
   const { user } = useAuth();
   const [addresses, setAddresses] = useState<CustomerAddress[]>([]);
