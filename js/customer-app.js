@@ -13,17 +13,18 @@ const CustomerApp = {
     searchQuery: '',
     dailyMenuChannel: null, // BroadcastChannel for realtime sync
 
-    // Filter menu based on "Daily Menu" config (Option B: empty = show message)
+    // Filter menu based on "Daily Menu" config
+    // v1.0.3: If no config or no matches → show ALL items (not empty)
     filterDailyMenu() {
-        console.log('%c🔥 filterDailyMenu EXECUTING', 'background: #FF5722; color: white; font-size: 14px; padding: 2px 6px;');
+        console.log('%c🔥 filterDailyMenu v1.0.3', 'background: #FF5722; color: white; font-size: 14px; padding: 2px 6px;');
 
         const dailyConfig = localStorage.getItem('daily_menu_config');
         console.log('📦 Raw localStorage daily_menu_config:', dailyConfig);
 
-        // No config? Show empty state (Option B)
+        // No config? Show ALL items (changed from Option B: empty)
         if (!dailyConfig) {
-            this.menuData = [];
-            console.log('%c❌ No daily config found - menu will be EMPTY', 'color: red; font-weight: bold;');
+            console.log('%c⚠️ No daily config - showing ALL items', 'color: orange; font-weight: bold;');
+            // Keep this.menuData as-is (already loaded from Supabase)
             return;
         }
 
@@ -31,11 +32,9 @@ const CustomerApp = {
             const config = JSON.parse(dailyConfig);
             console.log('📋 Parsed config:', JSON.stringify(config, null, 2));
 
-            // Check if we have activeItems
+            // Empty activeItems? Show ALL items
             if (!config || !Array.isArray(config.activeItems) || config.activeItems.length === 0) {
-                // Empty config = show empty state (Option B)
-                this.menuData = [];
-                console.log('%c❌ Daily menu activeItems is empty - menu will be EMPTY', 'color: red; font-weight: bold;');
+                console.log('%c⚠️ Daily menu activeItems is empty - showing ALL items', 'color: orange; font-weight: bold;');
                 return;
             }
 
@@ -44,17 +43,23 @@ const CustomerApp = {
             this.menuData = [...this.originalMenuData];
 
             // Filter to only show active items
-            // FIX: Handle "M005" → 5 (strip M prefix AND leading zeros)
+            // Handle "M005" → 5 (strip M prefix AND leading zeros)
             const activeIds = config.activeItems.map(id => {
                 const idStr = String(id);
-                // Strip "M" prefix if present, then parse as integer to remove leading zeros
                 const numericPart = idStr.startsWith('M') ? idStr.substring(1) : idStr;
-                // parseInt removes leading zeros: "005" → 5
                 return String(parseInt(numericPart, 10));
             });
             console.log('🎯 Active IDs to filter (normalized):', activeIds);
 
-            this.menuData = this.menuData.filter(item => activeIds.includes(String(item.id)));
+            const filtered = this.menuData.filter(item => activeIds.includes(String(item.id)));
+
+            // If filter results in 0 items, show ALL instead
+            if (filtered.length === 0) {
+                console.log('%c⚠️ Filter matched 0 items - showing ALL items instead', 'color: orange; font-weight: bold;');
+                return;
+            }
+
+            this.menuData = filtered;
             console.log(`%c✅ FILTERED: ${this.menuData.length} items from ${activeIds.length} IDs`, 'color: green; font-weight: bold;');
 
             // Log which items will be displayed
@@ -63,8 +68,8 @@ const CustomerApp = {
             });
 
         } catch (e) {
-            console.error('❌ Error parsing daily menu config', e);
-            this.menuData = [];
+            console.error('❌ Error parsing daily menu config, showing ALL items', e);
+            // Don't clear menuData on error
         }
     },
 
