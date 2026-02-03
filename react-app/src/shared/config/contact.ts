@@ -6,14 +6,14 @@ export const CONTACT_INFO = {
   phone: '0947 717 315',
   zalo: '0389 017 360',
   address: {
-    full: '581C Hùng Vương, Phường 2, Sa Đéc, Đồng Tháp',
-    short: '581C Hùng Vương, Sa Đéc',
+    full: '581C Hùng Vương, Xã Tân Phú Đông, Đồng Tháp',
+    short: '581C Hùng Vương, Tân Phú Đông',
     street: '581C Hùng Vương',
-    district: 'Phường 2, Sa Đéc',
+    district: 'Xã Tân Phú Đông',
     province: 'Đồng Tháp',
   },
   landmark: 'Đối diện Viva Start Coffee',
-  hours: '6:00 - 21:00 hàng ngày',
+  hours: '8:00 - 22:00 hàng ngày',
   geo: {
     latitude: 10.3567,
     longitude: 105.6789,

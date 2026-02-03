@@ -30,7 +30,7 @@ export const UrgencyBanner = () => {
               ⚡ Đặt trước 10:00 - Giao trước 11:30
             </Typography>
             <Typography variant="body1" sx={{ opacity: 0.95 }}>
-              Cơm nóng, ngon, đúng giờ - Miễn phí ship nội thành Sa Đéc
+              Cơm nóng, ngon, đúng giờ - Miễn phí ship nội thành Tân Phú Đông
             </Typography>
           </Paper>
         </motion.div>

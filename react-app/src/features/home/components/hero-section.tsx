@@ -71,7 +71,7 @@ export const HeroSection = () => {
             fontWeight="bold"
             sx={{ fontSize: { xs: '2rem', md: '3rem' }, mb: 1 }}
           >
-            🍚 Cơm Ánh Dương - Sa Đéc
+            🍚 Cơm Ánh Dương - Tân Phú Đông
           </Typography>
         </Box>
 
@@ -111,7 +111,7 @@ export const HeroSection = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Chip
                 icon={<AccessTime sx={{ color: 'white !important' }} />}
-                label="Giao nhanh Sa Đéc"
+                label="Giao nhanh Tân Phú Đông"
                 sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
               />
             </motion.div>
