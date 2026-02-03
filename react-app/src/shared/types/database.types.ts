@@ -71,6 +71,7 @@ export interface Database {
           image_url: string | null;
           is_active: boolean;
           is_sold_out: boolean;
+          stock_quantity: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -83,6 +84,7 @@ export interface Database {
           image_url?: string | null;
           is_active?: boolean;
           is_sold_out?: boolean;
+          stock_quantity?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -95,6 +97,7 @@ export interface Database {
           image_url?: string | null;
           is_active?: boolean;
           is_sold_out?: boolean;
+          stock_quantity?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -264,6 +267,7 @@ export interface Database {
           image_url: string | null;
           is_active: boolean;
           is_sold_out: boolean;
+          stock_quantity: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -276,6 +280,7 @@ export interface Database {
           image_url?: string | null;
           is_active?: boolean;
           is_sold_out?: boolean;
+          stock_quantity?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -288,6 +293,7 @@ export interface Database {
           image_url?: string | null;
           is_active?: boolean;
           is_sold_out?: boolean;
+          stock_quantity?: number | null;
           created_at?: string;
           updated_at?: string;
         };

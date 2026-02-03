@@ -127,6 +127,7 @@ export const BestsellerSection = () => {
       image_url: item.image_url,
       is_active: true,
       is_sold_out: false,
+      stock_quantity: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

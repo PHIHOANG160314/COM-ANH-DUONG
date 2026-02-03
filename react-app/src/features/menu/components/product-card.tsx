@@ -1,5 +1,5 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Box, Chip } from '@mui/material';
-import { AddShoppingCart } from '@mui/icons-material';
+import { Card, CardMedia, CardContent, Typography, CardActions, Box, Chip, IconButton } from '@mui/material';
+import { AddShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useState, useEffect, useRef } from 'react';
 import { AppButton } from '@/shared/ui';
 import { formatCurrency } from '@/shared/lib/formatters';
@@ -12,9 +12,11 @@ type Product = Database['public']['Tables']['products']['Row'];
 interface ProductCardProps {
   product: Product;
   onAdd: (product: Product) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (productId: string) => void;
 }
 
-export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
+export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavorite }: ProductCardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
   const imageRef = useRef<HTMLImageElement>(null);
@@ -54,6 +56,22 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
     trigger('light'); // Haptic feedback
     showToast(`Đã thêm "${product.name}" vào giỏ hàng`, 'success', 2000);
   };
+
+  const handleToggleFavorite = () => {
+    if (onToggleFavorite) {
+      onToggleFavorite(product.id);
+      trigger('light');
+      showToast(
+        isFavorite ? `Đã xóa "${product.name}" khỏi yêu thích` : `Đã thêm "${product.name}" vào yêu thích`,
+        'success',
+        2000
+      );
+    }
+  };
+
+  const stockQuantity = product.stock_quantity ?? 0;
+  const isLowStock = stockQuantity > 0 && stockQuantity < 10;
+  const isOutOfStock = stockQuantity === 0 || product.is_sold_out;
 
   return (
     <Card
@@ -118,8 +136,48 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
             />
           </Box>
         )}
+        {/* Favorite button - top right */}
+        {onToggleFavorite && (
+          <IconButton
+            onClick={handleToggleFavorite}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              bgcolor: 'white',
+              boxShadow: 2,
+              '&:hover': {
+                bgcolor: 'white',
+                transform: 'scale(1.1)',
+              },
+              transition: 'transform 0.2s',
+            }}
+          >
+            {isFavorite ? (
+              <Favorite sx={{ color: '#ef4444' }} />
+            ) : (
+              <FavoriteBorder sx={{ color: '#666' }} />
+            )}
+          </IconButton>
+        )}
+        {/* Stock quantity badge - top left */}
+        {isLowStock && (
+          <Chip
+            label={`Còn ${stockQuantity} phần`}
+            size="small"
+            sx={{
+              position: 'absolute',
+              top: 8,
+              left: 8,
+              bgcolor: '#fbbf24',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '0.75rem',
+            }}
+          />
+        )}
       </Box>
-      {product.is_sold_out && (
+      {isOutOfStock && (
         <Box
           sx={{
             position: 'absolute',
@@ -131,6 +189,7 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            zIndex: 1,
           }}
         >
           <Chip label="Hết món" color="error" size="medium" />
@@ -169,10 +228,10 @@ export const ProductCard = ({ product, onAdd }: ProductCardProps) => {
           fullWidth
           variant="contained"
           startIcon={<AddShoppingCart />}
-          disabled={product.is_sold_out}
+          disabled={isOutOfStock}
           onClick={handleAddToCart}
         >
-          Thêm vào giỏ
+          {isOutOfStock ? 'Hết món' : 'Thêm vào giỏ'}
         </AppButton>
       </CardActions>
     </Card>

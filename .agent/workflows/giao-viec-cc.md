@@ -5,70 +5,90 @@ description: Giao việc cho Claude Code CLI tự động, tự accept không h�
 # Workflow: Giao Việc Claude Code CLI
 
 Workflow này tự động mở terminal, giao việc cho Claude Code CLI và tự accept.
-**Sử dụng Antigravity Claude Proxy v2.4.2**
+**Sử dụng Antigravity Claude Proxy + Global Command File**
 
 // turbo-all
 
 ## Các bước thực hiện
 
-### 1. Kiểm tra Proxy hoạt động
-```powershell
-try { 
-    $health = Invoke-RestMethod -Uri "http://localhost:8080/health" -TimeoutSec 3
-    Write-Host "✅ Proxy OK: $($health.available)/$($health.total) accounts"
-} catch { 
-    Write-Host "⚠️ Khởi động proxy..."
-    Start-Process wscript -ArgumentList '"d:\COM ANH DUONG\CAD\scripts\start-proxy-hidden.vbs"' -WindowStyle Hidden
-    Start-Sleep -Seconds 5
-}
+### 1. Kiểm tra Proxy hoạt động (macOS)
+
+```bash
+curl -s http://localhost:8080/health | jq '.available, .total' || echo "⚠️ Proxy not running"
 ```
 
-### 2. Set Environment và chạy Claude CLI với task
-Thay `{TASK}` bằng mô tả task cần thực hiện:
-```powershell
-# Antigravity Proxy Configuration
-$env:ANTHROPIC_BASE_URL = "http://localhost:8080"
-$env:ANTHROPIC_API_KEY = "dummy"
+### 2. Set Environment và chạy Claude CLI
 
-# Gemini 3 Pro High [1M Context] - Recommended
-$env:ANTHROPIC_MODEL = "gemini-3-pro-high[1m]"
-$env:ANTHROPIC_DEFAULT_OPUS_MODEL = "gemini-3-pro-high[1m]"
-$env:ANTHROPIC_DEFAULT_SONNET_MODEL = "gemini-3-flash[1m]"
-$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = "gemini-2.5-flash-lite[1m]"
-$env:CLAUDE_CODE_SUBAGENT_MODEL = "gemini-3-flash[1m]"
+```bash
+# Antigravity Proxy Configuration
+export ANTHROPIC_BASE_URL="http://localhost:8080"
+export ANTHROPIC_API_KEY="dummy"
+export ANTHROPIC_MODEL="gemini-3-pro-high[1m]"
 
 # Chạy Claude với dangerously-skip-permissions (auto-accept)
-claude --dangerously-skip-permissions "{TASK}"
+cd {PROJECT_DIR} && claude --dangerously-skip-permissions
 ```
 
-### 3. Gửi lệnh Enter nếu cần
-Nếu Claude CLI đang chờ input, gửi Enter để tiếp tục.
+### 3. Gửi Task (2 bước riêng biệt)
+
+**Bước 3a**: Gửi text task (KHÔNG có `\n` ở cuối)
+
+```
+{TASK_DESCRIPTION}
+```
+
+**Bước 3b**: Gửi Enter riêng biệt
+
+```
+\n
+```
+
+### 4. Monitor Output
+
+Dùng `command_status` để theo dõi tiến trình với WaitDurationSeconds=60-90
+
+## Global Command File Pattern
+
+Thay vì gõ trực tiếp, tạo file `.claude-task.md` trong project:
+
+```bash
+# Tạo task file
+cat > .claude-task.md << 'EOF'
+# Task: {TASK_NAME}
+{DETAILED_INSTRUCTIONS}
+EOF
+
+# Gửi vào CC CLI
+Read .claude-task.md and execute ALL tasks
+```
 
 ## Available Models (v2.4.2)
 
-### Gemini Models (Fast, 1M context)
-| Model | Description |
-|-------|-------------|
-| `gemini-3-pro-high[1m]` | Pro tier, chất lượng cao, 1M context |
-| `gemini-3-flash[1m]` | Nhanh, 1M context |
-| `gemini-2.5-flash-lite[1m]` | Tiết kiệm, 1M context |
-
-### Claude Models (Fallback)
-| Model | Description |
-|-------|-------------|
-| `claude-opus-4-5-thinking` | Mạnh nhất, thinking mode |
-| `claude-sonnet-4-5-thinking` | Cân bằng, thinking mode |
-| `claude-sonnet-4-5` | Nhanh, không thinking |
+| Model                        | Description          |
+| ---------------------------- | -------------------- |
+| `gemini-3-pro-high[1m]`      | Pro tier, 1M context |
+| `gemini-3-flash[1m]`         | Nhanh, 1M context    |
+| `claude-sonnet-4-5-thinking` | Thinking mode        |
 
 ## Lưu ý Quan Trọng
-- Flag `--dangerously-skip-permissions` cho phép tự động accept mọi thay đổi
-- Chỉ dùng cho tasks đã được review kỹ
-- Các lệnh có `// turbo-all` sẽ tự động chạy
-- Web console: http://localhost:8080 để quản lý accounts và settings
-- Suffix `[1m]` kích hoạt context window 1 triệu tokens
+
+- Flag `--dangerously-skip-permissions` tự động accept mọi thay đổi
+- **LUÔN dùng global command file** `.claude-task.md` cho complex tasks
+- Suffix `[1m]` kích hoạt 1M tokens context
+- Monitor bằng `command_status` với OutputCharacterCount=10000
 
 ## Ví dụ sử dụng
-```
-/giao-viec-cc Upgrade shipper.html sang Material Web components
-/giao-viec-cc Fix bug đăng nhập shipper trên mobile
+
+```bash
+# Cách 1: Inline task
+claude --dangerously-skip-permissions -p "Fix bug X"
+
+# Cách 2: Global command file (RECOMMENDED)
+cat > .claude-task.md << 'EOF'
+# Mission: Fix all bugs
+1. Bug A - details
+2. Bug B - details
+EOF
+claude --dangerously-skip-permissions
+# Sau đó gửi: Read .claude-task.md and execute ALL tasks
 ```

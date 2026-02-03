@@ -2,6 +2,7 @@ import { Grid, Typography, Box, CircularProgress, Pagination, Stack } from '@mui
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ProductCard } from './product-card';
 import { useAllMenuItems, useCategories } from '../api/use-menu';
+import { useFavorites, useToggleFavorite } from '../api/use-favorites';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
@@ -12,6 +13,8 @@ const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on 
 export const MenuGrid = () => {
   const { data: products, isLoading: loadingProducts, refetch } = useAllMenuItems();
   const { data: categories, isLoading: loadingCategories } = useCategories();
+  const { data: favorites } = useFavorites();
+  const { mutate: toggleFavorite } = useToggleFavorite();
   const addItem = useCartStore((state) => state.addItem);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,11 +135,21 @@ export const MenuGrid = () => {
       </Box>
 
       <Grid container spacing={2}>
-        {paginatedProducts.map((product) => (
-          <Grid size={{ xs: 6, sm: 6, md: 4, lg: 3 }} key={product.id}>
-            <ProductCard product={product} onAdd={(p) => addItem(p)} />
-          </Grid>
-        ))}
+        {paginatedProducts.map((product) => {
+          const isFavorite =
+            favorites?.some((fav) => fav.menu_item_id === parseInt(product.id)) ?? false;
+
+          return (
+            <Grid size={{ xs: 6, sm: 6, md: 4, lg: 3 }} key={product.id}>
+              <ProductCard
+                product={product}
+                onAdd={(p) => addItem(p)}
+                isFavorite={isFavorite}
+                onToggleFavorite={(productId) => toggleFavorite(productId)}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
 
       {/* Pagination */}

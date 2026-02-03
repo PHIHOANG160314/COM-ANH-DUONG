@@ -212,7 +212,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         sx={{
           flexGrow: 1,
           py: 4,
-          pb: { xs: '72px', md: 4 }, // Extra bottom padding for mobile bottom nav (56px + 16px)
+          pb: { xs: '140px', md: 4 }, // Extra bottom padding for FloatingCtaBar (80px) + BottomNav (56px) + spacing
         }}
       >
         {children || <Outlet />}
