@@ -57,7 +57,7 @@ export const MenuGrid = () => {
   if (!products?.length) {
     return (
       <Box sx={{ textAlign: 'center', py: 8 }}>
-        <Typography variant="h6" sx={{ color: '#666' }}>
+        <Typography variant="h6" sx={{ color: 'text.secondary' }}>
           Hôm nay chưa có thực đơn. Vui lòng quay lại sau!
         </Typography>
       </Box>

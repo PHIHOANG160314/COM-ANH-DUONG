@@ -50,7 +50,7 @@ export const OrderSummary = ({
           </Typography>
         </Box>
       ))}
-      <Box sx={{ my: 2, borderTop: '1px solid #eee' }} />
+      <Box sx={{ my: 2, borderTop: '1px solid', borderColor: 'divider' }} />
 
       {/* Loyalty Points Redemption */}
       {user && loyaltyStats && loyaltyStats.points > 0 && (
@@ -128,7 +128,7 @@ export const OrderSummary = ({
           </Typography>
         </Box>
       )}
-      <Box sx={{ my: 1, borderTop: '1px solid #eee' }} />
+      <Box sx={{ my: 1, borderTop: '1px solid', borderColor: 'divider' }} />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h6">Tổng cộng</Typography>
         <Typography variant="h6" color="primary" fontWeight="bold">

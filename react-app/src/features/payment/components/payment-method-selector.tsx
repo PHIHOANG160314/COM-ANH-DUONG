@@ -39,10 +39,11 @@ export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodS
               sx={{
                 mb: 1,
                 p: 1,
-                border: value === 'cash' ? '2px solid #2e7d32' : '1px solid #eee',
+                border: value === 'cash' ? '2px solid' : '1px solid',
+                borderColor: value === 'cash' ? 'success.main' : 'divider',
                 borderRadius: 1,
                 mx: 0,
-                bgcolor: value === 'cash' ? '#f1f8f4' : 'transparent',
+                bgcolor: value === 'cash' ? 'success.lighter' : 'transparent',
                 transition: 'all 0.2s ease',
               }}
             />
@@ -59,7 +60,7 @@ export const PaymentMethodSelector = ({ value, onChange, error }: PaymentMethodS
                   </Typography>
                 </Box>
               }
-              sx={{ mb: 1, p: 1, border: '1px solid #eee', borderRadius: 1, mx: 0 }}
+              sx={{ mb: 1, p: 1, border: '1px solid', borderColor: 'divider', borderRadius: 1, mx: 0 }}
             />
             <FormControlLabel
               value="momo"

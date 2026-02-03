@@ -74,7 +74,7 @@ export const PosCart = ({ tableId, onClearTable, onSubmitOrder, loading }: PosCa
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <IconButton
                       size="small"
-                      sx={{ border: '1px solid #ddd', p: 0.5 }}
+                      sx={{ border: '1px solid', borderColor: 'divider', p: 0.5 }}
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                     >
                       <Remove fontSize="small" />
@@ -84,7 +84,7 @@ export const PosCart = ({ tableId, onClearTable, onSubmitOrder, loading }: PosCa
                     </Typography>
                     <IconButton
                       size="small"
-                      sx={{ border: '1px solid #ddd', p: 0.5 }}
+                      sx={{ border: '1px solid', borderColor: 'divider', p: 0.5 }}
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     >
                       <Add fontSize="small" />
@@ -100,7 +100,7 @@ export const PosCart = ({ tableId, onClearTable, onSubmitOrder, loading }: PosCa
         )}
       </List>
 
-      <Box sx={{ p: 2, borderTop: '1px solid #eee', bgcolor: 'background.default' }}>
+      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Typography variant="subtitle1">Tổng tiền:</Typography>
           <Typography variant="h6" color="primary" fontWeight="bold">

@@ -60,7 +60,8 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #eee',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
           }}
         >
           <Typography variant="h6" fontWeight="bold">
@@ -79,7 +80,7 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
               animate={{ opacity: 1, y: 0 }}
               sx={{ textAlign: 'center', py: 4 }}
             >
-              <Typography sx={{ color: '#666' }}>Giỏ hàng trống</Typography>
+              <Typography sx={{ color: 'text.secondary' }}>Giỏ hàng trống</Typography>
               <Button onClick={onClose} sx={{ mt: 2 }}>
                 Xem thực đơn
               </Button>
@@ -133,7 +134,7 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             size="small"
-                            sx={{ border: '1px solid #ddd', p: 0.5 }}
+                            sx={{ border: '1px solid', borderColor: 'divider', p: 0.5 }}
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           >
                             <Remove fontSize="small" />
@@ -153,7 +154,7 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             size="small"
-                            sx={{ border: '1px solid #ddd', p: 0.5 }}
+                            sx={{ border: '1px solid', borderColor: 'divider', p: 0.5 }}
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           >
                             <Add fontSize="small" />
@@ -175,7 +176,7 @@ export const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            sx={{ p: 2, borderTop: '1px solid #eee', bgcolor: 'background.default' }}
+            sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider', bgcolor: 'background.default' }}
           >
             <Stack direction="row" justifyContent="space-between" mb={2}>
               <Typography variant="subtitle1">Tổng tiền:</Typography>

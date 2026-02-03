@@ -190,9 +190,9 @@ export const ProductCard = ({
             }}
           >
             {isFavorite ? (
-              <Favorite sx={{ color: '#ef4444' }} />
+              <Favorite sx={{ color: 'error.main' }} />
             ) : (
-              <FavoriteBorder sx={{ color: '#666' }} />
+              <FavoriteBorder sx={{ color: 'action.active' }} />
             )}
           </IconButton>
         )}
@@ -205,8 +205,8 @@ export const ProductCard = ({
               position: 'absolute',
               top: 8,
               left: 8,
-              bgcolor: '#fbbf24',
-              color: 'white',
+              bgcolor: 'warning.main',
+              color: 'warning.contrastText',
               fontWeight: 'bold',
               fontSize: '0.75rem',
             }}
