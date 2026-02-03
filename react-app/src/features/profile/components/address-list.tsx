@@ -30,10 +30,10 @@ interface AddressFormData {
 }
 
 const LABEL_ICONS: Record<string, React.ReactNode> = {
-  'Nhà': <Home fontSize="small" />,
-  'Home': <Home fontSize="small" />,
+  Nhà: <Home fontSize="small" />,
+  Home: <Home fontSize="small" />,
   'Công ty': <Business fontSize="small" />,
-  'Office': <Business fontSize="small" />,
+  Office: <Business fontSize="small" />,
 };
 
 export const AddressList = () => {
@@ -104,7 +104,11 @@ export const AddressList = () => {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h6" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+        >
           <LocationOn /> Sổ địa chỉ
         </Typography>
         <Button variant="contained" size="small" startIcon={<Add />} onClick={handleOpenAdd}>
@@ -112,7 +116,11 @@ export const AddressList = () => {
         </Button>
       </Box>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       {addresses.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center' }}>
@@ -163,10 +171,13 @@ export const AddressList = () => {
                   }
                   secondary={
                     <>
-                      <Typography variant="body2" component="span">{addr.address}</Typography>
+                      <Typography variant="body2" component="span">
+                        {addr.address}
+                      </Typography>
                       {addr.phone && (
                         <Typography variant="body2" color="text.secondary" component="span">
-                          {' • '}{addr.phone}
+                          {' • '}
+                          {addr.phone}
                         </Typography>
                       )}
                     </>

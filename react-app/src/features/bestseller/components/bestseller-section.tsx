@@ -116,7 +116,12 @@ export const BestsellerSection = () => {
   const { data: items, isLoading, error } = useBestsellers(6);
   const addItem = useCartStore((state) => state.addItem);
 
-  const handleAddToCart = (item: { id: string; name: string; price: number; image_url: string | null }) => {
+  const handleAddToCart = (item: {
+    id: string;
+    name: string;
+    price: number;
+    image_url: string | null;
+  }) => {
     // Create a minimal product object that satisfies the cart store
     const product = {
       id: item.id,
@@ -141,7 +146,11 @@ export const BestsellerSection = () => {
   if (isLoading) {
     return (
       <Box sx={{ py: 4 }}>
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}
+        >
           <LocalFireDepartment sx={{ color: 'error.main' }} />
           Món Bán Chạy Nhất
         </Typography>
@@ -166,22 +175,14 @@ export const BestsellerSection = () => {
           <LocalFireDepartment sx={{ color: 'error.main' }} />
           Món Bán Chạy Nhất
         </Typography>
-        <Chip
-          label="7 ngày qua"
-          size="small"
-          variant="outlined"
-          sx={{ fontSize: '0.75rem' }}
-        />
+        <Chip label="7 ngày qua" size="small" variant="outlined" sx={{ fontSize: '0.75rem' }} />
       </Box>
 
       {/* Bestseller Grid */}
       <Grid container spacing={2}>
         {items.map((item) => (
           <Grid key={item.id} size={{ xs: 6, sm: 4, md: 2 }}>
-            <BestsellerCard
-              item={item}
-              onAdd={() => handleAddToCart(item)}
-            />
+            <BestsellerCard item={item} onAdd={() => handleAddToCart(item)} />
           </Grid>
         ))}
       </Grid>

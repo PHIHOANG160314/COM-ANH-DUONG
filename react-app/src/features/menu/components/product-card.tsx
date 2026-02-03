@@ -1,4 +1,13 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Box, Chip, IconButton } from '@mui/material';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  CardActions,
+  Box,
+  Chip,
+  IconButton,
+} from '@mui/material';
 import { AddShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useState, useEffect, useRef } from 'react';
 import { AppButton } from '@/shared/ui';
@@ -16,7 +25,12 @@ interface ProductCardProps {
   onToggleFavorite?: (productId: string) => void;
 }
 
-export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavorite }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  onAdd,
+  isFavorite = false,
+  onToggleFavorite,
+}: ProductCardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
   const [imageError, setImageError] = useState(false);
@@ -63,7 +77,9 @@ export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavori
       onToggleFavorite(product.id);
       trigger('light');
       showToast(
-        isFavorite ? `Đã xóa "${product.name}" khỏi yêu thích` : `Đã thêm "${product.name}" vào yêu thích`,
+        isFavorite
+          ? `Đã xóa "${product.name}" khỏi yêu thích`
+          : `Đã thêm "${product.name}" vào yêu thích`,
         'success',
         2000
       );

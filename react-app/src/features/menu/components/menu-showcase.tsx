@@ -186,7 +186,8 @@ export const MenuShowcase = () => {
           ) : featuredProducts.length === 0 ? (
             <Grid size={{ xs: 12 }}>
               <Alert severity="info" sx={{ mb: 4 }}>
-                📋 Hôm nay chưa có thực đơn. Vui lòng quay lại sau hoặc gọi hotline để biết thêm chi tiết!
+                📋 Hôm nay chưa có thực đơn. Vui lòng quay lại sau hoặc gọi hotline để biết thêm chi
+                tiết!
               </Alert>
             </Grid>
           ) : (

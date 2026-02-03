@@ -130,7 +130,10 @@ export const ProfilePage = () => {
           <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
             <List component="nav">
               <ListItem disablePadding>
-                <ListItemButton selected={activeTab === 'loyalty'} onClick={() => setActiveTab('loyalty')}>
+                <ListItemButton
+                  selected={activeTab === 'loyalty'}
+                  onClick={() => setActiveTab('loyalty')}
+                >
                   <ListItemIcon>
                     <Star color={activeTab === 'loyalty' ? 'primary' : 'inherit'} />
                   </ListItemIcon>
@@ -139,7 +142,10 @@ export const ProfilePage = () => {
               </ListItem>
               <Divider />
               <ListItem disablePadding>
-                <ListItemButton selected={activeTab === 'addresses'} onClick={() => setActiveTab('addresses')}>
+                <ListItemButton
+                  selected={activeTab === 'addresses'}
+                  onClick={() => setActiveTab('addresses')}
+                >
                   <ListItemIcon>
                     <LocationOn color={activeTab === 'addresses' ? 'primary' : 'inherit'} />
                   </ListItemIcon>
@@ -148,7 +154,10 @@ export const ProfilePage = () => {
               </ListItem>
               <Divider />
               <ListItem disablePadding>
-                <ListItemButton selected={activeTab === 'favorites'} onClick={() => setActiveTab('favorites')}>
+                <ListItemButton
+                  selected={activeTab === 'favorites'}
+                  onClick={() => setActiveTab('favorites')}
+                >
                   <ListItemIcon>
                     <Favorite color={activeTab === 'favorites' ? 'primary' : 'inherit'} />
                   </ListItemIcon>
@@ -157,7 +166,10 @@ export const ProfilePage = () => {
               </ListItem>
               <Divider />
               <ListItem disablePadding>
-                <ListItemButton selected={activeTab === 'personal'} onClick={() => setActiveTab('personal')}>
+                <ListItemButton
+                  selected={activeTab === 'personal'}
+                  onClick={() => setActiveTab('personal')}
+                >
                   <ListItemIcon>
                     <Person color={activeTab === 'personal' ? 'primary' : 'inherit'} />
                   </ListItemIcon>

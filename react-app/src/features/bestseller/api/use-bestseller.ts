@@ -25,12 +25,54 @@ export interface BestsellerItem {
 
 // Fallback bestseller items when Supabase not configured
 const FALLBACK_BESTSELLERS: BestsellerItem[] = [
-  { id: 'best-1', name: 'Sườn non ram mặn', price: 35000, image_url: null, category_id: 'cat-1', totalSold: 120 },
-  { id: 'best-2', name: 'Cá sát kho', price: 30000, image_url: null, category_id: 'cat-2', totalSold: 95 },
-  { id: 'best-3', name: 'Canh khổ qua dồn thịt', price: 25000, image_url: null, category_id: 'cat-3', totalSold: 88 },
-  { id: 'best-4', name: 'Gà xào sả ớt', price: 35000, image_url: null, category_id: 'cat-4', totalSold: 75 },
-  { id: 'best-5', name: 'Đùi gà chiên nước mắm', price: 35000, image_url: null, category_id: 'cat-4', totalSold: 68 },
-  { id: 'best-6', name: 'Thịt kho tiêu', price: 30000, image_url: null, category_id: 'cat-1', totalSold: 62 },
+  {
+    id: 'best-1',
+    name: 'Sườn non ram mặn',
+    price: 35000,
+    image_url: null,
+    category_id: 'cat-1',
+    totalSold: 120,
+  },
+  {
+    id: 'best-2',
+    name: 'Cá sát kho',
+    price: 30000,
+    image_url: null,
+    category_id: 'cat-2',
+    totalSold: 95,
+  },
+  {
+    id: 'best-3',
+    name: 'Canh khổ qua dồn thịt',
+    price: 25000,
+    image_url: null,
+    category_id: 'cat-3',
+    totalSold: 88,
+  },
+  {
+    id: 'best-4',
+    name: 'Gà xào sả ớt',
+    price: 35000,
+    image_url: null,
+    category_id: 'cat-4',
+    totalSold: 75,
+  },
+  {
+    id: 'best-5',
+    name: 'Đùi gà chiên nước mắm',
+    price: 35000,
+    image_url: null,
+    category_id: 'cat-4',
+    totalSold: 68,
+  },
+  {
+    id: 'best-6',
+    name: 'Thịt kho tiêu',
+    price: 30000,
+    image_url: null,
+    category_id: 'cat-1',
+    totalSold: 62,
+  },
 ];
 
 // Default config when not in database
@@ -57,10 +99,7 @@ export const useBestsellerConfig = () => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('featured_items_config')
-          .select('*')
-          .single();
+        const { data, error } = await supabase.from('featured_items_config').select('*').single();
 
         if (error) {
           Debug.warn('⚠️ Error fetching bestseller config:', error.message);
@@ -222,7 +261,7 @@ const fetchRandomActiveItems = async (limit: number): Promise<BestsellerItem[]> 
       category_id: item.category_id,
       rank: index + 1,
     }));
-  } catch (err) {
+  } catch {
     return FALLBACK_BESTSELLERS.slice(0, limit);
   }
 };
