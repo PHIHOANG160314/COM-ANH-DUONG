@@ -247,6 +247,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -259,6 +260,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </Typography>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -271,6 +273,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </Typography>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -292,6 +295,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -304,6 +308,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </Typography>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -316,6 +321,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </Typography>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -328,6 +334,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </Typography>
                 <Typography
                   variant="body2"
+                  color="text.primary"
                   sx={{
                     cursor: 'pointer',
                     '&:hover': { textDecoration: 'underline' },
@@ -347,16 +354,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 Liên hệ
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <Typography variant="body2" sx={{ py: 0.5 }}>
+                <Typography variant="body2" color="text.primary" sx={{ py: 0.5 }}>
                   📞 {CONTACT_INFO.phone}
                 </Typography>
-                <Typography variant="body2" sx={{ py: 0.5 }}>
+                <Typography variant="body2" color="text.primary" sx={{ py: 0.5 }}>
                   📍 {CONTACT_INFO.address.full}
                 </Typography>
-                <Typography variant="body2" sx={{ py: 0.5 }}>
+                <Typography variant="body2" color="text.primary" sx={{ py: 0.5 }}>
                   ☕ {CONTACT_INFO.landmark}
                 </Typography>
-                <Typography variant="body2" sx={{ py: 0.5 }}>
+                <Typography variant="body2" color="text.primary" sx={{ py: 0.5 }}>
                   🕐 {CONTACT_INFO.hours}
                 </Typography>
               </Box>
