@@ -108,28 +108,57 @@ const CustomerApp = {
     },
 
     async init() {
-        // ========== V1.0.1 - DEBUG BANNER ==========
-        console.log('%c🍽️ CUSTOMER APP v1.0.1 - 29/01/2026 22:15', 'background: #4CAF50; color: white; font-size: 16px; padding: 4px 8px; border-radius: 4px;');
-        console.log('📋 Debug: DailyMenuService available?', typeof DailyMenuService !== 'undefined');
-        console.log('📋 Debug: window.DailyMenuService?', typeof window.DailyMenuService !== 'undefined');
+        // ========== V1.0.2 - SUPABASE FIRST ==========
+        console.log('%c🍽️ CUSTOMER APP v1.0.2 - 03/02/2026 10:00', 'background: #4CAF50; color: white; font-size: 16px; padding: 4px 8px; border-radius: 4px;');
+        console.log('📋 Debug: SupabaseService available?', typeof SupabaseService !== 'undefined');
         // ============================================
 
         if (window.Debug) Debug.log('🍽️ Customer Portal initializing...');
 
-        // Load menu data from window.menuItems (from data.js)
-        // IMPORTANT: Create a copy, not a reference!
-        if (typeof window.menuItems !== 'undefined' && window.menuItems.length > 0) {
-            this.menuData = [...window.menuItems];
-            this.originalMenuData = [...window.menuItems]; // Save original immediately
-            if (window.Debug) Debug.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
-        } else if (typeof menuItems !== 'undefined' && menuItems.length > 0) {
-            this.menuData = [...menuItems];
-            this.originalMenuData = [...menuItems];
-            if (window.Debug) Debug.log('✅ Loaded', this.menuData.length, 'menu items');
-        } else {
-            this.menuData = this.getSampleMenu();
-            this.originalMenuData = [...this.menuData];
-            if (window.Debug) Debug.warn('⚠️ Using sample menu data');
+        // ===== NEW: Load menu from Supabase FIRST =====
+        let supabaseMenuLoaded = false;
+        if (typeof SupabaseService !== 'undefined' && SupabaseService.getMenuItems) {
+            console.log('🔄 Customer: Loading menu from Supabase...');
+            try {
+                const result = await SupabaseService.getMenuItems();
+                if (result.success && result.data && result.data.length > 0) {
+                    // Map Supabase columns to app format
+                    this.menuData = result.data.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        category: item.category_id || 'food',
+                        subcategory: item.subcategory_id || 'homemade',
+                        icon: item.icon || '🍽️',
+                        cost: item.cost || 0,
+                        is_featured: item.is_featured || false,
+                        image_url: item.image_url || null,
+                        description: item.description || ''
+                    }));
+                    this.originalMenuData = [...this.menuData];
+                    supabaseMenuLoaded = true;
+                    console.log('%c✅ Loaded ' + this.menuData.length + ' items from Supabase!', 'color: green; font-weight: bold;');
+                }
+            } catch (e) {
+                console.warn('⚠️ Failed to load from Supabase:', e.message);
+            }
+        }
+
+        // Fallback to data.js if Supabase failed
+        if (!supabaseMenuLoaded) {
+            console.log('⚠️ Using data.js fallback...');
+            if (typeof window.menuItems !== 'undefined' && window.menuItems.length > 0) {
+                this.menuData = [...window.menuItems];
+                this.originalMenuData = [...window.menuItems];
+                if (window.Debug) Debug.log('✅ Loaded', this.menuData.length, 'menu items from data.js');
+            } else if (typeof menuItems !== 'undefined' && menuItems.length > 0) {
+                this.menuData = [...menuItems];
+                this.originalMenuData = [...menuItems];
+            } else {
+                this.menuData = this.getSampleMenu();
+                this.originalMenuData = [...this.menuData];
+                if (window.Debug) Debug.warn('⚠️ Using sample menu data');
+            }
         }
 
         // Load daily menu config from Supabase (if available)
