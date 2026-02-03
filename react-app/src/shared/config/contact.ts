@@ -13,7 +13,7 @@ export const CONTACT_INFO = {
     province: 'Đồng Tháp',
   },
   landmark: 'Đối diện Viva Start Coffee',
-  hours: '8:00 - 22:00 hàng ngày',
+  hours: '6:00 - 21:00 hàng ngày',
   geo: {
     latitude: 10.3567,
     longitude: 105.6789,
