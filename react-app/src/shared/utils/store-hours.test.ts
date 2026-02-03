@@ -6,10 +6,10 @@ import { getStoreStatus, STORE_CONFIG } from './store-hours';
 
 describe('Store Hours Logic', () => {
   it('should have correct configuration from CONTACT_INFO', () => {
-    // CONTACT_INFO.hours is '8:00 - 22:00 hàng ngày'
-    // So open should be 8, close should be 22
-    expect(STORE_CONFIG.openHour).toBe(8);
-    expect(STORE_CONFIG.closeHour).toBe(22);
+    // CONTACT_INFO.hours is '6:00 - 21:00 hàng ngày'
+    // So open should be 6, close should be 21
+    expect(STORE_CONFIG.openHour).toBe(6);
+    expect(STORE_CONFIG.closeHour).toBe(21);
     expect(STORE_CONFIG.timezone).toBe('Asia/Ho_Chi_Minh');
   });
 

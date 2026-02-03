@@ -9,9 +9,9 @@ vi.mock('@/shared/hooks/use-store-status', () => ({
   useStoreStatus: vi.fn(() => ({
     status: 'open',
     message: 'Đang mở cửa',
-    details: 'Mở cửa từ 8:00 - 22:00',
+    details: 'Mở cửa từ 6:00 - 21:00',
     color: 'success',
-    config: { openHour: 8, closeHour: 22 },
+    config: { openHour: 6, closeHour: 21 },
   })),
 }));
 
@@ -25,7 +25,7 @@ describe('getStoreStatus', () => {
   });
 
   it('returns open status when within open hours', () => {
-    // 14:00 (2 PM) - Within 8-22
+    // 14:00 (2 PM) - Within 6-21 (before closing soon at 20:30)
     // Use ISO with +07:00 to ensure consistent timezone interpretation
     const date = new Date('2024-01-01T14:00:00+07:00');
     vi.setSystemTime(date);
@@ -35,8 +35,8 @@ describe('getStoreStatus', () => {
   });
 
   it('returns closing status when 30 mins before close', () => {
-    // 21:45 (9:45 PM) - Close is 22:00
-    const date = new Date('2024-01-01T21:45:00+07:00');
+    // 20:45 (8:45 PM) - Close is 21:00, closingSoon starts at 20:30
+    const date = new Date('2024-01-01T20:45:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closing');
@@ -44,8 +44,8 @@ describe('getStoreStatus', () => {
   });
 
   it('returns closed status when after close hours', () => {
-    // 23:00 (11 PM)
-    const date = new Date('2024-01-01T23:00:00+07:00');
+    // 22:00 (10 PM) - After 21:00 close
+    const date = new Date('2024-01-01T22:00:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closed');
@@ -53,8 +53,8 @@ describe('getStoreStatus', () => {
   });
 
   it('returns closed status when before open hours', () => {
-    // 07:00 (7 AM) - Open is 08:00
-    const date = new Date('2024-01-01T07:00:00+07:00');
+    // 05:00 (5 AM) - Open is 06:00
+    const date = new Date('2024-01-01T05:00:00+07:00');
     vi.setSystemTime(date);
     const status = getStoreStatus();
     expect(status.status).toBe('closed');
@@ -70,6 +70,6 @@ describe('OperatingHours Component', () => {
 
   it('renders details when showDetails is true', () => {
     render(<OperatingHours showDetails={true} />);
-    expect(screen.getByText(/8:00 - 22:00/)).toBeInTheDocument();
+    expect(screen.getByText(/6:00 - 21:00/)).toBeInTheDocument();
   });
 });
