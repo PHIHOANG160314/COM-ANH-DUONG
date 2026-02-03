@@ -19,6 +19,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavorite }: ProductCardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>('');
+  const [imageError, setImageError] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const { showToast } = useToast();
   const { trigger } = useHaptic();
@@ -28,8 +29,8 @@ export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavori
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !imageSrc) {
-            setImageSrc(product.image_url || '/placeholder-food.png');
+          if (entry.isIntersecting && !imageSrc && product.image_url) {
+            setImageSrc(product.image_url);
           }
         });
       },
@@ -92,21 +93,40 @@ export const ProductCard = ({ product, onAdd, isFavorite = false, onToggleFavori
           overflow: 'hidden',
         }}
       >
-        {imageSrc && (
+        {imageSrc && !imageError ? (
           <CardMedia
             component="img"
             height="160"
             image={imageSrc}
             alt={product.name}
             onLoad={() => setIsImageLoaded(true)}
+            onError={() => {
+              setImageError(true);
+              setIsImageLoaded(false);
+            }}
             sx={{
               objectFit: 'contain',
               opacity: isImageLoaded ? 1 : 0,
               transition: 'opacity 0.3s ease-in-out',
             }}
           />
+        ) : (
+          // Gradient placeholder when no image or image fails to load
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '4rem',
+            }}
+          >
+            🍽️
+          </Box>
         )}
-        {!isImageLoaded && (
+        {imageSrc && !imageError && !isImageLoaded && (
           <Box
             sx={{
               position: 'absolute',
