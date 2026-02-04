@@ -253,6 +253,12 @@ const seedAuthUsers = async () => {
       role: 'customer',
       full_name: 'Customer User',
     },
+    {
+      email: 'gaogavi01@gmail.com',
+      password: 'password123',
+      role: 'customer',
+      full_name: 'Test Setup User',
+    },
   ];
 
   for (const user of users) {

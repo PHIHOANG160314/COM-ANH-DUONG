@@ -77,6 +77,30 @@ Read .claude-task.md and execute ALL tasks
 - Suffix `[1m]` kích hoạt 1M tokens context
 - Monitor bằng `command_status` với OutputCharacterCount=10000
 
+## 🎯 Hướng Dẫn Chọn Model (Token Optimization)
+
+### Nguyên tắc Vàng
+| Loại Task | Model Đề Xuất | Token Est. |
+|-----------|---------------|------------|
+| Fix bug đơn giản, lint, format | `gemini-3-flash[1m]` | ~2K |
+| Coding thông thường, planning | `gemini-3-pro-high[1m]` | ~5K |
+| Phân tích phức tạp, refactor lớn | `gemini-3-pro-high[1m]` | ~10K |
+| Reasoning, chain-of-thought | `claude-sonnet-4-5-thinking` | ~15K |
+
+### Script Chọn Model Tự Động
+```powershell
+# Chọn theo độ phức tạp
+. .\scripts\select-model.ps1 -Complexity simple   # Flash - tiết kiệm
+. .\scripts\select-model.ps1 -Complexity medium   # Pro - cân bằng
+. .\scripts\select-model.ps1 -Complexity complex  # Pro - chất lượng
+. .\scripts\select-model.ps1 -Complexity thinking # Claude - reasoning
+```
+
+### Prompt Compression Tips
+1. **Dùng Reference**: `Read file X and fix bug` thay vì paste code
+2. **Dùng Global File**: `.claude-task.md` cho tasks phức tạp
+3. **Tránh lặp lại**: Không paste context đã có trong file
+
 ## Ví dụ sử dụng
 
 ```bash

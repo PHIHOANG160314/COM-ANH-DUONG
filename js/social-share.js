@@ -16,7 +16,7 @@ const SocialShare = {
         const shareData = {
             title: '🍽️ Đặt hàng tại Ánh Dương',
             text: `Vừa đặt ${order.items.length} món ngon tại Nhà hàng Ánh Dương! 😋`,
-            url: 'https://com-anh-duong.vercel.app/customer.html'
+            url: `${window.location.origin}/`
         };
 
         return this.share(shareData);
@@ -26,7 +26,7 @@ const SocialShare = {
         const shareData = {
             title: `${item.icon} ${item.name}`,
             text: `Thử ngay ${item.name} tại Nhà hàng Ánh Dương - Chỉ ${this.formatPrice(item.price)}!`,
-            url: `https://com-anh-duong.vercel.app/customer.html?item=${item.id}`
+            url: `${window.location.origin}/?item=${item.id}`
         };
 
         return this.share(shareData);
@@ -36,7 +36,7 @@ const SocialShare = {
         const shareData = {
             title: '🎁 Mã giới thiệu Ánh Dương',
             text: `Dùng mã ${code} để được giảm giá khi đặt hàng tại Ánh Dương!`,
-            url: `https://com-anh-duong.vercel.app/customer.html?ref=${code}`
+            url: `${window.location.origin}/?ref=${code}`
         };
 
         return this.share(shareData);
