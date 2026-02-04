@@ -17,11 +17,13 @@ CREATE TABLE IF NOT EXISTS featured_items_config (
 ALTER TABLE featured_items_config ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Everyone can read
+DROP POLICY IF EXISTS "Anyone can read featured config" ON featured_items_config;
 CREATE POLICY "Anyone can read featured config" 
 ON featured_items_config FOR SELECT 
 USING (true);
 
 -- Policy: Authenticated users can modify
+DROP POLICY IF EXISTS "Authenticated users can modify featured config" ON featured_items_config;
 CREATE POLICY "Authenticated users can modify featured config" 
 ON featured_items_config FOR ALL 
 USING (true)
