@@ -131,7 +131,7 @@ export const PrintReceipt = ({ order, variant = 'button' }: PrintReceiptProps) =
               <div key={item.id} style={{ marginBottom: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ maxWidth: '65%' }}>
-                    {item.quantity}x {item.menu_items?.name || item.item_name}
+                    {item.quantity}x {item.item_name}
                   </span>
                   <span>{formatCurrency(item.quantity * item.unit_price)}</span>
                 </div>

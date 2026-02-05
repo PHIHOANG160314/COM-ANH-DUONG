@@ -3,9 +3,7 @@ import { supabase } from '@/shared/api/supabase-client';
 import type { Database } from '@/shared/types/database.types';
 
 export type DeliveryOrder = Database['public']['Tables']['orders']['Row'] & {
-  order_items: (Database['public']['Tables']['order_items']['Row'] & {
-    menu_items: Database['public']['Tables']['menu_items']['Row'] | null;
-  })[];
+  order_items: Database['public']['Tables']['order_items']['Row'][];
 };
 
 export const useDeliveryOrders = () => {
@@ -17,10 +15,7 @@ export const useDeliveryOrders = () => {
         .select(
           `
           *,
-          order_items (
-            *,
-            menu_items (*)
-          )
+          order_items (*)
         `
         )
         .in('status', ['ready', 'delivering', 'completed'])

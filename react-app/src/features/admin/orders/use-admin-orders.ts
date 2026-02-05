@@ -3,9 +3,7 @@ import { supabase } from '@/shared/api/supabase-client';
 import type { Database } from '@/shared/types/database.types';
 
 export type Order = Database['public']['Tables']['orders']['Row'] & {
-  order_items: (Database['public']['Tables']['order_items']['Row'] & {
-    menu_items: Database['public']['Tables']['menu_items']['Row'] | null;
-  })[];
+  order_items: Database['public']['Tables']['order_items']['Row'][];
   profiles: { full_name: string | null; username: string | null } | null;
 };
 
@@ -20,10 +18,7 @@ export const useAdminOrders = () => {
         .select(
           `
           *,
-          order_items (
-            *,
-            menu_items (*)
-          ),
+          order_items (*),
           profiles (
             full_name,
             username

@@ -7,9 +7,7 @@ import { Debug } from '@/shared/utils/debug';
 export type OrderStatus = Database['public']['Tables']['orders']['Row']['status'];
 
 export type KitchenOrder = Database['public']['Tables']['orders']['Row'] & {
-  order_items: (Database['public']['Tables']['order_items']['Row'] & {
-    menu_items: Database['public']['Tables']['menu_items']['Row'] | null;
-  })[];
+  order_items: Database['public']['Tables']['order_items']['Row'][];
 };
 
 export const useKitchenOrders = () => {
@@ -21,10 +19,7 @@ export const useKitchenOrders = () => {
         .select(
           `
           *,
-          order_items (
-            *,
-            menu_items (*)
-          )
+          order_items (*)
         `
         )
         .in('status', ['pending', 'confirmed', 'preparing'])
