@@ -4,15 +4,14 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardMedia,
   Container,
   Typography,
   Grid,
   Paper,
-  Alert,
 } from '@mui/material';
-import { useDailyMenu } from '../api/use-menu';
 import { CONTACT_INFO } from '@/shared/config/contact';
+import { MenuGrid } from './menu-grid'; // Import MenuGrid
+import { useRef, useState } from 'react';
 
 interface CategoryCardProps {
   icon: string;
@@ -53,79 +52,31 @@ const CategoryCard = ({ icon, name, onClick }: CategoryCardProps) => (
   </Card>
 );
 
-interface FeaturedItemProps {
-  id: string;
-  name: string;
-  price: number;
-  imageUrl?: string;
-  description?: string;
-}
-
-const FeaturedItemCard = ({ name, price, imageUrl, description }: FeaturedItemProps) => (
-  <Card
-    sx={{
-      height: 320,
-      display: 'flex',
-      flexDirection: 'column',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: 4,
-      },
-    }}
-  >
-    {imageUrl ? (
-      <CardMedia
-        component="img"
-        image={imageUrl}
-        alt={name}
-        sx={{
-          height: 200,
-          objectFit: 'cover',
-        }}
-      />
-    ) : (
-      <CardMedia
-        component="div"
-        sx={{
-          height: 200,
-          backgroundColor: 'primary.main',
-        }}
-      />
-    )}
-    <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
-      <Typography variant="h6" component="div" fontWeight="bold">
-        {name}
-      </Typography>
-      <Typography variant="body1" color="success.main" fontWeight={600}>
-        {price.toLocaleString('vi-VN')}đ
-      </Typography>
-      {description && (
-        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
-          {description}
-        </Typography>
-      )}
-    </CardContent>
-  </Card>
-);
-
 export const MenuShowcase = () => {
-  const { data: products = [], isLoading: productsLoading, error } = useDailyMenu();
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const menuGridRef = useRef<HTMLDivElement>(null);
 
-  const featuredProducts = products.slice(0, 6);
+  const handleCategoryClick = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    // Scroll to menu grid
+    if (menuGridRef.current) {
+      menuGridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
       {/* Hero Section */}
       <Box
         sx={{
-          minHeight: { xs: 300, md: 600 },
+          minHeight: { xs: 300, md: 500 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          py: { xs: 4, md: 10 },
+          py: { xs: 4, md: 8 },
           px: { xs: 3, md: 15 },
+          bgcolor: 'background.default',
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
@@ -145,67 +96,31 @@ export const MenuShowcase = () => {
         </Box>
       </Box>
 
-      {/* Categories Section */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
+      {/* Categories Section - Now Interactive */}
+      <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
         <Typography variant="h4" component="h2" fontWeight={700} sx={{ mb: 6 }}>
           Danh Mục Món Ăn
         </Typography>
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🍚" name="Cơm" />
+            <CategoryCard
+              icon="🍚"
+              name="Cơm"
+              onClick={() => handleCategoryClick('cat-1')} // Assuming ID for Cơm/Thịt as per seed
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🍖" name="Món Chính" />
+            <CategoryCard icon="🍖" name="Món Chính" onClick={() => handleCategoryClick('all')} />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🥤" name="Đồ Uống" />
+            <CategoryCard icon="🥤" name="Đồ Uống" onClick={() => handleCategoryClick('cat-8')} />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🍰" name="Tráng Miệng" />
+            <CategoryCard icon="🍰" name="Tráng Miệng" onClick={() => handleCategoryClick('cat-9')} />
           </Grid>
         </Grid>
       </Container>
 
-      {/* Featured Items Section */}
-      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
-        <Typography variant="h4" component="h2" fontWeight={700} sx={{ mb: 6 }}>
-          Món Nổi Bật
-        </Typography>
-        <Grid container spacing={4}>
-          {error ? (
-            <Grid size={{ xs: 12 }}>
-              <Alert severity="error" sx={{ mb: 4 }}>
-                Không thể tải danh sách món ăn. Vui lòng thử lại sau.
-              </Alert>
-            </Grid>
-          ) : productsLoading ? (
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="body1" color="text.secondary" sx={{ py: 6 }} textAlign="center">
-                Đang tải món ăn...
-              </Typography>
-            </Grid>
-          ) : featuredProducts.length === 0 ? (
-            <Grid size={{ xs: 12 }}>
-              <Alert severity="info" sx={{ mb: 4 }}>
-                📋 Hôm nay chưa có thực đơn. Vui lòng quay lại sau hoặc gọi hotline để biết thêm chi
-                tiết!
-              </Alert>
-            </Grid>
-          ) : (
-            featuredProducts.map((product) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>
-                <FeaturedItemCard
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  imageUrl={product.image_url || undefined}
-                  description={product.description || undefined}
-                />
-              </Grid>
-            ))
-          )}
-        </Grid>
-      </Container>
 
       {/* Daily Specials Banner */}
       <Paper
@@ -213,14 +128,15 @@ export const MenuShowcase = () => {
         sx={{
           background: 'linear-gradient(135deg, #006400 0%, #004d00 100%)',
           color: 'white',
-          minHeight: 300,
+          minHeight: 200,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          py: { xs: 8, md: 10 },
-          px: { xs: 3, md: 15 },
+          py: 6,
+          px: 3,
           position: 'relative',
           overflow: 'hidden',
+          mb: 8,
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -245,10 +161,10 @@ export const MenuShowcase = () => {
           }}
         >
           <Typography
-            variant="h3"
+            variant="h4"
             component="h2"
             fontWeight={700}
-            sx={{ fontSize: { xs: '2rem', md: '3rem' } }}
+            sx={{ fontSize: { xs: '1.5rem', md: '2.5rem' } }}
           >
             🎉 Ưu Đãi Hôm Nay
           </Typography>
@@ -258,13 +174,29 @@ export const MenuShowcase = () => {
         </Box>
       </Paper>
 
+      {/* Full Menu Grid */}
+      <Container maxWidth="lg" sx={{ py: 4, mb: 10 }} ref={menuGridRef}>
+        <Typography variant="h4" component="h2" fontWeight={700} sx={{ mb: 4 }}>
+          Thực Đơn Chi Tiết
+        </Typography>
+
+        {/* The interactive MenuGrid */}
+        <MenuGrid
+          selectedCategoryId={activeCategory}
+          onCategoryChange={setActiveCategory}
+        />
+      </Container>
+
       {/* Order CTA Section */}
-      <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 }, textAlign: 'center' }}>
+      <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
           <Button
             variant="contained"
             color="secondary"
             size="large"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             sx={{
               width: { xs: '100%', sm: 400 },
               height: 64,
@@ -272,11 +204,6 @@ export const MenuShowcase = () => {
               fontWeight: 700,
               borderRadius: 8,
               boxShadow: 3,
-              '&:hover': {
-                boxShadow: 6,
-                transform: 'translateY(-2px)',
-              },
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             Đặt Cơm Ngay
@@ -292,15 +219,17 @@ export const MenuShowcase = () => {
         elevation={0}
         sx={{
           bgcolor: 'background.paper',
-          minHeight: 300,
+          minHeight: 200,
           display: 'flex',
           flexDirection: 'column',
           gap: 3,
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          py: { xs: 8, md: 10 },
-          px: { xs: 3, md: 15 },
+          py: 8,
+          px: 3,
+          borderTop: 1,
+          borderColor: 'divider'
         }}
       >
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.text.primary }}>

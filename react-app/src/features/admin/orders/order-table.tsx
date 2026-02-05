@@ -131,10 +131,10 @@ const OrderRow = ({ order, onStatusChange }: OrderRowProps) => {
                   {order.order_items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell component="th" scope="row">
-                        {item.products?.name}
-                        {item.note && (
+                        {item.menu_items?.name || item.item_name}
+                        {item.notes && (
                           <Typography variant="caption" display="block" color="text.secondary">
-                            Ghi chú: {item.note}
+                            Ghi chú: {item.notes}
                           </Typography>
                         )}
                       </TableCell>

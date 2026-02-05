@@ -4,7 +4,7 @@ import type { Database } from '@/shared/types/database.types';
 
 export type OrderDetail = Database['public']['Tables']['orders']['Row'] & {
   order_items: (Database['public']['Tables']['order_items']['Row'] & {
-    products: Database['public']['Tables']['products']['Row'] | null;
+    menu_items: Database['public']['Tables']['menu_items']['Row'] | null;
   })[];
   profiles: { full_name: string | null; username: string | null } | null;
 };
@@ -22,7 +22,7 @@ export const useOrder = (orderId: string | undefined) => {
           *,
           order_items (
             *,
-            products (*)
+            menu_items (*)
           ),
           profiles (
             full_name,

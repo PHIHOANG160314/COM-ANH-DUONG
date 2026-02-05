@@ -8,7 +8,7 @@ export type OrderStatus = Database['public']['Tables']['orders']['Row']['status'
 
 export type KitchenOrder = Database['public']['Tables']['orders']['Row'] & {
   order_items: (Database['public']['Tables']['order_items']['Row'] & {
-    products: Database['public']['Tables']['products']['Row'] | null;
+    menu_items: Database['public']['Tables']['menu_items']['Row'] | null;
   })[];
 };
 
@@ -23,7 +23,7 @@ export const useKitchenOrders = () => {
           *,
           order_items (
             *,
-            products (*)
+            menu_items (*)
           )
         `
         )

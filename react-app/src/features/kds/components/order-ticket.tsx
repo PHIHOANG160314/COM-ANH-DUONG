@@ -99,13 +99,13 @@ export const OrderTicket = ({ order }: OrderTicketProps) => {
               <ListItemText
                 primary={
                   <Box component="span" fontWeight="medium">
-                    {item.quantity}x {item.products?.name || 'Unknown Item'}
+                    {item.quantity}x {item.menu_items?.name || item.item_name || 'Unknown Item'}
                   </Box>
                 }
                 secondary={
-                  item.note && (
+                  item.notes && (
                     <Box component="span" color="error.main" fontStyle="italic">
-                      Note: {item.note}
+                      Note: {item.notes}
                     </Box>
                   )
                 }

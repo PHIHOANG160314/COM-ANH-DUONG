@@ -107,13 +107,13 @@ export interface Database {
           id: string;
           user_id: string | null;
           status:
-            | 'pending'
-            | 'confirmed'
-            | 'preparing'
-            | 'ready'
-            | 'delivering'
-            | 'completed'
-            | 'cancelled';
+          | 'pending'
+          | 'confirmed'
+          | 'preparing'
+          | 'ready'
+          | 'delivering'
+          | 'completed'
+          | 'cancelled';
           total_amount: number;
           delivery_address: string | null;
           delivery_lat: number | null;
@@ -128,13 +128,13 @@ export interface Database {
           id?: string;
           user_id?: string | null;
           status?:
-            | 'pending'
-            | 'confirmed'
-            | 'preparing'
-            | 'ready'
-            | 'delivering'
-            | 'completed'
-            | 'cancelled';
+          | 'pending'
+          | 'confirmed'
+          | 'preparing'
+          | 'ready'
+          | 'delivering'
+          | 'completed'
+          | 'cancelled';
           total_amount: number;
           delivery_address?: string | null;
           delivery_lat?: number | null;
@@ -149,13 +149,13 @@ export interface Database {
           id?: string;
           user_id?: string | null;
           status?:
-            | 'pending'
-            | 'confirmed'
-            | 'preparing'
-            | 'ready'
-            | 'delivering'
-            | 'completed'
-            | 'cancelled';
+          | 'pending'
+          | 'confirmed'
+          | 'preparing'
+          | 'ready'
+          | 'delivering'
+          | 'completed'
+          | 'cancelled';
           total_amount?: number;
           delivery_address?: string | null;
           delivery_lat?: number | null;
@@ -171,28 +171,37 @@ export interface Database {
         Row: {
           id: string;
           order_id: string;
-          product_id: string;
+          menu_item_id: number | null;
+          item_name: string;
           quantity: number;
           unit_price: number;
-          note: string | null;
+          total_price: number;
+          notes: string | null;
+          options: Json | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           order_id: string;
-          product_id: string;
+          menu_item_id?: number | null;
+          item_name: string;
           quantity: number;
           unit_price: number;
-          note?: string | null;
+          total_price: number;
+          notes?: string | null;
+          options?: Json | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           order_id?: string;
-          product_id?: string;
+          menu_item_id?: number | null;
+          item_name?: string;
           quantity?: number;
           unit_price?: number;
-          note?: string | null;
+          total_price?: number;
+          notes?: string | null;
+          options?: Json | null;
           created_at?: string;
         };
       };

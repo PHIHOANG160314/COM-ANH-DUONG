@@ -9,21 +9,30 @@ import { CategoryChips } from './category-chips';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
 
-export const MenuGrid = () => {
+export interface MenuGridProps {
+  selectedCategoryId?: string;
+  onCategoryChange?: (categoryId: string) => void;
+}
+
+export const MenuGrid = ({ selectedCategoryId, onCategoryChange }: MenuGridProps) => {
   const { data: products, isLoading: loadingProducts } = useAllMenuItems();
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const { data: favorites } = useFavorites();
   const { mutate: toggleFavorite } = useToggleFavorite();
   const addItem = useCartStore((state) => state.addItem);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Internal state if no props provided
+  const [internalCategory, setInternalCategory] = useState<string>('all');
+  const activeCategory = selectedCategoryId ?? internalCategory;
+
   const [currentPage, setCurrentPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (selectedCategory === 'all') return products;
-    return products.filter((p) => p.category_id === selectedCategory);
-  }, [products, selectedCategory]);
+    if (activeCategory === 'all') return products;
+    return products.filter((p) => p.category_id === activeCategory);
+  }, [products, activeCategory]);
 
   // Paginated products
   const paginatedProducts = useMemo(() => {
@@ -36,13 +45,17 @@ export const MenuGrid = () => {
 
   // Scroll to top when page changes
   useEffect(() => {
-    if (gridTopRef.current) {
+    if (gridTopRef.current && currentPage > 1) {
       gridTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [currentPage]);
 
   const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
+    if (onCategoryChange) {
+      onCategoryChange(category);
+    } else {
+      setInternalCategory(category);
+    }
     setCurrentPage(1); // Reset to page 1 when category changes
   };
 
@@ -72,7 +85,7 @@ export const MenuGrid = () => {
       {/* Category chips - horizontal scroll */}
       <CategoryChips
         categories={categories?.map((cat) => cat.name) || []}
-        selectedCategory={selectedCategory}
+        selectedCategory={activeCategory}
         onCategorySelect={(category) => {
           if (category === 'all') {
             handleCategorySelect('all');
@@ -91,9 +104,9 @@ export const MenuGrid = () => {
         <Typography variant="body2" color="text.secondary">
           {filteredProducts.length > 0
             ? `Hiển thị ${(currentPage - 1) * ITEMS_PER_PAGE + 1}-${Math.min(
-                currentPage * ITEMS_PER_PAGE,
-                filteredProducts.length
-              )} / ${filteredProducts.length} món`
+              currentPage * ITEMS_PER_PAGE,
+              filteredProducts.length
+            )} / ${filteredProducts.length} món`
             : 'Không có món nào'}
         </Typography>
         {totalPages > 1 && (
