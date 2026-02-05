@@ -1,8 +1,12 @@
 import { useState, useMemo } from 'react';
 import {
+  Alert,
   Box,
+  Chip,
+  CircularProgress,
+  MenuItem,
   Paper,
-  Typography,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -15,8 +19,10 @@ import {
   Tooltip,
   CircularProgress,
   Alert,
+  TextField,
+  MenuItem,
 } from '@mui/material';
-import { useDailyMenu, useAllMenuItems } from '@/features/menu/api/use-menu';
+import { useDailyMenu, useAllMenuItems, useCategories } from '@/features/menu/api/use-menu';
 import { useUpdateDailyMenu } from './api/use-daily-menu-mutation';
 import { formatCurrency } from '@/shared/lib/formatters';
 
@@ -27,6 +33,7 @@ import { formatCurrency } from '@/shared/lib/formatters';
 export const DynamicMenuManager = () => {
   // 1. Fetch ALL products (base list)
   const { data: allProducts, isLoading: loadingProducts } = useAllMenuItems();
+  const { data: categories } = useCategories(); // Fetch categories for filter
 
   // 2. Fetch TODAY's selected products (active list)
   const { data: dailyProducts, isLoading: loadingDaily } = useDailyMenu();
@@ -36,6 +43,8 @@ export const DynamicMenuManager = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
 
   // Helper to check if a product is in today's menu
   const isProductInDailyMenu = (productId: string) => {
@@ -58,11 +67,21 @@ export const DynamicMenuManager = () => {
     setPage(0);
   };
 
-  // Pagination
-  const paginatedProducts = useMemo(() => {
+  // Filter logic
+  const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
-    return allProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  }, [allProducts, page, rowsPerPage]);
+
+    return allProducts.filter((product) => {
+      const matchSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchCategory = filterCategory === 'all' || product.category_id.toString() === filterCategory;
+      return matchSearch && matchCategory;
+    });
+  }, [allProducts, searchTerm, filterCategory]);
+
+  // Pagination on FILTERED results
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [filteredProducts, page, rowsPerPage]);
 
   if (loadingProducts || loadingDaily) {
     return (
@@ -75,10 +94,42 @@ export const DynamicMenuManager = () => {
   return (
     <Box>
       <Paper sx={{ mb: 2, p: 2 }}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" gutterBottom>
           💡 <strong>Hướng dẫn:</strong> Bật công tắc "Hôm nay" để đưa món lên trang chủ.
-          Dữ liệu được lưu trực tiếp vào Database và hiển thị ngay lập tức cho khách hàng.
         </Typography>
+
+        <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+          <TextField
+            label="Tìm kiếm món ăn"
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ flexGrow: 1, minWidth: 200 }}
+          />
+
+          <TextField
+            select
+            label="Danh mục"
+            size="small"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            SelectProps={{ native: true }}
+            sx={{ minWidth: 150 }}
+          >
+            <option value="all">Tất cả danh mục</option>
+            {categories?.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </TextField>
+        </Box>
+
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
+          📊 Tổng số món: {allProducts?.length} | Kết quả tìm kiếm: {filteredProducts.length}
+        </Typography>
+
         {isUpdating && (
           <Alert severity="info" sx={{ mt: 1, py: 0 }}>Đang lưu thay đổi...</Alert>
         )}
@@ -154,7 +205,7 @@ export const DynamicMenuManager = () => {
         <TablePagination
           rowsPerPageOptions={[12, 24, 50, 100]}
           component="div"
-          count={allProducts?.length || 0}
+          count={filteredProducts.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
