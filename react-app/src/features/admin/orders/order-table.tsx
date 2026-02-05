@@ -65,10 +65,10 @@ const OrderRow = ({ order, onStatusChange }: OrderRowProps) => {
           #{order.id.slice(0, 6).toUpperCase()}
         </TableCell>
         <TableCell>
-          {order.profiles?.full_name || order.profiles?.username || 'Khách vãng lai'}
-          {order.contact_phone && (
+          {order.customer_name || 'Khách vãng lai'}
+          {order.customer_phone && (
             <Typography variant="caption" display="block" color="text.secondary">
-              {order.contact_phone}
+              {order.customer_phone}
             </Typography>
           )}
         </TableCell>

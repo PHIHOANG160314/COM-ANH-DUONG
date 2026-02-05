@@ -4,7 +4,6 @@ import type { Database } from '@/shared/types/database.types';
 
 export type Order = Database['public']['Tables']['orders']['Row'] & {
   order_items: Database['public']['Tables']['order_items']['Row'][];
-  profiles: { full_name: string | null; username: string | null } | null;
 };
 
 export const useAdminOrders = () => {
@@ -18,15 +17,10 @@ export const useAdminOrders = () => {
         .select(
           `
           *,
-          order_items (*),
-          profiles (
-            full_name,
-            username
-          )
+          order_items (*)
         `
         )
-        .order('created_at', { ascending: false })
-        .limit(100); // Limit to last 100 orders for performance
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data as Order[];
