@@ -18,7 +18,7 @@ import type { Product } from './use-admin-products';
 interface ProductTableProps {
   products: (Product & { categories: { name: string } | null })[];
   onEdit: (product: Product) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
 export const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
@@ -75,7 +75,7 @@ export const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) 
                 <IconButton color="primary" onClick={() => onEdit(product)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton color="error" onClick={() => onDelete(product.id)}>
+                <IconButton color="error" onClick={() => onDelete(Number(product.id))}>
                   <DeleteIcon />
                 </IconButton>
               </TableCell>

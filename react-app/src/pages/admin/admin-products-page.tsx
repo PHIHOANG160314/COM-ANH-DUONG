@@ -23,7 +23,7 @@ export const AdminProductsPage = () => {
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = async (id: string) => {
+  const handleDeleteClick = async (id: number) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa món này không?')) {
       try {
         await deleteProduct.mutateAsync(id);

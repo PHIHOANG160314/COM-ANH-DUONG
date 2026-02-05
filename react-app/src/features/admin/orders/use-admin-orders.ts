@@ -4,6 +4,8 @@ import type { Database } from '@/shared/types/database.types';
 
 export type Order = Database['public']['Tables']['orders']['Row'] & {
   order_items: Database['public']['Tables']['order_items']['Row'][];
+  customer_name?: string | null;
+  customer_phone?: string | null;
 };
 
 export const useAdminOrders = () => {

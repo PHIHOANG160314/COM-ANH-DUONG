@@ -4,7 +4,7 @@ import {
   Box,
   Chip,
   CircularProgress,
-  MenuItem,
+
   Paper,
   Switch,
   Table,
@@ -69,7 +69,7 @@ export const DynamicMenuManager = () => {
 
     return allProducts.filter((product) => {
       const matchSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchCategory = filterCategory === 'all' || product.category_id.toString() === filterCategory;
+      const matchCategory = filterCategory === 'all' || product.category_id?.toString() === filterCategory;
       return matchSearch && matchCategory;
     });
   }, [allProducts, searchTerm, filterCategory]);
