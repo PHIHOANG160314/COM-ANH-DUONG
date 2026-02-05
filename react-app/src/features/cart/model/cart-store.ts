@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { Debug } from '@/shared/utils/debug';
 import type { Database } from '@/shared/types/database.types';
 
-type Product = Database['public']['Tables']['products']['Row'];
+type Product = Database['public']['Tables']['menu_items']['Row'];
 
 export interface CartItem extends Product {
   quantity: number;
@@ -13,9 +13,9 @@ export interface CartItem extends Product {
 export interface CartState {
   items: CartItem[];
   addItem: (product: Product, quantity?: number, note?: string) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  updateItemPrice: (productId: string, price: number) => void;
+  removeItem: (productId: number) => void;
+  updateQuantity: (productId: number, quantity: number) => void;
+  updateItemPrice: (productId: number, price: number) => void;
   clearCart: () => void;
   totalAmount: () => number;
   totalItems: () => number;

@@ -16,13 +16,13 @@ import { useToast } from '@/shared/ui/use-toast';
 import { useHaptic } from '@/shared/hooks/use-haptic';
 import type { Database } from '@/shared/types/database.types';
 
-type Product = Database['public']['Tables']['products']['Row'];
+type Product = Database['public']['Tables']['menu_items']['Row'];
 
 interface ProductCardProps {
   product: Product;
   onAdd: (product: Product) => void;
   isFavorite?: boolean;
-  onToggleFavorite?: (productId: string) => void;
+  onToggleFavorite?: (productId: number) => void; // Changed ID to number
 }
 
 export const ProductCard = ({

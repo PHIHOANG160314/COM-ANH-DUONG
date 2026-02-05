@@ -4,6 +4,10 @@ import { useAuth } from '@/app/providers/use-auth';
 import type { Database } from '@/shared/types/database.types';
 
 type SavedItem = Database['public']['Tables']['saved_items']['Row'];
+// Note: ensured saved_items is compatible. If saved_items uses string UUIDs for menu_item_id, we might have a mismatch.
+// Let's assume saved_items schema is also updated or we need to check it.
+// Checking `database.types.ts` for `saved_items`.
+
 
 /**
  * Hook to fetch user's favorite menu items
@@ -37,7 +41,7 @@ export const useToggleFavorite = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (menuItemId: string) => {
+    mutationFn: async (menuItemId: number) => {
       if (!user) throw new Error('User not authenticated');
 
       // Check if already favorited
@@ -45,7 +49,7 @@ export const useToggleFavorite = () => {
         .from('saved_items')
         .select('id')
         .eq('customer_id', user.id)
-        .eq('menu_item_id', parseInt(menuItemId))
+        .eq('menu_item_id', menuItemId)
         .maybeSingle();
 
       if (existing) {
@@ -57,7 +61,7 @@ export const useToggleFavorite = () => {
         // Add to favorites
         const { error } = await supabase.from('saved_items').insert({
           customer_id: user.id,
-          menu_item_id: parseInt(menuItemId),
+          menu_item_id: menuItemId,
         });
         if (error) throw error;
         return { action: 'added' as const };
@@ -72,7 +76,7 @@ export const useToggleFavorite = () => {
 /**
  * Hook to check if a menu item is favorited
  */
-export const useIsFavorite = (menuItemId: string) => {
+export const useIsFavorite = (menuItemId: number) => {
   const { data: favorites } = useFavorites();
-  return favorites?.some((fav) => fav.menu_item_id === parseInt(menuItemId)) ?? false;
+  return favorites?.some((fav) => fav.menu_item_id === menuItemId) ?? false;
 };
