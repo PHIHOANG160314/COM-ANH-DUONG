@@ -35,12 +35,19 @@ export const StaffMobilePosPage = () => {
       // 1. Create Order
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
+        // Fix: Use correct column names from schema.sql
         .insert({
-          user_id: user?.id || null,
-          total_amount: totalAmount(),
-          status: 'confirmed', // Staff orders are auto-confirmed
+          customer_id: null, // Staff are not customers, allow null
+          customer_name: 'Khách lẻ', // Default name
+          total: totalAmount(), // was total_amount
+          subtotal: totalAmount(), // Required column
+          items: items, // Required JSONB column
+          status: 'confirmed',
+          order_type: selectedTable === 'takeaway' ? 'takeaway' : 'dinein',
+          table_number: selectedTable,
           delivery_address: selectedTable === 'takeaway' ? 'Mang về' : `Bàn ${selectedTable}`,
-          note: `Staff Order - ${user?.email}`,
+          notes: `Staff Order - ${user?.email}`, // was note
+          payment_method: 'cash'
         })
         .select()
         .single();
@@ -50,10 +57,12 @@ export const StaffMobilePosPage = () => {
       // 2. Create Order Items
       const orderItems = items.map((item) => ({
         order_id: orderData.id,
-        product_id: item.id,
+        menu_item_id: item.id, // was product_id
+        item_name: item.name, // Required column
         quantity: item.quantity,
         unit_price: item.price,
-        note: item.note,
+        total_price: item.price * item.quantity, // Required column
+        notes: item.note, // was note
       }));
 
       const { error: itemsError } = await supabase.from('order_items').insert(orderItems);

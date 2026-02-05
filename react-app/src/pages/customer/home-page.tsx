@@ -114,7 +114,7 @@ export const CustomerHomePage = () => {
           <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
             🍽️ Thực đơn hôm nay
           </Typography>
-          <MenuGrid />
+          <MenuGrid mode="daily" />
         </Box>
       </Box>
 

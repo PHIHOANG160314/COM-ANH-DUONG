@@ -2,9 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/shared/api/supabase-client';
 import type { Database } from '@/shared/types/database.types';
 
-export type Product = Database['public']['Tables']['products']['Row'];
-export type ProductInsert = Database['public']['Tables']['products']['Insert'];
-export type ProductUpdate = Database['public']['Tables']['products']['Update'];
+export type Product = Database['public']['Tables']['menu_items']['Row'];
+export type ProductInsert = Database['public']['Tables']['menu_items']['Insert'];
+export type ProductUpdate = Database['public']['Tables']['menu_items']['Update'];
 
 export type Category = Database['public']['Tables']['categories']['Row'];
 
@@ -15,7 +15,7 @@ export const useAdminProducts = () => {
     queryKey: ['admin-products'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('products')
+        .from('menu_items')
         .select(
           `
           *,
@@ -37,7 +37,7 @@ export const useAdminProducts = () => {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('order', { ascending: true });
 
       if (error) throw error;
       return data;
@@ -46,7 +46,7 @@ export const useAdminProducts = () => {
 
   const createProduct = useMutation({
     mutationFn: async (newProduct: ProductInsert) => {
-      const { data, error } = await supabase.from('products').insert(newProduct).select().single();
+      const { data, error } = await supabase.from('menu_items').insert(newProduct).select().single();
 
       if (error) throw error;
       return data;
@@ -57,9 +57,9 @@ export const useAdminProducts = () => {
   });
 
   const updateProduct = useMutation({
-    mutationFn: async ({ id, ...updates }: ProductUpdate & { id: string }) => {
+    mutationFn: async ({ id, ...updates }: ProductUpdate & { id: number }) => {
       const { data, error } = await supabase
-        .from('products')
+        .from('menu_items')
         .update(updates)
         .eq('id', id)
         .select()
@@ -74,8 +74,8 @@ export const useAdminProducts = () => {
   });
 
   const deleteProduct = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('products').delete().eq('id', id);
+    mutationFn: async (id: number) => {
+      const { error } = await supabase.from('menu_items').delete().eq('id', id);
 
       if (error) throw error;
     },

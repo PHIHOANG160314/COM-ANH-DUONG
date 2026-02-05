@@ -1,7 +1,7 @@
 import { Grid, Typography, Box, Pagination, Stack } from '@mui/material';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ProductCard } from './product-card';
-import { useAllMenuItems, useCategories } from '../api/use-menu';
+import { useAllMenuItems, useCategories, useDailyMenu } from '../api/use-menu';
 import { useFavorites, useToggleFavorite } from '../api/use-favorites';
 import { useCartStore } from '@/features/cart/model/cart-store';
 import { MenuSkeleton } from './menu-skeleton';
@@ -12,11 +12,17 @@ const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on 
 export interface MenuGridProps {
   selectedCategoryId?: string;
   onCategoryChange?: (categoryId: string) => void;
+  mode?: 'all' | 'daily';
 }
 
-export const MenuGrid = ({ selectedCategoryId, onCategoryChange }: MenuGridProps) => {
-  const { data: products, isLoading: loadingProducts } = useAllMenuItems();
+export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }: MenuGridProps) => {
+  const { data: allProducts, isLoading: loadingAll } = useAllMenuItems();
+  const { data: dailyProducts, isLoading: loadingDaily } = useDailyMenu();
   const { data: categories, isLoading: loadingCategories } = useCategories();
+
+  const products = mode === 'daily' ? dailyProducts : allProducts;
+  const loadingProducts = mode === 'daily' ? loadingDaily : loadingAll;
+
   const { data: favorites } = useFavorites();
   const { mutate: toggleFavorite } = useToggleFavorite();
   const addItem = useCartStore((state) => state.addItem);

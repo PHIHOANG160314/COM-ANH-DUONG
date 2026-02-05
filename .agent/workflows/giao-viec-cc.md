@@ -1,118 +1,52 @@
 ---
-description: Giao việc cho Claude Code CLI tự động, tự accept không hỏi
+description: Giao việc cho Claude Code CLI với script PowerShell tự động
 ---
 
-# Workflow: Giao Việc Claude Code CLI
+# Workflow: Giao Việc Claude Code CLI (PowerShell Script)
 
-Workflow này tự động mở terminal, giao việc cho Claude Code CLI và tự accept.
-**Sử dụng Antigravity Claude Proxy + Global Command File**
+Workflow này sử dụng script PowerShell `scripts/start-claude.ps1` để khởi động Claude Code CLI với cấu hình Proxy Antigravity.
 
 // turbo-all
 
-## Các bước thực hiện
+## 1. Kiểm tra/Tạo script khởi động
 
-### 1. Kiểm tra Proxy hoạt động (macOS)
+Kiểm tra file `scripts/start-claude.ps1`. Nếu chưa có, tạo file với nội dung sau:
 
-```bash
-curl -s http://localhost:8080/health | jq '.available, .total' || echo "⚠️ Proxy not running"
+```powershell
+# scripts/start-claude.ps1
+# Fix encoding for special characters
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+$env:ANTHROPIC_BASE_URL = "http://localhost:8080"
+$env:ANTHROPIC_API_KEY = "dummy"
+$env:ANTHROPIC_MODEL = "gemini-3-pro-high[1m]"
+
+Write-Host "Starting Claude Code CLI..." -ForegroundColor Green
+Write-Host "Proxy: $env:ANTHROPIC_BASE_URL" -ForegroundColor Gray
+Write-Host "Model: $env:ANTHROPIC_MODEL" -ForegroundColor Gray
+
+if (Get-Command claude -ErrorAction SilentlyContinue) {
+    claude --dangerously-skip-permissions
+} else {
+    Write-Host "Error: 'claude' command not found. Please install: npm install -g @anthropic-ai/claude-code" -ForegroundColor Red
+}
 ```
 
-### 2. Set Environment và chạy Claude CLI
+## 2. Thực thi Workflow
 
-```bash
-# Antigravity Proxy Configuration
-export ANTHROPIC_BASE_URL="http://localhost:8080"
-export ANTHROPIC_API_KEY="dummy"
-export ANTHROPIC_MODEL="gemini-3-pro-high[1m]"
+Để chạy workflow này, chỉ cần thực hiện lệnh sau trong terminal:
 
-# Chạy Claude với dangerously-skip-permissions (auto-accept)
-cd {PROJECT_DIR} && claude --dangerously-skip-permissions
+```powershell
+.\scripts\start-claude.ps1
 ```
 
-### 3. Gửi Task (2 bước riêng biệt)
-
-**Bước 3a**: Gửi text task (KHÔNG có `\n` ở cuối)
-
-```
-{TASK_DESCRIPTION}
-```
-
-**Bước 3b**: Gửi Enter riêng biệt
-
-```
-\n
-```
-
-### 4. Monitor Output
-
-Dùng `command_status` để theo dõi tiến trình với WaitDurationSeconds=60-90
-
-## Global Command File Pattern
-
-Thay vì gõ trực tiếp, tạo file `.claude-task.md` trong project:
-
-```bash
-# Tạo task file
-cat > .claude-task.md << 'EOF'
-# Task: {TASK_NAME}
-{DETAILED_INSTRUCTIONS}
-EOF
-
-# Gửi vào CC CLI
+Sau đó gửi task cho Claude CLI (ví dụ qua file .claude-task.md):
+```text
 Read .claude-task.md and execute ALL tasks
 ```
 
-## Available Models (v2.4.2)
+## 3. (Tùy chọn) Chạy trực tiếp một lệnh task 
 
-| Model                        | Description          |
-| ---------------------------- | -------------------- |
-| `gemini-3-pro-high[1m]`      | Pro tier, 1M context |
-| `gemini-3-flash[1m]`         | Nhanh, 1M context    |
-| `claude-sonnet-4-5-thinking` | Thinking mode        |
-
-## Lưu ý Quan Trọng
-
-- Flag `--dangerously-skip-permissions` tự động accept mọi thay đổi
-- **LUÔN dùng global command file** `.claude-task.md` cho complex tasks
-- Suffix `[1m]` kích hoạt 1M tokens context
-- Monitor bằng `command_status` với OutputCharacterCount=10000
-
-## 🎯 Hướng Dẫn Chọn Model (Token Optimization)
-
-### Nguyên tắc Vàng
-| Loại Task | Model Đề Xuất | Token Est. |
-|-----------|---------------|------------|
-| Fix bug đơn giản, lint, format | `gemini-3-flash[1m]` | ~2K |
-| Coding thông thường, planning | `gemini-3-pro-high[1m]` | ~5K |
-| Phân tích phức tạp, refactor lớn | `gemini-3-pro-high[1m]` | ~10K |
-| Reasoning, chain-of-thought | `claude-sonnet-4-5-thinking` | ~15K |
-
-### Script Chọn Model Tự Động
 ```powershell
-# Chọn theo độ phức tạp
-. .\scripts\select-model.ps1 -Complexity simple   # Flash - tiết kiệm
-. .\scripts\select-model.ps1 -Complexity medium   # Pro - cân bằng
-. .\scripts\select-model.ps1 -Complexity complex  # Pro - chất lượng
-. .\scripts\select-model.ps1 -Complexity thinking # Claude - reasoning
-```
-
-### Prompt Compression Tips
-1. **Dùng Reference**: `Read file X and fix bug` thay vì paste code
-2. **Dùng Global File**: `.claude-task.md` cho tasks phức tạp
-3. **Tránh lặp lại**: Không paste context đã có trong file
-
-## Ví dụ sử dụng
-
-```bash
-# Cách 1: Inline task
-claude --dangerously-skip-permissions -p "Fix bug X"
-
-# Cách 2: Global command file (RECOMMENDED)
-cat > .claude-task.md << 'EOF'
-# Mission: Fix all bugs
-1. Bug A - details
-2. Bug B - details
-EOF
-claude --dangerously-skip-permissions
-# Sau đó gửi: Read .claude-task.md and execute ALL tasks
+$env:ANTHROPIC_BASE_URL="http://localhost:8080"; $env:ANTHROPIC_API_KEY="dummy"; $env:ANTHROPIC_MODEL="gemini-3-pro-high[1m]"; claude --dangerously-skip-permissions -p "Read .claude-task.md and execute ALL tasks"
 ```
