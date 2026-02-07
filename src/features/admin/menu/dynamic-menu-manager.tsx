@@ -21,6 +21,9 @@ import {
 import { useDailyMenu, useAllMenuItems, useCategories } from '@/features/menu/api/use-menu';
 import { useUpdateDailyMenu } from './api/use-daily-menu-mutation';
 import { formatCurrency } from '@/shared/lib/formatters';
+import { exportToExcel } from '@/shared/lib/excel-export';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { Button } from '@mui/material';
 
 
 
@@ -63,6 +66,21 @@ export const DynamicMenuManager = () => {
     setPage(0);
   };
 
+  const handleExportExcel = () => {
+    if (!filteredProducts) return;
+
+    const exportData = filteredProducts.map((p) => ({
+      'Tên món': p.name,
+      'Danh mục': p.categories?.name || 'N/A',
+      'Giá': p.price,
+      'Mô tả': p.description || '',
+      'Trạng thái': p.is_active ? 'Đang bán' : 'Ngừng bán',
+      'Còn hàng': p.is_sold_out ? 'Hết hàng' : 'Còn hàng',
+    }));
+
+    exportToExcel(exportData, 'Danh_Sach_Thuc_Don');
+  };
+
   // Filter logic
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -101,8 +119,18 @@ export const DynamicMenuManager = () => {
             size="small"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ flexGrow: 1, minWidth: 200 }}
           />
+
+          <Button
+            variant="outlined"
+            startIcon={<FileDownloadIcon />}
+            onClick={handleExportExcel}
+            sx={{ height: 40 }}
+          >
+            Xuất Excel
+          </Button>
 
           <TextField
             select
