@@ -1,0 +1,14 @@
+# Large folders to exclude from Vercel upload
+node_modules
+.git
+react-app
+legacy
+*.zip
+coverage
+test-results
+playwright-report
+/reports
+dist
+logs
+*.log
+repomix-output.xml

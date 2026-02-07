@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cơm Ánh Dương - Hương Vị Quê Nhà | Nhà hàng Sa Đéc</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets (M3 Typography + Design System) -->
+    <link rel="stylesheet" href="css/m3-typography.css">
+    <link rel="stylesheet" href="css/m3-design-system.css">
+    <link rel="stylesheet" href="css/m3-wow-effects.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/ui-2026.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-72.png">
+
+    <!-- PWA & Theme -->
+    <meta name="theme-color" content="#006400">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Cơm Ánh Dương - Nhà hàng cơm gia đình tại Sa Đéc, Đồng Tháp. Món ăn ngon, không gian thoáng mát, phục vụ tận tâm. Giao hàng tận nơi.">
+    <meta name="keywords" content="cơm ánh dương, nhà hàng sa đéc, quán ăn đồng tháp, cơm gia đình, giao hàng tận nơi">
+    <meta name="author" content="Cơm Ánh Dương">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.comanhduong.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cơm Ánh Dương - Hương Vị Quê Nhà">
+    <meta property="og:description"
+        content="Nhà hàng cơm gia đình tại Sa Đéc. Món ăn ngon, không gian thoáng mát, phục vụ tận tâm!">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.comanhduong.com/logo.jpg">
+    <meta property="og:url" content="https://www.comanhduong.com/">
+    <meta property="og:site_name" content="Cơm Ánh Dương">
+    <meta property="og:locale" content="vi_VN">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cơm Ánh Dương - Hương Vị Quê Nhà">
+    <meta name="twitter:description" content="Nhà hàng cơm gia đình tại Sa Đéc. Món ăn ngon, giao hàng nhanh!">
+    <meta name="twitter:image" content="https://www.comanhduong.com/logo.jpg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Cơm Ánh Dương",
+        "image": "https://www.comanhduong.com/logo.jpg",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "91 Hùng Vương",
+            "addressLocality": "Sa Đéc",
+            "addressRegion": "Đồng Tháp",
+            "addressCountry": "VN"
+        },
+        "telephone": "+84917076061",
+        "openingHours": "Mo-Su 06:00-22:00",
+        "servesCuisine": "Vietnamese",
+        "priceRange": "$$",
+        "url": "https://www.comanhduong.com"
+    }
+    </script>
+</head>
+
+<body class="landing-page">
+    <!-- Navigation -->
+    <header class="landing-header" id="landingHeader">
+        <nav class="landing-nav">
+            <a href="/" class="nav-logo">
+                <div class="logo-badge">
+                    <img src="logo-landing.png" alt="Cơm Ánh Dương" class="logo-img">
+                </div>
+                <span class="logo-text">Cơm Ánh Dương</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">Giới thiệu</a></li>
+                <li><a href="#specialties">Đặc sản</a></li>
+                <li><a href="#gallery">Hình ảnh</a></li>
+                <li><a href="#articles">Tin tức</a></li>
+                <li><a href="#contact">Liên hệ</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="/customer" class="btn-order md-button md-button-filled md-ripple md-focus-ring">
+                    🍜 Đặt món ngay
+                </a>
+                <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">🌿 Chất lượng - Tận tâm - Hương vị quê nhà</div>
+            <h1 class="hero-title">
+                <span class="title-highlight">Cơm Ánh Dương</span>
+                <span class="title-tagline">Hương Vị Quê Nhà</span>
+            </h1>
+            <p class="hero-description">
+                Nơi tình yêu ẩm thực Việt Nam được gửi gắm trong từng món ăn.
+                Chúng tôi mang đến cho bạn những bữa cơm đầm ấm như ở nhà.
+            </p>
+            <div class="hero-cta">
+                <a href="/customer" class="btn-primary md-button md-button-filled md-ripple md-focus-ring">
+                    🍜 Xem Menu & Đặt Món
+                </a>
+                <a href="#about" class="btn-secondary md-button md-button-outlined md-ripple md-focus-ring">
+                    Tìm hiểu thêm
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="exp-years">5+</span>
+                    <span class="stat-label">Năm kinh nghiệm</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Món ăn đa dạng</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Khách hàng tin tưởng</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>Cuộn xuống</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Về chúng tôi</span>
+                <h2 class="section-title">Cơm Ngon Tròn Vị - Gắn Kết Yêu Thương</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-image" id="aboutCarousel">
+                    <div class="carousel-inner" id="aboutCarouselInner">
+                        <!-- Default Static Image (Fallback) -->
+                        <img src="logo.jpg" alt="Không gian Cơm Ánh Dương" class="about-img active">
+                    </div>
+
+                    <!-- Carousel Controls (Optional/Hidden by default) -->
+                    <div class="carousel-dots" id="aboutCarouselDots"></div>
+
+                    <div class="about-image-badge">
+                        <span class="badge-icon">🏆</span>
+                        <span>Uy tín từ 2018</span>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h3>Hương vị truyền thống, chất lượng hiện đại</h3>
+                    <p>
+                        Tại <strong>Cơm Ánh Dương</strong>, chúng tôi chắt chiu từng hạt ngọc trời, lựa chọn những
+                        nguyên liệu tươi ngon nhất từ vùng đất Sa Đéc trù phú.
+                        Mỗi bữa ăn không chỉ là sự no đủ, mà còn là hương vị của ký ức, của sự sum vầy và tận tâm như
+                        chính cơm mẹ nấu.
+                    </p>
+                    <p>
+                        Chúng tôi tin rằng một bữa ăn ngon không chỉ nằm ở nguyên liệu tươi mới, mà còn
+                        ở tâm huyết của người nấu. Mỗi món ăn tại Ánh Dương đều được chế biến với sự
+                        chăm chút tỉ mỉ như nấu cho chính gia đình mình.
+                    </p>
+                    <ul class="about-features">
+                        <li>
+                            <span class="feature-icon">🥬</span>
+                            <div>
+                                <strong>Nguyên liệu tươi ngon</strong>
+                                <p>Lựa chọn kỹ càng từ nguồn cung uy tín</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon">👨‍🍳</span>
+                            <div>
+                                <strong>Đầu bếp tay nghề cao</strong>
+                                <p>Đội ngũ bếp trưởng nhiều năm kinh nghiệm</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon">🚀</span>
+                            <div>
+                                <strong>Giao hàng nhanh chóng</strong>
+                                <p>Miễn phí ship trong bán kính 3km</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialties Section -->
+    <section class="specialties-section" id="specialties">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Đặc sản</span>
+                <h2 class="section-title">Món Ăn Nổi Bật</h2>
+                <p class="section-subtitle">Những món ăn được yêu thích nhất tại Cơm Ánh Dương</p>
+            </div>
+            <div class="specialties-grid">
+                <div class="specialty-card glass-card featured">
+                    <div class="specialty-image">
+                        <div class="specialty-placeholder">🍚</div>
+                        <div class="specialty-badge">Best Seller</div>
+                    </div>
+                    <div class="specialty-content">
+                        <h3>Cơm Tấm Sườn Bì Chả</h3>
+                        <p>Sườn nướng thơm lừng, bì giòn tan, chả trứng đậm đà - combo hoàn hảo cho bữa trưa.</p>
+                        <div class="specialty-price">45.000đ</div>
+                    </div>
+                </div>
+                <div class="specialty-card glass-card">
+                    <div class="specialty-image">
+                        <div class="specialty-placeholder">🍜</div>
+                    </div>
+                    <div class="specialty-content">
+                        <h3>Phở Bò Đặc Biệt</h3>
+                        <p>Nước dùng hầm xương 12 tiếng, thịt bò tươi, bánh phở mềm dai.</p>
+                        <div class="specialty-price">55.000đ</div>
+                    </div>
+                </div>
+                <div class="specialty-card glass-card">
+                    <div class="specialty-image">
+                        <div class="specialty-placeholder">🥘</div>
+                    </div>
+                    <div class="specialty-content">
+                        <h3>Cơm Chiên Dương Châu</h3>
+                        <p>Cơm chiên hạt rời, đầy đủ tôm, lạp xưởng, trứng, rau củ tươi ngon.</p>
+                        <div class="specialty-price">40.000đ</div>
+                    </div>
+                </div>
+                <div class="specialty-card glass-card">
+                    <div class="specialty-image">
+                        <div class="specialty-placeholder">🍲</div>
+                    </div>
+                    <div class="specialty-content">
+                        <h3>Bún Bò Huế</h3>
+                        <p>Vị cay nồng đặc trưng, thịt bò, giò heo, chả Huế đúng điệu.</p>
+                        <div class="specialty-price">50.000đ</div>
+                    </div>
+                </div>
+            </div>
+            <div class="specialties-cta">
+                <a href="/customer" class="md-button md-button-filled md-ripple md-focus-ring">
+                    Xem toàn bộ menu →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Không gian</span>
+                <h2 class="section-title">Hình Ảnh Quán</h2>
+                <p class="section-subtitle">Không gian thoáng mát, sạch sẽ - nơi lý tưởng cho những bữa ăn gia đình</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item large">
+                    <div class="gallery-placeholder">
+                        <span>🏪</span>
+                        <p>Không gian quán</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>🍽️</span>
+                        <p>Món ăn ngon</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>👨‍👩‍👧‍👦</span>
+                        <p>Khu vực gia đình</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>🛵</span>
+                        <p>Giao hàng</p>
+                    </div>
+                </div>
+                <div class="gallery-item tall">
+                    <div class="gallery-placeholder">
+                        <span>🥗</span>
+                        <p>Nguyên liệu tươi</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>☕</span>
+                        <p>Đồ uống</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="articles-section" id="articles">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Tin tức</span>
+                <h2 class="section-title">Bài Viết Mới Nhất</h2>
+            </div>
+            <div class="articles-grid" id="articles-grid">
+                <article class="article-card glass-card featured">
+                    <div class="article-image">
+                        <div class="article-placeholder">📰</div>
+                        <div class="article-category">Khuyến mãi</div>
+                    </div>
+                    <div class="article-content">
+                        <time class="article-date">16/01/2026</time>
+                        <h3>Khuyến mãi đầu năm mới - Giảm 20% tất cả món</h3>
+                        <p>Chào mừng năm mới, Cơm Ánh Dương xin gửi tặng quý khách ưu đãi giảm 20% toàn bộ thực đơn từ
+                            nay đến hết tháng 1...</p>
+                        <a href="/customer" class="article-link">Đặt món ngay →</a>
+                    </div>
+                </article>
+                <article class="article-card glass-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🎉</div>
+                        <div class="article-category">Sự kiện</div>
+                    </div>
+                    <div class="article-content">
+                        <time class="article-date">10/01/2026</time>
+                        <h3>Ra mắt hệ thống đặt hàng online</h3>
+                        <p>Giờ đây quý khách có thể đặt món trực tuyến một cách tiện lợi...</p>
+                        <a href="/customer" class="article-link">Thử ngay →</a>
+                    </div>
+                </article>
+                <article class="article-card glass-card">
+                    <div class="article-image">
+                        <div class="article-placeholder">🍜</div>
+                        <div class="article-category">Ẩm thực</div>
+                    </div>
+                    <div class="article-content">
+                        <time class="article-date">05/01/2026</time>
+                        <h3>Bí quyết nấu phở ngon như nhà hàng</h3>
+                        <p>Chia sẻ công thức nấu phở bò truyền thống từ đầu bếp Ánh Dương...</p>
+                        <a href="/customer" class="article-link">Xem menu →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header light">
+                <span class="section-badge">Liên hệ</span>
+                <h2 class="section-title">Ghé Thăm Chúng Tôi</h2>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-card glass-card">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-details">
+                            <h3>Địa chỉ</h3>
+                            <p>91 Hùng Vương, Sa Đéc, Đồng Tháp</p>
+                        </div>
+                    </div>
+                    <div class="contact-card glass-card">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-details">
+                            <h3>Điện thoại</h3>
+                            <p><a href="tel:0389017360">0389 017 360</a></p>
+                        </div>
+                    </div>
+                    <div class="contact-card glass-card">
+                        <div class="contact-icon">⏰</div>
+                        <div class="contact-details">
+                            <h3>Giờ mở cửa</h3>
+                            <p>6:00 - 22:00 (Tất cả các ngày)</p>
+                        </div>
+                    </div>
+                    <div class="contact-card glass-card">
+                        <div class="contact-icon">🌐</div>
+                        <div class="contact-details">
+                            <h3>Website</h3>
+                            <p><a href="https://www.comanhduong.com">www.comanhduong.com</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="social-links">
+                        <h3>Kết nối với chúng tôi</h3>
+                        <div class="social-icons">
+                            <a href="https://www.facebook.com/comanhduongsadec" class="social-link facebook"
+                                target="_blank" rel="noopener" aria-label="Facebook">
+                                <svg class="social-icon-svg" viewBox="0 0 24 24" width="20" height="20"
+                                    fill="currentColor">
+                                    <path
+                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="https://zalo.me/0389017360" class="social-link zalo" target="_blank" rel="noopener"
+                                aria-label="Zalo">
+                                <svg class="social-icon-svg" viewBox="0 0 48 48" width="22" height="22"
+                                    style="vertical-align:middle;margin-right:4px;">
+                                    <path fill="#2196F3"
+                                        d="M24,4C12.954,4,4,12.954,4,24s8.954,20,20,20s20-8.954,20-20S35.046,4,24,4z" />
+                                    <path fill="#fff"
+                                        d="M32.5,15.5h-17c-1.1,0-2,0.9-2,2v11c0,1.1,0.9,2,2,2h3.5v4l4.5-4h9c1.1,0,2-0.9,2-2v-11C34.5,16.4,33.6,15.5,32.5,15.5z" />
+                                    <path fill="#2196F3"
+                                        d="M19.3,20h3.4l-3.9,5.9V27h5.6v-1.6h-3.5l3.9-5.8V18h-5.5V20z M27.4,18v9h2V18H27.4z" />
+                                </svg>
+                                <span>Zalo</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-map">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.8897!2d105.7667!3d10.2897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDE3JzIzLjAiTiAxMDXCsDQ2JzAwLjAiRQ!5e0!3m2!1sen!2s!4v1635000000000!5m2!1sen!2s"
+                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade" title="Bản đồ Cơm Ánh Dương">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Đói bụng rồi? Đặt món ngay!</h2>
+                <p>Đặt hàng online nhanh chóng, giao hàng tận nơi</p>
+                <a href="/customer" class="btn-cta md-button md-button-filled md-ripple md-focus-ring">
+                    🍜 Đặt món ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo-badge">
+                        <img src="logo-landing.png" alt="Cơm Ánh Dương" class="footer-logo">
+                    </div>
+                    <p>Cơm Ánh Dương - Hương vị quê nhà. Phục vụ tận tâm từ 2020.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Liên kết nhanh</h4>
+                    <ul>
+                        <li><a href="#about">Giới thiệu</a></li>
+                        <li><a href="/customer">Đặt hàng</a></li>
+                        <li><a href="#contact">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Liên hệ</h4>
+                    <p>📍 91 Hùng Vương, Sa Đéc</p>
+                    <p>📞 <a href="tel:0389017360">0389 017 360</a></p>
+                    <p>⏰ 6:00 - 22:00</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cơm Ánh Dương. Tất cả quyền được bảo lưu.</p>
+                <!-- Admin link removed -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Back to Top Button -->
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Về đầu trang">
+        ↑
+    </button>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+        function toggleMobileMenu() {
+            mobileMenuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking nav links
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('landingHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = header.offsetHeight;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.section-header, .about-content, .specialty-card, .gallery-item, .article-card, .contact-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+    <!-- Auto update experience years -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startYear = 2018;
+            const startMonth = 8; // September (0-indexed)
+            const now = new Date();
+            let years = now.getFullYear() - startYear;
+            if (now.getMonth() < startMonth) {
+                years--;
+            }
+            const expElement = document.getElementById('exp-years');
+            if (expElement) {
+                expElement.innerText = years + '+';
+            }
+        });
+    </script>
+    <!-- Dynamic Data Scripts -->
+    <script src="js/env.js"></script>
+    <script src="js/debug.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/news-service.js"></script>
+    <script src="js/landing.js"></script>
+</body>
+
+</html>

@@ -23,7 +23,7 @@ INSERT INTO menu_items (name, price, category_id, is_available)
 VALUES
   ('Sườn + trứng - chiên', 30000, 'rice', true),
   ('Cá cơm - mồm kho lạt (xoài bằm)', 30000, 'rice', true),
-  ('Cá he kho - mềm xương', 45000, 'rice', true),  -- Correct price: 45k
+  ('Cá he kho - mềm xương', 450000, 'rice', true),  -- Correct price: 450k
   ('Tép gạo ram mặm', 35000, 'rice', true);
 
 -- Step 3: Verify count

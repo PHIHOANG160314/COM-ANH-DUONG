@@ -1,42 +1,65 @@
-# Claude Code with Gemini 3 Pro
-# Run this script: .\claude-gemini.ps1
+# Claude Code with Gemini 3 Pro (via Antigravity Proxy)
+# =====================================================
+# Usage: .\claude-gemini.ps1 [-Task "your task here"]
+# 
+# Examples:
+#   .\claude-gemini.ps1                        # Interactive mode
+#   .\claude-gemini.ps1 -Task "Read README"   # Execute task
+# =====================================================
 
-# =====================================================
-# Ensure proxy is running (Always-On integration)
-# =====================================================
-$proxyManager = Join-Path $PSScriptRoot "scripts\proxy-manager.ps1"
-if (Test-Path $proxyManager) {
-    & $proxyManager -Action ensure
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host ""
-        Write-Host "[WARNING] Proxy may not be running correctly!" -ForegroundColor Yellow
-        Write-Host "          Some features may not work." -ForegroundColor Gray
-        Write-Host ""
-    }
-} else {
-    # Fallback: simple health check
-    try {
-        $null = Invoke-WebRequest -Uri "http://localhost:8080/health" -TimeoutSec 2 -UseBasicParsing -ErrorAction Stop
-    } catch {
-        Write-Host ""
-        Write-Host "[WARNING] Proxy not responding at localhost:8080" -ForegroundColor Yellow
-        Write-Host "          Start proxy: antigravity-claude-proxy" -ForegroundColor Gray
-        Write-Host ""
-    }
+param(
+    [string]$Task = ""
+)
+
+# Fix encoding for special characters
+[Console]::OutputEncoding = [Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
+
+# Configuration
+$PROXY_URL = "http://localhost:8080"
+$MODEL = "gemini-3-pro-high[1m]"  # 1M token context
+
+# Check proxy health
+try {
+    $health = Invoke-RestMethod -Uri "$PROXY_URL/health" -TimeoutSec 3 -ErrorAction Stop
+    $available = $health.available
+    $total = $health.total
+} catch {
+    Write-Host ""
+    Write-Host "❌ Proxy not responding at $PROXY_URL" -ForegroundColor Red
+    Write-Host "   Start proxy: .\scripts\proxy-manager.ps1 -Action start" -ForegroundColor Yellow
+    Write-Host ""
+    exit 1
 }
-# =====================================================
 
-$env:ANTHROPIC_BASE_URL = "http://localhost:8080"
+# Set environment variables
+$env:ANTHROPIC_BASE_URL = $PROXY_URL
 $env:ANTHROPIC_API_KEY = "dummy"
-$env:ANTHROPIC_MODEL = "gemini-3-pro-high"
+$env:ANTHROPIC_MODEL = $MODEL
 
+# Display banner
 Write-Host ""
-Write-Host "===================================" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
 Write-Host " Claude Code - Gemini 3 Pro Mode" -ForegroundColor Green
-Write-Host "===================================" -ForegroundColor Cyan
-Write-Host " BASE_URL: $env:ANTHROPIC_BASE_URL" -ForegroundColor Yellow
-Write-Host " MODEL: $env:ANTHROPIC_MODEL" -ForegroundColor Yellow
-Write-Host "===================================" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
+Write-Host " Proxy:  $PROXY_URL ($available/$total available)" -ForegroundColor Gray
+Write-Host " Model:  $MODEL" -ForegroundColor Gray
+Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
-claude $args
+# Check if claude command exists
+if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+    Write-Host "❌ Error: 'claude' command not found." -ForegroundColor Red
+    Write-Host "   Install: npm install -g @anthropic-ai/claude-code" -ForegroundColor Yellow
+    exit 1
+}
+
+# Run Claude
+if ($Task -ne "") {
+    Write-Host "📋 Task: $Task" -ForegroundColor Cyan
+    Write-Host ""
+    claude --dangerously-skip-permissions -p $Task
+} else {
+    Write-Host "💬 Interactive mode" -ForegroundColor Yellow
+    Write-Host ""
+    claude --dangerously-skip-permissions
+}

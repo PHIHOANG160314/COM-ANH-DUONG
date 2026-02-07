@@ -1,56 +1,24 @@
 # Project Changelog
 
-All notable changes to this project will be documented in this file.
+## [Unreleased]
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.2.0] - 2026-02-01
-
-### Added (SEA SOPs Transformation)
-- **Trust Badges**: Integrated VSATTP, Fresh Food, and Fast Delivery badges on Home and Checkout for increased trust.
-- **COD Prominence**: Enhanced Cash on Delivery option with "Phổ biến" badge and distinct styling to reduce checkout friction.
-- **Support FAB**: Added Zalo Chat Floating Action Button for instant customer support.
-- **Operating Status**: Implemented "Traffic Light" indicator (Open/Closed) in header based on 10:00-22:00 schedule.
-
-## [1.1.0] - 2026-01-31
+## [1.0.0] - 2026-02-02
 
 ### Added
-- **Menu Showcase**: Dedicated `/menu` page showcasing the full menu with "masonry" layout using Material UI Grid v2, optimized for visual appeal.
-- **Marketing Strategy**: Comprehensive marketing plan for Sa Đéc launch.
-- **Marketing Assets**: Created ready-to-use Facebook posts, GMB guide, discount codes, and print menu formats.
-- **Location Update**: Updated all marketing materials to target Sa Đéc, Đồng Tháp instead of HCM.
-- **Payment Integration**: Implemented VNPay and MoMo payment gateways with secure Edge Functions and reconciliation.
-- **Loyalty System**: Launched "Thành Viên Nhà" program with Bronze/Silver/Gold tiers, point accumulation (5-10%), and redemption.
-- **User Profile**: Added Profile Dashboard, Order History, and Address Book management.
-- **Admin Analytics**: Implemented visual reporting dashboard with Revenue charts, Top Products, and Order Status metrics.
-- **Operations**: Added Inventory Management with auto-stock decrement, System Notifications for Kitchen/Admin, and Daily Revenue Report automation.
-
-## [1.0.0] - 2026-01-30
-
-### Added
-- **React 19 Architecture**: Complete rebuild of the application using React 19, TypeScript, and Vite.
-- **Project Structure**: Established comprehensive folder structure with strict separation of concerns (shadcn/ui, atomic design).
-- **Authentication**: Integrated Supabase Auth with Role-Based Access Control (RBAC) for Customers, Staff, Kitchen, and Shippers.
-- **Database**: Implemented Supabase Database schema with tables for `daily_menu`, `orders`, `order_items`, `profiles`.
-- **Landing Page**: Responsive home page with featured items, daily menu display, and cart management.
-- **Ordering System**: Full customer ordering flow including cart manipulation, checkout, and order tracking.
-- **Kitchen Display System (KDS)**: Real-time order monitoring dashboard for kitchen staff with status updates (Pending -> Cooking -> Ready).
-- **Staff Portal**: POS-like interface for staff to manage orders, view menu items, and process walk-in customers.
-- **Shipper Portal**: dedicated interface for delivery drivers to view assigned orders and update delivery status.
-- **Real-time Updates**: Implemented Supabase Realtime subscriptions for instant order status updates across all portals.
-- **UI/UX**: Material Design 3 implementation using Tailwind CSS and `shadcn/ui` components.
-- **Documentation**: Comprehensive project roadmap, architecture diagrams, and deployment guides.
-
-### Changed
-- Migrated legacy frontend to React 19.
-- Updated build system to Vite for faster development and production builds.
-- Standardized code style and linting rules using ESLint and Prettier.
+- **Admin Dashboard**: Comprehensive statistics dashboard with real-time updates.
+  - Daily Revenue Chart (Last 7 days revenue vs orders) using Recharts.
+  - Top Selling Items table (Top 5 items by revenue).
+  - Key Performance Indicators (KPI) cards: Today's Revenue, Orders, Pending Count, Average Order Value.
+  - Trend indicators comparing today vs yesterday.
+- **Order Notifications**: Real-time sound and toast notifications for new orders (Admin/Kitchen/Staff only).
+- **Receipt Printing**: Thermal printer-friendly (80mm) receipt generation feature in Order Management.
+- **Store Status**: Automated "Open/Closing/Closed" badge based on operating hours (08:00 - 22:00) with visual countdown.
 
 ### Fixed
-- Resolved ID parsing issues (stripping leading zeros).
-- Fixed daily menu filtering logic.
-- improved error handling and logging for database operations.
-- **Production Critical**: Fixed infinite loading loop on production site by implementing graceful degradation for placeholder Supabase configuration.
-- **Menu Resilience**: Added automatic fallback to demo data when Supabase encounters authentication errors (401), allowing the menu to function in preview environments without live credentials.
-- **Build System**: Fixed TypeScript build errors in Analytics, Profile, and Checkout features.
+- **Timezone Handling**: Fixed CI/CD test failures by enforcing explicit timezone offsets in tests.
+- **Type Safety**: Resolved TypeScript errors in Recharts tooltip formatters.
+- **Tech Debt**: Removed console logs and explicit `any` types in newly added features.
+
+### Changed
+- Refactored `useAdminStats` to aggregate data client-side from Supabase `orders` table.
+- Updated `OperatingHours` component to strictly follow Vietnam timezone logic for opening/closing status.

@@ -1,179 +1,147 @@
 # Cơm Ánh Dương - Restaurant POS System
 
-[![CI/CD Pipeline](https://github.com/PHIHOANG160314/COM-ANH-DUONG/actions/workflows/ci.yml/badge.svg)](https://github.com/PHIHOANG160314/COM-ANH-DUONG/actions/workflows/ci.yml)
+A complete O2O (Online-to-Offline) restaurant ordering platform built with React 19, TypeScript, Vite, and Supabase.
 
-## 📋 Overview
+## 🚀 Features
 
-Modern restaurant Point of Sale (POS) system for Cơm Ánh Dương. Built with React + TypeScript + Material-UI, featuring offline-first capabilities with PWA support.
+### Customer Experience
+-   📱 **Mobile-First Ordering** - Browse menu, customize items, and place orders
+-   💵 **Multiple Payment Options:**
+    - 💰 Cash on Delivery (COD) - Default, no setup required
+    - 🏦 VNPay - Bank cards and QR code payments (optional)
+    - 📲 MoMo E-Wallet - Mobile wallet payments (optional)
+-   🔔 **Real-time Order Tracking** - Live status updates
+-   📦 **Order History** - View past orders
+-   📱 **PWA Support** - Install as mobile app
 
-**Live Site:** [comanhduong.com](https://comanhduong.com)
+### Staff & Operations
+-   🖥️ **Staff POS** - Tablet-friendly point-of-sale interface
+-   👨‍🍳 **Kitchen Display System (KDS)** - Real-time order management for kitchen
+-   🚚 **Shipper Portal** - Delivery tracking and management
+-   📊 **Order Management** - Complete order lifecycle tracking
 
-## ✨ Features
+### Technical Features
+-   ⚡ **React 19** with React Compiler (automatic memoization)
+-   🎨 **Material UI v6** - Material Design 3 components
+-   🗄️ **Supabase** - PostgreSQL database, authentication, realtime, Edge Functions
+-   🔒 **Row Level Security (RLS)** - Secure data access
+-   🌐 **PWA Ready** - Offline support, installable
+-   🚀 **Vercel Deployment** - One-click deploy
 
-- 🍱 **Digital Menu** - AI-generated food images, category filtering
-- 🛒 **Order Management** - Add to cart, order tracking, real-time updates
-- 📱 **PWA Support** - Works offline, installable as mobile app
-- 🎨 **Material Design 3** - Modern, responsive UI
-- 🔐 **Authentication** - Supabase Auth integration
-- 🌐 **Demo Mode** - Fallback demo data when database not configured
-
-## 🚀 Quick Start
+## 📦 Quick Start
 
 ### Prerequisites
+- Node.js 18+
+- Supabase account (free tier)
+- Vercel account (free tier)
 
-- Node.js 18+ and npm
-- (Optional) Supabase account for database features
-
-### Installation
-
+### 1. Clone Repository
 ```bash
-# Clone repository
-git clone https://github.com/PHIHOANG160314/COM-ANH-DUONG.git
-cd COM-ANH-DUONG
-
-# Install dependencies
-cd react-app
-npm install
-
-# Start development server
-npm run dev
+git clone https://github.com/your-username/com-anh-duong-10x.git
+cd com-anh-duong-10x/react-app
 ```
 
-The app will be available at `http://localhost:5173`
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-## 🔧 Environment Setup
+### 3. Setup Environment
+```bash
+cp .env.example .env
+```
 
-### Demo Mode (No Database)
-
-The app works out-of-the-box with demo data. No configuration needed!
-
-### Production Mode (with Supabase)
-
-Create `.env` file in `react-app/` directory:
-
+Edit `.env` and add your Supabase credentials:
 ```env
-VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-**Get credentials:**
-1. Create project at [supabase.com](https://supabase.com)
-2. Copy URL and anon key from Settings → API
-3. Run database migrations from `/sql` folder
-
-## 📁 Project Structure
-
-```
-react-app/
-├── src/
-│   ├── app/              # App shell, providers, routing
-│   ├── features/         # Feature modules (menu, orders, auth)
-│   ├── shared/           # Shared components, utils, types
-│   │   ├── ui/           # Reusable UI components
-│   │   ├── api/          # API clients (Supabase)
-│   │   └── utils/        # Utilities (Debug, etc.)
-│   └── main.tsx          # App entry point
-├── public/
-│   └── images/menu/      # AI-generated menu images
-└── sql/                  # Database migrations
-```
-
-## 🛠️ Available Scripts
-
+### 4. Run Development Server
 ```bash
-npm run dev          # Development server (port 5173)
-npm run build        # Production build
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
-npm run type-check   # TypeScript type checking
+npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+## 📚 Documentation
+
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete deployment guide
+- **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database structure and RLS policies
+- **[PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md)** - Payment gateway integration (optional)
+- **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** - Supabase configuration
+- **[SEED_DATA.md](./SEED_DATA.md)** - Sample data for testing
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- React 19 with TypeScript
+- Vite 6 (Rolldown bundler)
+- Material UI v6 (Material Design 3)
+- TanStack Query v5 (server state)
+- Zustand (client state)
+- React Hook Form + Zod (forms)
+
+**Backend:**
+- Supabase (PostgreSQL + Auth + Realtime + Edge Functions)
+- Row Level Security (RLS)
+- Edge Functions for payments
+
+**Deployment:**
+- Vercel (frontend hosting)
+- Supabase (backend services)
+
+## 🎯 Use Cases
+
+**For Customers:**
+1. Browse menu with photos and descriptions
+2. Add items to cart, customize orders
+3. Choose delivery/takeaway/dine-in
+4. Pay with COD (or VNPay/MoMo if configured)
+5. Track order status in real-time
+
+**For Restaurant Staff:**
+1. View incoming orders in real-time
+2. Manage order status (preparing → ready → completed)
+3. Update menu availability
+4. Process POS orders
+
+**For Kitchen:**
+1. View orders on Kitchen Display System
+2. Mark items as prepared
+3. Prioritize orders by time
+
+**For Delivery:**
+1. View assigned deliveries
+2. Update delivery status
+3. Track delivery completion
+
+## 💳 Payment Integration
+
+### COD (Cash on Delivery) - Default ✅
+Enabled by default, no configuration needed. Customers pay when receiving order.
+
+### VNPay / MoMo - Optional
+For online payment integration, see [PAYMENT_DEPLOYMENT.md](./PAYMENT_DEPLOYMENT.md)
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for complete instructions.
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+**Quick Deploy:**
+1. Create Supabase project
+2. Run database migrations
+3. Add environment variables to Vercel
+4. Deploy from GitHub
 
-# Deploy
-cd react-app
-vercel --prod
-```
+## 📄 License
 
-### Manual Build
+MIT License - feel free to use for your restaurant!
 
-```bash
-cd react-app
-npm run build
-# Deploy 'dist/' folder to your hosting
-```
+## 🙏 Acknowledgments
 
-**Environment variables** must be configured in your hosting platform dashboard.
-
-## 📊 Database Schema
-
-Tables:
-- `products` - Menu items with images, prices, categories
-- `categories` - Menu categories (Cơm Phần, Phở, Bánh Mì, etc.)
-- `orders` - Customer orders
-- `order_items` - Order line items
-- `profiles` - User profiles with roles
-
-See `/sql` folder for complete schema.
-
-## 🔐 Authentication & Roles
-
-Roles:
-- `admin` - Full access, manage products/categories
-- `staff` - Process orders, view menu
-- `customer` - View menu, place orders
-
-## 🎨 Design System
-
-- **Framework:** Material-UI (MUI) v6
-- **Theme:** Material Design 3
-- **Icons:** Material Icons
-- **Fonts:** Roboto
-
-## 🐛 Troubleshooting
-
-**Build errors:**
-```bash
-rm -rf node_modules package-lock.json
-npm install
-npm run build
-```
-
-**PWA not working:**
-- Check HTTPS is enabled (required for service workers)
-- Clear browser cache and service workers
-- Rebuild: `npm run build`
-
-**Database connection issues:**
-- Verify `.env` file has correct Supabase credentials
-- Check Supabase project is not paused
-- App will fallback to demo mode if database unreachable
-
-## 📝 License
-
-MIT License - See LICENSE file for details
-
-## 👤 Author
-
-**PHIHOANG160314**
-
-## 🆘 Support
-
-For issues or questions:
-- GitHub Issues: [Create an issue](https://github.com/PHIHOANG160314/COM-ANH-DUONG/issues)
-- Email: [Contact developer]
+Built with modern web technologies and best practices for restaurant operations.
 
 ---
 
-**Ready for Production** ✅
-- All tests passing
-- Build optimized
-- PWA enabled
-- Demo mode functional
-- Production deployment configured
+**Ready to deploy?** Follow [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) to get started!
