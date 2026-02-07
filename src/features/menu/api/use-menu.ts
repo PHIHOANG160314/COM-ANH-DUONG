@@ -11,23 +11,41 @@ type Category = Database['public']['Tables']['categories']['Row'];
 // We ensure 'categories' matches the shape expected (object or null)
 export type MenuItemWithCategory = Product & { categories: Category | null };
 
-// Mock data for fallback
+// Mock data for fallback - matches actual database structure
 const MENU_CATEGORIES: Category[] = [
   {
-    id: 'thit',
-    name: 'Thịt',
-    slug: 'thit',
-    image_url: null,
-    sort_order: 1,
+    id: 'food',
+    name: 'Thức Ăn',
+    icon: '🍜',
+    parent_id: null,
+    order: 1,
     is_active: true,
     created_at: new Date().toISOString(),
   },
   {
-    id: 'ca',
-    name: 'Cá',
-    slug: 'ca',
-    image_url: null,
-    sort_order: 2,
+    id: 'homemade',
+    name: 'Món Nhà',
+    icon: '🍚',
+    parent_id: 'food',
+    order: 1,
+    is_active: true,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'rice',
+    name: 'Cơm',
+    icon: '🍚',
+    parent_id: 'food',
+    order: 2,
+    is_active: true,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'drinks',
+    name: 'Đồ Uống',
+    icon: '🥤',
+    parent_id: null,
+    order: 2,
     is_active: true,
     created_at: new Date().toISOString(),
   },
@@ -40,13 +58,13 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     description: '',
     price: 35000,
     image_url: null,
-    category_id: 'thit',
+    category_id: 'homemade',
     is_active: true,
     is_sold_out: false,
     stock_quantity: 40,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    categories: MENU_CATEGORIES[0],
+    categories: MENU_CATEGORIES[1], // homemade
   },
   {
     id: 2,
@@ -54,13 +72,13 @@ const MENU_PRODUCTS: MenuItemWithCategory[] = [
     description: '',
     price: 40000,
     image_url: null,
-    category_id: 'ca',
+    category_id: 'rice',
     is_active: true,
     is_sold_out: false,
     stock_quantity: 20,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    categories: MENU_CATEGORIES[1],
+    categories: MENU_CATEGORIES[2], // rice
   },
 ];
 
@@ -75,20 +93,15 @@ export const useAllMenuItems = () => {
       }
 
       try {
-        // Try to fetch from menu_items table first (new schema)
+        // Fetch menu_items WITH categories join (using explicit FK)
         const { data: menuData, error: menuError } = await supabase
           .from('menu_items')
-          .select('*')
-          // Note: is_active column was removed from schema
+          .select('*, categories:categories!menu_items_category_id_fkey(id, name, icon)')
           .order('name');
 
         if (!menuError && menuData) {
           Debug.log(`✅ Loaded ${menuData.length} items from menu_items table`);
-          // Convert menu_items format to Product format for compatibility
-          return menuData.map((item) => ({
-            ...item,
-            categories: null, // No categories join
-          })) as MenuItemWithCategory[];
+          return menuData as MenuItemWithCategory[];
         }
 
         // Fallback to old products table if menu_items doesn't exist
@@ -193,8 +206,8 @@ export const useCategories = () => {
         const { data, error } = await supabase
           .from('categories')
           .select('*')
-          // Note: is_active column may not exist, removed filter
-          .order('sort_order');
+          .eq('is_active', true)
+          .order('order');
 
         // If error from Supabase, fallback to production
         if (error) {

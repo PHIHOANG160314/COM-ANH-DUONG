@@ -17,23 +17,40 @@ Error: new row violates row-level security policy for table "menu_items"
 Error: new row violates row-level security policy for table "categories"
 ```
 
-## Root Cause
-1. The script attempted to authenticate as `admin@anhduong.com`. Authentication was successful.
-2. However, the configured RLS policies on Supabase prevent `INSERT`/`UPDATE` operations even for this authenticated user (or specifically for the `menu_items` table).
-3. The script contains logic to bypass RLS using the `SUPABASE_SERVICE_ROLE_KEY`, but this key is **missing** from the `.env` file.
+## Root Cause Analysis
+1. **Missing Service Role Key**: The script defaults to using the `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS, but this key is missing from `.env` and `.env.local`.
+2. **Authentication Fallback Failed**: The script attempted to fallback to using the authenticated `admin@anhduong.com` user.
+3. **Missing Admin Profile**: A diagnostic check (`scripts/check-admin-profile.mjs`) revealed that while the `admin@anhduong.com` user exists in Auth, there is **no corresponding record** in the `public.profiles` table.
+   - The RLS policies rely on `public.profiles.role` being 'admin' to grant write access.
+   - Since the profile is missing, the user effectively has no role (or default 'customer' access), preventing them from writing to `menu_items`.
 
-## Recommendations
-To successfully seed the database, choose one of the following options:
+## Action Plan
+To successfully seed the database, you must perform **one** of the following actions:
 
-### Option 1: Provide Service Role Key (Recommended for Scripting)
-Add the Service Role Key to your `.env` file. This key has superuser privileges and bypasses RLS.
-```bash
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
-```
-Then run the script again:
-```bash
-node scripts/seed-full-menu.mjs
-```
+### Option A: Run SQL in Dashboard (Recommended)
+This is the fastest method and bypasses all local configuration issues.
+1. Open the [Supabase Dashboard SQL Editor](https://supabase.com/dashboard/project/_/sql/new).
+2. Copy the content of `sql/seed-full-menu.sql`.
+3. Paste and Run.
+4. **Also Run This Fix** (to ensure Admin works later):
+   ```sql
+   -- Fix Admin Profile
+   INSERT INTO public.profiles (id, email, role, full_name)
+   SELECT id, email, 'admin', 'Admin User'
+   FROM auth.users
+   WHERE email = 'admin@anhduong.com'
+   ON CONFLICT (id) DO UPDATE SET role = 'admin';
+   ```
 
-### Option 2: Run SQL Directly
-Copy the contents of `sql/seed-full-menu.sql` and execute it directly in the Supabase Dashboard SQL Editor. This script includes `ALTER TABLE ... DISABLE ROW LEVEL SECURITY` commands which will handle the permissions issue temporarily.
+### Option B: Add Service Role Key
+If you want to run scripts locally:
+1. Go to Supabase Dashboard > Project Settings > API.
+2. Copy the `service_role` secret.
+3. Add it to your `.env` file:
+   ```bash
+   SUPABASE_SERVICE_ROLE_KEY=eyJ...
+   ```
+4. Run the seed script:
+   ```bash
+   node scripts/seed-full-menu.mjs
+   ```

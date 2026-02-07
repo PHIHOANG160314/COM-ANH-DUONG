@@ -39,9 +39,9 @@ const supabaseKey = env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY || proce
 // Check for Service Role Key in env or process
 const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Admin credentials for fallback
-const ADMIN_EMAIL = 'admin@anhduong.com';
-const ADMIN_PASSWORD = 'password123';
+// Admin credentials for fallback (load from env)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@anhduong.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123';
 
 if (!supabaseUrl || (!supabaseKey && !serviceRoleKey)) {
     console.error('❌ Missing Supabase configuration.');

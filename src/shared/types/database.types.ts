@@ -36,28 +36,28 @@ export interface Database {
         Row: {
           id: string;
           name: string;
-          slug: string;
-          image_url: string | null;
+          icon: string | null;
+          parent_id: string | null;
+          order: number;
           is_active: boolean;
-          sort_order: number;
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
-          slug: string;
-          image_url?: string | null;
+          icon?: string | null;
+          parent_id?: string | null;
+          order?: number;
           is_active?: boolean;
-          sort_order?: number;
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
-          slug?: string;
-          image_url?: string | null;
+          icon?: string | null;
+          parent_id?: string | null;
+          order?: number;
           is_active?: boolean;
-          sort_order?: number;
           created_at?: string;
         };
       };
