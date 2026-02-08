@@ -17,6 +17,7 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  alpha,
 } from '@mui/material';
 import {
   ShoppingCart as CartIcon,
@@ -45,6 +46,8 @@ import { CONTACT_INFO } from '@/shared/config/contact';
 interface MainLayoutProps {
   children?: ReactNode;
 }
+
+import { PageTransition } from '@/shared/ui/page-transition';
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
@@ -112,7 +115,14 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     >
       <ReloadPrompt />
       <InstallPrompt />
-      <AppBar position="sticky" color="primary" elevation={0}>
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.85),
+          backdropFilter: 'blur(12px)',
+        }}
+      >
         <Toolbar>
           {isMobile && (
             <IconButton
@@ -218,7 +228,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         }}
       >
         <AnimatePresence mode="wait">
-          {children || <Outlet key={location.pathname} />}
+          <PageTransition key={location.pathname}>
+            {children || <Outlet />}
+          </PageTransition>
         </AnimatePresence>
       </Container>
 
