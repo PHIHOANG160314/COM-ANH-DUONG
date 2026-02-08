@@ -30,6 +30,7 @@ import { Button } from '@mui/material';
 
 
 export const DynamicMenuManager = () => {
+  console.log('DynamicMenuManager v2 loaded - Check for Export Excel button');
   // 1. Fetch ALL products (base list)
   const { data: allProducts, isLoading: loadingProducts } = useAllMenuItems();
   const { data: categories } = useCategories(); // Fetch categories for filter
@@ -118,7 +119,6 @@ export const DynamicMenuManager = () => {
             variant="outlined"
             size="small"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ flexGrow: 1, minWidth: 200 }}
           />
