@@ -129,6 +129,8 @@ export const ProductCard = ({
         ) : (
           // Gradient placeholder when no image or image fails to load
           <Box
+            role="img"
+            aria-label="Hình ảnh mặc định"
             sx={{
               width: '100%',
               height: '100%',
@@ -176,6 +178,7 @@ export const ProductCard = ({
         {onToggleFavorite && (
           <IconButton
             onClick={handleToggleFavorite}
+            aria-label={isFavorite ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
             sx={{
               position: 'absolute',
               top: 8,

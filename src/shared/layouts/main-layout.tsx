@@ -130,6 +130,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               edge="start"
               size="large" // A11y: 48px target
               onClick={() => setDrawerOpen(true)}
+              aria-label="Mở menu"
               sx={{ mr: 2 }}
             >
               <MenuIconHamburger />
@@ -137,6 +138,14 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           )}
 
           <Box
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate('/');
+              }
+            }}
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -187,6 +196,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             color="inherit"
             size="large" // A11y: 48px target
             onClick={() => navigate('/checkout')}
+            aria-label="Xem giỏ hàng"
           >
             <Badge badgeContent={totalItems} color="error">
               <CartIcon />
@@ -198,6 +208,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               color="inherit"
               size="large" // A11y: 48px target
               onClick={() => navigate('/profile')}
+              aria-label="Tài khoản"
             >
               <PersonIcon />
             </IconButton>
@@ -228,9 +239,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         }}
       >
         <AnimatePresence mode="wait">
-          <PageTransition key={location.pathname}>
-            {children || <Outlet />}
-          </PageTransition>
+          <PageTransition key={location.pathname}>{children || <Outlet />}</PageTransition>
         </AnimatePresence>
       </Container>
 

@@ -86,7 +86,8 @@ export const ZaloChatFab: React.FC<ZaloChatFabProps> = ({
             <Box
               component="img"
               src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg"
-              alt="Zalo"
+              alt=""
+              aria-hidden="true"
               sx={{ width: 40, height: 40 }}
               onError={(e) => {
                 // Fallback if the wikimedia link fails or is blocked

@@ -19,6 +19,14 @@ const BestsellerCard = ({ item, onAdd }: BestsellerCardProps) => {
 
   return (
     <Card
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onAdd?.();
+        }
+      }}
       sx={{
         height: '100%',
         display: 'flex',

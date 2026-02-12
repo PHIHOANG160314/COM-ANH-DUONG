@@ -74,6 +74,7 @@ export const CartSheet = ({ open, onClose }: CartSheetProps) => {
         <IconButton
           onClick={onClose}
           size="large"
+          aria-label="Đóng giỏ hàng"
           sx={{ minWidth: 44, minHeight: 44 }} // Touch target
         >
           <CloseIcon />
@@ -140,6 +141,7 @@ export const CartSheet = ({ open, onClose }: CartSheetProps) => {
                         removeItem(item.id);
                       }
                     }}
+                    aria-label="Giảm số lượng"
                     sx={{
                       minWidth: 32,
                       minHeight: 32,
@@ -155,6 +157,7 @@ export const CartSheet = ({ open, onClose }: CartSheetProps) => {
                   <IconButton
                     size="small"
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    aria-label="Tăng số lượng"
                     sx={{
                       minWidth: 32,
                       minHeight: 32,
