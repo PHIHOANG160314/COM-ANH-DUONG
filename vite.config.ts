@@ -131,6 +131,7 @@ export default defineConfig({
     // Disabled manualChunks - was causing circular dependency error:
     // "Cannot access 'hu' before initialization" in vendor-misc chunk
     // Let Vite handle chunking automatically for now
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 2000,
+    sourcemap: false,
   },
 });
