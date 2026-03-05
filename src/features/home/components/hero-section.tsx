@@ -72,7 +72,7 @@ export const HeroSection = () => {
             fontWeight="bold"
             sx={{ fontSize: { xs: '2rem', md: '3rem' }, mb: 1 }}
           >
-            🍚 Cơm Ánh Dương - Tân Phú Đông
+            🍚 Cơm Ánh Dương - Sa Đéc
           </Typography>
         </Box>
 
