@@ -8,6 +8,8 @@ import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
+const DAILY_DISPLAY_CATEGORIES = ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'];
+const HIDDEN_CATEGORIES = ['Kem Trà Sữa', 'Chè'];
 
 export interface MenuGridProps {
   selectedCategoryId?: string;
@@ -34,11 +36,44 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
   const [currentPage, setCurrentPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
 
+  // Get IDs of hidden categories for filtering products
+  const hiddenCategoryIds = useMemo(() => {
+    if (!categories) return [];
+    return categories
+      .filter(c => HIDDEN_CATEGORIES.includes(c.name))
+      .map(c => c.id);
+  }, [categories]);
+
+  const displayCategories = useMemo(() => {
+    if (!categories) return [];
+    if (mode === 'daily') {
+      return categories.filter(c => DAILY_DISPLAY_CATEGORIES.includes(c.name));
+    }
+    return categories.filter(c => !HIDDEN_CATEGORIES.includes(c.name));
+  }, [categories, mode]);
+
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (activeCategory === 'all') return products;
-    return products.filter((p) => p.category_id === activeCategory);
-  }, [products, activeCategory]);
+
+    // Filter out products from hidden categories
+    const visibleProducts = products.filter((p) => {
+      if (hiddenCategoryIds.includes(p.category_id)) return false;
+      if (p.categories?.parent_id && hiddenCategoryIds.includes(p.categories.parent_id as string)) return false;
+      return true;
+    });
+
+    if (activeCategory === 'all') return visibleProducts;
+
+    return visibleProducts.filter((p) => {
+      // 1. Direct category match
+      if (p.category_id === activeCategory) return true;
+
+      // 2. Parent category match (e.g. active is "Thức Ăn", product is "Món Nhà")
+      if (p.categories?.parent_id === activeCategory) return true;
+
+      return false;
+    });
+  }, [products, activeCategory, hiddenCategoryIds]);
 
   // Paginated products
   const paginatedProducts = useMemo(() => {
@@ -90,7 +125,7 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
 
       {/* Category chips - horizontal scroll */}
       <CategoryChips
-        categories={categories?.map((cat) => cat.name) || []}
+        categories={displayCategories.map((cat) => cat.name) || []}
         selectedCategory={activeCategory}
         onCategorySelect={(category) => {
           if (category === 'all') {
