@@ -112,7 +112,7 @@ export const HeroSection = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Chip
                 icon={<AccessTime sx={{ color: 'white !important' }} />}
-                label="Giao nhanh Tân Phú Đông"
+                label="Giao nhanh Sa Đéc"
                 sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
               />
             </motion.div>
