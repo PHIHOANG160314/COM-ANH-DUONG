@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import {
   Alert,
   Box,
@@ -20,8 +20,10 @@ import {
 } from '@mui/material';
 import { useDailyMenu, useAllMenuItems, useCategories } from '@/features/menu/api/use-menu';
 import { useUpdateDailyMenu } from './api/use-daily-menu-mutation';
+import { useImportMenuMutation } from './api/use-import-menu-mutation';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { exportToExcel } from '@/shared/lib/excel-export';
+import { importFromExcel } from '@/shared/lib/excel-import';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { Button } from '@mui/material';
 
@@ -30,21 +32,26 @@ import { Button } from '@mui/material';
 
 
 export const DynamicMenuManager = () => {
-  console.log('DynamicMenuManager v2 loaded - Check for Export Excel button');
+  console.log('DynamicMenuManager loaded - Check for Import/Export Excel buttons');
   // 1. Fetch ALL products (base list)
-  const { data: allProducts, isLoading: loadingProducts } = useAllMenuItems();
+  const { data: allProducts, isLoading: loadingProducts, refetch: refetchAll } = useAllMenuItems();
   const { data: categories } = useCategories(); // Fetch categories for filter
 
   // 2. Fetch TODAY's selected products (active list)
   const { data: dailyProducts, isLoading: loadingDaily } = useDailyMenu();
 
-  // 3. Mutation hook
+  // 3. Mutation hooks
   const { mutate: updateDailyMenu, isPending: isUpdating } = useUpdateDailyMenu();
+  const importMutation = useImportMenuMutation();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+
+  // File import state
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importStatus, setImportStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
   // Helper to check if a product is in today's menu
   const isProductInDailyMenu = (productId: number) => {
@@ -82,6 +89,51 @@ export const DynamicMenuManager = () => {
     exportToExcel(exportData, 'Danh_Sach_Thuc_Don');
   };
 
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setImportStatus({ type: 'info', message: 'Đang đọc file Excel...' });
+
+    try {
+      // 1. Read and parse file
+      const parsedData = await importFromExcel(file);
+
+      if (parsedData.length === 0) {
+        setImportStatus({ type: 'error', message: 'File trống hoặc không đúng format (cần cột: Tên món ăn, Giá bán (VNĐ), Loại món)' });
+        return;
+      }
+
+      setImportStatus({ type: 'info', message: `Đang xử lý ${parsedData.length} món. Vui lòng đợi...` });
+
+      // 2. Perform DB upsert
+      importMutation.mutate(parsedData, {
+        onSuccess: (results: any) => {
+          setImportStatus({
+            type: 'success',
+            message: `Nhập thành công! Đã thêm: ${results.added}, Cập nhật: ${results.updated}, Lỗi: ${results.failed}.`
+          });
+
+          // Force refetch to update table immediately
+          refetchAll();
+
+          // Clear file input so same file can be selected again
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        },
+        onError: (err: any) => {
+          setImportStatus({ type: 'error', message: `Lỗi khi lưu dữ liệu: ${err.message}` });
+        }
+      });
+
+    } catch (err: any) {
+      setImportStatus({ type: 'error', message: `Lỗi đọc file: ${err.message || 'Unknown error'}` });
+    }
+  };
+
   // Filter logic
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -110,7 +162,7 @@ export const DynamicMenuManager = () => {
     <Box>
       <Paper sx={{ mb: 2, p: 2 }}>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          💡 <strong>Hướng dẫn:</strong> Bật công tắc "Hôm nay" để đưa món lên trang chủ.
+          💡 <strong>Hướng dẫn:</strong> Bật công tắc "Hôm nay" để đưa món lên trang chủ. File Excel mẫu gồm các cột: <b>Tên món ăn, Giá bán (VNĐ), Loại món</b>. Bạn có thể xuất Excel trước để xem mẫu.
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
@@ -122,6 +174,25 @@ export const DynamicMenuManager = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ flexGrow: 1, minWidth: 200 }}
           />
+
+          <input
+            type="file"
+            accept=".xlsx, .xls, .csv"
+            style={{ display: 'none' }}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<FileDownloadIcon sx={{ transform: 'rotate(180deg)' }} />}
+            onClick={handleImportClick}
+            disabled={importMutation.isPending}
+            sx={{ height: 40 }}
+          >
+            {importMutation.isPending ? 'Đang tải...' : 'Nhập Excel'}
+          </Button>
 
           <Button
             variant="outlined"
@@ -154,8 +225,12 @@ export const DynamicMenuManager = () => {
           📊 Tổng số món: {allProducts?.length} | Kết quả tìm kiếm: {filteredProducts.length}
         </Typography>
 
-        {isUpdating && (
-          <Alert severity="info" sx={{ mt: 1, py: 0 }}>Đang lưu thay đổi...</Alert>
+        {isUpdating && <Alert severity="info" sx={{ mt: 1, py: 0 }}>Đang lưu thay đổi công tắc món hôm nay...</Alert>}
+
+        {importStatus && (
+          <Alert severity={importStatus.type} sx={{ mt: 2, py: 0 }} onClose={() => setImportStatus(null)}>
+            {importStatus.message}
+          </Alert>
         )}
       </Paper>
 
