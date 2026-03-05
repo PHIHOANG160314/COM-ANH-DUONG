@@ -9,7 +9,7 @@ import { CategoryChips } from './category-chips';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
 const DAILY_DISPLAY_CATEGORIES = ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'];
-const HIDDEN_CATEGORIES = ['Kem Trà Sữa', 'Chè'];
+const HIDDEN_CATEGORIES = ['Kem Trà Sữa', 'Chè', 'Giải Khát', 'Món Nhà', 'Cà Phê', 'Trà Sữa'];
 
 export interface MenuGridProps {
   selectedCategoryId?: string;
