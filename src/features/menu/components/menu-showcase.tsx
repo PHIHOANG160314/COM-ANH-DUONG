@@ -11,7 +11,8 @@ import {
 } from '@mui/material';
 import { CONTACT_INFO } from '@/shared/config/contact';
 import { MenuGrid } from './menu-grid'; // Import MenuGrid
-import { useRef, useState } from 'react';
+import { useCategories } from '../api/use-menu';
+import { useRef, useState, useMemo } from 'react';
 
 interface CategoryCardProps {
   icon: string;
@@ -55,6 +56,18 @@ const CategoryCard = ({ icon, name, onClick }: CategoryCardProps) => (
 export const MenuShowcase = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const menuGridRef = useRef<HTMLDivElement>(null);
+  const { data: categories } = useCategories();
+
+  // Build a name→id lookup map from real categories
+  const categoryIdByName = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (categories) {
+      for (const cat of categories) {
+        map[cat.name] = cat.id;
+      }
+    }
+    return map;
+  }, [categories]);
 
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -106,17 +119,29 @@ export const MenuShowcase = () => {
             <CategoryCard
               icon="🍚"
               name="Cơm"
-              onClick={() => handleCategoryClick('cat-1')} // Assuming ID for Cơm/Thịt as per seed
+              onClick={() => handleCategoryClick(categoryIdByName['Cơm'] || 'all')}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🍖" name="Món Chính" onClick={() => handleCategoryClick('all')} />
+            <CategoryCard
+              icon="🍖"
+              name="Món Chính"
+              onClick={() => handleCategoryClick(categoryIdByName['Thức Ăn'] || 'all')}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🥤" name="Đồ Uống" onClick={() => handleCategoryClick('cat-8')} />
+            <CategoryCard
+              icon="🥤"
+              name="Đồ Uống"
+              onClick={() => handleCategoryClick(categoryIdByName['Đồ Uống'] || 'all')}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard icon="🍰" name="Tráng Miệng" onClick={() => handleCategoryClick('cat-9')} />
+            <CategoryCard
+              icon="🍰"
+              name="Tráng Miệng"
+              onClick={() => handleCategoryClick(categoryIdByName['Tráng Miệng'] || 'all')}
+            />
           </Grid>
         </Grid>
       </Container>
