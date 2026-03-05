@@ -114,29 +114,22 @@ export const MenuShowcase = () => {
         <Typography variant="h4" component="h2" fontWeight={700} sx={{ mb: 6 }}>
           Danh Mục Món Ăn
         </Typography>
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <CategoryCard
-              icon="🍚"
-              name="Cơm"
-              onClick={() => handleCategoryClick(categoryIdByName['Cơm'] || 'all')}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid size={{ xs: 12, md: 4 }}>
             <CategoryCard
               icon="🍖"
               name="Món Chính"
               onClick={() => handleCategoryClick(categoryIdByName['Thức Ăn'] || 'all')}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CategoryCard
               icon="🥤"
               name="Đồ Uống"
               onClick={() => handleCategoryClick(categoryIdByName['Đồ Uống'] || 'all')}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <CategoryCard
               icon="🍰"
               name="Tráng Miệng"
