@@ -172,15 +172,12 @@ export const useDailyMenu = () => {
         // Try menu_items first
         const { data: menuData, error: menuError } = await supabase
           .from('menu_items')
-          .select('*')
+          .select('*, categories:categories!menu_items_category_id_fkey(*)')
           .in('id', productIds);
 
         if (!menuError && menuData && menuData.length > 0) {
           Debug.log(`✅ Loaded ${menuData.length} daily menu items`);
-          return menuData.map((item) => ({
-            ...item,
-            categories: null,
-          })) as MenuItemWithCategory[];
+          return menuData as MenuItemWithCategory[];
         }
 
         return [];
