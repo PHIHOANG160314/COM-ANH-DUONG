@@ -117,6 +117,13 @@ export const MenuShowcase = () => {
         <Grid container spacing={4} justifyContent="center">
           <Grid size={{ xs: 12, md: 4 }}>
             <CategoryCard
+              icon="🍚"
+              name="Cơm"
+              onClick={() => handleCategoryClick(categoryIdByName['Cơm'] || 'all')}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <CategoryCard
               icon="🥤"
               name="Đồ Uống"
               onClick={() => handleCategoryClick(categoryIdByName['Đồ Uống'] || 'all')}
