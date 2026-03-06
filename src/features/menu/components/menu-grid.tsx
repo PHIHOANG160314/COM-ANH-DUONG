@@ -8,8 +8,7 @@ import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
-const DAILY_DISPLAY_CATEGORIES = ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'];
-const HIDDEN_CATEGORIES = ['Kem Trà Sữa', 'Chè', 'Giải Khát', 'Món Nhà', 'Cà Phê', 'Trà Sữa'];
+const ALLOWED_DISPLAY_CATEGORIES = ['Cơm', 'Đồ Uống', 'Tráng Miệng'];
 
 export interface MenuGridProps {
   selectedCategoryId?: string;
@@ -36,31 +35,17 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
   const [currentPage, setCurrentPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
 
-  // Get IDs of hidden categories for filtering products
-  const hiddenCategoryIds = useMemo(() => {
-    if (!categories) return [];
-    return categories
-      .filter(c => HIDDEN_CATEGORIES.includes(c.name))
-      .map(c => c.id);
-  }, [categories]);
 
   const displayCategories = useMemo(() => {
     if (!categories) return [];
-    if (mode === 'daily') {
-      return categories.filter(c => DAILY_DISPLAY_CATEGORIES.includes(c.name));
-    }
-    return categories.filter(c => !HIDDEN_CATEGORIES.includes(c.name));
-  }, [categories, mode]);
+    return categories.filter(c => ALLOWED_DISPLAY_CATEGORIES.includes(c.name));
+  }, [categories]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
 
-    // Filter out products from hidden categories
-    const visibleProducts = products.filter((p) => {
-      if (p.category_id && hiddenCategoryIds.includes(p.category_id)) return false;
-      if (p.categories?.parent_id && hiddenCategoryIds.includes(p.categories.parent_id)) return false;
-      return true;
-    });
+    // No longer filtering out hidden categories — show all products
+    const visibleProducts = products;
 
     if (activeCategory === 'all') return visibleProducts;
 
@@ -73,7 +58,7 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
 
       return false;
     });
-  }, [products, activeCategory, hiddenCategoryIds]);
+  }, [products, activeCategory]);
 
   // Paginated products
   const paginatedProducts = useMemo(() => {
