@@ -25,22 +25,60 @@ export const useImportMenuMutation = () => {
             }
 
             // Map category name -> UUID
-            // Some category names in Excel might not exactly match DB, but we try our best.
+            // Build multiple lookup keys: exact name, uppercase, and common aliases
             const categoryMap = new Map<string, string>();
             categories.forEach((cat) => {
                 categoryMap.set(cat.name.toUpperCase(), cat.id);
             });
+
+            // Alias map: common Excel abbreviations/no-diacritics -> DB category name (uppercase)
+            const CATEGORY_ALIASES: Record<string, string> = {
+                // No-diacritics aliases
+                'THIT': 'THỊT',
+                'CA': 'CÁ',
+                'CANH': 'CANH',
+                'VIT + GA': 'VỊT + GÀ',
+                'VIT+GA': 'VỊT + GÀ',
+                'VITGA': 'VỊT + GÀ',
+                'VIT': 'VỊT + GÀ',
+                'GA': 'VỊT + GÀ',
+                'KHAC': 'KHÁC',
+                'CHAY': 'CHAY',
+                'XAO': 'XÀO',
+                'COM': 'CƠM',
+                'DO UONG': 'ĐỒ UỐNG',
+                'DOUONG': 'ĐỒ UỐNG',
+                'TRANG MIENG': 'TRÁNG MIỆNG',
+                'TRANGMIENG': 'TRÁNG MIỆNG',
+                // Common abbreviations from old system
+                'THUC AN': 'THỊT',
+                'MON CHINH': 'THỊT',
+                'HH': 'THỊT',
+                'HHI': 'THỊT',
+            };
 
             // 2. Prepare payload for upsert
             const upsertPayload: MenuItemInsert[] = parsedItems.map((item) => {
                 const categoryName = item['Loại món'] ? item['Loại món'].toString().trim().toUpperCase() : '';
                 let categoryId = categoryMap.get(categoryName);
 
-                // If category not found, you can optionally map common names or leave null
-                // E.g. THỊT, CÁ, CANH usually map to "Thức Ăn" parent category
+                // Try alias lookup if exact match fails
                 if (!categoryId) {
-                    const thucAnId = categoryMap.get('THỨC ĂN');
-                    categoryId = thucAnId || undefined; // fallback to general food category if specific one not found
+                    const aliasTarget = CATEGORY_ALIASES[categoryName];
+                    if (aliasTarget) {
+                        categoryId = categoryMap.get(aliasTarget);
+                    }
+                }
+
+                // Final fallback: try removing diacritics from DB names to match
+                if (!categoryId && categoryName) {
+                    for (const [dbName, id] of categoryMap.entries()) {
+                        const dbNameNoDiacritics = dbName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toUpperCase();
+                        if (dbNameNoDiacritics === categoryName) {
+                            categoryId = id;
+                            break;
+                        }
+                    }
                 }
 
                 return {
