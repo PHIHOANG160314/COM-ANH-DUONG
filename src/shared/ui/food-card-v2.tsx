@@ -95,7 +95,7 @@ export const FoodCardV2 = ({
     }
   };
 
-  const stockQuantity = product.stock_quantity ?? 0;
+  const stockQuantity = product.stock_quantity ?? 100; // NULL = unlimited/available
   const isLowStock = stockQuantity > 0 && stockQuantity < 10;
   const isOutOfStock = stockQuantity === 0 || product.is_sold_out;
 
