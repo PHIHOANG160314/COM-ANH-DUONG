@@ -38,7 +38,7 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
   // Show all categories from DB
   const displayCategories = useMemo(() => {
     if (!categories) return [];
-    return categories;
+    return categories.filter((cat) => cat.name !== 'Cơm');
   }, [categories]);
 
   const filteredProducts = useMemo(() => {
