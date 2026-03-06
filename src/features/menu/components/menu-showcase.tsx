@@ -200,6 +200,7 @@ export const MenuShowcase = () => {
 
         {/* The interactive MenuGrid */}
         <MenuGrid
+          mode="daily"
           selectedCategoryId={activeCategory}
           onCategoryChange={setActiveCategory}
         />
