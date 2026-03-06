@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/shared/api/supabase-client';
-import { Database } from '@/shared/types/database.types';
+import type { Database } from '@/shared/types/database.types';
 
 type MenuItemInsert = Database['public']['Tables']['menu_items']['Insert'];
-type Category = Database['public']['Tables']['categories']['Row'];
 
 export interface ParsedMenuItem {
     'Tên món ăn': string;
@@ -28,7 +27,7 @@ export const useImportMenuMutation = () => {
             // Map category name -> UUID
             // Some category names in Excel might not exactly match DB, but we try our best.
             const categoryMap = new Map<string, string>();
-            categories.forEach((cat: Category) => {
+            categories.forEach((cat) => {
                 categoryMap.set(cat.name.toUpperCase(), cat.id);
             });
 
@@ -41,7 +40,7 @@ export const useImportMenuMutation = () => {
                 // E.g. THỊT, CÁ, CANH usually map to "Thức Ăn" parent category
                 if (!categoryId) {
                     const thucAnId = categoryMap.get('THỨC ĂN');
-                    categoryId = thucAnId || null; // fallback to general food category if specific one not found
+                    categoryId = thucAnId || undefined; // fallback to general food category if specific one not found
                 }
 
                 return {

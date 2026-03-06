@@ -57,8 +57,8 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
 
     // Filter out products from hidden categories
     const visibleProducts = products.filter((p) => {
-      if (hiddenCategoryIds.includes(p.category_id)) return false;
-      if (p.categories?.parent_id && hiddenCategoryIds.includes(p.categories.parent_id as string)) return false;
+      if (p.category_id && hiddenCategoryIds.includes(p.category_id)) return false;
+      if (p.categories?.parent_id && hiddenCategoryIds.includes(p.categories.parent_id)) return false;
       return true;
     });
 
