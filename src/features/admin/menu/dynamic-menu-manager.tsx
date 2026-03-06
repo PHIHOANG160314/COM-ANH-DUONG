@@ -49,6 +49,11 @@ export const DynamicMenuManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
 
+  const handleFilterCategory = (categoryId: string) => {
+    setFilterCategory(categoryId);
+    setPage(0);
+  };
+
   // File import state
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
@@ -208,7 +213,7 @@ export const DynamicMenuManager = () => {
             label="Danh mục"
             size="small"
             value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
+            onChange={(e) => handleFilterCategory(e.target.value)}
             SelectProps={{ native: true }}
             sx={{ minWidth: 150 }}
           >
@@ -276,8 +281,16 @@ export const DynamicMenuManager = () => {
                     <Chip
                       label={product.categories?.name || 'N/A'}
                       size="small"
-                      color="default"
-                      variant="outlined"
+                      color={filterCategory === product.category_id ? 'primary' : 'default'}
+                      variant={filterCategory === product.category_id ? 'filled' : 'outlined'}
+                      onClick={() => {
+                        if (product.category_id) {
+                          handleFilterCategory(
+                            filterCategory === product.category_id ? 'all' : product.category_id
+                          );
+                        }
+                      }}
+                      sx={{ cursor: 'pointer' }}
                     />
                   </TableCell>
                   <TableCell align="right">
