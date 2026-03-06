@@ -209,11 +209,11 @@ export const useCategories = () => {
         // If error from Supabase, fallback to production
         if (error) {
           Debug.warn('⚠️ Supabase error - falling back to production categories:', error.message);
-          return MENU_CATEGORIES.filter(cat => ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'].includes(cat.name));
+          return MENU_CATEGORIES.filter(cat => ['Thức Ăn', 'Cơm', 'Đồ Uống', 'Tráng Miệng'].includes(cat.name));
         }
 
         // Only show parent level categories specified
-        const allowedCategories = ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'];
+        const allowedCategories = ['Thức Ăn', 'Cơm', 'Đồ Uống', 'Tráng Miệng'];
         const filteredData = (data as Category[]).filter(cat =>
           allowedCategories.includes(cat.name)
         );
@@ -222,7 +222,7 @@ export const useCategories = () => {
       } catch (err) {
         // Catch any network or auth errors and fallback to production
         Debug.warn('⚠️ Failed to fetch categories - falling back to production:', err);
-        return MENU_CATEGORIES.filter(cat => ['Thức Ăn', 'Đồ Uống', 'Tráng Miệng'].includes(cat.name));
+        return MENU_CATEGORIES.filter(cat => ['Thức Ăn', 'Cơm', 'Đồ Uống', 'Tráng Miệng'].includes(cat.name));
       }
     },
     initialData: MENU_CATEGORIES,

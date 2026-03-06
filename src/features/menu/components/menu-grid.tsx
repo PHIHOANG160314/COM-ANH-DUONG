@@ -8,7 +8,11 @@ import { MenuSkeleton } from './menu-skeleton';
 import { CategoryChips } from './category-chips';
 
 const ITEMS_PER_PAGE = 16; // Optimized for mobile (4x4 grid on desktop, 2x8 on mobile)
-const ALLOWED_DISPLAY_CATEGORIES = ['Cơm', 'Đồ Uống', 'Tráng Miệng'];
+const ALLOWED_DISPLAY_CATEGORIES = ['Cơm', 'Thức Ăn', 'Đồ Uống', 'Tráng Miệng'];
+// Rename categories for display
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  'Thức Ăn': 'Món Chính',
+};
 
 export interface MenuGridProps {
   selectedCategoryId?: string;
@@ -110,14 +114,17 @@ export const MenuGrid = ({ selectedCategoryId, onCategoryChange, mode = 'all' }:
 
       {/* Category chips - horizontal scroll */}
       <CategoryChips
-        categories={displayCategories.map((cat) => cat.name) || []}
+        categories={displayCategories.map((cat) => CATEGORY_DISPLAY_NAMES[cat.name] || cat.name) || []}
         selectedCategory={activeCategory}
-        onCategorySelect={(category) => {
-          if (category === 'all') {
+        onCategorySelect={(displayName) => {
+          if (displayName === 'all') {
             handleCategorySelect('all');
           } else {
-            // Find category ID by name
-            const cat = categories?.find((c) => c.name === category);
+            // Reverse-map display name back to DB name
+            const dbName = Object.entries(CATEGORY_DISPLAY_NAMES).find(
+              ([, v]) => v === displayName
+            )?.[0] || displayName;
+            const cat = categories?.find((c) => c.name === dbName);
             if (cat) {
               handleCategorySelect(cat.id);
             }
